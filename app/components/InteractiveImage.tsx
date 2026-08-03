@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type GalleryItem = {
   src: string;
@@ -21,9 +21,65 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoom, setZoom] = useState(1);
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const pendingViewRef = useRef<{ x: number; y: number } | null>(null);
   const items = gallery?.length ? gallery : [{ src, alt }];
   const current = items[currentIndex] ?? items[0];
   const hasMultiple = items.length > 1;
+
+  const startPreview = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = 0;
+    void video.play().then(() => setPreviewPlaying(true)).catch(() => setPreviewPlaying(false));
+  };
+
+  const stopPreview = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
+    video.currentTime = 0;
+    setPreviewPlaying(false);
+  };
+
+  const rememberView = useCallback(() => {
+    const stage = stageRef.current;
+    const image = stage?.querySelector("img");
+    if (!stage || !image || zoom === 1) {
+      pendingViewRef.current = null;
+      return;
+    }
+    const stageRect = stage.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+    pendingViewRef.current = {
+      x: (stageRect.left + stage.clientWidth / 2 - imageRect.left) / imageRect.width,
+      y: (stageRect.top + stage.clientHeight / 2 - imageRect.top) / imageRect.height,
+    };
+  }, [zoom]);
+
+  const restoreView = () => {
+    const saved = pendingViewRef.current;
+    if (!saved) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const stage = stageRef.current;
+      const image = stage?.querySelector("img");
+      if (!stage || !image) return;
+      const stageRect = stage.getBoundingClientRect();
+      const imageRect = image.getBoundingClientRect();
+      const visibleX = stageRect.left + stage.clientWidth / 2 - imageRect.left;
+      const visibleY = stageRect.top + stage.clientHeight / 2 - imageRect.top;
+      stage.scrollLeft += saved.x * imageRect.width - visibleX;
+      stage.scrollTop += saved.y * imageRect.height - visibleY;
+      pendingViewRef.current = null;
+    }));
+  };
+
+  const move = useCallback((step: number) => {
+    rememberView();
+    setCurrentIndex((index) => (index + step + items.length) % items.length);
+  }, [items.length, rememberView]);
 
   useEffect(() => {
     if (!open) return;
@@ -33,13 +89,11 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
       if (event.key === "Escape") setOpen(false);
       if (event.key === "ArrowLeft" && hasMultiple) {
         event.preventDefault();
-        setZoom(1);
-        setCurrentIndex((index) => (index - 1 + items.length) % items.length);
+        move(-1);
       }
       if (event.key === "ArrowRight" && hasMultiple) {
         event.preventDefault();
-        setZoom(1);
-        setCurrentIndex((index) => (index + 1) % items.length);
+        move(1);
       }
       if (event.key === "+" || event.key === "=") setZoom((value) => value === 1 ? 2 : 4);
       if (event.key === "-") setZoom((value) => value === 4 ? 2 : 1);
@@ -50,20 +104,43 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", navigate);
     };
-  }, [open, hasMultiple, items.length]);
-
-  const move = (step: number) => {
-    setZoom(1);
-    setCurrentIndex((index) => (index + step + items.length) % items.length);
-  };
+  }, [open, hasMultiple, move]);
 
   const cycleZoom = () => setZoom((value) => value === 1 ? 2 : value === 2 ? 4 : 1);
 
   return (
     <>
-      <button className="image-open-button" type="button" onClick={() => { setCurrentIndex(initialIndex); setZoom(1); setOpen(true); }} aria-label={`打开大图：${alt}`}>
+      <button
+        className="image-open-button"
+        type="button"
+        onMouseEnter={startPreview}
+        onMouseLeave={stopPreview}
+        onClick={() => { stopPreview(); pendingViewRef.current = null; setCurrentIndex(initialIndex); setZoom(1); setOpen(true); }}
+        aria-label={`打开大图：${alt}`}
+      >
         {videoSrc ? (
-          <video src={videoSrc} poster={previewSrc ?? src} autoPlay muted loop playsInline preload="metadata" aria-label={`${alt} · 1秒动态预览`} />
+          <>
+            <img
+              src={previewSrc ?? src}
+              srcSet={previewSrc ? `${previewSrc} 800w, ${src} 2560w` : undefined}
+              sizes={sizes}
+              loading="lazy"
+              decoding="async"
+              alt={alt}
+            />
+            <video
+              ref={videoRef}
+              className={`hover-preview ${previewPlaying ? "is-playing" : ""}`}
+              src={videoSrc}
+              poster={previewSrc ?? src}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+          </>
         ) : (
           <img
             src={previewSrc ?? src}
@@ -74,7 +151,6 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
             alt={alt}
           />
         )}
-        {videoSrc && <span className="live-badge" aria-hidden="true"><i /> LIVE · 1s</span>}
         <span className="image-open-hint" aria-hidden="true">查看大图 ↗</span>
       </button>
       {open && (
@@ -87,8 +163,8 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
             <button type="button" onClick={() => setOpen(false)} aria-label="关闭大图">关闭 ×</button>
           </div>
           {hasMultiple && <button className="lightbox-nav lightbox-prev" type="button" aria-label="上一张图片" onClick={(event) => { event.stopPropagation(); move(-1); }}><span aria-hidden="true">‹</span></button>}
-          <div className={`lightbox-stage ${zoom > 1 ? "is-zoomed" : ""}`} onClick={() => setOpen(false)}>
-            <img key={current.src} src={current.src} alt={current.alt} style={zoom > 1 ? { width: `${zoom * 100}vw` } : undefined} onClick={(event) => { event.stopPropagation(); cycleZoom(); }} />
+          <div ref={stageRef} className={`lightbox-stage ${zoom > 1 ? "is-zoomed" : ""}`} onClick={() => setOpen(false)}>
+            <img key={current.src} src={current.src} alt={current.alt} style={zoom > 1 ? { width: `${zoom * 100}vw` } : undefined} onLoad={restoreView} onClick={(event) => { event.stopPropagation(); cycleZoom(); }} />
           </div>
           {hasMultiple && <button className="lightbox-nav lightbox-next" type="button" aria-label="下一张图片" onClick={(event) => { event.stopPropagation(); move(1); }}><span aria-hidden="true">›</span></button>}
         </div>

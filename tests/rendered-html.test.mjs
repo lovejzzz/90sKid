@@ -22,7 +22,7 @@ test("server-renders the V24 project home page", async () => {
   assert.match(html, /当前基线 · V24/);
   assert.match(html, /v24-t020-projection/);
   assert.match(html, /v24-t020-projection-live\.mp4/);
-  assert.match(html, /LIVE · 1s/);
+  assert.doesNotMatch(html, /LIVE · 1s/);
   assert.match(html, /参数面板|PARAMETERS/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
@@ -47,4 +47,10 @@ test("lightbox keeps gallery navigation and magnification controls", async () =>
   assert.match(source, /ArrowLeft/);
   assert.match(source, /ArrowRight/);
   assert.match(source, /value === 1 \? 2 : value === 2 \? 4 : 1/);
+  assert.match(source, /onMouseEnter={startPreview}/);
+  assert.match(source, /onMouseLeave={stopPreview}/);
+  assert.doesNotMatch(source, /autoPlay/);
+  assert.match(source, /pendingViewRef/);
+  assert.match(source, /stage\.scrollLeft \+= saved\.x/);
+  assert.match(source, /stage\.scrollTop \+= saved\.y/);
 });
