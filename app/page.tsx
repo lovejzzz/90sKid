@@ -11,14 +11,14 @@ export default function Home() {
           <h1>不是给数码影像<br />贴一层颗粒。</h1>
           <p className="hero-lead">我们的目标，是重建曝光、银盐位点、染料云、层间抑制、印片与扫描共同形成画面的过程。</p>
           <div className="hero-actions"><Link href="/versions" className="button primary">观看版本演进</Link><Link href="/research" className="button">阅读研究</Link></div>
-          <div className="hero-meta"><span><b>18</b> 个已归档版本</span><span><b>15</b> 条核心资料</span><span><b>12-bit</b> 5.7K主链</span></div>
+          <div className="hero-meta"><span><b>19</b> 个已归档版本</span><span><b>20</b> 条核心资料</span><span><b>12-bit</b> 5.7K主链</span></div>
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>当前基线 · V21</span><h2>同一张负片，两种历史上真实存在的结果</h2><p>左侧经过5279负片、2383正片和氙灯投影；右侧经过负片扫描、Cineon/2K DI与蓝光完成。两者共享中性明度目标，但不再共享色相和饱和度。</p></div>
+          <div className="section-intro"><span>当前基线 · V22</span><h2>同一张负片，两种历史上真实存在的结果</h2><p>左侧经过5279负片、分析染料反演、2383正片和氙灯投影；右侧经过负片扫描、Cineon/2K DI与蓝光完成。两者共享同一帧乳剂随机实现，但拥有各自的观察器、黑位和颜色。</p></div>
           <div className="hero-comparison">
-            <figure><div className="image-title"><b>2383</b><span>PRINT / XENON</span></div><img src="/versions/v21-projection.jpg" alt="V21 2383氙灯放映效果" /><figcaption>保留正片色度、典型影院flare与显示观看适配</figcaption></figure>
-            <figure><div className="image-title"><b>2K DI</b><span>SPIRIT / BLU-RAY</span></div><img src="/versions/v21-bluray.jpg" alt="V21 2K DI蓝光效果" /><figcaption>宽带时期扫描观察器、Cineon密度与蓝光完成</figcaption></figure>
+            <figure><div className="image-title"><b>2383</b><span>PRINT / XENON</span></div><img src="/versions/v22-projection.jpg" alt="V22 2383氙灯放映效果" /><figcaption>分析染料、LAD层间耦合、典型影院flare与相对色度观看适配</figcaption></figure>
+            <figure><div className="image-title"><b>2K DI</b><span>SPIRIT / BLU-RAY</span></div><img src="/versions/v22-bluray.jpg" alt="V22 2K DI蓝光效果" /><figcaption>宽带时期扫描观察器、Cineon密度与2K积分蓝光完成</figcaption></figure>
           </div>
         </section>
 
@@ -29,18 +29,18 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">V21 · IMPLEMENTED &amp; VALIDATED</span><h2>这一次，顺序真的被重排了</h2></div>
+          <div><span className="eyebrow">V22 · IMPLEMENTED &amp; VALIDATED</span><h2>把胶片化学与显示器观看分开</h2></div>
           <ol>
-            <li><b>分颜色记录的快／中／慢颗粒形态</b><span>R/G/B不再共用同一套代表性尺寸，并回标48µm RMS。</span></li>
-            <li><b>显影域DIR反应—扩散</b><span>在亚层合并前释放、传播并抑制邻层显影。</span></li>
-            <li><b>拆分三种观察器</b><span>Status-M只负责数据表轴；时期扫描器与2383印片各自积分光谱。</span></li>
-            <li><b>修复两分支假差异</b><span>放映版不再复制扫描色度，黑位也继续由各自链路决定。</span></li>
+            <li><b>先反解分析染料量</b><span>Status-A积分密度不再被重复当作CMY染料量。</span></li>
+            <li><b>LAD锚定层间耦合</b><span>在正片H-D之前处理互感曝光，并保持LAD中性锚点。</span></li>
+            <li><b>D60只提供相对色度</b><span>减去厂商变换自身的中性响应，避免绝对白点染色。</span></li>
+            <li><b>保持测试而非主观选图</b><span>六色中位色相误差7.94°→1.46°，饱和度全部落在七套厂商变换包络内。</span></li>
           </ol>
-          <Link href="/research#v21" className="button">阅读V21验证结果</Link>
+          <Link href="/research#v22" className="button">阅读V22验证结果</Link>
         </section>
 
         <section className="route-grid wrap">
-          <Link href="/versions"><span>ARCHIVE</span><h3>版本档案</h3><p>从V4到V21，逐版对照两种观看链，并记录错误和修正。</p><b>进入 →</b></Link>
+          <Link href="/versions"><span>ARCHIVE</span><h3>版本档案</h3><p>从V4到V22，逐版对照两种观看链，并记录错误和修正。</p><b>进入 →</b></Link>
           <Link href="/research"><span>PAPER</span><h3>研究笔记</h3><p>乳剂层、遮罩、DIR、颗粒、黑位、扫描器与完整引用。</p><b>进入 →</b></Link>
           <Link href="/algorithm"><span>METHOD</span><h3>算法说明</h3><p>从RAW到负片、2383与Cineon的公式、流程和关键代码。</p><b>进入 →</b></Link>
         </section>

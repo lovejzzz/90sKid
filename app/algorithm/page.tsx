@@ -23,12 +23,23 @@ sensor_2k = area_integrate(sensor, aperture=2048)
 D = -log10(sensor_2k / clear_reference)
 cineon = 95 + (D - Dmin) / 0.002`;
 
+const printCode = `# Status-A积分密度不是染料量；逐条主曲线做非线性反演
+dye_amount = invert_status_a_principal_curves(status_a_density)
+print_logE = interimage_matrix @ (print_logE - lad_logE) + lad_logE
+positive_density = positive_hd_curves(print_logE)
+xyz = integrate(xenon_spd * 10 ** (-spectral_dyes(dye_amount)), cie_xyz)`;
+
+const monitorCode = `neutral = d60_lut(mean(cineon_code) * ones(3))
+delta_ab = d60_lut(cineon_code).ab - neutral.ab
+delta_ab *= smooth_neutral_guard(cineon_chroma, 0.008, 0.040)
+display_oklab.ab += delta_ab       # L不变；绝对D60白点不进入画面`;
+
 export default function AlgorithmPage() {
   return (
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V21</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V21模型的关键公式和真正执行的代码结构。为便于阅读，省略工程性的缓存、色彩元数据和文件编码部分。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V22</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V22模型的关键公式和真正执行的代码结构。V22把2383的积分测量、分析染料量和显示器观看适配明确拆成不同步骤。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit母版</b><small>Rec.709 1-1-1</small></span></div></section>
 
@@ -42,9 +53,13 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">05</div><div className="method-copy"><span className="section-tag">SPECTRAL NEGATIVE</span><h2>染料形成与有色遮罩</h2><p>三条记录并不是理想CMY。每条5279净染料曲线含有新染料与遮罩耦合剂消耗的合成结果。总透射率由完整D-min/橙色底与带符号的净密度共同决定。</p><div className="equation"><span>负片透射率</span><b>T<sub>neg</sub>(λ) = 10<sup>−[Dmin(λ)+Σ a<sub>c</sub>ΔD<sub>c,net</sub>(λ)]</sup></b><small>印片路径保留D-min；扫描匹配路径可以在正确观察器中估计并去底。</small></div></div></section>
 
-        <section className="method-section split-method"><div className="method-index">06</div><div className="method-copy"><span className="section-tag">THREE OBSERVERS · TWO OUTPUTS</span><h2>同一负片之后，结果开始分叉</h2><div className="method-branches"><article><b>5279 → 2383 → 氙灯</b><p>3200K印片灯穿过负片；2383三条感色层得到曝光，经过其陡峭H-D曲线形成正片染料，再用氙灯光谱和CIE观察器积分。正片MTF、细颗粒、Callier效应和投影flare属于这一支；显示适配只借用扫描分支的中性明度，不复制其色度。</p></article><article><b>5279 → Period 2K → Cineon</b><p>Status-M窄带观察器只用于解出数据表的H-D与染料量轴。成片扫描则用较宽的时期RGB探测响应积分透射光，再进行Spirit式film match、2K孔径、Cineon 0.002D/code与蓝光显示完成。</p><pre><code>{scanCode}</code></pre></article></div></div></section>
+        <section className="method-section"><div className="method-index">06</div><div className="method-copy"><span className="section-tag">V22 · ANALYTICAL PRINT DYES</span><h2>Status-A测到的密度，不能再当一次染料量</h2><p>状态密度计看到的是三种正片染料在指定光谱权重下共同形成的积分密度。V21把三条Status-A主曲线输出再次乘以CMY染料光谱，等于重复计算旁带吸收。V22逐曝光反解分析染料量，再在LAD附近施加层间曝光耦合，最后经过2383的非线性正片曲线。</p><div className="equation"><span>Status-A积分</span><b>D<sub>A,k</sub> = −log<sub>10</sub>[Σ<sub>λ</sub>10<sup>−Σj a<sub>j</sub>d<sub>j</sub>(λ)</sup>W<sub>k</sub>(λ) / Σ<sub>λ</sub>W<sub>k</sub>(λ)]</b><small>由三条主曲线数值反演a<sub>j</sub>，而不是把D<sub>A,k</sub>直接当a<sub>j</sub>。</small></div><div className="equation"><span>层间曝光</span><b>E′<sub>print</sub> = M(E<sub>print</sub> − E<sub>LAD</sub>) + E<sub>LAD</sub></b><small>LAD锚点不动；矩阵只描述锚点附近不同记录的互感方向。</small></div><pre><code>{printCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V21 VALIDATION</span><h2>这次重排通过了什么</h2><div className="validation-grid"><div><b>平均响应</b><p>中性H-D最大误差约2.4×10⁻⁷ D</p></div><div><b>颗粒幅度</b><p>48µm孔径RMS误差约0–1.5%</p></div><div><b>空间结构</b><p>三记录独立形态仍受5279 MTF约束</p></div><div><b>颜色分离</b><p>六色阶梯的DIR变化有界</p></div><div><b>两链差异</b><p>代表帧中位色相差约4.8°</p></div><div><b>母版</b><p>5760×4320 · 12-bit · ProRes 4444</p></div></div></section>
+        <section className="method-section split-method"><div className="method-index">07</div><div className="method-copy"><span className="section-tag">THREE OBSERVERS · TWO OUTPUTS</span><h2>同一负片之后，结果开始分叉</h2><div className="method-branches"><article><b>5279 → 2383 → 氙灯</b><p>3200K印片灯穿过负片；2383三条感色层得到曝光，经过其陡峭H-D曲线形成正片染料，再用氙灯光谱和CIE观察器积分。正片MTF、细颗粒、Callier效应和投影flare属于这一支。</p></article><article><b>5279 → Period 2K → Cineon</b><p>Status-M只负责数据表测量轴。成片扫描用较宽的时期RGB探测响应积分透射光，再进行Spirit式film match、2K孔径、Cineon 0.002D/code与蓝光显示完成。</p><pre><code>{scanCode}</code></pre></article></div></div></section>
+
+        <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">MONITOR-ONLY ADAPTATION</span><h2>D60只校准相对色度，不给画面染色</h2><p>胶片、氙灯和CIE观察者给出物理投影颜色，但银幕观看转成Rec.709并不唯一。V22使用公开厂商2383 D60变换作显示目标，同时在每个平均Cineon码值减去它自己的中性响应；只加入Oklab a/b差值，不改L。</p><div className="equation"><span>相对色度</span><b>Δab(q) = ab<sub>D60</sub>(q) − ab<sub>D60</sub>(neutral(mean(q)))</b><small>中性保护区从Cineon色度0.008平滑过渡到0.040。</small></div><pre><code>{monitorCode}</code></pre></div></section>
+
+        <section className="validation"><span className="section-tag">V22 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>六色保持</b><p>中位色相误差7.94° → 1.46°</p></div><div><b>最差颜色</b><p>最大色相误差14.62° → 6.90°</p></div><div><b>饱和度</b><p>六色全部落在七套厂商变换包络内</p></div><div><b>实拍包络</b><p>D55–D65色相命中20.2% → 45.9%</p></div><div><b>数值安全</b><p>12-bit无通道顶端裁切；p99.99亮度约0.958</p></div><div><b>双母版</b><p>5760×4320 · 12-bit · ProRes 4444</p></div></div></section>
       </main>
       <SiteFooter />
     </>

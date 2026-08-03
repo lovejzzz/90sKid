@@ -15,10 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "从GH7 ProRes RAW出发，重建Kodak VISION 500T 5279的乳剂、颗粒、色彩、2383放映与2K DI扫描过程。",
+    description: "V22：从GH7 ProRes RAW重建Kodak VISION 500T 5279乳剂、分析染料、2383放映与时期2K扫描。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "从银盐位点到电影画面：版本档案、乳剂研究、算法与引用。",
+      description: "V22：分析染料、层间耦合、2383氙灯放映与时期2K扫描。",
       type: "website",
       locale: "zh_CN",
       images: [{ url: "/og.png", width: 1792, height: 921, alt: "5279 Emulsion Project" }],
@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "从银盐位点到电影画面：版本档案、乳剂研究、算法与引用。",
+      description: "V22：分析染料、层间耦合、2383氙灯放映与时期2K扫描。",
       images: ["/og.png"],
     },
   };

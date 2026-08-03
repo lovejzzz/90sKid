@@ -248,9 +248,9 @@ export const versions: VersionEntry[] = [
   },
   {
     version: "V21",
-    year: "当前版本",
+    year: "上一版",
     title: "让显影、颗粒与观察器真正分开工作",
-    status: "current",
+    status: "calibration",
     projection: { src: "/versions/v21-projection.jpg", label: "V21 · 2383氙灯放映显示适配" },
     bluray: { src: "/versions/v21-bluray.jpg", label: "V21 · Period 2K / Cineon蓝光" },
     summary: "DIR改在九个快／中／慢群体显影时发生；三条颜色记录拥有独立颗粒形态；Status-M、时期Telecine和2383印片成为三个不同的光谱观察器。与此同时修正了V20放映版几乎继承扫描版色度、只留下更深黑位的错误。",
@@ -258,6 +258,19 @@ export const versions: VersionEntry[] = [
     errors: ["V20的投影显示适配从扫描分支继承约92%色相和94%饱和度，使两张截图除了黑位外过度接近", "5279真实亚层配方与时期Telecine精确光谱仍未公开，当前参数是受数据表和同期专利约束的模型", "显示器上的放映版仍是对16 ft-L影院观看的适配，不等同于银幕实测光谱"],
     discoveries: ["中性H-D可以在DIR重排后保持到约2.4×10⁻⁷ D，同时让局部与层间反应发生", "48µm孔径下三记录RMS误差保持在约0–1.5%", "放映与扫描应共享中性明度目标，却不能共享色度；V21代表帧的中位色相差约4.8°"],
     refs: ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R11", "R12"],
+  },
+  {
+    version: "V22",
+    year: "当前版本",
+    title: "分析染料、层间耦合与相对白点放映预览",
+    status: "current",
+    projection: { src: "/versions/v22-projection.jpg", label: "V22 · 5279 → 2383氙灯放映" },
+    bluray: { src: "/versions/v22-bluray.jpg", label: "V22 · Period 2K / Cineon蓝光" },
+    summary: "修正V21把2383 Status-A积分密度再次当作独立CMY染料量的结构错误：先非线性反解分析染料量，再经LAD锚定的层间曝光耦合进入正片曲线。物理胶片与显示器预览被明确拆分，D60目标只提供去除自身中性白点后的相对色度校准。",
+    changes: ["非线性Status-A积分密度→分析染料量反演", "LAD锚定的印片层间曝光矩阵", "去除D60中性响应的显示器相对色度校准", "放映与扫描共享同一帧5279乳剂随机实现"],
+    errors: ["V21把积分测量值再次乘以染料光谱，重复计算了不希望吸收", "D60是公开厂商的显示目标，不是Kodak工厂化学参数", "5279实拍色卡、肤色靶和影院分光测量仍未获得；当前母版只有6帧"],
+    discoveries: ["公开胶片化学只约束胶片与氙灯，影院外观转到Rec.709还需要独立观看适配", "厂商D60变换的绝对白点必须先减去，否则会把整张画面染紫红", "13项三次多项式无法压缩该非线性修正，25³相对色度格点才通过保持测试", "六色中位色相误差从V21的7.94°降至1.46°；实拍帧进入D55–D65色相包络的像素从20.2%升至45.9%"],
+    refs: ["R1", "R4", "R5", "R16", "R17", "R18", "R19", "R20"],
   },
 ];
 
@@ -277,6 +290,11 @@ export const references = [
   { id: "R13", title: "The Chemistry of Kodak Film — Smarter Every Day 275-C", type: "柯达工厂访谈", url: "https://www.youtube.com/watch?v=zJ8aNPStQ8M" },
   { id: "R14", title: "Kodak’s Film Quality Control Process — 275-B", type: "柯达工厂质控", url: "https://www.youtube.com/watch?v=VIH0dEMyv9w" },
   { id: "R15", title: "Advanced Emulsion: crystals, couplers, masks and processing", type: "Kodak资料支持的讲解", url: "https://www.youtube.com/watch?v=I4_7tW-cx1I" },
+  { id: "R16", title: "Digital Color Management for Motion Picture Film", type: "IS&T / Ado Ishii, 2003", url: "https://library.imaging.org/admin/apis/public/api/ist/website/downloadArticle/cic/11/1/art00055" },
+  { id: "R17", title: "US 2002/0118211 — analytical dye density and interimage measurement", type: "Eastman Kodak专利", url: "https://patents.google.com/patent/US20020118211A1/en" },
+  { id: "R18", title: "US 8,654,192 — LAD-anchored print-exposure matrix", type: "Adobe Systems专利", url: "https://patents.google.com/patent/US8654192B2/en" },
+  { id: "R19", title: "Common LUT Format implementation guide", type: "ACES规范", url: "https://docs.acescentral.com/clf/guides/" },
+  { id: "R20", title: "ISO 5-3:2009 — Photography and graphic technology: Spectral conditions", type: "ISO标准索引", url: "https://www.iso.org/standard/52915.html" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
