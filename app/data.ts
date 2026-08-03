@@ -235,9 +235,9 @@ export const versions: VersionEntry[] = [
   },
   {
     version: "V20",
-    year: "当前版本",
+    year: "上一版",
     title: "曝光相关的亚层染料贡献",
-    status: "current",
+    status: "calibration",
     projection: { src: "/versions/v20-projection.jpg", label: "V20 · 2383放映" },
     bluray: { src: "/versions/v20-bluray.jpg", label: "V20 · 2K DI / 蓝光" },
     summary: "快、中、慢层根据边际激活量改变色记录贡献；薄负片的颜色分离更宽，高曝光慢层更接近纯记录。",
@@ -245,6 +245,19 @@ export const versions: VersionEntry[] = [
     errors: ["DIR仍是总密度后的二维近似", "扫描器和Status-M仍被混为同一个观察器", "亚层尺寸没有按颜色记录独立"],
     discoveries: ["柯达同期专利显示胶片设计会预补偿Telecine红通道", "彩色负片最终承载影像的是染料云，显影银影会被移除", "V21必须重排算法顺序，而不是继续调矩阵"],
     refs: ["R2", "R3", "R6", "R11", "R12"],
+  },
+  {
+    version: "V21",
+    year: "当前版本",
+    title: "让显影、颗粒与观察器真正分开工作",
+    status: "current",
+    projection: { src: "/versions/v21-projection.jpg", label: "V21 · 2383氙灯放映显示适配" },
+    bluray: { src: "/versions/v21-bluray.jpg", label: "V21 · Period 2K / Cineon蓝光" },
+    summary: "DIR改在九个快／中／慢群体显影时发生；三条颜色记录拥有独立颗粒形态；Status-M、时期Telecine和2383印片成为三个不同的光谱观察器。与此同时修正了V20放映版几乎继承扫描版色度、只留下更深黑位的错误。",
+    changes: ["九群体显影域DIR反应—扩散", "青／品红／黄记录独立快中慢形态", "Status-M、Period 2K、2383三观察器分离", "重建2383显示器观看适配，不再复制扫描色相与饱和度"],
+    errors: ["V20的投影显示适配从扫描分支继承约92%色相和94%饱和度，使两张截图除了黑位外过度接近", "5279真实亚层配方与时期Telecine精确光谱仍未公开，当前参数是受数据表和同期专利约束的模型", "显示器上的放映版仍是对16 ft-L影院观看的适配，不等同于银幕实测光谱"],
+    discoveries: ["中性H-D可以在DIR重排后保持到约2.4×10⁻⁷ D，同时让局部与层间反应发生", "48µm孔径下三记录RMS误差保持在约0–1.5%", "放映与扫描应共享中性明度目标，却不能共享色度；V21代表帧的中位色相差约4.8°"],
+    refs: ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R11", "R12"],
   },
 ];
 
