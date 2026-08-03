@@ -37,6 +37,7 @@ test("server-renders the V24 archive, research and algorithm routes", async () =
   assert.match(research, /Print Grain Index/);
   assert.match(research, /V25 PLAN · COLOUR PIPELINE STANDARDIZATION/);
   assert.match(research, /Hourly研究总审计/);
+  assert.match(research, /黑场、对比度与gamma验收/);
   assert.match(algorithm, /CURRENT V24/);
   assert.match(algorithm, /193³/);
 });
