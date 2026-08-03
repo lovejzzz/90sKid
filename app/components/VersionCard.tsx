@@ -34,6 +34,15 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
         </div>
         <ParameterPanel groups={item.parameters} version={item.version} status={item.status} changes={item.changes} />
       </div>
+      {item.additionalTrials?.map((trial) => (
+        <section className="source-trial" key={trial.name}>
+          <header><div><span>ADDITIONAL SOURCE</span><b>{trial.name}</b></div><p>{trial.note}</p></header>
+          <div className="branch-grid">
+            <Branch branch={trial.projection} title="2383 放映" />
+            <Branch branch={trial.bluray} title="2K DI / 蓝光" />
+          </div>
+        </section>
+      ))}
       <details open={open}>
         <summary>完整 Changelog</summary>
         <div className="change-grid">

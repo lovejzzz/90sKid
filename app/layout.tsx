@@ -15,19 +15,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V22：从GH7 ProRes RAW重建Kodak VISION 500T 5279乳剂、分析染料、2383放映与时期2K扫描。",
+    description: "V23：从GH7 ProRes RAW重建Kodak VISION 500T 5279乳剂、连续染料云、2383放映与时期2K扫描。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V22：分析染料、层间耦合、2383氙灯放映与时期2K扫描。",
+      description: "V23：连续染料云、分析染料、2383氙灯放映与时期2K扫描。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: "/og.png", width: 1792, height: 921, alt: "5279 Emulsion Project" }],
+      images: [{ url: "/og-v23.png", width: 1659, height: 948, alt: "5279 Emulsion Project · V23 Dye Cloud Field" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V22：分析染料、层间耦合、2383氙灯放映与时期2K扫描。",
-      images: ["/og.png"],
+      description: "V23：连续染料云、分析染料、2383氙灯放映与时期2K扫描。",
+      images: ["/og-v23.png"],
     },
   };
 }
