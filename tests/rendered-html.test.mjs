@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(path = "/") {
@@ -34,4 +35,14 @@ test("server-renders the V23 archive, research and algorithm routes", async () =
   assert.match(research, /US 4,536,472/);
   assert.match(algorithm, /CURRENT V23/);
   assert.match(algorithm, /193³/);
+});
+
+test("lightbox keeps gallery navigation and magnification controls", async () => {
+  const source = await readFile(new URL("../app/components/InteractiveImage.tsx", import.meta.url), "utf8");
+  assert.match(source, /aria-label="上一张图片"/);
+  assert.match(source, /aria-label="下一张图片"/);
+  assert.match(source, /放大图片，当前/);
+  assert.match(source, /ArrowLeft/);
+  assert.match(source, /ArrowRight/);
+  assert.match(source, /value === 1 \? 2 : value === 2 \? 4 : 1/);
 });

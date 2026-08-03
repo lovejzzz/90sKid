@@ -1,11 +1,13 @@
 import type { BranchImage, VersionEntry } from "../data";
 import { refMap } from "../data";
-import { InteractiveImage } from "./InteractiveImage";
+import { InteractiveImage, type GalleryItem } from "./InteractiveImage";
 import { ParameterPanel } from "./ParameterPanel";
 
 function smallSrc(src: string) { return src.replace(/\.jpg$/, "-sm.jpg"); }
 
-function Branch({ branch, title }: { branch: BranchImage; title: string }) {
+function branchAlt(branch: BranchImage, title: string) { return `${title}：${branch.label}`; }
+
+function Branch({ branch, title, gallery, galleryIndex }: { branch: BranchImage; title: string; gallery: GalleryItem[]; galleryIndex: number }) {
   return (
     <figure className="branch-figure">
       <div className="branch-label"><span>{title}</span>{branch.inherited && <em>沿用 / 共用</em>}</div>
@@ -13,7 +15,9 @@ function Branch({ branch, title }: { branch: BranchImage; title: string }) {
         src={branch.src}
         previewSrc={smallSrc(branch.src)}
         sizes="(max-width: 760px) 100vw, 50vw"
-        alt={`${title}：${branch.label}`}
+        alt={branchAlt(branch, title)}
+        gallery={gallery}
+        initialIndex={galleryIndex}
       />
       <figcaption>{branch.label}</figcaption>
     </figure>
@@ -21,6 +25,14 @@ function Branch({ branch, title }: { branch: BranchImage; title: string }) {
 }
 
 export function VersionCard({ item, open = false }: { item: VersionEntry; open?: boolean }) {
+  const gallery: GalleryItem[] = [
+    { src: item.projection.src, alt: branchAlt(item.projection, "2383 放映") },
+    { src: item.bluray.src, alt: branchAlt(item.bluray, "2K DI / 蓝光") },
+    ...(item.additionalTrials?.flatMap((trial) => [
+      { src: trial.projection.src, alt: branchAlt(trial.projection, "2383 放映") },
+      { src: trial.bluray.src, alt: branchAlt(trial.bluray, "2K DI / 蓝光") },
+    ]) ?? []),
+  ];
   return (
     <article className={`version-card ${item.status === "current" ? "is-current" : ""}`} id={item.version.toLowerCase()}>
       <div className="version-heading">
@@ -29,17 +41,17 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
       </div>
       <div className="version-visual-layout">
         <div className="branch-grid">
-          <Branch branch={item.projection} title="2383 放映" />
-          <Branch branch={item.bluray} title="2K DI / 蓝光" />
+          <Branch branch={item.projection} title="2383 放映" gallery={gallery} galleryIndex={0} />
+          <Branch branch={item.bluray} title="2K DI / 蓝光" gallery={gallery} galleryIndex={1} />
         </div>
         <ParameterPanel groups={item.parameters} version={item.version} status={item.status} changes={item.changes} />
       </div>
-      {item.additionalTrials?.map((trial) => (
+      {item.additionalTrials?.map((trial, trialIndex) => (
         <section className="source-trial" key={trial.name}>
           <header><div><span>ADDITIONAL SOURCE</span><b>{trial.name}</b></div><p>{trial.note}</p></header>
           <div className="branch-grid">
-            <Branch branch={trial.projection} title="2383 放映" />
-            <Branch branch={trial.bluray} title="2K DI / 蓝光" />
+            <Branch branch={trial.projection} title="2383 放映" gallery={gallery} galleryIndex={2 + trialIndex * 2} />
+            <Branch branch={trial.bluray} title="2K DI / 蓝光" gallery={gallery} galleryIndex={3 + trialIndex * 2} />
           </div>
         </section>
       ))}
