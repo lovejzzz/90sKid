@@ -14,6 +14,7 @@ function Branch({ branch, title, gallery, galleryIndex }: { branch: BranchImage;
       <InteractiveImage
         src={branch.src}
         previewSrc={smallSrc(branch.src)}
+        videoSrc={branch.videoSrc}
         sizes="(max-width: 760px) 100vw, 50vw"
         alt={branchAlt(branch, title)}
         gallery={gallery}

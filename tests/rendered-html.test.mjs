@@ -13,27 +13,29 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the V23 project home page", async () => {
+test("server-renders the V24 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /当前基线 · V23/);
-  assert.match(html, /v23-t020-projection/);
+  assert.match(html, /当前基线 · V24/);
+  assert.match(html, /v24-t020-projection/);
+  assert.match(html, /v24-t020-projection-live\.mp4/);
+  assert.match(html, /LIVE · 1s/);
   assert.match(html, /参数面板|PARAMETERS/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V23 archive, research and algorithm routes", async () => {
+test("server-renders the V24 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(["/versions", "/research", "/algorithm"].map(render));
   for (const response of pages) assert.equal(response.status, 200);
   const [versions, research, algorithm] = await Promise.all(pages.map((page) => page.text()));
-  assert.match(versions, /V4—V23/);
+  assert.match(versions, /V4—V24/);
   assert.match(versions, /NJARAW_S001_S001_T032/);
-  assert.match(research, /V23 · ORGANIC DYE-CLOUD FIELD/);
-  assert.match(research, /US 4,536,472/);
-  assert.match(algorithm, /CURRENT V23/);
+  assert.match(research, /V24 · 35MM SPECTRAL SEPARATION/);
+  assert.match(research, /Print Grain Index/);
+  assert.match(algorithm, /CURRENT V24/);
   assert.match(algorithm, /193³/);
 });
 

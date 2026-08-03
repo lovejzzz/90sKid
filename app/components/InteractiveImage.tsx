@@ -10,13 +10,14 @@ export type GalleryItem = {
 type Props = {
   src: string;
   previewSrc?: string;
+  videoSrc?: string;
   alt: string;
   sizes?: string;
   gallery?: GalleryItem[];
   initialIndex?: number;
 };
 
-export function InteractiveImage({ src, previewSrc, alt, sizes, gallery, initialIndex = 0 }: Props) {
+export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, gallery, initialIndex = 0 }: Props) {
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoom, setZoom] = useState(1);
@@ -61,14 +62,19 @@ export function InteractiveImage({ src, previewSrc, alt, sizes, gallery, initial
   return (
     <>
       <button className="image-open-button" type="button" onClick={() => { setCurrentIndex(initialIndex); setZoom(1); setOpen(true); }} aria-label={`打开大图：${alt}`}>
-        <img
-          src={previewSrc ?? src}
-          srcSet={previewSrc ? `${previewSrc} 800w, ${src} 2560w` : undefined}
-          sizes={sizes}
-          loading="lazy"
-          decoding="async"
-          alt={alt}
-        />
+        {videoSrc ? (
+          <video src={videoSrc} poster={previewSrc ?? src} autoPlay muted loop playsInline preload="metadata" aria-label={`${alt} · 1秒动态预览`} />
+        ) : (
+          <img
+            src={previewSrc ?? src}
+            srcSet={previewSrc ? `${previewSrc} 800w, ${src} 2560w` : undefined}
+            sizes={sizes}
+            loading="lazy"
+            decoding="async"
+            alt={alt}
+          />
+        )}
+        {videoSrc && <span className="live-badge" aria-hidden="true"><i /> LIVE · 1s</span>}
         <span className="image-open-hint" aria-hidden="true">查看大图 ↗</span>
       </button>
       {open && (

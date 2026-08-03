@@ -34,10 +34,16 @@ delta_ab = d60_lut(cineon_code).ab - neutral.ab
 delta_ab *= smooth_neutral_guard(cineon_chroma, 0.008, 0.040)
 display_oklab.ab += delta_ab       # L不变；绝对D60白点不进入画面`;
 
-const cloudCode = `weights = [0.10, 0.24, 0.34, 0.22, 0.10]
-radius  = [0.62, 0.78, 0.98, 1.22, 1.55] * base_cloud_radius
-optical = [0.78, 0.88, 1.00, 1.12, 1.25] * base_optical_sigma
+const cloudCode = `weights = [0.16, 0.30, 0.32, 0.17, 0.05]
+radius  = [0.50, 0.68, 0.86, 1.08, 1.34] * base_cloud_radius
+optical = [0.68, 0.80, 0.92, 1.05, 1.18] * base_optical_sigma
 phase_k = phase_0 + k * 2.3999632297       # 黄金角；避免三向周期`;
+
+const colourGrainCode = `delta_y = dot(grain_delta_rgb, rec709_luma)
+delta_c = grain_delta_rgb - delta_y[..., None]
+delta_c = blur(delta_c, sigma_at_2k) + hf * highpass(delta_c)
+visible_grain = delta_y[..., None] + opponent_strength * delta_c
+# 只处理signed grain delta；mean RGB不进入这个函数`;
 
 const outputLutCode = `# 每个格点仍由完整分析染料 / 2383 / 氙灯 / D60相对色度链计算
 print_lattice = exact_print_renderer(record_density_grid(size=193))
@@ -50,7 +56,7 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V23</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V23模型的关键公式和真正执行的代码结构。V23保留V22已验证的分析染料颜色链，同时用五点尺寸分布重建更连续的染料云形态。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V24</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V24模型的关键公式和真正执行的代码结构。V24保留V22—V23已验证的颜色与色调链，把35mm颗粒的空间频谱和综合色纹理作为两个可独立验证的问题。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit母版</b><small>Rec.709 1-1-1</small></span></div></section>
 
@@ -58,7 +64,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">02</div><div className="method-copy"><span className="section-tag">FINITE SITES</span><h2>快／中／慢有限位点</h2><p>每个颜色记录包含三个速度群体。逻辑斯蒂曲线给出某曝光下可显影位点的概率；二项采样保证群体完全未曝光或完全显影时随机方差自然下降。V21让青、品红、黄记录分别拥有自己的有效云尺寸、光学扩散和位点数量。</p><div className="equation"><span>激活概率</span><b>p<sub>c,k</sub> = σ((logE<sub>c</sub> − μ<sub>c,k</sub>) / w<sub>c</sub>)</b><small>k ∈ 快、中、慢；速度中心相互错开但显影区间重叠。</small></div><pre><code>{activationCode}</code></pre></div></section>
 
-        <section className="method-section"><div className="method-index">03</div><div className="method-copy"><span className="section-tag">V23 · DYE CLOUDS</span><h2>颗粒是有限事件的多尺度光学积分</h2><p>每个快／中／慢群体再分成五种尺寸类别，作为连续、近似对数正态染料云分布的数值求积。较小云提供细密结构，少量较大云提供低频相关；黄金角亚像素相位避免三尺寸模型的方向周期。</p><div className="equation"><span>密度方差</span><b>σ²<sub>fraction</sub> = p(1−p) / n</b><small>形态改变后再次通过48µm圆孔径回标5279公开RMS曲线，所以“更有机”不靠增大幅度。</small></div><pre><code>{cloudCode}</code></pre><pre><code>{grainCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">03</div><div className="method-copy"><span className="section-tag">V24 · 35MM DYE CLOUDS</span><h2>颗粒是有限事件的多尺度光学积分</h2><p>每个快／中／慢群体再分成五种尺寸类别，作为连续、近似对数正态染料云分布的数值求积。V24增加小云权重、减少最大云尾部并降低相关尺度；黄金角亚像素相位继续避免方向周期。</p><div className="equation"><span>密度方差</span><b>σ²<sub>fraction</sub> = p(1−p) / n</b><small>形态改变后再次通过48µm圆孔径回标5279公开RMS曲线，所以“更细”不是简单降低噪声幅度。</small></div><pre><code>{cloudCode}</code></pre><pre><code>{grainCode}</code></pre></div></section>
 
         <section className="method-section"><div className="method-index">04</div><div className="method-copy"><span className="section-tag">V21 · DEVELOPMENT DIR</span><h2>从后处理邻接，改为显影时的反应—扩散</h2><p>V20使用总密度生成二维DIR场。V21让九个亚层的显影事件分别释放不同尺度的抑制场；它们在平面内扩散、按有限矩阵传播到接收层，并在各颜色记录合并前反馈到密度和随机偏差。</p><div className="equation"><span>显影域耦合</span><b>ΔD<sub>c,k</sub> = β<sub>c,k</sub> Σ<sub>j,m</sub> T<sub>c,k←j,m</sub>[G<sub>σj,m</sub>＊D<sub>j,m</sub> − D<sub>j,m</sub>]</b><small>均匀区域括号项为零，因此中性H-D保持不变；边缘和颜色分离曝光才产生耦合。</small></div><pre><code>{dirCode}</code></pre></div></section>
 
@@ -70,9 +76,11 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">MONITOR-ONLY ADAPTATION</span><h2>D60只校准相对色度，不给画面染色</h2><p>胶片、氙灯和CIE观察者给出物理投影颜色，但银幕观看转成Rec.709并不唯一。V22使用公开厂商2383 D60变换作显示目标，同时在每个平均Cineon码值减去它自己的中性响应；只加入Oklab a/b差值，不改L。</p><div className="equation"><span>相对色度</span><b>Δab(q) = ab<sub>D60</sub>(q) − ab<sub>D60</sub>(neutral(mean(q)))</b><small>中性保护区从Cineon色度0.008平滑过渡到0.040。</small></div><pre><code>{monitorCode}</code></pre></div></section>
 
-        <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V23 · VALIDATED ACCELERATION</span><h2>缓存固定的颜色物理，不缓存会运动的乳剂</h2><p>完整放映颜色映射对每个像素只依赖三条5279总记录密度，因此可先在193³密度格点上由原分析模型精确求样。逐帧有限位点、染料云、负片与正片MTF以及正片细颗粒仍按原分辨率计算，不被烘焙成静态噪点。</p><pre><code>{outputLutCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V24 · COLOUR-GRAIN SEPARATION</span><h2>输出链观察颗粒，但不重新调色</h2><p>三条独立染料记录经过光谱观察会生成较强综合色纹理。V24在signed grain delta中分离Rec.709明度与综合色分量：明度纹理原样保留，综合色纹理分别按2383投影和Period 2K扫描孔径积分。确定性mean RGB不进入这一步，因此平均色相、饱和度和黑白灰严格不动。</p><pre><code>{colourGrainCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V23 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>48µm RMS</b><p>均匀曝光最大相对误差约0.5–1.3%</p></div><div><b>平均密度</b><p>逐帧漂移低于约0.00038D</p></div><div><b>颜色决定</b><p>三白点候选无收益，保留V22模型</p></div><div><b>格点误差</b><p>真实帧p99 Oklab ΔE约0.31–0.36</p></div><div><b>并行效率</b><p>两段一秒、四母版约59分11.5秒</p></div><div><b>双母版</b><p>两段各1.001秒 · 5.7K · 12-bit</p></div></div></section>
+        <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">VALIDATED ACCELERATION</span><h2>缓存固定的颜色物理，不缓存会运动的乳剂</h2><p>完整放映颜色映射对每个像素只依赖三条5279总记录密度，因此可先在193³密度格点上由原分析模型精确求样。逐帧有限位点、染料云、负片与正片MTF以及正片细颗粒仍按原分辨率计算，不被烘焙成静态噪点。</p><pre><code>{outputLutCode}</code></pre></div></section>
+
+        <section className="validation"><span className="section-tag">V24 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>48µm RMS</b><p>均匀曝光最大相对误差约0.6–1.4%</p></div><div><b>平均颜色</b><p>相对V23最大变化精确为0.000000</p></div><div><b>T020综合色/明度</b><p>放映1.58→0.93 · 扫描1.72→0.92</p></div><div><b>T032综合色/明度</b><p>放映2.07→1.15 · 扫描2.11→1.08</p></div><div><b>颗粒运动</b><p>有限位点、DIR与两级颗粒逐帧重采样</p></div><div><b>双母版</b><p>两段各1.001秒 · 5.7K · 12-bit</p></div></div></section>
       </main>
       <SiteFooter />
     </>

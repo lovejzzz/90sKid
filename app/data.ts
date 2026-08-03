@@ -2,6 +2,7 @@ export type BranchImage = {
   src: string;
   label: string;
   inherited?: boolean;
+  videoSrc?: string;
 };
 
 export type ParameterGroup = {
@@ -501,6 +502,78 @@ export const versions: VersionEntry[] = [
   },
 ];
 
+// V24 deliberately inherits the complete V23 parameter record and replaces
+// only the measured texture terms. This keeps the side panel exhaustive while
+// making it obvious that colour, tone, MTF and sensitometry were held fixed.
+const v23 = versions[versions.length - 1];
+v23.year = "上一版";
+v23.status = "calibration";
+
+const v24Overrides: Record<string, string> = {
+  "颗粒相关尺度": "0.76",
+  "五级占比": "0.16 / 0.30 / 0.32 / 0.17 / 0.05",
+  "半径倍率": "0.50 / 0.68 / 0.86 / 1.08 / 1.34",
+  "光学倍率": "0.68 / 0.80 / 0.92 / 1.05 / 1.18",
+  "色度颗粒σ / 高频": "0.72 @ 2K / 0.30 · opponent 0.64",
+  "真实帧平均ΔE": "与V23完全相同（平均颜色链未改）",
+  "真实帧p99 ΔE": "与V23完全相同（平均颜色链未改）",
+};
+
+const v23TimingLabels = new Set([
+  "单帧双母版探测", "T020计算到第24帧", "T032计算到第24帧",
+  "两段并行总等待", "停止后整理", "阶段计时",
+]);
+
+const v24Parameters = (v23.parameters ?? []).map((group) => ({
+  ...group,
+  items: [
+    ...group.items
+      .filter((item) => group.title !== "数值验证与效率" || !v23TimingLabels.has(item.label))
+      .map((item) => v24Overrides[item.label] ? { ...item, value: v24Overrides[item.label] } : item),
+    ...(group.title === "扫描与放映输出" ? [
+      { label: "放映色度颗粒积分", value: "σ 0.62 @ 2K · 高频0.36 · opponent 0.66" },
+      { label: "颗粒平均色约束", value: "只作用于signed delta；均值分支不变" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "V24 48µm RMS误差", value: "约0.6–1.4%" },
+      { label: "T020综合色/明度颗粒", value: "放映1.58 → 0.93 · 扫描1.72 → 0.92" },
+      { label: "T032综合色/明度颗粒", value: "放映2.07 → 1.15 · 扫描2.11 → 1.08" },
+      { label: "V24平均颜色最大变化", value: "0.000000（数值精确不变）" },
+      { label: "T020真实总墙钟", value: "3450.98秒 · 57分31秒" },
+      { label: "T032真实总墙钟", value: "3511.76秒 · 58分32秒" },
+      { label: "两段并行总等待", value: "3511.76秒 · 58分32秒" },
+      { label: "乳剂形成 / 帧", value: "T020 77.53秒 · T032 77.60秒" },
+      { label: "平均负片 / 帧", value: "31.58秒 · 32.67秒" },
+      { label: "投影 / 扫描 / 帧", value: "约17.3秒 / 15.9–16.9秒" },
+      { label: "解码 / 双路编码 / 帧", value: "约0.85–1.01秒 / 0.31–0.44秒" },
+      { label: "性能瓶颈", value: "45组全画幅有限位点二项采样", note: "现场调用栈主要落在NumPy binomial；编码、解码与磁盘不是瓶颈" },
+      { label: "现场硬件利用", value: "16核 / 48GB；采样时CPU约80%空闲", note: "参考实现未有效并行化最重随机步骤，不代表硬件弱" },
+      { label: "网页Live预览", value: "1920 × 1440 · H.264 · 24fps · 1.001秒", note: "仅用于网页；验证母版仍是5.7K 12-bit ProRes 4444" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V24",
+  year: "当前版本",
+  title: "35mm颗粒频谱与综合色分离",
+  status: "current",
+  projection: { src: "/versions/v24-t020-projection.jpg", videoSrc: "/versions/v24-t020-projection-live.mp4", label: "T020 · 5279 → 2383氙灯放映" },
+  bluray: { src: "/versions/v24-t020-bluray.jpg", videoSrc: "/versions/v24-t020-bluray-live.mp4", label: "T020 · Period 2K / Cineon蓝光" },
+  summary: "回应V23更像早期CCD或16mm的观感：V24不重调颜色，而是把公开的48µm RMS与完整空间频谱区分开。五级染料云向较小尺度重新分配，并在放映与扫描的观察阶段只积分综合色颗粒，保留明度颗粒的逐帧有机沸腾。平均色彩、黑白灰、负片MTF、2383与Cineon链均保持V23。",
+  changes: ["染料云尺寸分布向35mm细颗粒端移动", "减少大云占比和总体相关尺度", "放映与扫描分别加入综合色颗粒积分", "完整保留明度颗粒与逐帧随机实现", "平均颜色与色调分支保持数值不变", "两段新素材继续各做1秒5.7K 12-bit双母版", "V24四个画面改为1秒Live网页预览，保留静帧放大与左右导航"],
+  errors: ["V23虽然改善了离散颗粒形态，但综合色颗粒仍过强，容易被识别为RGB彩噪或早期CCD", "48µm RMS只约束特定孔径下的幅度，不能单独决定颗粒的粗细、低频成团和最终观看尺度", "公开文件没有5279完整Wiener/NPS曲线；V24的尺寸分布仍是受边界约束的模型选择，不是秘方复原", "黑白灰和创作调色没有在V24内重做；这样可以把颗粒判断与调色判断分离"],
+  discoveries: ["35mm与16mm的显著差别不只是RMS大小，还包括放大倍率、低频功率与输出链MTF", "将颗粒做小后重新回标48µm RMS不会让它自动变安静，观察器对综合色与明度纹理的积分同样重要", "综合色颗粒可以在signed grain delta中独立处理，因此减少CCD感而不改变平均色相或饱和度", "T020与T032的综合色/明度颗粒比都显著下降，而平均输出的最大绝对差为零"],
+  refs: ["R1", "R4", "R7", "R8", "R21", "R22", "R23", "R25"],
+  additionalTrials: [{
+    name: "NJARAW_S001_S001_T032",
+    note: "雨天青绿和低反差细节用于验证综合色颗粒不会重新变成青绿色CCD噪声。",
+    projection: { src: "/versions/v24-t032-projection.jpg", videoSrc: "/versions/v24-t032-projection-live.mp4", label: "T032 · 5279 → 2383氙灯放映" },
+    bluray: { src: "/versions/v24-t032-bluray.jpg", videoSrc: "/versions/v24-t032-bluray-live.mp4", label: "T032 · Period 2K / Cineon蓝光" },
+  }],
+  parameters: v24Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },
@@ -526,6 +599,7 @@ export const references = [
   { id: "R22", title: "Noise Power Spectra of Photographic Dye Images", type: "IS&T影像结构研究（反转片，仅作形态先验）", url: "https://library.imaging.org/admin/apis/public/api/ist/website/downloadArticle/print4fab/22/1/art00038_2" },
   { id: "R23", title: "US 4,536,472 — dye-cloud diffusion, Wiener spectrum and low-frequency mottle", type: "Eastman Kodak专利", url: "https://patents.google.com/patent/US4536472A/en" },
   { id: "R24", title: "EP 0,905,561 — speed-layer coupler coverage and spectrally differentiated dye records", type: "Eastman Kodak扫描型负片专利（非5279配方）", url: "https://patents.google.com/patent/EP0905561A1/en" },
+  { id: "R25", title: "Print Grain Index — An Assessment of Print Graininess from Color Negative Films, E-58", type: "Kodak技术资料（2000年7月）", url: "https://125px.com/docs/techpubs/kodak/e58-2000_07.pdf" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
