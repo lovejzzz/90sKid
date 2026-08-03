@@ -4,6 +4,11 @@ export type BranchImage = {
   inherited?: boolean;
 };
 
+export type ParameterGroup = {
+  title: string;
+  items: { label: string; value: string; note?: string }[];
+};
+
 export type VersionEntry = {
   version: string;
   year: string;
@@ -16,6 +21,7 @@ export type VersionEntry = {
   errors: string[];
   discoveries: string[];
   refs: string[];
+  parameters?: ParameterGroup[];
 };
 
 const common = (version: string): BranchImage => ({
@@ -271,6 +277,98 @@ export const versions: VersionEntry[] = [
     errors: ["V21把积分测量值再次乘以染料光谱，重复计算了不希望吸收", "D60是公开厂商的显示目标，不是Kodak工厂化学参数", "5279实拍色卡、肤色靶和影院分光测量仍未获得；当前母版只有6帧"],
     discoveries: ["公开胶片化学只约束胶片与氙灯，影院外观转到Rec.709还需要独立观看适配", "厂商D60变换的绝对白点必须先减去，否则会把整张画面染紫红", "13项三次多项式无法压缩该非线性修正，25³相对色度格点才通过保持测试", "六色中位色相误差从V21的7.94°降至1.46°；实拍帧进入D55–D65色相包络的像素从20.2%升至45.9%"],
     refs: ["R1", "R4", "R5", "R16", "R17", "R18", "R19", "R20"],
+    parameters: [
+      { title: "输入与母版", items: [
+        { label: "源素材", value: "GH7 Open Gate ProRes RAW HQ" },
+        { label: "RAW解码", value: "Apple extended-linear BT.2020 · float32" },
+        { label: "相机色彩", value: "Panasonic官方RAW → V-Gamut" },
+        { label: "虚拟曝光", value: "+0.45 stop" },
+        { label: "画幅", value: "5760 × 4320 · 4:3" },
+        { label: "帧率", value: "24000/1001 · 23.976 fps" },
+        { label: "测试段", value: "Frame 9–14 · 6帧" },
+        { label: "母版", value: "ProRes 4444 · yuv444p12le" },
+        { label: "显示编码", value: "Rec.709 · 1-1-1" },
+      ] },
+      { title: "5279乳剂", items: [
+        { label: "片种", value: "KODAK VISION 500T 5279" },
+        { label: "假定成像宽", value: "24.9 mm" },
+        { label: "亚层结构", value: "R/G/B × 快/中/慢 × 3粒径" },
+        { label: "速度偏移", value: "0.00 / 0.50 / 1.30 logE" },
+        { label: "容量比例 快/中/慢", value: "126 / 149 / 161" },
+        { label: "快层中心 R/G/B", value: "−2.034 / −2.018 / −2.112 logE" },
+        { label: "转折宽度 R/G/B", value: "0.550 / 0.572 / 0.525" },
+        { label: "ECD 青记录", value: "1.28 / 0.83 / 0.58 µm" },
+        { label: "ECD 品红记录", value: "1.36 / 0.79 / 0.52 µm" },
+        { label: "ECD 黄记录", value: "1.14 / 0.88 / 0.68 µm" },
+        { label: "颗粒校准孔径", value: "48 µm diffuse RMS" },
+        { label: "颗粒相关尺度", value: "0.88" },
+        { label: "粒径占比", value: "0.30 / 0.53 / 0.17" },
+        { label: "粒径半径倍率", value: "0.70 / 1.00 / 1.42" },
+        { label: "光学倍率", value: "0.82 / 1.00 / 1.20" },
+        { label: "亚像素相位半径", value: "0.38 px @ 5760" },
+        { label: "光学σ 青记录", value: "0.59 / 0.43 / 0.34 px" },
+        { label: "光学σ 品红记录", value: "0.63 / 0.41 / 0.31 px" },
+        { label: "光学σ 黄记录", value: "0.54 / 0.45 / 0.37 px" },
+        { label: "有效位点 青记录", value: "17 / 60 / 79 px⁻¹" },
+        { label: "有效位点 品红记录", value: "16 / 64 / 88 px⁻¹" },
+        { label: "有效位点 黄记录", value: "22 / 55 / 70 px⁻¹" },
+        { label: "负片MTF σ R/G/B", value: "0.85 / 0.67 / 0.60 px" },
+        { label: "感色重叠 Row R", value: "0.94 / 0.05 / 0.01" },
+        { label: "感色重叠 Row G", value: "0.04 / 0.92 / 0.04" },
+        { label: "感色重叠 Row B", value: "0.01 / 0.08 / 0.91" },
+      ] },
+      { title: "DIR显影耦合", items: [
+        { label: "发生阶段", value: "九亚层合并前的显影域" },
+        { label: "扩散σ 快/中/慢", value: "4.8 / 3.1 / 1.9 px @ 5760" },
+        { label: "层间强度", value: "0.085" },
+        { label: "层内强度 R/G/B", value: "0.028 / 0.042 / 0.058" },
+        { label: "随机耦合", value: "0.42" },
+        { label: "释放增益 快/中/慢", value: "0.90 / 1.00 / 0.82" },
+        { label: "接收增益 快/中/慢", value: "0.72 / 1.00 / 0.84" },
+        { label: "传输矩阵 Row 1", value: "0.34 / 0.22 / 0.10" },
+        { label: "传输矩阵 Row 2", value: "0.22 / 0.30 / 0.18" },
+        { label: "传输矩阵 Row 3", value: "0.10 / 0.18 / 0.24" },
+        { label: "中性约束", value: "均匀H-D严格不漂移" },
+      ] },
+      { title: "2383放映链", items: [
+        { label: "正片", value: "KODAK VISION 2383" },
+        { label: "Status-A D-min R/G/B", value: "0.04356 / 0.04749 / 0.10272 D" },
+        { label: "LAD目标", value: "1.00 D" },
+        { label: "D-max", value: "4.10 D" },
+        { label: "印片光", value: "3200 K" },
+        { label: "放映光", value: "Kodak参考氙灯SPD" },
+        { label: "Callier修正", value: "1.0–1.4% density" },
+        { label: "典型影院flare", value: "1.0%" },
+        { label: "正片MTF σ R/G/B", value: "0.34 / 0.27 / 0.52 px" },
+        { label: "层间矩阵 Row 1", value: "1.4105 / −0.9566 / 0.9152" },
+        { label: "层间矩阵 Row 2", value: "0.4127 / 0.6943 / −0.2324" },
+        { label: "层间矩阵 Row 3", value: "−0.5640 / 0.6093 / 0.8425", note: "识别值，不宣称是Kodak工厂矩阵" },
+      ] },
+      { title: "显示器放映预览", items: [
+        { label: "物理亮度权重", value: "0.50" },
+        { label: "最大物理色相权重", value: "1.00" },
+        { label: "最大物理饱和权重", value: "0.60" },
+        { label: "色度校准", value: "D60相对Oklab a/b · L不变" },
+        { label: "校准格点", value: "25³ × 3" },
+        { label: "中性保护", value: "Cineon chroma 0.008 → 0.040" },
+        { label: "插值余量", value: "0.99" },
+        { label: "扫描亮度锚点", value: "0 / .00087 / .00863 / .03523 / .09330 / .18 / .27646 / .38707 / .51532 / .66216 / 1" },
+        { label: "目标亮度锚点", value: "0 / .00320 / .01010 / .02374 / .06445 / .17997 / .36756 / .54039 / .67413 / .78203 / .97460" },
+        { label: "色域映射", value: "Oklab恒色相压缩" },
+      ] },
+      { title: "Period 2K / 蓝光", items: [
+        { label: "扫描观察器", value: "Spirit式宽带RGB · 620/540/470 nm" },
+        { label: "扫描孔径", value: "2048 RGB line-array" },
+        { label: "Cineon", value: "10-bit · black 95 · 0.002 D/CV" },
+        { label: "中性灰码值", value: "445" },
+        { label: "主色校正强度", value: "0.82" },
+        { label: "肩部释放", value: "0.04" },
+        { label: "蓝光下段gamma", value: "1.20" },
+        { label: "色度颗粒σ", value: "0.55 @ 2K" },
+        { label: "高频色度保留", value: "0.55" },
+        { label: "硬件Grain Manager", value: "Off" },
+      ] },
+    ],
   },
 ];
 

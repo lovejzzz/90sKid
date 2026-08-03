@@ -1,5 +1,7 @@
 import type { BranchImage, VersionEntry } from "../data";
 import { refMap } from "../data";
+import { InteractiveImage } from "./InteractiveImage";
+import { ParameterPanel } from "./ParameterPanel";
 
 function smallSrc(src: string) { return src.replace(/\.jpg$/, "-sm.jpg"); }
 
@@ -7,12 +9,10 @@ function Branch({ branch, title }: { branch: BranchImage; title: string }) {
   return (
     <figure className="branch-figure">
       <div className="branch-label"><span>{title}</span>{branch.inherited && <em>沿用 / 共用</em>}</div>
-      <img
+      <InteractiveImage
         src={branch.src}
-        srcSet={`${smallSrc(branch.src)} 800w, ${branch.src} 1600w`}
+        previewSrc={smallSrc(branch.src)}
         sizes="(max-width: 760px) 100vw, 50vw"
-        loading="lazy"
-        decoding="async"
         alt={`${title}：${branch.label}`}
       />
       <figcaption>{branch.label}</figcaption>
@@ -27,9 +27,12 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
         <div><span className="version-number">{item.version}</span><span className="version-era">{item.year}</span></div>
         <div><h2>{item.title}</h2><p>{item.summary}</p></div>
       </div>
-      <div className="branch-grid">
-        <Branch branch={item.projection} title="2383 放映" />
-        <Branch branch={item.bluray} title="2K DI / 蓝光" />
+      <div className="version-visual-layout">
+        <div className="branch-grid">
+          <Branch branch={item.projection} title="2383 放映" />
+          <Branch branch={item.bluray} title="2K DI / 蓝光" />
+        </div>
+        <ParameterPanel groups={item.parameters} version={item.version} status={item.status} changes={item.changes} />
       </div>
       <details open={open}>
         <summary>完整 Changelog</summary>

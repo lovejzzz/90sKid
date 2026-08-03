@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "./components/SiteHeader";
+import { InteractiveImage } from "./components/InteractiveImage";
+import { ParameterPanel } from "./components/ParameterPanel";
+import { versions } from "./data";
 
 export default function Home() {
+  const current = versions[versions.length - 1];
   return (
     <>
       <SiteHeader />
@@ -16,9 +20,12 @@ export default function Home() {
 
         <section className="current-section wrap">
           <div className="section-intro"><span>当前基线 · V22</span><h2>同一张负片，两种历史上真实存在的结果</h2><p>左侧经过5279负片、分析染料反演、2383正片和氙灯投影；右侧经过负片扫描、Cineon/2K DI与蓝光完成。两者共享同一帧乳剂随机实现，但拥有各自的观察器、黑位和颜色。</p></div>
-          <div className="hero-comparison">
-            <figure><div className="image-title"><b>2383</b><span>PRINT / XENON</span></div><img src="/versions/v22-projection.jpg" alt="V22 2383氙灯放映效果" /><figcaption>分析染料、LAD层间耦合、典型影院flare与相对色度观看适配</figcaption></figure>
-            <figure><div className="image-title"><b>2K DI</b><span>SPIRIT / BLU-RAY</span></div><img src="/versions/v22-bluray.jpg" alt="V22 2K DI蓝光效果" /><figcaption>宽带时期扫描观察器、Cineon密度与2K积分蓝光完成</figcaption></figure>
+          <div className="current-visual-layout">
+            <div className="hero-comparison">
+              <figure><div className="image-title"><b>2383</b><span>PRINT / XENON</span></div><InteractiveImage src="/versions/v22-projection.jpg" previewSrc="/versions/v22-projection-sm.jpg" sizes="(max-width: 680px) 100vw, 42vw" alt="V22 2383氙灯放映效果" /><figcaption>分析染料、LAD层间耦合、典型影院flare与相对色度观看适配</figcaption></figure>
+              <figure><div className="image-title"><b>2K DI</b><span>SPIRIT / BLU-RAY</span></div><InteractiveImage src="/versions/v22-bluray.jpg" previewSrc="/versions/v22-bluray-sm.jpg" sizes="(max-width: 680px) 100vw, 42vw" alt="V22 2K DI蓝光效果" /><figcaption>宽带时期扫描观察器、Cineon密度与2K积分蓝光完成</figcaption></figure>
+            </div>
+            <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>
         </section>
 
