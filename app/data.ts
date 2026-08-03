@@ -548,7 +548,9 @@ const v24Parameters = (v23.parameters ?? []).map((group) => ({
       { label: "解码 / 双路编码 / 帧", value: "约0.85–1.01秒 / 0.31–0.44秒" },
       { label: "性能瓶颈", value: "45组全画幅有限位点二项采样", note: "现场调用栈主要落在NumPy binomial；编码、解码与磁盘不是瓶颈" },
       { label: "现场硬件利用", value: "16核 / 48GB；采样时CPU约80%空闲", note: "参考实现未有效并行化最重随机步骤，不代表硬件弱" },
-      { label: "网页Live预览", value: "1920 × 1440 · H.264 · 24fps · 1.001秒", note: "仅用于网页；验证母版仍是5.7K 12-bit ProRes 4444" },
+      { label: "网页观察空间", value: "sRGB IEC 61966-2-1 · D65", note: "静态图与短视频使用同一显示变换；5.7K 12-bit Rec.709母版保持不变" },
+      { label: "网页帧对齐", value: "第13帧静态图 = 短视频首帧", note: "24帧循环重排为13–24、1–12，悬停切换不再跳画面" },
+      { label: "网页Live预览", value: "1920 × 1440 · H.264 · 24fps · 1.001秒", note: "sRGB网页代理；逐片验证视频首帧与大图的综合色及中间调误差" },
     ] : []),
   ],
 }));
@@ -558,8 +560,8 @@ versions.push({
   year: "当前版本",
   title: "35mm颗粒频谱与综合色分离",
   status: "current",
-  projection: { src: "/versions/v24-t020-projection.jpg", videoSrc: "/versions/v24-t020-projection-live.mp4", label: "T020 · 5279 → 2383氙灯放映" },
-  bluray: { src: "/versions/v24-t020-bluray.jpg", videoSrc: "/versions/v24-t020-bluray-live.mp4", label: "T020 · Period 2K / Cineon蓝光" },
+  projection: { src: "/versions/v24-t020-projection.jpg", videoSrc: "/versions/v24-t020-projection-live-srgb.mp4", label: "T020 · 5279 → 2383氙灯放映" },
+  bluray: { src: "/versions/v24-t020-bluray.jpg", videoSrc: "/versions/v24-t020-bluray-live-srgb.mp4", label: "T020 · Period 2K / Cineon蓝光" },
   summary: "回应V23更像早期CCD或16mm的观感：V24不重调颜色，而是把公开的48µm RMS与完整空间频谱区分开。五级染料云向较小尺度重新分配，并在放映与扫描的观察阶段只积分综合色颗粒，保留明度颗粒的逐帧有机沸腾。平均色彩、黑白灰、负片MTF、2383与Cineon链均保持V23。",
   changes: ["染料云尺寸分布向35mm细颗粒端移动", "减少大云占比和总体相关尺度", "放映与扫描分别加入综合色颗粒积分", "完整保留明度颗粒与逐帧随机实现", "平均颜色与色调分支保持数值不变", "两段新素材继续各做1秒5.7K 12-bit双母版", "V24四个画面改为1秒Live网页预览，保留静帧放大与左右导航"],
   errors: ["V23虽然改善了离散颗粒形态，但综合色颗粒仍过强，容易被识别为RGB彩噪或早期CCD", "48µm RMS只约束特定孔径下的幅度，不能单独决定颗粒的粗细、低频成团和最终观看尺度", "公开文件没有5279完整Wiener/NPS曲线；V24的尺寸分布仍是受边界约束的模型选择，不是秘方复原", "黑白灰和创作调色没有在V24内重做；这样可以把颗粒判断与调色判断分离"],
@@ -568,8 +570,8 @@ versions.push({
   additionalTrials: [{
     name: "NJARAW_S001_S001_T032",
     note: "雨天青绿和低反差细节用于验证综合色颗粒不会重新变成青绿色CCD噪声。",
-    projection: { src: "/versions/v24-t032-projection.jpg", videoSrc: "/versions/v24-t032-projection-live.mp4", label: "T032 · 5279 → 2383氙灯放映" },
-    bluray: { src: "/versions/v24-t032-bluray.jpg", videoSrc: "/versions/v24-t032-bluray-live.mp4", label: "T032 · Period 2K / Cineon蓝光" },
+    projection: { src: "/versions/v24-t032-projection.jpg", videoSrc: "/versions/v24-t032-projection-live-srgb.mp4", label: "T032 · 5279 → 2383氙灯放映" },
+    bluray: { src: "/versions/v24-t032-bluray.jpg", videoSrc: "/versions/v24-t032-bluray-live-srgb.mp4", label: "T032 · Period 2K / Cineon蓝光" },
   }],
   parameters: v24Parameters,
 });
@@ -600,6 +602,11 @@ export const references = [
   { id: "R23", title: "US 4,536,472 — dye-cloud diffusion, Wiener spectrum and low-frequency mottle", type: "Eastman Kodak专利", url: "https://patents.google.com/patent/US4536472A/en" },
   { id: "R24", title: "EP 0,905,561 — speed-layer coupler coverage and spectrally differentiated dye records", type: "Eastman Kodak扫描型负片专利（非5279配方）", url: "https://patents.google.com/patent/EP0905561A1/en" },
   { id: "R25", title: "Print Grain Index — An Assessment of Print Graininess from Color Negative Films, E-58", type: "Kodak技术资料（2000年7月）", url: "https://125px.com/docs/techpubs/kodak/e58-2000_07.pdf" },
+  { id: "R26", title: "ITU-R BT.709 — HDTV production and programme exchange", type: "ITU视频色度与信号标准", url: "https://www.itu.int/rec/R-REC-BT.709" },
+  { id: "R27", title: "ITU-R BT.1886 — HDTV studio display EOTF", type: "ITU SDR参考显示标准", url: "https://www.itu.int/rec/R-REC-BT.1886" },
+  { id: "R28", title: "Digital Cinema System Specification", type: "DCI数字影院规范", url: "https://www.dcimovies.com/dci-specification/" },
+  { id: "R29", title: "CSS Color Module Level 4 — sRGB and web colour", type: "W3C网页颜色标准", url: "https://www.w3.org/TR/css-color-4/" },
+  { id: "R30", title: "ACES 2 Output Transform parameters and display encodings", type: "Academy色彩管理规范", url: "https://docs.acescentral.com/system-components/output-transforms/parameters/" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

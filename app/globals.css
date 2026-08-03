@@ -85,7 +85,7 @@ img { display:block; max-width:100%; }
 .image-open-button img,.image-open-button video { display:block; width:100%; height:auto; transition:transform .25s ease,filter .25s ease; }
 .image-open-button .hover-preview { position:absolute; inset:0; height:100%; object-fit:cover; opacity:0; pointer-events:none; transition:opacity .16s ease,transform .25s ease,filter .25s ease; }
 .image-open-button .hover-preview.is-playing { opacity:1; }
-.image-open-button:hover img,.image-open-button:hover video { transform:scale(1.012); filter:brightness(1.04); }
+.image-open-button:hover img,.image-open-button:hover video { transform:scale(1.012); }
 .image-open-button:focus-visible { outline:3px solid #e1b64d; outline-offset:-3px; }
 .image-open-hint { position:absolute; right:12px; bottom:12px; padding:6px 9px; color:#f3eee2; background:rgba(17,18,15,.78); backdrop-filter:blur(8px); font:700 9px var(--font-geist-mono); letter-spacing:.08em; opacity:0; transform:translateY(4px); transition:.2s ease; }
 .image-open-button:hover .image-open-hint,.image-open-button:focus-visible .image-open-hint { opacity:1; transform:none; }

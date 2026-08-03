@@ -21,7 +21,7 @@ test("server-renders the V24 project home page", async () => {
   assert.match(html, /5279 Emulsion Project/);
   assert.match(html, /当前基线 · V24/);
   assert.match(html, /v24-t020-projection/);
-  assert.match(html, /v24-t020-projection-live\.mp4/);
+  assert.match(html, /v24-t020-projection-live-srgb\.mp4/);
   assert.doesNotMatch(html, /LIVE · 1s/);
   assert.match(html, /参数面板|PARAMETERS/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
@@ -35,6 +35,8 @@ test("server-renders the V24 archive, research and algorithm routes", async () =
   assert.match(versions, /NJARAW_S001_S001_T032/);
   assert.match(research, /V24 · 35MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
+  assert.match(research, /V25 PLAN · COLOUR PIPELINE STANDARDIZATION/);
+  assert.match(research, /Hourly研究总审计/);
   assert.match(algorithm, /CURRENT V24/);
   assert.match(algorithm, /193³/);
 });
@@ -53,4 +55,20 @@ test("lightbox keeps gallery navigation and magnification controls", async () =>
   assert.match(source, /pendingViewRef/);
   assert.match(source, /stage\.scrollLeft \+= saved\.x/);
   assert.match(source, /stage\.scrollTop \+= saved\.y/);
+});
+
+test("V24 web videos use the same colour-managed observer as the stills", async () => {
+  const data = await readFile(new URL("../app/data.ts", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  const manifest = JSON.parse(await readFile(new URL("../public/versions/v24-live-preview-manifest.json", import.meta.url), "utf8"));
+  assert.match(data, /sRGB IEC 61966-2-1/);
+  assert.match(data, /第13帧静态图 = 短视频首帧/);
+  assert.doesNotMatch(styles, /brightness\(1\.04\)/);
+  assert.equal(manifest.web_transfer, "sRGB IEC 61966-2-1");
+  assert.equal(manifest.first_frame_source_index, 12);
+  assert.deepEqual(manifest.frame_order.slice(0, 3), [12, 13, 14]);
+  for (const result of Object.values(manifest.verification)) {
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
+    assert.ok(result.first_frame_median_luma_delta <= 0.01);
+  }
 });
