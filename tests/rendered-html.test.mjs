@@ -44,6 +44,10 @@ test("server-renders the V27 archive, research and algorithm routes", async () =
   assert.match(research, /v26-grain-nps\.png/);
   assert.match(research, /DENSITY-DEPENDENT SCAN NEUTRALITY/);
   assert.match(research, /v27-scan-neutral-axis\.png/);
+  assert.match(research, /EVIDENCE AUDIT · 10 NOTES/);
+  assert.match(research, /十份小时研究笔记/);
+  assert.match(research, /Thomson转让给Dolby/);
+  assert.match(research, /公开JVT邮件证据止于2002年/);
   assert.match(algorithm, /CURRENT V27/);
   assert.match(algorithm, /FULL NEUTRAL-SCALE SCAN CALIBRATION/);
   assert.match(algorithm, /193³/);

@@ -52,15 +52,15 @@ export default function Home() {
           <ol>
             <li><b>{text("灰轴约束", "Neutral-scale constraint")}</b><span>{text("扫描版不再只校准18%灰和一个高密度点，而是校准完整中性曝光尺度。", "The scan is balanced over a full neutral exposure scale instead of only 18% gray and one dense-negative anchor.")}</span></li>
             <li><b>{text("亮度锁定", "Luminance lock")}</b><span>{text("逐像素Rec.709亮度、黑位和Gamma保持不变；只修扫描RGB平衡。", "Per-pixel Rec.709 luminance, black and gamma remain unchanged; only scan RGB balance is corrected.")}</span></li>
-            <li><b>{text("颗粒证据边界", "Grain evidence boundary")}</b><span>{text("最新hourly研究没有找到5279专属NPS，V26颗粒结构和48µm RMS全部保留。", "The latest hourly research found no stock-specific 5279 NPS, so V26 morphology and 48 µm RMS remain intact.")}</span></li>
+            <li><b>{text("十份证据审计", "Ten-note evidence audit")}</b><span>{text("小时研究已暂停；新增证据明确了DIR、NPS与JVT编号的边界，没有把未识别参数写入模型。", "Hourly research is paused; the new archive fixes the boundaries around DIR, NPS and JVT identifiers without importing unidentified parameters.")}</span></li>
             <li><b>{text("放映版不动", "Projection unchanged")}</b><span>{text("2383放映母版与V26逐字节相同，避免无意义重算。", "The 2383 projection master is byte-identical to V26, avoiding meaningless recomputation.")}</span></li>
           </ol>
-          <Link href="/research#v27" className="button">{text("阅读V27验证结果", "Read the V27 validation")}</Link>
+          <Link href="/research#evidence-audit" className="button">{text("阅读十份证据审计", "Read the ten-note audit")}</Link>
         </section>
 
         <section className="route-grid wrap">
           <Link href="/versions"><span>ARCHIVE</span><h3>{text("版本档案", "Version archive")}</h3><p>{text(`从V4到${current.version}，逐版对照两种观看链，并记录错误和修正。`, `From V4 to ${current.version}, compare both viewing chains and retain every error and correction.`)}</p><b>{text("进入 →", "OPEN →")}</b></Link>
-          <Link href="/research"><span>PAPER</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("乳剂层、遮罩、DIR、颗粒、黑位、扫描器与完整引用。", "Emulsion layers, masking, DIR, grain, black, scanners and complete citations.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
+          <Link href="/research"><span>PAPER</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("乳剂层、遮罩、DIR、颗粒、扫描器，以及十份小时研究的证据审计。", "Emulsion layers, masking, DIR, grain, scanners and the ten-note evidence audit.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
           <Link href="/algorithm"><span>METHOD</span><h3>{text("算法说明", "Method")}</h3><p>{text("从RAW到负片、2383与Cineon的公式、流程和关键代码。", "Equations, flow and key code from RAW through the negative, 2383 and Cineon.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
         </section>
       </main>

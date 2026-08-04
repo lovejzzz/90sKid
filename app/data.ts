@@ -932,6 +932,8 @@ export const references = [
   { id: "R39", title: "JVT-H022 — SEI message for film grain encoding", type: "ITU JVT一手技术提案", url: "https://www.itu.int/wftp3/av-arch/jvt-site/2003_05_Geneva/JVT-H022.zip" },
   { id: "R40", title: "JVT-I013r2 — film grain encoding syntax and results", type: "ITU JVT一手技术提案", url: "https://www.itu.int/wftp3/av-arch/jvt-site/2003_09_SanDiego/JVT-I013r2.zip" },
   { id: "R41", title: "US provisional 60/462,389 — A Method for Simulating Film Grain on Encoded Video Sequences", type: "2003年原始临时专利（5279编号沿革，无数值参数）", url: "https://register.epo.org/application?documentId=EICL6DDCDHELFI4&number=EP04714129&lng=en&npl=false" },
+  { id: "R42", title: "IPR2024-00572 Patent Owner Response — public JVT reflector exhibit index", type: "USPTO PTAB一手诉讼记录（公开邮件证据止于2002年）", url: "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1555393/download-documents?artifactId=A34-fZL5CXNXG62kNfWGg1GSA8OwEYSpw1lTl1gtjcJR3Ahd7rnGyY0" },
+  { id: "R43", title: "USPTO Patent Assignment reel 041214 / frame 0001 — Thomson to Dolby", type: "USPTO官方权利转让记录（专利继受不等于研究档案保管）", url: "https://assignmentcenter.uspto.gov/ipas/search/api/v2/public/download/patent/41214/1" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
