@@ -34,10 +34,14 @@ delta_ab = d60_lut(cineon_code).ab - neutral.ab
 delta_ab *= smooth_neutral_guard(cineon_chroma, 0.008, 0.040)
 display_oklab.ab += delta_ab       # L不变；绝对D60白点不进入画面`;
 
-const cloudCode = `weights = [0.16, 0.30, 0.32, 0.17, 0.05]
+const cloudCode = `# V26: rows are fast / medium / slow; every row sums to one
+weights = [[0.12, 0.26, 0.34, 0.20, 0.08],
+           [0.16, 0.30, 0.32, 0.17, 0.05],
+           [0.22, 0.34, 0.29, 0.12, 0.03]]
 radius  = [0.50, 0.68, 0.86, 1.08, 1.34] * base_cloud_radius
 optical = [0.68, 0.80, 0.92, 1.05, 1.18] * base_optical_sigma
-phase_k = phase_0 + k * 2.3999632297       # 黄金角；避免三向周期`;
+phase_k = phase_0 + k * 2.3999632297       # 黄金角；避免三向周期
+# 随后仍逐记录、逐曝光回标5279的48µm RMS`;
 
 const colourGrainCode = `delta_y = dot(grain_delta_rgb, rec709_luma)
 delta_c = grain_delta_rgb - delta_y[..., None]
@@ -68,7 +72,7 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V25</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V25模型的关键公式和真正执行的代码结构。乳剂物理沿用V24；V25把电影输出观察器显式化，并以全分辨率逐像素一致性约束并行加速。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V26</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V26模型的关键公式和真正执行的代码结构。V25修正版的颜色与输出标准保持不变；V26让曝光通过快／中／慢乳剂选择不同的颗粒空间频谱。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709 OETF / 1-1-1</small></span></div></section>
 
@@ -76,7 +80,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">02</div><div className="method-copy"><span className="section-tag">FINITE SITES</span><h2>快／中／慢有限位点</h2><p>每个颜色记录包含三个速度群体。逻辑斯蒂曲线给出某曝光下可显影位点的概率；二项采样保证群体完全未曝光或完全显影时随机方差自然下降。V21让青、品红、黄记录分别拥有自己的有效云尺寸、光学扩散和位点数量。</p><div className="equation"><span>激活概率</span><b>p<sub>c,k</sub> = σ((logE<sub>c</sub> − μ<sub>c,k</sub>) / w<sub>c</sub>)</b><small>k ∈ 快、中、慢；速度中心相互错开但显影区间重叠。</small></div><pre><code>{activationCode}</code></pre></div></section>
 
-        <section className="method-section"><div className="method-index">03</div><div className="method-copy"><span className="section-tag">V24 · 35MM DYE CLOUDS</span><h2>颗粒是有限事件的多尺度光学积分</h2><p>每个快／中／慢群体再分成五种尺寸类别，作为连续、近似对数正态染料云分布的数值求积。V24增加小云权重、减少最大云尾部并降低相关尺度；黄金角亚像素相位继续避免方向周期。</p><div className="equation"><span>密度方差</span><b>σ²<sub>fraction</sub> = p(1−p) / n</b><small>形态改变后再次通过48µm圆孔径回标5279公开RMS曲线，所以“更细”不是简单降低噪声幅度。</small></div><pre><code>{cloudCode}</code></pre><pre><code>{grainCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">03</div><div className="method-copy"><span className="section-tag">V26 · EXPOSURE-CONDITIONED DYE CLOUDS</span><h2>颗粒是有限事件的多尺度光学积分</h2><p>每个快／中／慢群体再分成五种尺寸类别，作为连续染料云分布的数值求积。V26不再让三层共用同一套权重：快层保留稍宽的大云尾部，慢层提高小云比例。因为三层激活概率随曝光交叉，阴影、中间调与高光会自然形成不同空间频谱。</p><div className="equation"><span>密度方差</span><b>σ²<sub>fraction</sub> = p(1−p) / n</b><small>形态改变后再次通过48µm圆孔径回标5279公开RMS曲线，所以“更细”不是简单降低噪声幅度。</small></div><pre><code>{cloudCode}</code></pre><pre><code>{grainCode}</code></pre></div></section>
 
         <section className="method-section"><div className="method-index">04</div><div className="method-copy"><span className="section-tag">V21 · DEVELOPMENT DIR</span><h2>从后处理邻接，改为显影时的反应—扩散</h2><p>V20使用总密度生成二维DIR场。V21让九个亚层的显影事件分别释放不同尺度的抑制场；它们在平面内扩散、按有限矩阵传播到接收层，并在各颜色记录合并前反馈到密度和随机偏差。</p><div className="equation"><span>显影域耦合</span><b>ΔD<sub>c,k</sub> = β<sub>c,k</sub> Σ<sub>j,m</sub> T<sub>c,k←j,m</sub>[G<sub>σj,m</sub>＊D<sub>j,m</sub> − D<sub>j,m</sub>]</b><small>均匀区域括号项为零，因此中性H-D保持不变；边缘和颜色分离曝光才产生耦合。</small></div><pre><code>{dirCode}</code></pre></div></section>
 
@@ -94,7 +98,9 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">11</div><div className="method-copy"><span className="section-tag">EXACT ACCELERATION</span><h2>缓存固定颜色，复用平均负片，并行独立银盐事件</h2><p>193³格点继续缓存固定的分析染料与2383颜色物理。V25另删除每帧一次重复的确定性负片显影，并把45组二项抽样切成固定种子条带。分辨率、粒层数量、随机分布、光学积分和48µm回标都不变。</p><pre><code>{outputLutCode}</code></pre><pre><code>{parallelCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V25 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>线程一致性</b><p>1与8线程全画幅max Δ = 0</p></div><div><b>采样加速</b><p>70.09 → 35.22秒 · 1.99×</p></div><div><b>亮度回归</b><p>T020蓝光YAVG 1355 → 1060</p></div><div><b>质量捷径</b><p>分辨率、45组颗粒、RMS与MTF均未减少</p></div><div><b>黑位策略</b><p>胶片完成态锁定；不以错误gamma抬黑</p></div><div><b>双母版</b><p>两段各1.001秒 · 5.7K · 12-bit</p></div></div></section>
+        <section className="method-section"><div className="method-index">12</div><div className="method-copy"><span className="section-tag">V26 · NPS + TEMPORAL VALIDATION</span><h2>“有机”必须能被空间与时间测量</h2><p>V26分别计算阴影、中间调和高光的径向密度噪声功率谱，并统计三速度层的贡献。它不把一张噪点纹理做平移或循环：帧号进入每个颜色记录、速度层和粒径级的固定随机种子，每一帧形成独立显影事件。</p><div className="equation"><span>时间独立约束</span><b>|corr(δD<sub>t</sub>, δD<sub>t+1</sub>)| → 0</b><small>四帧均匀场、三记录的最大绝对lag-1相关为0.0074；最大平均密度漂移0.00015D。</small></div></div></section>
+
+        <section className="validation"><span className="section-tag">V26 VALIDATION</span><h2>这次颗粒修正通过了什么</h2><div className="validation-grid"><div><b>颜色管线</b><p>V25修正版逐项锁定</p></div><div><b>阴影</b><p>快层约61–65%颗粒功率</p></div><div><b>高光</b><p>慢层约50–59%颗粒功率</p></div><div><b>亮度回归</b><p>T020蓝光YAVG只变0.09 / 4095</p></div><div><b>黑位</b><p>T020/T032 YLOW保持304/281</p></div><div><b>时间相关</b><p>最大|lag-1| = 0.0074</p></div></div></section>
       </main>
       <SiteFooter />
     </>

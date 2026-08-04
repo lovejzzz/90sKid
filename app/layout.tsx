@@ -15,19 +15,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V25：5279乳剂重建，Rec.709 1-1-1放映监看与蓝光扫描、BT.1886参考显示和sRGB网页代理，5.7K 12-bit双母版。",
+    description: "V26：曝光相关的5279快/中/慢乳剂颗粒频谱，锁定Rec.709色彩、黑位与Gamma的5.7K 12-bit双母版。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V25：35mm 5279乳剂、Rec.709放映监看与蓝光扫描标准化输出。",
+      description: "V26：35mm 5279曝光相关颗粒频谱与标准化Rec.709双观察链。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: "/versions/v25-t020-projection.jpg", width: 2560, height: 1920, alt: "5279 Emulsion Project · V25 2383 Projection Monitor Reference" }],
+      images: [{ url: "/versions/v26-t020-projection.jpg", width: 2560, height: 1920, alt: "5279 Emulsion Project · V26 2383 Projection Monitor Reference" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V25：35mm 5279乳剂、Rec.709放映监看与蓝光扫描标准化输出。",
-      images: ["/versions/v25-t020-projection.jpg"],
+      description: "V26：35mm 5279曝光相关颗粒频谱与标准化Rec.709双观察链。",
+      images: ["/versions/v26-t020-projection.jpg"],
     },
   };
 }

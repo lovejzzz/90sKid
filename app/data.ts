@@ -651,6 +651,74 @@ versions.push({
   parameters: v25Parameters,
 });
 
+const v25 = versions[versions.length - 1];
+v25.year = "上一版";
+v25.status = "calibration";
+
+const v26Overrides: Record<string, string> = {
+  "颜色决定": "V25修正基线完全锁定；V26不加入艺术调色",
+  "显示编码": "Rec.709 OETF · 完整1-1-1 · 与V25修正版一致",
+  "网页观察空间": "母版反Rec.709 OETF → sRGB IEC 61966-2-1",
+};
+
+const v26Parameters = (v25.parameters ?? []).map((group) => ({
+  ...group,
+  items: [
+    ...group.items
+      .filter((item) => group.title !== "数值验证与效率" || ![
+        "V25修正一帧双母版", "V24等效一帧", "正式T020计时", "正式T032计时",
+        "两段并行总等待", "相对V24总等待", "正式平均负片 / 帧", "正式乳剂形成 / 帧",
+        "正式双观察器 / 帧", "错误版T020蓝光YAVG", "修正版T020蓝光YAVG", "错误→修正YLOW",
+      ].includes(item.label))
+      .map((item) => v26Overrides[item.label] ? { ...item, value: v26Overrides[item.label] } : item),
+    ...(group.title === "乳剂颗粒" ? [
+      { label: "快层五级权重", value: "0.12 · 0.26 · 0.34 · 0.20 · 0.08", note: "阴影/欠曝区以较大、较快晶体贡献为主" },
+      { label: "中层五级权重", value: "0.16 · 0.30 · 0.32 · 0.17 · 0.05", note: "保持V24/V25已验证中心分布" },
+      { label: "慢层五级权重", value: "0.22 · 0.34 · 0.29 · 0.12 · 0.03", note: "高光区减少大云尾部；不改变该记录48µm RMS" },
+      { label: "时间模型", value: "每帧重新采样独立有限位点", note: "不移动、不循环、不平移一张噪点贴图" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "V26颜色/曲线变化", value: "无", note: "V25负片均值、MTF、DIR、2383、扫描器、黑位与Gamma全部锁定" },
+      { label: "T020蓝光首帧YAVG", value: "V25 1060.24 → V26 1060.33", note: "变化0.09 / 4095；来自零均值随机实现" },
+      { label: "T032蓝光首帧YAVG", value: "V25 1356.63 → V26 1356.73", note: "变化0.10 / 4095" },
+      { label: "T020 / T032首帧YLOW", value: "304 / 281 · 与V25一致" },
+      { label: "最大帧间lag-1相关", value: "0.0074", note: "均匀曝光四帧、三记录；接近独立随机场" },
+      { label: "最大平均密度漂移", value: "0.00015 D", note: "四帧均匀曝光诊断；没有系统性色偏" },
+      { label: "阴影快层颗粒功率", value: "约61–65%" },
+      { label: "高光慢层颗粒功率", value: "约50–59%" },
+      { label: "正式T020计时", value: "1894.14秒 · 31分34.14秒" },
+      { label: "正式T032计时", value: "1893.93秒 · 31分33.93秒" },
+      { label: "两段并行总等待", value: "1894.14秒 · 31分34.14秒" },
+      { label: "平均负片 / 帧", value: "T020 36.60秒 · T032 36.64秒" },
+      { label: "随机乳剂 / 帧", value: "18.17秒 · 19.21秒" },
+      { label: "双观察器 / 帧", value: "21.66秒 · 20.11秒" },
+      { label: "插件准备结论", value: "97%+核心时间适合GPU迁移", note: "Resolve 2026 OpenFX SDK已验证Metal/CUDA/OpenCL路径；当前参考实现仍是CPU" },
+      { label: "输出", value: "两段各24帧 · 5760×4320 · 12-bit ProRes 4444 · 双母版" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V26",
+  year: "当前版本",
+  title: "让曝光选择颗粒频谱，而不是只改变颗粒响度",
+  status: "current",
+  projection: { src: "/versions/v26-t020-projection.jpg", videoSrc: "/versions/v26-t020-projection-live-srgb.mp4", label: "T020 · 2383影院观察的Rec.709监看" },
+  bluray: { src: "/versions/v26-t020-bluray.jpg", videoSrc: "/versions/v26-t020-bluray-live-srgb.mp4", label: "T020 · Period 2K / Rec.709蓝光" },
+  summary: "V26完全锁住V25修正版的色彩、黑位、对比、Gamma和Rec.709 1-1-1输出，只修正乳剂内部一个被简化的地方：快、中、慢三层不再共用同一套五级染料云权重。阴影由更大、更快的晶体统计主导，高光由更细的慢层主导；每个曝光和颜色记录仍重新回标5279公开的48µm扩散RMS，所以变化是颗粒空间频谱与有机运动，而不是更响的噪点。",
+  changes: ["将五级染料云分布从全层共享改为快/中/慢三套权重", "阴影保留较宽的大云尾部，高光减少大云尾部", "每帧独立采样有限银盐位点，保持有机沸腾且不形成移动噪点贴图", "5279三记录48µm RMS继续作为最终振幅约束", "V25颜色、黑白灰、MTF、DIR、2383与Period 2K观察器逐项锁定", "首帧亮度和黑位数值回归通过", "加入NPS、层激活、均值漂移与帧间相关诊断", "T020与T032继续各交付1秒5.7K 12-bit双母版", "建立Resolve OFX迁移性能合同与Metal优先架构"],
+  errors: ["V25的三速度层已有不同基础半径，但每层内部仍共用同一个五级尺寸分布", "共享分布会让慢层在高光中保留与快层相同的大云尾部，削弱35mm应有的曝光相关细腻变化", "仅用48µm RMS无法唯一决定颗粒观感；同一积分振幅可对应不同空间频谱", "5279没有公开逐亚层完整Wiener/NPS与涂布配方，因此V26权重是由Kodak机制约束的保守模型，不宣称是秘方复原"],
+  discoveries: ["Kodak明确指出高速感光晶体通常最大，并在阴影或欠曝光处更明显", "三层噪声功率随p(1-p)而变化：阴影测试中快层约占61–65%，高光中慢层约占50–59%", "V26的高光有效颗粒半径下降，而阴影略向低频移动；总体48µm RMS不变", "四帧均匀场最大lag-1相关约0.0074，支持逐帧独立显影事件而非动画噪点", "T020/T032蓝光首帧YAVG相对V25仅变化0.09/0.10个12-bit码值，黑位不变"],
+  refs: ["R1", "R7", "R21", "R23", "R25", "R33"],
+  additionalTrials: [{
+    name: "NJARAW_S001_S001_T032",
+    note: "雨天青绿、暗柱、高光树叶与低反差纹理用于验证三速度层切换不会带来色相漂移或CCD式综合色噪点。",
+    projection: { src: "/versions/v26-t032-projection.jpg", videoSrc: "/versions/v26-t032-projection-live-srgb.mp4", label: "T032 · 2383影院观察的Rec.709监看" },
+    bluray: { src: "/versions/v26-t032-bluray.jpg", videoSrc: "/versions/v26-t032-bluray-live-srgb.mp4", label: "T032 · Period 2K / Rec.709蓝光" },
+  }],
+  parameters: v26Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },
@@ -684,6 +752,7 @@ export const references = [
   { id: "R30", title: "ACES 2 Output Transform parameters and display encodings", type: "Academy色彩管理规范", url: "https://docs.acescentral.com/system-components/output-transforms/parameters/" },
   { id: "R31", title: "ITU-R BT.1886-0 — Reference electro-optical transfer function", type: "ITU官方公式与黑白端点定义", url: "https://www.itu.int/dms_pubrec/itu-r/rec/bt/r-rec-bt.1886-0-201103-i%21%21pdf-e.pdf" },
   { id: "R32", title: "DCI Compliance Test Plan — calibrated screen luminance 48 cd/m²", type: "DCI影院白场测试条件", url: "https://ctp.dcimovies.com/0b5699a0b76a57547576565b89fd052467c8ac20/ctp.html" },
+  { id: "R33", title: "US 6,815,153 — improved speed and granularity in high-speed colour negative film", type: "Eastman Kodak专利（分层机制，不是5279配方）", url: "https://patents.google.com/patent/US6815153B2/en" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

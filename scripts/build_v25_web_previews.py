@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build matched sRGB still/live proxies from the two V25 display masters."""
+"""Build matched sRGB still/live proxies from a numbered display-master release."""
 
 from __future__ import annotations
 
@@ -135,28 +135,33 @@ def verify(video: Path, still: Path) -> dict[str, object]:
 def main() -> None:
     site_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--masters-root", type=Path, default=site_root.parent / "outputs" / "native_5k_v25_corrected_1s")
+    parser.add_argument("--version", default="v25")
+    parser.add_argument("--masters-root", type=Path)
     parser.add_argument("--output-dir", type=Path, default=site_root / "public" / "versions")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    version = args.version.lower()
+    masters_root = args.masters_root or (
+        site_root.parent / "outputs" / f"native_5k_{version}_corrected_1s"
+    )
     jobs = {
-        "v25-t020-projection": ("T020/projection", "projection"),
-        "v25-t020-bluray": ("T020/bluray_scan", "bluray"),
-        "v25-t032-projection": ("T032/projection", "projection"),
-        "v25-t032-bluray": ("T032/bluray_scan", "bluray"),
+        f"{version}-t020-projection": ("T020/projection", "projection"),
+        f"{version}-t020-bluray": ("T020/bluray_scan", "bluray"),
+        f"{version}-t032-projection": ("T032/projection", "projection"),
+        f"{version}-t032-bluray": ("T032/bluray_scan", "bluray"),
     }
     results: dict[str, object] = {}
     for stem, (relative, branch) in jobs.items():
-        master = args.masters_root / relative / "05_emulsion_master_prores4444.mov"
+        master = masters_root / relative / "05_emulsion_master_prores4444.mov"
         large, small = args.output_dir / f"{stem}.jpg", args.output_dir / f"{stem}-sm.jpg"
         video = args.output_dir / f"{stem}-live-srgb.mp4"
-        with tempfile.TemporaryDirectory(prefix="v25-web-") as directory:
+        with tempfile.TemporaryDirectory(prefix=f"{version}-web-") as directory:
             probe = decode_master(master, branch, Path(directory), large, small)
             encode_loop(Path(directory), video)
         results[stem] = {"master_metadata": probe, **verify(video, large)}
         print(f"built {stem}", flush=True)
     manifest = {
-        "purpose": "V25 corrected Rec.709-to-sRGB web proxies from 12-bit masters",
+        "purpose": f"{version.upper()} corrected Rec.709-to-sRGB web proxies from 12-bit masters",
         "dimensions": list(VIDEO_SIZE), "fps": FPS, "frames": FRAME_COUNT,
         "first_frame_source_index": REPRESENTATIVE_FRAME,
         "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
@@ -164,7 +169,7 @@ def main() -> None:
         "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
         "verification": results,
     }
-    (args.output_dir / "v25-live-preview-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (args.output_dir / f"{version}-live-preview-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
 
 if __name__ == "__main__":
