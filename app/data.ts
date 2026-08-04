@@ -760,6 +760,7 @@ const parameterLabelsEn: Record<string, string> = {
   "释放增益 快/中/慢": "Release gain fast/mid/slow", "接收增益 快/中/慢": "Receiver gain fast/mid/slow",
   "传输矩阵 Row 1": "Transport matrix row 1", "传输矩阵 Row 2": "Transport matrix row 2", "传输矩阵 Row 3": "Transport matrix row 3",
   "中性约束": "Neutral constraint", "正片": "Print stock", "Status-A D-min R/G/B": "Status-A D-min R/G/B",
+  "5279染料": "5279 dyes", "2383分析染料": "2383 analytical dyes",
   "LAD目标": "LAD aim", "LAD目标 / D-max": "LAD aim / D-max", "D-max": "D-max", "印片光": "Printer light",
   "放映光": "Projection light", "印片 / 放映光": "Printer / projection light", "Callier修正": "Callier correction",
   "典型影院flare": "Typical cinema flare", "层间矩阵 Row 1": "Interimage matrix row 1", "层间矩阵 Row 2": "Interimage matrix row 2", "层间矩阵 Row 3": "Interimage matrix row 3",
@@ -782,6 +783,7 @@ const parameterLabelsEn: Record<string, string> = {
   "阴影快层颗粒功率": "Shadow fast-layer grain power", "高光慢层颗粒功率": "Highlight slow-layer grain power",
   "快层五级权重": "Fast-layer five-class weights", "中层五级权重": "Medium-layer five-class weights", "慢层五级权重": "Slow-layer five-class weights", "时间模型": "Temporal model",
   "平均负片 / 帧": "Mean negative / frame", "随机乳剂 / 帧": "Stochastic emulsion / frame", "双观察器 / 帧": "Two observers / frame",
+  "解码 / 双路编码 / 帧": "Decode / two encoders / frame",
   "插件准备结论": "Plugin readiness", "输出": "Output",
 };
 
