@@ -48,14 +48,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · SCAN-CALIBRATED BASELINE</span><h2>{text("颗粒不是贴图；扫描色彩也不是一层滤镜", "Grain is not a texture; scanner colour is not a filter layer")}</h2></div>
+          <div><span className="eyebrow">{current.version} · RAW INPUT-CONTRACT BASELINE</span><h2>{text("绿色不只来自画面；也可能来自错误的算法阶段", "Green can belong to the scene—or to a misplaced pipeline stage")}</h2></div>
           <ol>
-            <li><b>{text("灰轴约束", "Neutral-scale constraint")}</b><span>{text("扫描版不再只校准18%灰和一个高密度点，而是校准完整中性曝光尺度。", "The scan is balanced over a full neutral exposure scale instead of only 18% gray and one dense-negative anchor.")}</span></li>
-            <li><b>{text("亮度锁定", "Luminance lock")}</b><span>{text("逐像素Rec.709亮度、黑位和Gamma保持不变；只修扫描RGB平衡。", "Per-pixel Rec.709 luminance, black and gamma remain unchanged; only scan RGB balance is corrected.")}</span></li>
-            <li><b>{text("十份证据审计", "Ten-note evidence audit")}</b><span>{text("小时研究已暂停；新增证据明确了DIR、NPS与JVT编号的边界，没有把未识别参数写入模型。", "Hourly research is paused; the new archive fixes the boundaries around DIR, NPS and JVT identifiers without importing unidentified parameters.")}</span></li>
-            <li><b>{text("放映版不动", "Projection unchanged")}</b><span>{text("2383放映母版与V26逐字节相同，避免无意义重算。", "The 2383 projection master is byte-identical to V26, avoiding meaningless recomputation.")}</span></li>
+            <li><b>{text("阶段识别", "Stage identification")}</b><span>{text("AVFoundation输出已经是extended-linear BT.2020/D65，不再把它误当作Panasonic RAW Gamut。", "AVFoundation already outputs extended-linear BT.2020/D65; it is no longer reinterpreted as Panasonic RAW Gamut.")}</span></li>
+            <li><b>{text("纯原色变换", "Primary conversion")}</b><span>{text("只做linear BT.2020→XYZ D65→V-Gamut；不加入品红偏移、饱和度或第二次白平衡。", "Only linear BT.2020→XYZ D65→V-Gamut is applied—no magenta offset, saturation change or second white balance.")}</span></li>
+            <li><b>{text("胶片参数锁定", "Film lock")}</b><span>{text("5279曲线、染料、DIR、颗粒、黑位、Gamma以及2383/Spirit观察器全部沿用V27。", "5279 curves, dyes, DIR, grain, black, gamma and both 2383/Spirit observers remain V27.")}</span></li>
+            <li><b>{text("逐位验证", "Bit-exact validation")}</b><span>{text("加速后的两条12-bit输出解码像素与参考实现SHA-256完全一致。", "Decoded pixels from both accelerated 12-bit outputs have the same SHA-256 as the reference path.")}</span></li>
           </ol>
-          <Link href="/research#evidence-audit" className="button">{text("阅读十份证据审计", "Read the ten-note audit")}</Link>
+          <Link href="/research#v28" className="button">{text("阅读V28输入契约研究", "Read the V28 input-contract study")}</Link>
         </section>
 
         <section className="route-grid wrap">

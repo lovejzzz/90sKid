@@ -890,6 +890,77 @@ versions.push({
   parameters: v27Parameters,
 });
 
+const v27 = versions[versions.length - 1];
+v27.year = "上一版";
+v27.status = "calibration";
+
+const v28Parameters = (v27.parameters ?? []).map((group) => ({
+  ...group,
+  items: [
+    ...group.items
+      .filter((item) => group.title !== "数值验证与效率" || ![
+        "正式T020扫描计时", "正式T032扫描计时", "输出",
+      ].includes(item.label))
+      .map((item) => {
+        if (item.label === "相机色彩") return {
+          ...item,
+          value: "Apple linear BT.2020 → XYZ D65 → Panasonic V-Gamut",
+          valueEn: "Apple linear BT.2020 → XYZ D65 → Panasonic V-Gamut",
+          note: "不再对已转换的BT.2020缓冲重复应用RAW-Gamut Camera LUT",
+          noteEn: "No RAW-Gamut Camera LUT is reapplied to the converted BT.2020 buffer",
+        };
+        if (item.label === "2383放映母版") return {
+          ...item,
+          value: "由V28修正负片重新计算",
+          valueEn: "Recomputed from the corrected V28 negative",
+        };
+        return item;
+      }),
+    ...(group.title === "输入与母版" ? [
+      { label: "V28输入契约", labelEn: "V28 input contract", value: "AVFoundation extended-linear BT.2020 / D65", valueEn: "AVFoundation extended-linear BT.2020 / D65" },
+      { label: "Camera LUT边界", labelEn: "Camera-LUT boundary", value: "仅RAW Gamut阶段可用；当前路径关闭", valueEn: "Valid only at RAW-Gamut stage; disabled in this path" },
+      { label: "白平衡", labelEn: "White balance", value: "保留AVFoundation标准转换与as-shot元数据；不做第二次WB", valueEn: "Retain AVFoundation standard conversion and as-shot metadata; no second WB" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "T020扫描近中性G/R", labelEn: "T020 scan near-neutral G/R", value: "1.04294 → 1.02895", valueEn: "1.04294 → 1.02895" },
+      { label: "T020放映近中性G/R", labelEn: "T020 projection near-neutral G/R", value: "1.00234 → 0.99971", valueEn: "1.00234 → 0.99971" },
+      { label: "T032扫描近中性G/R", labelEn: "T032 scan near-neutral G/R", value: "1.06476 → 1.04777", valueEn: "1.06476 → 1.04777" },
+      { label: "T032放映近中性G/R", labelEn: "T032 projection near-neutral G/R", value: "1.03915 → 1.02518", valueEn: "1.03915 → 1.02518" },
+      { label: "高光验证", labelEn: "Highlight validation", value: "p99–p99.9基本不变 · 无白场裁切", valueEn: "p99–p99.9 essentially unchanged · no white clipping" },
+      { label: "灰轴验证", labelEn: "Neutral-axis validation", value: "合成均匀灰完整管线保持中性", valueEn: "Synthetic uniform gray remains neutral through the full pipeline" },
+      { label: "2383缓存", labelEn: "2383 cache", value: "193³分析格点 · SHA-256完整性校验", valueEn: "193³ analytical lattice · SHA-256 integrity check" },
+      { label: "加速像素验证", labelEn: "Accelerated pixel validation", value: "两分支RGB48解码SHA-256逐位一致", valueEn: "Both branches are bit-identical by decoded RGB48 SHA-256" },
+      { label: "正式T020双母版", labelEn: "Formal T020 dual masters", value: "979.19秒 · 16分19.19秒", valueEn: "979.19s · 16m 19.19s" },
+      { label: "正式T032双母版", labelEn: "Formal T032 dual masters", value: "982.64秒 · 16分22.64秒", valueEn: "982.64s · 16m 22.64s" },
+      { label: "两段并行总等待", labelEn: "Parallel wall time for both sources", value: "约982.64秒 · 16分22.64秒", valueEn: "~982.64s · 16m 22.64s" },
+      { label: "T020每帧双母版", labelEn: "T020 dual masters per frame", value: "40.80秒", valueEn: "40.80s" },
+      { label: "T032每帧双母版", labelEn: "T032 dual masters per frame", value: "40.94秒", valueEn: "40.94s" },
+      { label: "输出", labelEn: "Output", value: "两段各24帧 · 5760×4320 · 12-bit ProRes 4444 · 双母版", valueEn: "24 frames per source · 5760×4320 · 12-bit ProRes 4444 · two masters" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V28",
+  year: "当前版本",
+  title: "修正ProRes RAW解码与Panasonic Camera LUT的阶段边界",
+  status: "current",
+  projection: { src: "/versions/v28-t020-projection.jpg", videoSrc: "/versions/v28-t020-projection-live-srgb.mp4", label: "T020 · 修正输入契约后的2383影院观察Rec.709监看" },
+  bluray: { src: "/versions/v28-t020-bluray.jpg", videoSrc: "/versions/v28-t020-bluray-live-srgb.mp4", label: "T020 · 修正输入契约后的Period 2K / Rec.709蓝光" },
+  summary: "V28确认剩余绿色罩层的主要来源不是5279、Spirit灰轴或网页显示，而是RAW输入阶段次序：AVFoundation已经交付extended-linear BT.2020/D65，V27却把它再次当成Panasonic RAW Gamut送入Camera LUT。V28改为线性BT.2020→XYZ D65→V-Gamut的纯原色变换，不加入减绿、白平衡或创作调色；V27的负片曲线、染料、DIR、颗粒、黑位、对比、Gamma和观察器全部锁定。",
+  changes: ["按Core Video附件确认解码缓冲为extended-linear BT.2020/D65", "删除已转换缓冲上的第二次RAW-Gamut Camera LUT解释", "使用线性BT.2020→XYZ D65→Panasonic V-Gamut原色变换", "保留AVFoundation标准ProRes RAW转换与as-shot元数据，不做第二次白平衡", "T020与T032的放映、扫描均从同一份修正负片重新计算", "黑位、对比、Gamma、高光与全部5279/2383参数保持V27", "2383完整分析格点加入SHA-256校验缓存与逐位一致的快速采样"],
+  errors: ["V27误把已经是BT.2020原色的RGB缓冲当作Panasonic RAW Gamut", "RAW-Gamut Camera LUT是三维非线性相机分离，错位应用产生随场景变化的绿色与蓝色误差", "V27只修扫描灰轴，因此无法消除进入负片之前已经发生的颜色错误", "用全局品红、减饱和或lift/gamma掩盖问题会污染真实树林绿色并变成艺术调色"],
+  discoveries: ["Camera LUT正确与否取决于输入处于哪一个阶段，而不只取决于文件来自哪台相机", "T032雨天树林本身确实偏青绿；正确模拟应去掉额外荧光绿罩，而不是把场景拉成中性", "修正后三个近中性比值下降，而p99–p99.9亮度与白场裁切基本不变", "合成均匀灰在完整V28链中保持中性，V27 Spirit中性校准仍然必要", "加速后的最终12-bit视频解码像素与参考实现逐位一致"],
+  refs: ["R1", "R4", "R8", "R26", "R27", "R44", "R45", "R46", "R47"],
+  additionalTrials: [{
+    name: "NJARAW_S001_S001_T032",
+    note: "雨天森林本身含有真实青绿色；这段素材用于区分场景色与错位Camera LUT产生的额外荧光绿罩。",
+    projection: { src: "/versions/v28-t032-projection.jpg", videoSrc: "/versions/v28-t032-projection-live-srgb.mp4", label: "T032 · 修正输入契约后的2383影院观察Rec.709监看" },
+    bluray: { src: "/versions/v28-t032-bluray.jpg", videoSrc: "/versions/v28-t032-bluray-live-srgb.mp4", label: "T032 · 修正输入契约后的Period 2K / Rec.709蓝光" },
+  }],
+  parameters: v28Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },
@@ -934,6 +1005,10 @@ export const references = [
   { id: "R41", title: "US provisional 60/462,389 — A Method for Simulating Film Grain on Encoded Video Sequences", type: "2003年原始临时专利（5279编号沿革，无数值参数）", url: "https://register.epo.org/application?documentId=EICL6DDCDHELFI4&number=EP04714129&lng=en&npl=false" },
   { id: "R42", title: "IPR2024-00572 Patent Owner Response — public JVT reflector exhibit index", type: "USPTO PTAB一手诉讼记录（公开邮件证据止于2002年）", url: "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1555393/download-documents?artifactId=A34-fZL5CXNXG62kNfWGg1GSA8OwEYSpw1lTl1gtjcJR3Ahd7rnGyY0" },
   { id: "R43", title: "USPTO Patent Assignment reel 041214 / frame 0001 — Thomson to Dolby", type: "USPTO官方权利转让记录（专利继受不等于研究档案保管）", url: "https://assignmentcenter.uspto.gov/ipas/search/api/v2/public/download/patent/41214/1" },
+  { id: "R44", title: "Panasonic Apple ProRes RAW Output LUT — RAW Gamut to V-Log/V-Gamut", type: "Panasonic官方Camera LUT说明（含GH7兼容列表）", url: "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/lut/s1h_raw_lut/index.html" },
+  { id: "R45", title: "Apply built-in camera LUTs in Final Cut Pro", type: "Apple官方RAW转换与Camera LUT阶段说明", url: "https://support.apple.com/en-am/guide/final-cut-pro/ver5d55de8fd/mac" },
+  { id: "R46", title: "Adjust camera settings in Final Cut Pro", type: "Apple官方ProRes RAW线性与Log工作流说明", url: "https://support.apple.com/en-euro/guide/final-cut-pro/ver3eb60032c/mac" },
+  { id: "R47", title: "CVProResRawMetadata", type: "Apple Core Video开发者文档", url: "https://developer.apple.com/documentation/corevideo/cvproresrawmetadata" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
