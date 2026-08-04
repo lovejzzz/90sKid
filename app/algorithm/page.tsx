@@ -1,4 +1,8 @@
+"use client";
+
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
+import { useLanguage } from "../i18n";
+import { AlgorithmEnglish } from "./AlgorithmEnglish";
 
 const activationCode = `def subemulsion_activation_probabilities(log_exposure):
     centres = fast_centre[:, None] + speed_offsets[None, :]
@@ -67,12 +71,22 @@ for stripe in fixed_row_stripes(8):
     developed[stripe] = rng.binomial(site_count, p[stripe])
 # 1 worker 与 8 workers：5760×4320 max_abs_delta == 0`;
 
+const scanNeutralCode = `# V27: 在完整扫描链上预计算2049级中性曝光，而不是猜一项全局品红
+scale_y, scale_rgb = build_spirit_neutral_scale(samples=2049)
+rgb_balanced = rgb * interpolate(scale_y, scale_rgb, rec709_luma(rgb))
+y_before = rec709_luma(rgb)
+y_after  = rec709_luma(rgb_balanced)
+rgb_v27  = compress_unit_gamut(rgb_balanced * y_before / max(y_after, 1e-8))
+# 2383分支不调用此函数；V26负片、颗粒、DIR和扫描2K孔径保持不变`;
+
 export default function AlgorithmPage() {
+  const { language } = useLanguage();
+  if (language === "en") return <><SiteHeader /><AlgorithmEnglish /><SiteFooter /></>;
   return (
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V26</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V26模型的关键公式和真正执行的代码结构。V25修正版的颜色与输出标准保持不变；V26让曝光通过快／中／慢乳剂选择不同的颗粒空间频谱。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V27</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V27模型的关键公式和真正执行的代码结构。V26乳剂、颗粒、黑位与标准输出保持不变；V27只校准Period 2K扫描观察器的完整灰轴，并逐像素锁定Rec.709亮度。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709 OETF / 1-1-1</small></span></div></section>
 
@@ -100,7 +114,9 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">12</div><div className="method-copy"><span className="section-tag">V26 · NPS + TEMPORAL VALIDATION</span><h2>“有机”必须能被空间与时间测量</h2><p>V26分别计算阴影、中间调和高光的径向密度噪声功率谱，并统计三速度层的贡献。它不把一张噪点纹理做平移或循环：帧号进入每个颜色记录、速度层和粒径级的固定随机种子，每一帧形成独立显影事件。</p><div className="equation"><span>时间独立约束</span><b>|corr(δD<sub>t</sub>, δD<sub>t+1</sub>)| → 0</b><small>四帧均匀场、三记录的最大绝对lag-1相关为0.0074；最大平均密度漂移0.00015D。</small></div></div></section>
 
-        <section className="validation"><span className="section-tag">V26 VALIDATION</span><h2>这次颗粒修正通过了什么</h2><div className="validation-grid"><div><b>颜色管线</b><p>V25修正版逐项锁定</p></div><div><b>阴影</b><p>快层约61–65%颗粒功率</p></div><div><b>高光</b><p>慢层约50–59%颗粒功率</p></div><div><b>亮度回归</b><p>T020蓝光YAVG只变0.09 / 4095</p></div><div><b>黑位</b><p>T020/T032 YLOW保持304/281</p></div><div><b>时间相关</b><p>最大|lag-1| = 0.0074</p></div></div></section>
+        <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
+
+        <section className="validation"><span className="section-tag">V27 VALIDATION</span><h2>这次扫描灰轴修正通过了什么</h2><div className="validation-grid"><div><b>中性通道残差</b><p>max 0.01820 → 0.00236</p></div><div><b>绿色对手残差</b><p>max 0.02172 → 0.00242</p></div><div><b>亮度守恒</b><p>max ΔY &lt; 1.8×10⁻⁷</p></div><div><b>黑位／对比／Gamma</b><p>逐像素亮度轴锁定</p></div><div><b>放映分支</b><p>与V26逐字节一致</p></div><div><b>乳剂与颗粒</b><p>V26参数完整保留</p></div></div></section>
       </main>
       <SiteFooter />
     </>

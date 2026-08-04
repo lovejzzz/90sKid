@@ -13,25 +13,27 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the V26 project home page", async () => {
+test("server-renders the bilingual V27 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /当前基线 · V26/);
-  assert.match(html, /v26-t020-projection/);
-  assert.match(html, /v26-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /当前基线[\s\S]{0,50}V27/);
+  assert.match(html, /v27-t020-projection/);
+  assert.match(html, /v27-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /中文/);
+  assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
   assert.match(html, /参数面板|PARAMETERS/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V26 archive, research and algorithm routes", async () => {
+test("server-renders the V27 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(["/versions", "/research", "/algorithm"].map(render));
   for (const response of pages) assert.equal(response.status, 200);
   const [versions, research, algorithm] = await Promise.all(pages.map((page) => page.text()));
-  assert.match(versions, /V4—V26/);
+  assert.match(versions, /V4—[\s\S]{0,30}V27/);
   assert.match(versions, /NJARAW_S001_S001_T032/);
   assert.match(research, /V24 · 35MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
@@ -40,14 +42,17 @@ test("server-renders the V26 archive, research and algorithm routes", async () =
   assert.match(research, /ITU-R BT\.1886/);
   assert.match(research, /EXPOSURE-CONDITIONED GRAIN NPS/);
   assert.match(research, /v26-grain-nps\.png/);
-  assert.match(algorithm, /CURRENT V26/);
+  assert.match(research, /DENSITY-DEPENDENT SCAN NEUTRALITY/);
+  assert.match(research, /v27-scan-neutral-axis\.png/);
+  assert.match(algorithm, /CURRENT V27/);
+  assert.match(algorithm, /FULL NEUTRAL-SCALE SCAN CALIBRATION/);
   assert.match(algorithm, /193³/);
 });
 
 test("lightbox keeps gallery navigation and magnification controls", async () => {
   const source = await readFile(new URL("../app/components/InteractiveImage.tsx", import.meta.url), "utf8");
-  assert.match(source, /aria-label="上一张图片"/);
-  assert.match(source, /aria-label="下一张图片"/);
+  assert.match(source, /上一张图片/);
+  assert.match(source, /下一张图片/);
   assert.match(source, /放大图片，当前/);
   assert.match(source, /ArrowLeft/);
   assert.match(source, /ArrowRight/);
@@ -72,6 +77,29 @@ test("V26 web videos preserve the corrected Rec.709 to sRGB path", async () => {
   assert.match(manifest.projection_source, /Rec\.709-D65 1-1-1/);
   assert.match(manifest.bluray_source, /BT\.1886 is the reference display EOTF/);
   for (const result of Object.values(manifest.verification)) {
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
+    assert.ok(result.first_frame_median_luma_delta <= 0.01);
+  }
+});
+
+test("V27 data records a luma-locked neutral-scale correction", async () => {
+  const data = await readFile(new URL("../app/data.ts", import.meta.url), "utf8");
+  const english = await readFile(new URL("../app/versionEnglish.ts", import.meta.url), "utf8");
+  assert.match(data, /2049级中性曝光/);
+  assert.match(data, /逐像素Rec\.709 Y严格保持/);
+  assert.match(data, /0\.01820 → 0\.00236/);
+  assert.match(data, /网站加入完整中英文切换/);
+  assert.match(english, /Separating a scanner's green veil from film colour/);
+});
+
+test("V27 stills and hover videos share the verified sRGB path", async () => {
+  const manifest = JSON.parse(await readFile(new URL("../public/versions/v27-live-preview-manifest.json", import.meta.url), "utf8"));
+  assert.equal(manifest.first_frame_source_index, 12);
+  assert.equal(manifest.frames, 24);
+  assert.match(manifest.web, /sRGB IEC 61966-2-1/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.master_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.master_metadata.color_transfer, "bt709");
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
     assert.ok(result.first_frame_median_luma_delta <= 0.01);
   }

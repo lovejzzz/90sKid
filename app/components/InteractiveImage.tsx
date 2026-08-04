@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLanguage } from "../i18n";
 
 export type GalleryItem = {
   src: string;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, gallery, initialIndex = 0 }: Props) {
+  const { text } = useLanguage();
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoom, setZoom] = useState(1);
@@ -116,7 +118,7 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
         onMouseEnter={startPreview}
         onMouseLeave={stopPreview}
         onClick={() => { stopPreview(); pendingViewRef.current = null; setCurrentIndex(initialIndex); setZoom(1); setOpen(true); }}
-        aria-label={`打开大图：${alt}`}
+        aria-label={text(`打开大图：${alt}`, `Open full-size image: ${alt}`)}
       >
         {videoSrc ? (
           <>
@@ -151,22 +153,22 @@ export function InteractiveImage({ src, previewSrc, videoSrc, alt, sizes, galler
             alt={alt}
           />
         )}
-        <span className="image-open-hint" aria-hidden="true">查看大图 ↗</span>
+        <span className="image-open-hint" aria-hidden="true">{text("查看大图 ↗", "VIEW FULL SIZE ↗")}</span>
       </button>
       {open && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={current.alt} onClick={() => setOpen(false)}>
           <div className="lightbox-toolbar">
             <span className="lightbox-title">{current.alt}</span>
             {hasMultiple && <span className="lightbox-counter" aria-live="polite">{currentIndex + 1} / {items.length}</span>}
-            <button className="lightbox-zoom" type="button" onClick={(event) => { event.stopPropagation(); cycleZoom(); }} aria-label={`放大图片，当前${zoom}倍`}>⌕ {zoom}×</button>
-            <a href={current.src} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>单独打开原图</a>
-            <button type="button" onClick={() => setOpen(false)} aria-label="关闭大图">关闭 ×</button>
+            <button className="lightbox-zoom" type="button" onClick={(event) => { event.stopPropagation(); cycleZoom(); }} aria-label={text(`放大图片，当前${zoom}倍`, `Magnify image, currently ${zoom}×`)}>⌕ {zoom}×</button>
+            <a href={current.src} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>{text("单独打开原图", "OPEN ORIGINAL")}</a>
+            <button type="button" onClick={() => setOpen(false)} aria-label={text("关闭大图", "Close full-size image")}>{text("关闭 ×", "CLOSE ×")}</button>
           </div>
-          {hasMultiple && <button className="lightbox-nav lightbox-prev" type="button" aria-label="上一张图片" onClick={(event) => { event.stopPropagation(); move(-1); }}><span aria-hidden="true">‹</span></button>}
+          {hasMultiple && <button className="lightbox-nav lightbox-prev" type="button" aria-label={text("上一张图片", "Previous image")} onClick={(event) => { event.stopPropagation(); move(-1); }}><span aria-hidden="true">‹</span></button>}
           <div ref={stageRef} className={`lightbox-stage ${zoom > 1 ? "is-zoomed" : ""}`} onClick={() => setOpen(false)}>
             <img key={current.src} src={current.src} alt={current.alt} style={zoom > 1 ? { width: `${zoom * 100}vw` } : undefined} onLoad={restoreView} onClick={(event) => { event.stopPropagation(); cycleZoom(); }} />
           </div>
-          {hasMultiple && <button className="lightbox-nav lightbox-next" type="button" aria-label="下一张图片" onClick={(event) => { event.stopPropagation(); move(1); }}><span aria-hidden="true">›</span></button>}
+          {hasMultiple && <button className="lightbox-nav lightbox-next" type="button" aria-label={text("下一张图片", "Next image")} onClick={(event) => { event.stopPropagation(); move(1); }}><span aria-hidden="true">›</span></button>}
         </div>
       )}
     </>

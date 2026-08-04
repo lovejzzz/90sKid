@@ -1,15 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "./components/SiteHeader";
 import { InteractiveImage } from "./components/InteractiveImage";
 import { EmulsionFlow } from "./components/EmulsionFlow";
 import { ParameterPanel } from "./components/ParameterPanel";
-import { versions } from "./data";
+import { references, versions } from "./data";
+import { useLanguage } from "./i18n";
+import { versionEnglish } from "./versionEnglish";
 
 export default function Home() {
+  const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
+  const currentEnglish = versionEnglish[current.version];
   const currentGallery = [
-    { src: "/versions/v26-t020-projection.jpg", alt: "V26 T020 2383放映监看参考" },
-    { src: "/versions/v26-t020-bluray.jpg", alt: "V26 T020 Rec.709蓝光参考" },
+    { src: current.projection.src, alt: `${current.version} T020 2383 projection monitor reference` },
+    { src: current.bluray.src, alt: `${current.version} T020 Rec.709 Blu-ray reference` },
   ];
   return (
     <>
@@ -18,18 +24,18 @@ export default function Home() {
         <section className="hero">
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
-          <h1>不是给数码影像<br />贴一层颗粒。</h1>
-          <p className="hero-lead">我们的目标，是重建曝光、银盐位点、染料云、层间抑制、印片与扫描共同形成画面的过程。</p>
-          <div className="hero-actions"><Link href="/versions" className="button primary">观看版本演进</Link><Link href="/research" className="button">阅读研究</Link></div>
-          <div className="hero-meta"><span><b>23</b> 个已归档版本</span><span><b>33</b> 条核心资料</span><span><b>12-bit</b> 5.7K主链</span></div>
+          <h1>{text(<>不是给数码影像<br />贴一层颗粒。</>, <>Film is not grain<br />pasted onto digital.</>)}</h1>
+          <p className="hero-lead">{text("我们的目标，是重建曝光、银盐位点、染料云、层间抑制、印片与扫描共同形成画面的过程。", "Our goal is to reconstruct how exposure, finite silver-halide sites, dye clouds, interlayer inhibition, printing and scanning form one image.")}</p>
+          <div className="hero-actions"><Link href="/versions" className="button primary">{text("观看版本演进", "Explore the versions")}</Link><Link href="/research" className="button">{text("阅读研究", "Read the research")}</Link></div>
+          <div className="hero-meta"><span><b>{versions.length}</b> {text("个已归档版本", "archived versions")}</span><span><b>{references.length}</b> {text("条核心资料", "primary references")}</span><span><b>12-bit</b> {text("5.7K主链", "5.7K pipeline")}</span></div>
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>当前基线 · V26</span><h2>同一振幅，不同曝光长出不同颗粒频谱</h2><p>V25修正版的颜色、黑位、对比与Gamma完全锁定。V26让快、中、慢乳剂分别拥有自己的五级染料云分布：阴影由较大的快层晶体主导，高光逐渐交给更细的慢层；两条观察链仍从同一份逐帧负片出发。</p></div>
+          <div className="section-intro"><span>{text("当前基线", "CURRENT BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
           <div className="current-visual-layout">
             <div className="hero-comparison">
-              <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src="/versions/v26-t020-projection.jpg" previewSrc="/versions/v26-t020-projection-sm.jpg" videoSrc="/versions/v26-t020-projection-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V26 T020 2383放映监看参考" gallery={currentGallery} initialIndex={0} /><figcaption>48 nit影院观察结果的Rec.709监看呈现</figcaption></figure>
-              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src="/versions/v26-t020-bluray.jpg" previewSrc="/versions/v26-t020-bluray-sm.jpg" videoSrc="/versions/v26-t020-bluray-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V26 T020 Rec.709蓝光参考" gallery={currentGallery} initialIndex={1} /><figcaption>时期2K扫描；BT.1886仅用于参考显示验证</figcaption></figure>
+              <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T020 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察结果的Rec.709监看呈现", "Rec.709 monitor presentation of the 48-nit cinema observer")}</figcaption></figure>
+              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src={current.bluray.src} previewSrc={current.bluray.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.bluray.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T020 Rec.709 Blu-ray reference`} gallery={currentGallery} initialIndex={1} /><figcaption>{text("时期2K扫描；BT.1886仅用于参考显示验证", "Period 2K scan; BT.1886 is used only for reference-display validation")}</figcaption></figure>
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>
@@ -37,25 +43,25 @@ export default function Home() {
 
         <section className="thesis wrap">
           <div className="section-number">01</div>
-          <div><span className="kicker">核心命题</span><h2>噪点不是附加物。<br />随机性本身参与成像。</h2></div>
-          <div className="thesis-copy"><p>数字噪点通常在画面完成后相加；彩色负片的随机性则发生在画面形成之前。有限银盐位点是否显影，会同时改变染料量、局部密度、DIR释放和邻层反应。</p><p>显影完成后银影会被漂白和定影移除，最终被扫描或印片观察到的是染料云。因此我们模拟的是“银盐位点播种的染料云场”，而不是永久悬浮的银颗粒。</p><p><b>Baseline原则：</b>只重建胶片、印片和扫描的成像；艺术调色留在模型之外。</p><Link href="/algorithm">查看公式与关键代码 →</Link></div>
+          <div><span className="kicker">{text("核心命题", "CORE THESIS")}</span><h2>{text(<>噪点不是附加物。<br />随机性本身参与成像。</>, <>Noise is not an overlay.<br />Randomness participates in image formation.</>)}</h2></div>
+          <div className="thesis-copy"><p>{text("数字噪点通常在画面完成后相加；彩色负片的随机性则发生在画面形成之前。有限银盐位点是否显影，会同时改变染料量、局部密度、DIR释放和邻层反应。", "Digital noise is usually added after the picture exists. Colour-negative randomness happens before the image is complete: whether finite silver-halide sites develop changes dye amount, local density, DIR release and neighbouring layers together.")}</p><p>{text("显影完成后银影会被漂白和定影移除，最终被扫描或印片观察到的是染料云。因此我们模拟的是“银盐位点播种的染料云场”，而不是永久悬浮的银颗粒。", "After development, silver is bleached and fixed away; printing and scanning observe dye clouds. We therefore simulate a dye-cloud field seeded by silver-halide events, not permanent silver specks floating over RGB.")}</p><p><b>{text("Baseline原则：", "Baseline principle: ")}</b>{text("只重建胶片、印片和扫描的成像；艺术调色留在模型之外。", "reconstruct film, printing and scanning; keep creative grading outside the model.")}</p><Link href="/algorithm">{text("查看公式与关键代码 →", "See equations and key code →")}</Link></div>
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">V26 · EXPOSURE-CONDITIONED GRAIN</span><h2>颗粒不是贴图；曝光决定哪一层参与成像</h2></div>
+          <div><span className="eyebrow">{current.version} · SCAN-CALIBRATED BASELINE</span><h2>{text("颗粒不是贴图；扫描色彩也不是一层滤镜", "Grain is not a texture; scanner colour is not a filter layer")}</h2></div>
           <ol>
-            <li><b>快／中／慢分布</b><span>三速度层不再共用同一套大、小染料云比例。</span></li>
-            <li><b>曝光相关频谱</b><span>阴影快层约占61–65%颗粒功率；高光慢层约占50–59%。</span></li>
-            <li><b>时间独立</b><span>每帧重新显影有限位点，最大lag-1相关约0.0074，不移动噪点贴图。</span></li>
-            <li><b>基线锁定</b><span>48µm RMS、颜色、黑位、Gamma、MTF与两套观察器均不改变。</span></li>
+            <li><b>{text("灰轴约束", "Neutral-scale constraint")}</b><span>{text("扫描版不再只校准18%灰和一个高密度点，而是校准完整中性曝光尺度。", "The scan is balanced over a full neutral exposure scale instead of only 18% gray and one dense-negative anchor.")}</span></li>
+            <li><b>{text("亮度锁定", "Luminance lock")}</b><span>{text("逐像素Rec.709亮度、黑位和Gamma保持不变；只修扫描RGB平衡。", "Per-pixel Rec.709 luminance, black and gamma remain unchanged; only scan RGB balance is corrected.")}</span></li>
+            <li><b>{text("颗粒证据边界", "Grain evidence boundary")}</b><span>{text("最新hourly研究没有找到5279专属NPS，V26颗粒结构和48µm RMS全部保留。", "The latest hourly research found no stock-specific 5279 NPS, so V26 morphology and 48 µm RMS remain intact.")}</span></li>
+            <li><b>{text("放映版不动", "Projection unchanged")}</b><span>{text("2383放映母版与V26逐字节相同，避免无意义重算。", "The 2383 projection master is byte-identical to V26, avoiding meaningless recomputation.")}</span></li>
           </ol>
-          <Link href="/research#v26" className="button">阅读V26验证结果</Link>
+          <Link href="/research#v27" className="button">{text("阅读V27验证结果", "Read the V27 validation")}</Link>
         </section>
 
         <section className="route-grid wrap">
-          <Link href="/versions"><span>ARCHIVE</span><h3>版本档案</h3><p>从V4到V26，逐版对照两种观看链，并记录错误和修正。</p><b>进入 →</b></Link>
-          <Link href="/research"><span>PAPER</span><h3>研究笔记</h3><p>乳剂层、遮罩、DIR、颗粒、黑位、扫描器与完整引用。</p><b>进入 →</b></Link>
-          <Link href="/algorithm"><span>METHOD</span><h3>算法说明</h3><p>从RAW到负片、2383与Cineon的公式、流程和关键代码。</p><b>进入 →</b></Link>
+          <Link href="/versions"><span>ARCHIVE</span><h3>{text("版本档案", "Version archive")}</h3><p>{text(`从V4到${current.version}，逐版对照两种观看链，并记录错误和修正。`, `From V4 to ${current.version}, compare both viewing chains and retain every error and correction.`)}</p><b>{text("进入 →", "OPEN →")}</b></Link>
+          <Link href="/research"><span>PAPER</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("乳剂层、遮罩、DIR、颗粒、黑位、扫描器与完整引用。", "Emulsion layers, masking, DIR, grain, black, scanners and complete citations.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
+          <Link href="/algorithm"><span>METHOD</span><h3>{text("算法说明", "Method")}</h3><p>{text("从RAW到负片、2383与Cineon的公式、流程和关键代码。", "Equations, flow and key code from RAW through the negative, 2383 and Cineon.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
         </section>
       </main>
       <SiteFooter />

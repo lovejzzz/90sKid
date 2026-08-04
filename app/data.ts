@@ -7,7 +7,8 @@ export type BranchImage = {
 
 export type ParameterGroup = {
   title: string;
-  items: { label: string; value: string; note?: string }[];
+  titleEn?: string;
+  items: { label: string; labelEn?: string; value: string; valueEn?: string; note?: string; noteEn?: string }[];
 };
 
 export type VersionEntry = {
@@ -719,6 +720,168 @@ versions.push({
   parameters: v26Parameters,
 });
 
+const v26 = versions[versions.length - 1];
+v26.year = "上一版";
+v26.status = "calibration";
+
+const groupTitlesEn: Record<string, string> = {
+  "输入与母版": "INPUT & MASTERS",
+  "5279乳剂": "5279 EMULSION",
+  "5279乳剂与颗粒": "5279 EMULSION & GRAIN",
+  "乳剂颗粒": "EMULSION GRAIN",
+  "DIR显影耦合": "DIR DEVELOPMENT COUPLING",
+  "2383放映链": "2383 PROJECTION CHAIN",
+  "染料与2383放映": "DYES & 2383 PROJECTION",
+  "显示器放映预览": "PROJECTION MONITOR VIEW",
+  "Period 2K / 蓝光": "PERIOD 2K / BLU-RAY",
+  "扫描与放映输出": "SCAN & PROJECTION OUTPUT",
+  "数值验证与效率": "NUMERICAL VALIDATION & PERFORMANCE",
+};
+
+const parameterLabelsEn: Record<string, string> = {
+  "源素材": "Source footage", "源素材 A": "Source A", "源素材 B": "Source B",
+  "RAW解码": "RAW decode", "相机色彩": "Camera colour", "相机 / 记录": "Camera / record transform",
+  "拍摄参数": "Capture settings", "虚拟曝光": "Virtual exposure", "画幅": "Frame", "画幅 / 帧率": "Frame / rate",
+  "帧率": "Frame rate", "测试段": "Test segment", "每段长度": "Length per source", "母版": "Master",
+  "显示编码": "Signal encoding", "片种": "Film stock", "片种 / 成像宽": "Stock / image width", "假定成像宽": "Assumed image width",
+  "亚层结构": "Sublayer structure", "速度偏移": "Speed offsets", "容量比例 快/中/慢": "Capacity fast/mid/slow",
+  "快层中心 R/G/B": "Fast centres R/G/B", "转折宽度 R/G/B": "Transition widths R/G/B",
+  "ECD 青记录": "ECD cyan record", "ECD 品红记录": "ECD magenta record", "ECD 黄记录": "ECD yellow record",
+  "颗粒校准孔径": "Grain calibration aperture", "颗粒校准": "Grain calibration", "颗粒相关尺度": "Grain correlation scale",
+  "粒径占比": "Size fractions", "五级占比": "Five-class fractions", "粒径半径倍率": "Radius factors", "半径倍率": "Radius factors",
+  "光学倍率": "Optical factors", "亚像素相位半径": "Subpixel phase radius", "相位步进": "Phase step",
+  "光学σ 青记录": "Optical σ cyan", "光学σ 品红记录": "Optical σ magenta", "光学σ 黄记录": "Optical σ yellow",
+  "有效位点 青记录": "Effective sites cyan", "有效位点 品红记录": "Effective sites magenta", "有效位点 黄记录": "Effective sites yellow",
+  "负片MTF σ R/G/B": "Negative MTF σ R/G/B", "正片MTF σ R/G/B": "Print MTF σ R/G/B",
+  "感色重叠 Row R": "Sensitivity overlap row R", "感色重叠 Row G": "Sensitivity overlap row G", "感色重叠 Row B": "Sensitivity overlap row B",
+  "随机种子": "Random seed", "传感器噪声": "Sensor-noise treatment", "发生阶段": "Domain", "DIR阶段": "DIR domain",
+  "扩散σ 快/中/慢": "Diffusion σ fast/mid/slow", "DIR扩散σ": "DIR diffusion σ", "层间强度": "Interlayer strength",
+  "层内强度 R/G/B": "Intralayer strength R/G/B", "随机耦合": "Stochastic coupling",
+  "释放增益 快/中/慢": "Release gain fast/mid/slow", "接收增益 快/中/慢": "Receiver gain fast/mid/slow",
+  "传输矩阵 Row 1": "Transport matrix row 1", "传输矩阵 Row 2": "Transport matrix row 2", "传输矩阵 Row 3": "Transport matrix row 3",
+  "中性约束": "Neutral constraint", "正片": "Print stock", "Status-A D-min R/G/B": "Status-A D-min R/G/B",
+  "LAD目标": "LAD aim", "LAD目标 / D-max": "LAD aim / D-max", "D-max": "D-max", "印片光": "Printer light",
+  "放映光": "Projection light", "印片 / 放映光": "Printer / projection light", "Callier修正": "Callier correction",
+  "典型影院flare": "Typical cinema flare", "层间矩阵 Row 1": "Interimage matrix row 1", "层间矩阵 Row 2": "Interimage matrix row 2", "层间矩阵 Row 3": "Interimage matrix row 3",
+  "物理亮度权重": "Physical-lightness weight", "最大物理色相权重": "Maximum physical-hue weight", "最大物理饱和权重": "Maximum physical-saturation weight",
+  "色度校准": "Chroma calibration", "显示色度校准": "Display chroma calibration", "校准格点": "Calibration lattice", "相对色度格点": "Relative-chroma lattice",
+  "中性保护": "Neutral guard", "插值余量": "Interpolation margin", "扫描亮度锚点": "Scan-luma anchors", "目标亮度锚点": "Target-luma anchors",
+  "色域映射": "Gamut mapping", "扫描观察器": "Scan observer", "扫描孔径": "Scan aperture", "Cineon": "Cineon mapping",
+  "中性灰码值": "Neutral-gray code", "主色校正强度": "Primary-correction strength", "肩部释放": "Shoulder release",
+  "蓝光下段gamma": "Blu-ray lower-scale gamma", "色度颗粒σ": "Chroma-grain σ", "色度颗粒σ / 高频": "Chroma grain σ / high-frequency retention",
+  "高频色度保留": "High-frequency chroma retention", "硬件Grain Manager": "Hardware Grain Manager", "共享乳剂随机实现": "Shared emulsion realization",
+  "颜色决定": "Colour decision", "放映缓存格点": "Projection cache lattice", "真实帧平均ΔE": "Real-frame mean ΔE", "真实帧p99 ΔE": "Real-frame p99 ΔE",
+  "逐像素放映加速": "Per-pixel projection speed-up", "放映色度颗粒积分": "Projection chroma-grain integration", "颗粒平均色约束": "Grain mean-colour constraint",
+  "V24 48µm RMS误差": "V24 48 µm RMS error", "T020综合色/明度颗粒": "T020 opponent/luma grain", "T032综合色/明度颗粒": "T032 opponent/luma grain",
+  "V24平均颜色最大变化": "V24 maximum mean-colour change", "银盐采样 1→8线程": "Silver-site sampling, 1→8 workers", "线程一致性": "Worker invariance",
+  "复用平均负片": "Mean-negative reuse", "颗粒质量捷径": "Grain quality shortcuts", "网页观察空间": "Web viewing space", "网页首帧亮度误差": "Web first-frame luma error",
+  "网页首帧RGB MAE": "Web first-frame RGB MAE", "Live代理": "Live proxy", "放映监看母版": "Projection monitor master", "蓝光母版": "Blu-ray master",
+  "影院观看条件": "Cinema viewing condition", "蓝光观看条件": "Blu-ray viewing condition", "母版范围": "Master range", "网页代理": "Web proxy",
+  "V26颜色/曲线变化": "V26 colour / curve change", "T020蓝光首帧YAVG": "T020 Blu-ray first-frame YAVG", "T032蓝光首帧YAVG": "T032 Blu-ray first-frame YAVG",
+  "T020 / T032首帧YLOW": "T020 / T032 first-frame YLOW", "最大帧间lag-1相关": "Maximum frame lag-1 correlation", "最大平均密度漂移": "Maximum mean-density drift",
+  "阴影快层颗粒功率": "Shadow fast-layer grain power", "高光慢层颗粒功率": "Highlight slow-layer grain power",
+  "快层五级权重": "Fast-layer five-class weights", "中层五级权重": "Medium-layer five-class weights", "慢层五级权重": "Slow-layer five-class weights", "时间模型": "Temporal model",
+  "平均负片 / 帧": "Mean negative / frame", "随机乳剂 / 帧": "Stochastic emulsion / frame", "双观察器 / 帧": "Two observers / frame",
+  "插件准备结论": "Plugin readiness", "输出": "Output",
+};
+
+const exactValueEnglish: Record<string, string> = {
+  "Panasonic官方RAW → V-Gamut": "Panasonic official RAW → V-Gamut",
+  "R/G/B × 快/中/慢 × 5粒径": "R/G/B × fast/mid/slow × five size classes",
+  "2.399963 rad · 黄金角": "2.399963 rad · golden angle",
+  "逐帧、逐记录、逐速度群独立": "Independent per frame, record and speed population",
+  "九亚层合并前的显影域": "Development domain before the nine sublayers merge",
+  "均匀H-D严格不漂移": "Exact uniform H-D invariance",
+  "D-min已扣除的带符号净光谱密度": "Signed net spectral density with D-min subtracted",
+  "非线性Status-A积分反演": "Nonlinear inversion of integral Status-A density",
+  "3200 K / Kodak氙灯SPD": "3200 K / Kodak xenon SPD",
+  "D60相对Oklab a/b · L不变": "Relative D60 OKLab a/b · L unchanged",
+  "Oklab恒色相压缩": "OKLab constant-hue compression",
+  "Spirit式宽带RGB · 620/540/470 nm": "Spirit-like broadband RGB · 620/540/470 nm",
+  "只作用于signed delta；均值分支不变": "Signed delta only; deterministic mean branch unchanged",
+  "放映1.58 → 0.93 · 扫描1.72 → 0.92": "Projection 1.58 → 0.93 · scan 1.72 → 0.92",
+  "放映2.07 → 1.15 · 扫描2.11 → 1.08": "Projection 2.07 → 1.15 · scan 2.11 → 1.08",
+  "0.000000（数值精确不变）": "0.000000 (numerically exact)",
+  "45组全画幅有限位点二项采样": "45 full-frame finite-site binomial populations",
+  "16核 / 48GB；采样时CPU约80%空闲": "16 cores / 48 GB; ~80% CPU idle during sampling",
+  "第13帧静态图 = 短视频首帧": "Frame 13 still = live-preview first frame",
+  "Rec.709-D65 OETF · 1-1-1": "Rec.709-D65 OETF · 1-1-1",
+  "48 cd/m² · gamma 2.6（投影观察模型内部）": "48 cd/m² · gamma 2.6 (inside the projection observer)",
+  "BT.1886 SDR参考显示": "BT.1886 SDR reference display",
+  "full-range RGB计算 → 12-bit 4:4:4 ProRes": "Full-range RGB computation → 12-bit 4:4:4 ProRes",
+  "5760×4320逐像素相同 · max Δ 0": "5760×4320 pixel-identical · max Δ 0",
+  "删除每帧一次完整重复显影计算": "One duplicate full development pass removed per frame",
+  "每帧重新采样独立有限位点": "Fresh independent finite-site sampling every frame",
+  "97%+核心时间适合GPU迁移": "97%+ of core time is suitable for GPU migration",
+};
+
+const valueToEnglish = (value: string) => exactValueEnglish[value] ?? value
+  .replaceAll("约", "~")
+  .replaceAll("秒", "s")
+  .replaceAll("分钟", "min")
+  .replaceAll("分", "m")
+  .replaceAll("帧", " frames")
+  .replaceAll("两段各", "each of two sources: ")
+  .replaceAll("无", "None")
+  .replaceAll("是", "Yes")
+  .replaceAll("与V25一致", "same as V25")
+  .replaceAll("与V25修正版一致", "same as corrected V25");
+
+const v27Parameters = (v26.parameters ?? []).map((group) => ({
+  ...group,
+  titleEn: groupTitlesEn[group.title] ?? group.title,
+  items: [
+    ...group.items
+      .filter((item) => group.title !== "数值验证与效率" || ![
+        "正式T020计时", "正式T032计时", "两段并行总等待", "平均负片 / 帧",
+        "随机乳剂 / 帧", "双观察器 / 帧", "V26颜色/曲线变化",
+      ].includes(item.label))
+      .map((item) => ({
+        ...item,
+        labelEn: parameterLabelsEn[item.label] ?? item.label,
+        valueEn: valueToEnglish(item.value),
+      })),
+    ...(group.title === "扫描与放映输出" ? [
+      { label: "V27扫描灰轴", labelEn: "V27 scan gray axis", value: "2049级中性曝光 · 密度相关RGB平衡", valueEn: "2049-level neutral exposure scale · level-dependent RGB balance" },
+      { label: "亮度约束", labelEn: "Luminance constraint", value: "逐像素Rec.709 Y严格保持", valueEn: "Exact per-pixel Rec.709 Y preservation", note: "不改变黑位、对比度、下段gamma或高光亮度", noteEn: "No change to black, contrast, lower-scale gamma or highlight luminance" },
+      { label: "Period 2K孔径", labelEn: "Period 2K aperture", value: "与V26完全相同", valueEn: "Unchanged from V26" },
+      { label: "2383放映母版", labelEn: "2383 projection master", value: "逐字节复用V26", valueEn: "Byte-identical reuse of V26" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "中性通道最大残差", labelEn: "Maximum neutral-channel residual", value: "0.01820 → 0.00236", valueEn: "0.01820 → 0.00236" },
+      { label: "中性通道p95残差", labelEn: "p95 neutral-channel residual", value: "0.01673 → 0.00166", valueEn: "0.01673 → 0.00166" },
+      { label: "绿色对手最大残差", labelEn: "Maximum green-opponent residual", value: "0.02172 → 0.00242", valueEn: "0.02172 → 0.00242" },
+      { label: "最大亮度漂移", labelEn: "Maximum luminance drift", value: "1.79 × 10⁻⁷", valueEn: "1.79 × 10⁻⁷" },
+      { label: "放映分支最大漂移", labelEn: "Maximum projection drift", value: "0.000000", valueEn: "0.000000" },
+      { label: "Hourly研究进入模型", labelEn: "Hourly research entering model", value: "仅证据边界；不改颗粒、DIR或NPS", valueEn: "Evidence boundary only; no grain, DIR or NPS change" },
+      { label: "正式T020扫描计时", labelEn: "Formal T020 scan time", value: "25分47.08秒", valueEn: "25m 47.08s", note: "末3帧与T032并行，计时包含母版定稿与静帧写入，不含随后SHA-256", noteEn: "Last three frames overlapped T032; includes master finalization and still export, excludes later SHA-256 hashing" },
+      { label: "正式T032扫描计时", labelEn: "Formal T032 scan time", value: "25分09.09秒", valueEn: "25m 09.09s", note: "前3帧与T020并行，计时包含母版定稿与静帧写入，不含随后SHA-256", noteEn: "First three frames overlapped T020; includes master finalization and still export, excludes later SHA-256 hashing" },
+      { label: "输出", labelEn: "Output", value: "两段各24帧 · 5760×4320 · 12-bit ProRes 4444 · 双母版", valueEn: "24 frames per source · 5760×4320 · 12-bit ProRes 4444 · two masters" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V27",
+  year: "当前版本",
+  title: "把扫描器的绿色罩层从胶片颜色中分离出来",
+  status: "current",
+  projection: { src: "/versions/v27-t020-projection.jpg", videoSrc: "/versions/v27-t020-projection-live-srgb.mp4", label: "T020 · 2383影院观察的Rec.709监看（与V26相同）" },
+  bluray: { src: "/versions/v27-t020-bluray.jpg", videoSrc: "/versions/v27-t020-bluray-live-srgb.mp4", label: "T020 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
+  summary: "V27确认V26蓝光版的朦胧绿色并非网页或颗粒造成，而是扫描观察器只在18%灰与一个高密度点校准后留下的密度相关灰轴误差。新版本以2049级中性曝光建立扫描RGB平衡，并逐像素恢复原Rec.709亮度，因此绿色残差下降，但黑位、对比、Gamma、2K孔径与高光亮度不动。V26负片、颗粒、DIR、2383和放映母版全部锁定。",
+  changes: ["用完整中性曝光尺度替代扫描器的双锚点灰平衡", "在完成的Period 2K扫描分支中加入密度相关RGB校准", "逐像素保持Rec.709亮度，禁止校准变成调色", "中性通道最大残差从0.01820降至0.00236", "绿色对手残差从0.02172降至0.00242", "否决会让真实RAW更绿、更亮的完全主色分离方案", "V26颗粒、DIR、NPS、MTF、黑位和Gamma全部锁定", "2383放映母版逐字节复用V26", "结合最新hourly研究的不可识别性结论，不凭专利编号或48µm RMS发明新参数", "核对2003年5279临时专利原件：确认编号沿革，但仍无任何5279数值参数", "网站加入完整中英文切换并保存语言选择"],
+  errors: ["V26扫描器只在18%灰和一个高密度点定标，无法保证整条灰阶中性", "V26人为保留18%的所谓Spirit/染料残余，但公开资料没有支持其色相和密度形状", "阴影和低中间调出现绿色隆起，中灰锚点正确，亮部偏移方向又改变，所以全局品红无法修复", "2K孔径的柔化与RGB灰轴错误曾在观感上混成同一种绿色雾感", "最新hourly研究仍没有公开5279专属NPS、DIR矩阵或Spirit私有校准，不能借V27改写这些部分"],
+  discoveries: ["用户观察到的绿色罩层可以在中性尺度上重复测量", "网页Rec.709到sRGB转换对三通道一致，且放映版共用同一路径，因此不是网页ICC问题", "灰轴误差随密度改变方向，必须使用水平相关校准而不是一个白平衡旋钮", "保持每个像素的Rec.709 Y，可以把扫描色彩校准和艺术对比选择严格分开", "完全清除模拟扫描器串扰会改变亮度并让实拍植物更绿，说明更激进不等于更准确", "2003年4月临时专利确实把identifier 3写成5279；同年5月JVT-H022改成5218，后续专利又回到5279，属于文档分支漂移而不是胶片测量", "hourly研究的主要贡献是限制模型自由度：没有可识别证据的颗粒和DIR参数必须保持不变"],
+  refs: ["R1", "R8", "R11", "R26", "R27", "R34", "R35", "R36", "R38", "R39", "R40", "R41"],
+  additionalTrials: [{
+    name: "NJARAW_S001_S001_T032",
+    note: "雨天青绿、暗柱与低反差纹理用于确认灰轴校准不会把真实绿色错误拉回中性，也不会改变黑位和亮度。",
+    projection: { src: "/versions/v27-t032-projection.jpg", videoSrc: "/versions/v27-t032-projection-live-srgb.mp4", label: "T032 · 2383影院观察的Rec.709监看（与V26相同）" },
+    bluray: { src: "/versions/v27-t032-bluray.jpg", videoSrc: "/versions/v27-t032-bluray-live-srgb.mp4", label: "T032 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
+  }],
+  parameters: v27Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },
@@ -753,6 +916,14 @@ export const references = [
   { id: "R31", title: "ITU-R BT.1886-0 — Reference electro-optical transfer function", type: "ITU官方公式与黑白端点定义", url: "https://www.itu.int/dms_pubrec/itu-r/rec/bt/r-rec-bt.1886-0-201103-i%21%21pdf-e.pdf" },
   { id: "R32", title: "DCI Compliance Test Plan — calibrated screen luminance 48 cd/m²", type: "DCI影院白场测试条件", url: "https://ctp.dcimovies.com/0b5699a0b76a57547576565b89fd052467c8ac20/ctp.html" },
   { id: "R33", title: "US 6,815,153 — improved speed and granularity in high-speed colour negative film", type: "Eastman Kodak专利（分层机制，不是5279配方）", url: "https://patents.google.com/patent/US6815153B2/en" },
+  { id: "R34", title: "US 6,190,847 — Kodak DIR diffusion-factor assay", type: "Eastman Kodak专利（测量机制，不是5279常数）", url: "https://patents.google.com/patent/US6190847B1/en" },
+  { id: "R35", title: "EP 1,016,902 — green-only ECN-2 exposure as an interimage exclusion control", type: "Eastman Kodak专利（实验逻辑）", url: "https://data.epo.org/publication-server/rest/v1.2/publication-dates/20000705/patents/EP1016902NWA2/document.pdf" },
+  { id: "R36", title: "Process ECN-2, H-24 processing modules", type: "Kodak处理与控制文件", url: "https://www.kodak.com/en/motion/page/processing-manuals/" },
+  { id: "R37", title: "ISO 5-3 density spectral conditions and aperture dependence", type: "摄影密度测量标准", url: "https://www.iso.org/standard/52915.html" },
+  { id: "R38", title: "US 7,899,113 — film-grain simulation identifiers and model database", type: "Thomson专利（5279条目无公开参数）", url: "https://patents.google.com/patent/US7899113B2/en" },
+  { id: "R39", title: "JVT-H022 — SEI message for film grain encoding", type: "ITU JVT一手技术提案", url: "https://www.itu.int/wftp3/av-arch/jvt-site/2003_05_Geneva/JVT-H022.zip" },
+  { id: "R40", title: "JVT-I013r2 — film grain encoding syntax and results", type: "ITU JVT一手技术提案", url: "https://www.itu.int/wftp3/av-arch/jvt-site/2003_09_SanDiego/JVT-I013r2.zip" },
+  { id: "R41", title: "US provisional 60/462,389 — A Method for Simulating Film Grain on Encoded Video Sequences", type: "2003年原始临时专利（5279编号沿革，无数值参数）", url: "https://register.epo.org/application?documentId=EICL6DDCDHELFI4&number=EP04714129&lng=en&npl=false" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
