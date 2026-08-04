@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "./components/SiteHeader";
 import { InteractiveImage } from "./components/InteractiveImage";
@@ -8,6 +9,7 @@ import { ParameterPanel } from "./components/ParameterPanel";
 import { references, versions } from "./data";
 import { useLanguage } from "./i18n";
 import { versionEnglish } from "./versionEnglish";
+import { withBasePath } from "./basePath";
 
 export default function Home() {
   const { language, text } = useLanguage();
@@ -21,7 +23,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <main>
-        <section className="hero">
+        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/og-v24.jpg")}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>

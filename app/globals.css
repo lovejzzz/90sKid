@@ -23,7 +23,7 @@ img { display:block; max-width:100%; }
 .language-switch button.is-active { color:var(--red); }
 .language-switch button:focus-visible { outline:2px solid var(--red); outline-offset:2px; }
 .language-switch span { color:#aaa69a; }
-.hero { width:min(1380px,calc(100% - 48px)); min-height:680px; margin:0 auto; padding:94px max(6vw,24px) 56px; color:#f7f2e5; background:linear-gradient(100deg,rgba(11,12,10,.98) 0%,rgba(14,15,13,.88) 48%,rgba(17,18,15,.38) 100%),url('/og-v24.jpg') center/cover; border-radius:0 0 4px 4px; position:relative; overflow:hidden; }
+.hero { width:min(1380px,calc(100% - 48px)); min-height:680px; margin:0 auto; padding:94px max(6vw,24px) 56px; color:#f7f2e5; background:linear-gradient(100deg,rgba(11,12,10,.98) 0%,rgba(14,15,13,.88) 48%,rgba(17,18,15,.38) 100%),var(--hero-image) center/cover; border-radius:0 0 4px 4px; position:relative; overflow:hidden; }
 .hero > *:not(.emulsion-flow) { position:relative; z-index:2; }
 .emulsion-flow { position:absolute; z-index:1; inset:-10%; width:120%; height:120%; opacity:.82; mix-blend-mode:screen; filter:blur(5px) saturate(.86) contrast(1.08); transform:scale(1.02); pointer-events:none; }
 .hero:before { content:""; position:absolute; z-index:1; inset:0; background:radial-gradient(circle at 22% 56%,rgba(184,107,23,.20),transparent 34%),linear-gradient(90deg,rgba(8,9,8,.56),rgba(8,9,8,.08)); pointer-events:none; }
