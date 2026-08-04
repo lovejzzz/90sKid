@@ -961,6 +961,55 @@ versions.push({
   parameters: v28Parameters,
 });
 
+const v28 = versions[versions.length - 1];
+v28.year = "上一版";
+v28.status = "calibration";
+
+const v29Parameters = (v28.parameters ?? []).map((group) => ({
+  ...group,
+  items: [
+    ...group.items.filter((item) => group.title !== "数值验证与效率" || ![
+      "正式T020双母版", "正式T032双母版", "两段并行总等待", "T020每帧双母版", "T032每帧双母版", "输出",
+    ].includes(item.label)),
+    ...(group.title === "输入与母版" ? [
+      { label: "V29测试素材", labelEn: "V29 test source", value: "NJARAW_S001_S001_T002", valueEn: "NJARAW_S001_S001_T002" },
+      { label: "原始视频", labelEn: "Source video", value: "165帧 · 6.881875秒 · 5760×4320 · 12-bit ProRes RAW HQ", valueEn: "165 frames · 6.881875s · 5760×4320 · 12-bit ProRes RAW HQ" },
+      { label: "原始声音", labelEn: "Source audio", value: "24-bit PCM · 48 kHz · 4声道 · 无损保留", valueEn: "24-bit PCM · 48 kHz · 4 channels · stream copied" },
+      { label: "时间码", labelEn: "Timecode", value: "12:04:05:23 · 原样保留", valueEn: "12:04:05:23 · retained" },
+    ] : []),
+    ...(group.title === "5279负片形成" ? [
+      { label: "V29证据策略", labelEn: "V29 evidence policy", value: "没有片种专属测量，不改变NPS、DIR矩阵或三层配方", valueEn: "No stock-specific measurement, no change to NPS, DIR matrix or layer recipe" },
+      { label: "时间随机性", labelEn: "Temporal stochasticity", value: "每个物理帧按绝对源帧号生成新的有限位点乳剂", valueEn: "A new finite-site emulsion keyed by absolute source-frame number" },
+      { label: "分段边界", labelEn: "Segment boundary", value: "并行区段不重置、不重复、不平移颗粒", valueEn: "Parallel ranges do not reset, repeat or translate grain" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "中性H-D门槛", labelEn: "Neutral H-D gate", value: "1025级最大误差 < 7×10⁻⁶ D", valueEn: "1025 levels · maximum error < 7×10⁻⁶ D" },
+      { label: "均匀场DIR门槛", labelEn: "Uniform-field DIR gate", value: "每通道空间漂移 0.0 D", valueEn: "0.0 D spatial drift per record" },
+      { label: "全运动验证", labelEn: "Full-motion validation", value: "逐帧黑场、高光、高频活动与时间相关性", valueEn: "Per-frame black, highlights, high-frequency activity and temporal correlation" },
+      { label: "段落像素验证", labelEn: "Segment pixel gate", value: "全片第82帧与独立探针RGB48逐位完全相等", valueEn: "Full frame 82 and standalone probe are bit-exact equal in RGB48" },
+      { label: "完整T002双母版", labelEn: "Complete T002 dual masters", value: "3113.17秒 · 51分53.17秒 · 两母版并行", valueEn: "3113.17s · 51m 53.17s · two masters in parallel" },
+      { label: "双母版有效速度", labelEn: "Effective dual-master rate", value: "18.87秒/源帧", valueEn: "18.87s per source frame" },
+      { label: "完整运动门槛", labelEn: "Full-motion gates", value: "165/165帧 · 白场硬截断0 · 验证通过", valueEn: "165/165 frames · zero hard white clipping · passed" },
+      { label: "最终输出", labelEn: "Final output", value: "165帧 · 原始全长 · 5760×4320 · 12-bit ProRes 4444 · 双母版", valueEn: "165 frames · full source duration · 5760×4320 · 12-bit ProRes 4444 · two masters" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V29",
+  year: "当前基线",
+  title: "从一秒样片进入完整运动验证：只实现证据允许的最后部分",
+  status: "current",
+  projection: { src: "/versions/v29-t002-projection.jpg", videoSrc: "/versions/v29-t002-projection-live-srgb.mp4", label: "T002 · 完整5279负片 → 2383影院观察Rec.709监看" },
+  bluray: { src: "/versions/v29-t002-bluray.jpg", videoSrc: "/versions/v29-t002-bluray-live-srgb.mp4", label: "T002 · 完整5279负片 → Period 2K / Rec.709蓝光" },
+  summary: "V29把剩余工作从主观“胶片味”转为可证伪验证。公开5279资料可以约束中性H-D、MTF和48µm RMS，却没有片种专属NPS、DIR矩阵、三层配方或Spirit光谱，因此这些未知参数保持V28。新版本完整渲染T002的165帧，让每一帧按绝对源帧号形成新的有限银盐位点/染料云场，检查真实运动中的黑场、高光、颗粒沸腾与分段接缝，并保留原始24-bit四声道声音和时间码。",
+  changes: ["将T002全部165帧作为完整运动压力测试", "并行区段使用绝对源帧号种子，接缝不重置颗粒", "同一份逐帧乳剂同时生成2383与Period 2K观察结果", "加入全片黑场、高光、高频活动、时间相关性和段边界像素验证", "保留原始24-bit/48kHz四声道PCM和12:04:05:23时间码", "H-D、MTF、48µm RMS、色彩、黑位、Gamma和两观察器保持V28"],
+  errors: ["不能把48µm单孔径RMS误称为完整颗粒NPS", "不能把Kodak专利中的示例扩散系数当成5279专属DIR矩阵", "不能把Spirit的公开硬件说明误称为专有光谱校准", "在没有实物对照时继续按单一场景调颗粒或颜色会把艺术选择混入baseline"],
+  discoveries: ["最后15–20%中可用代码完成的是验证与交付；真正的片种识别需要新测量", "独立电影帧应形成新的乳剂马赛克，而不是移动或循环一张颗粒贴图", "并行加速可以保持绝对帧种子与输出像素一致", "完整运动比单帧更容易暴露闪烁、颗粒游泳、黑位偏置与高光不连续", "原音、时间码、色彩元数据和帧数也是行业标准母版的一部分"],
+  refs: ["R1", "R3", "R7", "R8", "R21", "R22", "R23", "R25", "R34", "R35", "R36", "R37"],
+  parameters: v29Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },

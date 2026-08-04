@@ -13,15 +13,15 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V27 project home page", async () => {
+test("server-renders the bilingual V29 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /当前基线[\s\S]{0,50}V27/);
-  assert.match(html, /v27-t020-projection/);
-  assert.match(html, /v27-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /当前基线[\s\S]{0,50}V29/);
+  assert.match(html, /v29-t002-projection/);
+  assert.match(html, /v29-t002-projection-live-srgb\.mp4/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -29,11 +29,11 @@ test("server-renders the bilingual V27 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V27 archive, research and algorithm routes", async () => {
+test("server-renders the V29 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(["/versions", "/research", "/algorithm"].map(render));
   for (const response of pages) assert.equal(response.status, 200);
   const [versions, research, algorithm] = await Promise.all(pages.map((page) => page.text()));
-  assert.match(versions, /V4—[\s\S]{0,30}V27/);
+  assert.match(versions, /V4—[\s\S]{0,30}V29/);
   assert.match(versions, /NJARAW_S001_S001_T032/);
   assert.match(research, /V24 · 35MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
@@ -48,7 +48,9 @@ test("server-renders the V27 archive, research and algorithm routes", async () =
   assert.match(research, /十份小时研究笔记/);
   assert.match(research, /Thomson转让给Dolby/);
   assert.match(research, /公开JVT邮件证据止于2002年/);
-  assert.match(algorithm, /CURRENT V27/);
+  assert.match(research, /V29 · FULL-MOTION VALIDATION/);
+  assert.match(algorithm, /CURRENT V29/);
+  assert.match(algorithm, /V28 · RAW INPUT CONTRACT/);
   assert.match(algorithm, /FULL NEUTRAL-SCALE SCAN CALIBRATION/);
   assert.match(algorithm, /193³/);
 });
@@ -104,6 +106,22 @@ test("V27 stills and hover videos share the verified sRGB path", async () => {
   for (const result of Object.values(manifest.verification)) {
     assert.equal(result.master_metadata.pix_fmt, "yuv444p12le");
     assert.equal(result.master_metadata.color_transfer, "bt709");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
+    assert.ok(result.first_frame_median_luma_delta <= 0.01);
+  }
+});
+
+test("V29 full-motion previews derive from verified 12-bit masters", async () => {
+  const manifest = JSON.parse(await readFile(new URL("../public/versions/v29-live-preview-manifest.json", import.meta.url), "utf8"));
+  assert.deepEqual(manifest.source_frame_range, [70, 93]);
+  assert.equal(manifest.first_frame_source_index, 82);
+  assert.equal(manifest.frames, 24);
+  assert.match(manifest.web, /sRGB IEC 61966-2-1/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.master_metadata.width, 5760);
+    assert.equal(result.master_metadata.height, 4320);
+    assert.equal(result.master_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.master_metadata.nb_frames, "165");
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
     assert.ok(result.first_frame_median_luma_delta <= 0.01);
   }

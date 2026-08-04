@@ -51,6 +51,7 @@ def decode_master(
     frame_dir: Path,
     large_still: Path,
     small_still: Path,
+    start_frame: int = 0,
 ) -> dict[str, object]:
     probe = json.loads(subprocess.check_output(
         [
@@ -66,7 +67,11 @@ def decode_master(
             "ffmpeg", "-v", "error", "-i", str(master), "-an",
             # Both masters carry complete Rec.709 1-1-1 signalling. Decode the
             # interchange OETF explicitly before the browser sRGB transform.
-            "-vf", "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709",
+            "-vf", (
+                f"select=between(n\\,{start_frame}\\,{start_frame + FRAME_COUNT - 1}),"
+                "setpts=N/FRAME_RATE/TB,"
+                "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709"
+            ),
             "-f", "rawvideo", "-pix_fmt", "rgb48le", "pipe:1",
         ],
         stdout=subprocess.PIPE,
@@ -140,6 +145,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", default="v25")
     parser.add_argument("--masters-root", type=Path)
+    parser.add_argument("--source-label", help="Build one source instead of the legacy T020/T032 pair")
+    parser.add_argument("--start-frame", type=int, default=0)
     parser.add_argument("--output-dir", type=Path, default=site_root / "public" / "versions")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -147,26 +154,36 @@ def main() -> None:
     masters_root = args.masters_root or (
         site_root.parent / "outputs" / f"native_5k_{version}_corrected_1s"
     )
-    jobs = {
-        f"{version}-t020-projection": ("T020/projection", "projection"),
-        f"{version}-t020-bluray": ("T020/bluray_scan", "bluray"),
-        f"{version}-t032-projection": ("T032/projection", "projection"),
-        f"{version}-t032-bluray": ("T032/bluray_scan", "bluray"),
-    }
+    if args.source_label:
+        source = args.source_label.lower()
+        jobs = {
+            f"{version}-{source}-projection": ("projection", "projection"),
+            f"{version}-{source}-bluray": ("bluray_scan", "bluray"),
+        }
+    else:
+        jobs = {
+            f"{version}-t020-projection": ("T020/projection", "projection"),
+            f"{version}-t020-bluray": ("T020/bluray_scan", "bluray"),
+            f"{version}-t032-projection": ("T032/projection", "projection"),
+            f"{version}-t032-bluray": ("T032/bluray_scan", "bluray"),
+        }
     results: dict[str, object] = {}
     for stem, (relative, branch) in jobs.items():
         master = masters_root / relative / "05_emulsion_master_prores4444.mov"
         large, small = args.output_dir / f"{stem}.jpg", args.output_dir / f"{stem}-sm.jpg"
         video = args.output_dir / f"{stem}-live-srgb.mp4"
         with tempfile.TemporaryDirectory(prefix=f"{version}-web-") as directory:
-            probe = decode_master(master, branch, Path(directory), large, small)
+            probe = decode_master(
+                master, branch, Path(directory), large, small, args.start_frame
+            )
             encode_loop(Path(directory), video)
         results[stem] = {"master_metadata": probe, **verify(video, large)}
         print(f"built {stem}", flush=True)
     manifest = {
         "purpose": f"{version.upper()} corrected Rec.709-to-sRGB web proxies from 12-bit masters",
         "dimensions": list(VIDEO_SIZE), "fps": FPS, "frames": FRAME_COUNT,
-        "first_frame_source_index": REPRESENTATIVE_FRAME,
+        "source_frame_range": [args.start_frame, args.start_frame + FRAME_COUNT - 1],
+        "first_frame_source_index": args.start_frame + REPRESENTATIVE_FRAME,
         "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
         "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
         "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",

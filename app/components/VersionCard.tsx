@@ -34,7 +34,9 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
   const english = language === "en";
   const copy = english ? versionEnglish[item.version] : undefined;
   const title = copy?.title ?? item.title;
-  const year = copy?.year ?? item.year;
+  const year = english && item.status !== "current" && copy?.year === "CURRENT BASELINE"
+    ? "ARCHIVED CALIBRATION"
+    : (copy?.year ?? item.year);
   const summary = copy?.summary ?? item.summary;
   const changes = copy?.changes ?? item.changes;
   const errors = copy?.errors ?? item.errors;

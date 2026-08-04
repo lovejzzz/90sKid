@@ -16,19 +16,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V28：修正GH7 ProRes RAW的AVFoundation linear-BT.2020输入契约，不重复应用Panasonic RAW-Gamut Camera LUT；5.7K 12-bit双母版。",
+    description: "V29：用完整165帧GH7 ProRes RAW验证5279有限位点乳剂、2383放映与时期2K扫描；5.7K 12-bit双母版保留原音和时间码。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V28：35mm 5279乳剂、修正ProRes RAW输入契约、2383放映与时期2K扫描双观察链。",
+      description: "V29：完整165帧35mm 5279乳剂运动验证、2383放映与时期2K扫描双观察链。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: "/og-v28.png", width: 1732, height: 908, alt: "5279 Emulsion Project · V28 ProRes RAW Input Contract" }],
+      images: [{ url: "/og-v29.png", width: 1733, height: 908, alt: "5279 Emulsion Project · V29 Full-Motion Validation" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V28：35mm 5279乳剂、修正ProRes RAW输入契约、2383放映与时期2K扫描双观察链。",
-      images: ["/og-v28.png"],
+      description: "V29：完整165帧35mm 5279乳剂运动验证、2383放映与时期2K扫描双观察链。",
+      images: ["/og-v29.png"],
     },
   };
 }
