@@ -97,7 +97,10 @@ def encode_loop(frame_dir: Path, output: Path) -> None:
             "ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
             "-s", f"{VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}", "-r", FPS, "-i", "pipe:0", "-an",
             "-vf", "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p",
-            "-c:v", "libx264", "-preset", "slow", "-tune", "grain", "-crf", "16",
+            # The browser proxy is a hover preview, not the archive master.
+            # CRF 20 with grain tuning preserves the moving texture while
+            # keeping the cumulative version archive within its hosting cap.
+            "-c:v", "libx264", "-preset", "slow", "-tune", "grain", "-crf", "20",
             "-pix_fmt", "yuv420p", "-color_primaries", "bt709",
             "-color_trc", "iec61966-2-1", "-colorspace", "bt709",
             "-bsf:v", "h264_metadata=colour_primaries=1:transfer_characteristics=13:matrix_coefficients=1:video_full_range_flag=0",
@@ -167,6 +170,7 @@ def main() -> None:
         "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
         "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
         "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
+        "proxy_encoding": "H.264 High / yuv420p / CRF 20 / tune grain; archive masters remain 5.7K 12-bit ProRes 4444",
         "verification": results,
     }
     (args.output_dir / f"{version}-live-preview-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")

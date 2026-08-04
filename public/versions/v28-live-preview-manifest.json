@@ -10,6 +10,7 @@
   "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
   "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
   "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 20 / tune grain; archive masters remain 5.7K 12-bit ProRes 4444",
   "verification": {
     "v28-t020-projection": {
       "master_metadata": {
@@ -23,9 +24,9 @@
         "nb_frames": "24"
       },
       "first_frame_channel_mae_rgb": [
-        0.008371,
-        0.007256,
-        0.010387
+        0.009659,
+        0.008511,
+        0.011658
       ],
       "first_frame_median_luma_delta": 6.6e-05
     },
@@ -41,11 +42,11 @@
         "nb_frames": "24"
       },
       "first_frame_channel_mae_rgb": [
-        0.007548,
-        0.005935,
-        0.009814
+        0.008723,
+        0.007019,
+        0.010898
       ],
-      "first_frame_median_luma_delta": 0.001946
+      "first_frame_median_luma_delta": 0.001971
     },
     "v28-t032-projection": {
       "master_metadata": {
@@ -59,9 +60,9 @@
         "nb_frames": "24"
       },
       "first_frame_channel_mae_rgb": [
-        0.011432,
-        0.008845,
-        0.012846
+        0.012921,
+        0.010216,
+        0.014254
       ],
       "first_frame_median_luma_delta": 0.000845
     },
@@ -77,11 +78,11 @@
         "nb_frames": "24"
       },
       "first_frame_channel_mae_rgb": [
-        0.007933,
-        0.006084,
-        0.009885
+        0.009097,
+        0.007101,
+        0.010959
       ],
-      "first_frame_median_luma_delta": 0.001409
+      "first_frame_median_luma_delta": 0.00138
     }
   }
 }
