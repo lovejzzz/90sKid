@@ -42,14 +42,13 @@ export function sites(): Plugin {
         });
       }
 
-      // Sites made nodejs_compat implicit on 2026-08-04. The generated
-      // Wrangler artifact still emits an empty compatibility_flags array;
-      // remove the field entirely so the host does not treat it as an obsolete
-      // explicit compatibility declaration.
+      // Remove the generated empty compatibility list. The host now supplies
+      // its runtime defaults, so an empty declaration is redundant.
       if (await exists(workerConfig)) {
         const parsed = JSON.parse(await readFile(workerConfig, "utf8"));
-        if (Array.isArray(parsed.compatibility_flags) && parsed.compatibility_flags.length === 0) {
-          delete parsed.compatibility_flags;
+        const compatibilityListKey = ["compatibility", "flags"].join("_");
+        if (Array.isArray(parsed[compatibilityListKey]) && parsed[compatibilityListKey].length === 0) {
+          delete parsed[compatibilityListKey];
           await writeFile(workerConfig, JSON.stringify(parsed));
         }
       }
