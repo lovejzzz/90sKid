@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""Build matched sRGB still/live proxies from the two V25 display masters."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import tempfile
+from pathlib import Path
+
+import cv2
+import numpy as np
+
+
+VIDEO_SIZE = (1920, 1440)
+LARGE_SIZE = (2560, 1920)
+SMALL_SIZE = (800, 600)
+FPS = "24000/1001"
+FRAME_COUNT = 24
+REPRESENTATIVE_FRAME = 12
+REC709_TO_XYZ = np.array(
+    [[.412391, .357584, .180481], [.212639, .715169, .072192], [.019331, .119195, .950532]],
+    np.float32,
+)
+XYZ_TO_REC709 = np.array(
+    [[3.240970, -1.537383, -.498611], [-.969244, 1.875968, .041555], [.055630, -.203977, 1.056972]],
+    np.float32,
+)
+XYZ_TO_P3 = np.array(
+    [[2.493497, -.931384, -.402711], [-.829489, 1.762664, .023625], [.035846, -.076172, .956885]],
+    np.float32,
+)
+P3_TO_REC709 = (XYZ_TO_REC709 @ np.linalg.inv(XYZ_TO_P3)).astype(np.float32)
+
+
+def srgb_encode(linear: np.ndarray) -> np.ndarray:
+    linear = np.clip(linear, 0.0, 1.0)
+    return np.where(
+        linear <= .0031308,
+        12.92 * linear,
+        1.055 * np.power(linear, 1 / 2.4) - .055,
+    )
+
+
+def master_signal_to_srgb(signal: np.ndarray, branch: str) -> np.ndarray:
+    encoded = signal.astype(np.float32) / 65535.0
+    if branch == "projection":
+        p3_linear = np.power(np.clip(encoded, 0.0, 1.0), 2.6)
+        linear = cv2.transform(p3_linear, P3_TO_REC709)
+    elif branch == "bluray":
+        linear = np.power(np.clip(encoded, 0.0, 1.0), 2.4)
+    else:
+        raise ValueError(branch)
+    return np.rint(srgb_encode(linear) * 255.0).astype(np.uint8)
+
+
+def decode_master(
+    master: Path,
+    branch: str,
+    frame_dir: Path,
+    large_still: Path,
+    small_still: Path,
+) -> dict[str, object]:
+    probe = json.loads(subprocess.check_output(
+        [
+            "ffprobe", "-v", "error", "-select_streams", "v:0",
+            "-show_entries", "stream=width,height,nb_frames,pix_fmt,bits_per_raw_sample,color_space,color_transfer,color_primaries",
+            "-of", "json", str(master),
+        ], text=True,
+    ))["streams"][0]
+    width, height = int(probe["width"]), int(probe["height"])
+    frame_bytes = width * height * 3 * 2
+    decoder = subprocess.Popen(
+        [
+            "ffmpeg", "-v", "error", "-i", str(master), "-an",
+            # ProRes frame headers have no ST 428 transfer enum.  Override only
+            # the YUV->RGB conversion metadata here; the resulting RGB numbers
+            # remain encoded master signal and are decoded by our explicit
+            # branch EOTF below.
+            "-vf", "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709",
+            "-f", "rawvideo", "-pix_fmt", "rgb48le", "pipe:1",
+        ],
+        stdout=subprocess.PIPE,
+    )
+    assert decoder.stdout is not None
+    for index in range(FRAME_COUNT):
+        payload = decoder.stdout.read(frame_bytes)
+        if len(payload) != frame_bytes:
+            raise RuntimeError(f"{master}: decoded {index} frames; expected {FRAME_COUNT}")
+        signal = np.frombuffer(payload, dtype="<u2").reshape(height, width, 3)
+        srgb = master_signal_to_srgb(signal, branch)
+        video = cv2.resize(srgb, VIDEO_SIZE, interpolation=cv2.INTER_AREA)
+        (frame_dir / f"{index:02d}.rgb").write_bytes(video.tobytes())
+        if index == REPRESENTATIVE_FRAME:
+            large = cv2.resize(srgb, LARGE_SIZE, interpolation=cv2.INTER_AREA)
+            small = cv2.resize(srgb, SMALL_SIZE, interpolation=cv2.INTER_AREA)
+            cv2.imwrite(str(large_still), cv2.cvtColor(large, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, 96])
+            cv2.imwrite(str(small_still), cv2.cvtColor(small, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, 91])
+    decoder.stdout.close()
+    if decoder.wait() != 0:
+        raise RuntimeError(f"failed to decode {master}")
+    return probe
+
+
+def encode_loop(frame_dir: Path, output: Path) -> None:
+    encoder = subprocess.Popen(
+        [
+            "ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
+            "-s", f"{VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}", "-r", FPS, "-i", "pipe:0", "-an",
+            "-vf", "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p",
+            "-c:v", "libx264", "-preset", "slow", "-tune", "grain", "-crf", "16",
+            "-pix_fmt", "yuv420p", "-color_primaries", "bt709",
+            "-color_trc", "iec61966-2-1", "-colorspace", "bt709",
+            "-bsf:v", "h264_metadata=colour_primaries=1:transfer_characteristics=13:matrix_coefficients=1:video_full_range_flag=0",
+            "-movflags", "+faststart", str(output),
+        ], stdin=subprocess.PIPE,
+    )
+    assert encoder.stdin is not None
+    order = list(range(REPRESENTATIVE_FRAME, FRAME_COUNT)) + list(range(REPRESENTATIVE_FRAME))
+    for index in order:
+        encoder.stdin.write((frame_dir / f"{index:02d}.rgb").read_bytes())
+    encoder.stdin.close()
+    if encoder.wait() != 0:
+        raise RuntimeError(f"failed to encode {output}")
+
+
+def verify(video: Path, still: Path) -> dict[str, object]:
+    payload = subprocess.check_output(
+        ["ffmpeg", "-v", "error", "-i", str(video), "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"]
+    )
+    first = np.frombuffer(payload, np.uint8).reshape(VIDEO_SIZE[1], VIDEO_SIZE[0], 3).astype(np.float32) / 255
+    reference = cv2.cvtColor(cv2.imread(str(still)), cv2.COLOR_BGR2RGB)
+    reference = cv2.resize(reference, VIDEO_SIZE, interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+    mae = np.mean(np.abs(first - reference), axis=(0, 1))
+    weights = np.array([.2126, .7152, .0722], dtype=np.float32)
+    first_luma = np.einsum("...c,c->...", first, weights)
+    reference_luma = np.einsum("...c,c->...", reference, weights)
+    median_delta = abs(float(np.median(first_luma)) - float(np.median(reference_luma)))
+    if not np.all(np.isfinite(mae)) or not np.isfinite(median_delta):
+        raise RuntimeError(f"{video.name}: non-finite still/live validation")
+    if float(np.max(mae)) > .025 or median_delta > .01:
+        raise RuntimeError(f"{video.name}: still/live mismatch {mae}, {median_delta}")
+    return {"first_frame_channel_mae_rgb": [round(float(v), 6) for v in mae], "first_frame_median_luma_delta": round(median_delta, 6)}
+
+
+def main() -> None:
+    site_root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--masters-root", type=Path, default=site_root.parent / "outputs" / "native_5k_v25_pipeline_1s")
+    parser.add_argument("--output-dir", type=Path, default=site_root / "public" / "versions")
+    args = parser.parse_args()
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    jobs = {
+        "v25-t020-projection": ("T020/projection", "projection"),
+        "v25-t020-bluray": ("T020/bluray_scan", "bluray"),
+        "v25-t032-projection": ("T032/projection", "projection"),
+        "v25-t032-bluray": ("T032/bluray_scan", "bluray"),
+    }
+    results: dict[str, object] = {}
+    for stem, (relative, branch) in jobs.items():
+        master = args.masters_root / relative / "05_emulsion_master_prores4444.mov"
+        large, small = args.output_dir / f"{stem}.jpg", args.output_dir / f"{stem}-sm.jpg"
+        video = args.output_dir / f"{stem}-live-srgb.mp4"
+        with tempfile.TemporaryDirectory(prefix="v25-web-") as directory:
+            probe = decode_master(master, branch, Path(directory), large, small)
+            encode_loop(Path(directory), video)
+        results[stem] = {"master_metadata": probe, **verify(video, large)}
+        print(f"built {stem}", flush=True)
+    manifest = {
+        "purpose": "V25 observer-correct sRGB web proxies from 12-bit masters",
+        "dimensions": list(VIDEO_SIZE), "fps": FPS, "frames": FRAME_COUNT,
+        "first_frame_source_index": REPRESENTATIVE_FRAME,
+        "projection_source": "Display P3-D65 / 48 nit / gamma 2.6",
+        "bluray_source": "Rec.709-D65 / 100 nit / BT.1886 gamma 2.4",
+        "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
+        "verification": results,
+    }
+    (args.output_dir / "v25-live-preview-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main()

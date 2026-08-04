@@ -576,6 +576,79 @@ versions.push({
   parameters: v24Parameters,
 });
 
+const v24 = versions[versions.length - 1];
+v24.year = "上一版";
+v24.status = "calibration";
+
+const v25Overrides: Record<string, string> = {
+  "显示编码": "分支独立 · P3-D65 γ2.6 / Rec.709 BT.1886",
+  "随机种子": "逐帧/记录/速度/粒径/固定条带；线程数不改变结果",
+  "颜色决定": "沿用V22已验证分析染料链；不采纳未识别hourly候选",
+  "网页观察空间": "由母版EOTF解码后统一转sRGB D65",
+};
+
+const v25Parameters = (v24.parameters ?? []).map((group) => ({
+  ...group,
+  items: [
+    ...group.items
+      .filter((item) => group.title !== "数值验证与效率" || ![
+        "T020真实总墙钟", "T032真实总墙钟", "两段并行总等待", "乳剂形成 / 帧",
+        "平均负片 / 帧", "投影 / 扫描 / 帧", "解码 / 双路编码 / 帧", "网页观察空间",
+        "网页帧对齐", "网页Live预览", "性能瓶颈", "现场硬件利用",
+      ].includes(item.label))
+      .map((item) => v25Overrides[item.label] ? { ...item, value: v25Overrides[item.label] } : item),
+    ...(group.title === "扫描与放映输出" ? [
+      { label: "放映母版", value: "Display P3-D65 · 48 nit · gamma 2.6", note: "12-bit ProRes 4444；P3色度写入帧头，ST 428 transfer写入MOV nclx" },
+      { label: "蓝光母版", value: "Rec.709-D65 · 100 nit · BT.1886", note: "理想零黑参考EOTF；片种/扫描链自身黑位不被输出变换抬起或压掉" },
+      { label: "影院白场", value: "48 cd/m²（14 ft-L DCI测试条件）" },
+      { label: "蓝光白场", value: "100 cd/m² SDR参考" },
+      { label: "母版范围", value: "full-range RGB计算 → 12-bit 4:4:4 ProRes" },
+      { label: "网页代理", value: "sRGB IEC 61966-2-1 · D65" },
+    ] : []),
+    ...(group.title === "数值验证与效率" ? [
+      { label: "V25一帧双母版", value: "80.86秒（含封装与哈希）" },
+      { label: "V24等效一帧", value: "约143秒核心计算" },
+      { label: "银盐采样 1→8线程", value: "70.09 → 35.22秒 · 1.99×" },
+      { label: "线程一致性", value: "5760×4320逐像素相同 · max Δ 0" },
+      { label: "复用平均负片", value: "删除每帧一次完整重复显影计算" },
+      { label: "颗粒质量捷径", value: "无", note: "未减分辨率、未减45组采样、未缩短帧数、未改RMS/MTF/粒径" },
+      { label: "BT.1886往返误差", value: "max 5.96×10⁻⁸" },
+      { label: "正式T020计时", value: "1806.63秒 · 30分06.63秒" },
+      { label: "正式T032计时", value: "1818.63秒 · 30分18.63秒" },
+      { label: "两段并行总等待", value: "1818.63秒 · 30分18.63秒" },
+      { label: "相对V24总等待", value: "58分32秒 → 30分19秒 · 缩短48.2%" },
+      { label: "正式平均负片 / 帧", value: "T020 33.21秒 · T032 32.87秒" },
+      { label: "正式乳剂形成 / 帧", value: "22.32秒 · 22.46秒", note: "四个并行worker；含固定条带抽样与完整DIR/RMS回标" },
+      { label: "正式双观察器 / 帧", value: "17.95秒 · 18.58秒", note: "P3影院与Rec.709蓝光并行" },
+      { label: "解码 / 双路编码 / 帧", value: "约1.00–1.04秒 / 0.44秒" },
+      { label: "网页首帧亮度误差", value: "0.00133–0.00164 median luma" },
+      { label: "网页首帧RGB MAE", value: "0.00617–0.01436", note: "JPEG与H.264 4:2:0代理压缩；全部低于验收阈值0.025" },
+      { label: "Live代理", value: "1920 × 1440 · 24帧 · sRGB transfer" },
+    ] : []),
+  ],
+}));
+
+versions.push({
+  version: "V25",
+  year: "当前版本",
+  title: "把胶片、影院、蓝光和网页放回各自的色彩空间",
+  status: "current",
+  projection: { src: "/versions/v25-t020-projection.jpg", videoSrc: "/versions/v25-t020-projection-live-srgb.mp4", label: "T020 · P3-D65 / 48 nit / γ2.6影院参考" },
+  bluray: { src: "/versions/v25-t020-bluray.jpg", videoSrc: "/versions/v25-t020-bluray-live-srgb.mp4", label: "T020 · Rec.709 / 100 nit / BT.1886蓝光参考" },
+  summary: "V25不重新调5279颜色，也不改变V24的颗粒、MTF、DIR、2383或扫描完成曲线。它修正此前把显示线性画面用Rec.709摄影机OETF写入母版的管线错误：影院参考改为P3-D65、48 nit、gamma 2.6；蓝光参考改为Rec.709-D65、100 nit、BT.1886；网页则从两份母版各自解码后生成同一sRGB观察代理。与此同时，固定种子的银盐位点条带并行和平均负片复用，把速度提升建立在逐像素一致性上。",
+  changes: ["移除显示母版中的Rec.709摄影机OETF误用", "影院参考显式采用P3-D65、48 nit、gamma 2.6", "蓝光参考显式采用Rec.709-D65、100 nit、BT.1886", "黑位在display-linear域锁定，输出变换不新增lift或crush", "网页大图与Live视频从各自母版解码到sRGB", "45组银盐位点使用固定种子条带并行", "复用确定性平均负片，删除一次完整重复显影", "hourly研究只保留已通过官方来源与真实素材验证的V22分析染料结论"],
+  errors: ["V24及以前把已是display-linear的结果再次使用Rec.709摄影机OETF编码；播放器按显示EOTF解释时会改变中间调、黑位和对比", "V24的1-1-1 Rec.709标签同时承载放映和蓝光两种观看意图，文件标签无法表达两条不同观察器", "ProRes帧头没有ST 428/gamma 2.6枚举；V25需用P3帧头色度加MOV nclx transfer，并以清单和回读共同约束", "BT.1886的实际显示黑取决于校准显示器；母版采用理想零黑参考，不能替代观看设备校准", "公开资料仍不足以识别5279所有层间参数；toe、DLE、Spirit窄带候选和rem-jet残余项因此没有进入V25"],
+  discoveries: ["V24网页视频比大图更浓不是新胶片变化，而是OETF/EOTF错配造成的观察差异", "黑位必须先在胶片/扫描/投影display-linear结果中成立，再由目标EOTF编码；不能靠错误gamma制造更黑", "固定随机条带让并行度与画面内容解耦：1和8线程的全画幅密度数组完全相同", "V24每帧重复计算一次确定性平均负片；删除重复工作比近似颗粒模型更安全", "hourly研究的价值也包括证伪：LAD单点、未公开扫描器光谱或单通道专利数据不足以授权全局颜色变化"],
+  refs: ["R1", "R4", "R26", "R27", "R28", "R29", "R30", "R31", "R32"],
+  additionalTrials: [{
+    name: "NJARAW_S001_S001_T032",
+    note: "雨天青绿、暗柱与低反差纹理用于检查P3影院参考和Rec.709蓝光参考在不同黑位与gamma下仍来自同一份乳剂。",
+    projection: { src: "/versions/v25-t032-projection.jpg", videoSrc: "/versions/v25-t032-projection-live-srgb.mp4", label: "T032 · P3-D65 / 48 nit / γ2.6影院参考" },
+    bluray: { src: "/versions/v25-t032-bluray.jpg", videoSrc: "/versions/v25-t032-bluray-live-srgb.mp4", label: "T032 · Rec.709 / 100 nit / BT.1886蓝光参考" },
+  }],
+  parameters: v25Parameters,
+});
+
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
   { id: "R2", title: "Exploring the Color Image", type: "Kodak技术读物", url: "https://www.kodak.com/content/products-brochures/Film/Exploring-the-Color-Image.pdf" },
@@ -607,6 +680,8 @@ export const references = [
   { id: "R28", title: "Digital Cinema System Specification", type: "DCI数字影院规范", url: "https://www.dcimovies.com/dci-specification/" },
   { id: "R29", title: "CSS Color Module Level 4 — sRGB and web colour", type: "W3C网页颜色标准", url: "https://www.w3.org/TR/css-color-4/" },
   { id: "R30", title: "ACES 2 Output Transform parameters and display encodings", type: "Academy色彩管理规范", url: "https://docs.acescentral.com/system-components/output-transforms/parameters/" },
+  { id: "R31", title: "ITU-R BT.1886-0 — Reference electro-optical transfer function", type: "ITU官方公式与黑白端点定义", url: "https://www.itu.int/dms_pubrec/itu-r/rec/bt/r-rec-bt.1886-0-201103-i%21%21pdf-e.pdf" },
+  { id: "R32", title: "DCI Compliance Test Plan — calibrated screen luminance 48 cd/m²", type: "DCI影院白场测试条件", url: "https://ctp.dcimovies.com/0b5699a0b76a57547576565b89fd052467c8ac20/ctp.html" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

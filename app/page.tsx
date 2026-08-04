@@ -8,8 +8,8 @@ import { versions } from "./data";
 export default function Home() {
   const current = versions[versions.length - 1];
   const currentGallery = [
-    { src: "/versions/v24-t020-projection.jpg", alt: "V24 T020 2383氙灯放映效果" },
-    { src: "/versions/v24-t020-bluray.jpg", alt: "V24 T020 2K DI蓝光效果" },
+    { src: "/versions/v25-t020-projection.jpg", alt: "V25 T020 P3影院参考" },
+    { src: "/versions/v25-t020-bluray.jpg", alt: "V25 T020 Rec.709蓝光参考" },
   ];
   return (
     <>
@@ -21,15 +21,15 @@ export default function Home() {
           <h1>不是给数码影像<br />贴一层颗粒。</h1>
           <p className="hero-lead">我们的目标，是重建曝光、银盐位点、染料云、层间抑制、印片与扫描共同形成画面的过程。</p>
           <div className="hero-actions"><Link href="/versions" className="button primary">观看版本演进</Link><Link href="/research" className="button">阅读研究</Link></div>
-          <div className="hero-meta"><span><b>21</b> 个已归档版本</span><span><b>30</b> 条核心资料</span><span><b>12-bit</b> 5.7K主链</span></div>
+          <div className="hero-meta"><span><b>22</b> 个已归档版本</span><span><b>32</b> 条核心资料</span><span><b>12-bit</b> 5.7K主链</span></div>
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>当前基线 · V24</span><h2>同一张负片，两种历史上真实存在的结果</h2><p>左侧经过5279负片、分析染料反演、2383正片和氙灯投影；右侧经过负片扫描、Cineon/2K DI与蓝光完成。V24把V23的早期CCD／16mm倾向拆成空间频谱与综合色颗粒两个问题，在平均颜色完全不动的前提下重新逼近35mm。</p></div>
+          <div className="section-intro"><span>当前基线 · V25</span><h2>同一张负片，两种明确校准的电影输出</h2><p>胶片物理与V24保持一致。左侧是P3-D65、48 nit、gamma 2.6影院参考；右侧是Rec.709-D65、100 nit、BT.1886蓝光参考。网页不再让浏览器猜母版，而是把两者各自正确解码后统一生成sRGB代理。</p></div>
           <div className="current-visual-layout">
             <div className="hero-comparison">
-              <figure><div className="image-title"><b>2383</b><span>PRINT / XENON</span></div><InteractiveImage src="/versions/v24-t020-projection.jpg" previewSrc="/versions/v24-t020-projection-sm.jpg" videoSrc="/versions/v24-t020-projection-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V24 T020 2383氙灯放映效果" gallery={currentGallery} initialIndex={0} /><figcaption>35mm细颗粒频谱、综合色积分、分析染料与2383氙灯链</figcaption></figure>
-              <figure><div className="image-title"><b>2K DI</b><span>SPIRIT / BLU-RAY</span></div><InteractiveImage src="/versions/v24-t020-bluray.jpg" previewSrc="/versions/v24-t020-bluray-sm.jpg" videoSrc="/versions/v24-t020-bluray-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V24 T020 2K DI蓝光效果" gallery={currentGallery} initialIndex={1} /><figcaption>同一乳剂经时期2K孔径与更强综合色颗粒积分完成</figcaption></figure>
+              <figure><div className="image-title"><b>2383</b><span>P3-D65 / 48 NIT / γ2.6</span></div><InteractiveImage src="/versions/v25-t020-projection.jpg" previewSrc="/versions/v25-t020-projection-sm.jpg" videoSrc="/versions/v25-t020-projection-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 P3影院参考" gallery={currentGallery} initialIndex={0} /><figcaption>5279、2383与氙灯结果进入P3影院参考观察器</figcaption></figure>
+              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 100 NIT / BT.1886</span></div><InteractiveImage src="/versions/v25-t020-bluray.jpg" previewSrc="/versions/v25-t020-bluray-sm.jpg" videoSrc="/versions/v25-t020-bluray-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 Rec.709蓝光参考" gallery={currentGallery} initialIndex={1} /><figcaption>同一乳剂经时期2K扫描与BT.1886 SDR完成</figcaption></figure>
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>

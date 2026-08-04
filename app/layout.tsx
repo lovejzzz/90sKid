@@ -15,19 +15,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V24：从GH7 ProRes RAW重建Kodak VISION 500T 5279乳剂、35mm颗粒频谱、2383放映与时期2K扫描。",
+    description: "V25：5279乳剂重建，P3-D65影院、Rec.709 BT.1886蓝光与sRGB网页观察器，5.7K 12-bit双母版。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V24：35mm颗粒频谱、综合色分离、2383氙灯放映与时期2K扫描。",
+      description: "V25：35mm 5279乳剂、P3影院与Rec.709蓝光标准化输出。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: "/og-v24.jpg", width: 1659, height: 948, alt: "5279 Emulsion Project · V24 35mm Texture" }],
+      images: [{ url: "/versions/v25-t020-projection.jpg", width: 2560, height: 1920, alt: "5279 Emulsion Project · V25 P3 Cinema Reference" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V24：35mm颗粒频谱、综合色分离、2383氙灯放映与时期2K扫描。",
-      images: ["/og-v24.jpg"],
+      description: "V25：35mm 5279乳剂、P3影院与Rec.709蓝光标准化输出。",
+      images: ["/versions/v25-t020-projection.jpg"],
     },
   };
 }

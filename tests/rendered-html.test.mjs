@@ -13,32 +13,32 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the V24 project home page", async () => {
+test("server-renders the V25 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /当前基线 · V24/);
-  assert.match(html, /v24-t020-projection/);
-  assert.match(html, /v24-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /当前基线 · V25/);
+  assert.match(html, /v25-t020-projection/);
+  assert.match(html, /v25-t020-projection-live-srgb\.mp4/);
   assert.doesNotMatch(html, /LIVE · 1s/);
   assert.match(html, /参数面板|PARAMETERS/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V24 archive, research and algorithm routes", async () => {
+test("server-renders the V25 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(["/versions", "/research", "/algorithm"].map(render));
   for (const response of pages) assert.equal(response.status, 200);
   const [versions, research, algorithm] = await Promise.all(pages.map((page) => page.text()));
-  assert.match(versions, /V4—V24/);
+  assert.match(versions, /V4—V25/);
   assert.match(versions, /NJARAW_S001_S001_T032/);
   assert.match(research, /V24 · 35MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
-  assert.match(research, /V25 PLAN · COLOUR PIPELINE STANDARDIZATION/);
-  assert.match(research, /Hourly研究总审计/);
-  assert.match(research, /黑场、对比度与gamma验收/);
-  assert.match(algorithm, /CURRENT V24/);
+  assert.match(research, /V25 RESULT · COLOUR PIPELINE \+ EXACT ACCELERATION/);
+  assert.match(research, /Hourly审计/);
+  assert.match(research, /ITU-R BT\.1886/);
+  assert.match(algorithm, /CURRENT V25/);
   assert.match(algorithm, /193³/);
 });
 
@@ -58,16 +58,17 @@ test("lightbox keeps gallery navigation and magnification controls", async () =>
   assert.match(source, /stage\.scrollTop \+= saved\.y/);
 });
 
-test("V24 web videos use the same colour-managed observer as the stills", async () => {
+test("V25 web videos decode each master observer before sRGB", async () => {
   const data = await readFile(new URL("../app/data.ts", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
-  const manifest = JSON.parse(await readFile(new URL("../public/versions/v24-live-preview-manifest.json", import.meta.url), "utf8"));
+  const manifest = JSON.parse(await readFile(new URL("../public/versions/v25-live-preview-manifest.json", import.meta.url), "utf8"));
   assert.match(data, /sRGB IEC 61966-2-1/);
-  assert.match(data, /第13帧静态图 = 短视频首帧/);
+  assert.match(data, /网页首帧亮度误差/);
   assert.doesNotMatch(styles, /brightness\(1\.04\)/);
-  assert.equal(manifest.web_transfer, "sRGB IEC 61966-2-1");
+  assert.match(manifest.web, /sRGB IEC 61966-2-1/);
   assert.equal(manifest.first_frame_source_index, 12);
-  assert.deepEqual(manifest.frame_order.slice(0, 3), [12, 13, 14]);
+  assert.match(manifest.projection_source, /gamma 2\.6/);
+  assert.match(manifest.bluray_source, /BT\.1886/);
   for (const result of Object.values(manifest.verification)) {
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
     assert.ok(result.first_frame_median_luma_delta <= 0.01);
