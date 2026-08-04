@@ -703,13 +703,19 @@ const v26Parameters = (v25.parameters ?? []).map((group) => ({
   ],
 }));
 
+// V26/V27 hover loops are immutable, version-pinned website assets. Keeping
+// them on the archival GitHub commit prevents two production hosts from
+// packaging another 127 MiB while retaining the original pixels and URLs.
+const archivedHover = (filename: string) =>
+  `https://raw.githubusercontent.com/lovejzzz/90sKid/fa7152aed9552286220a798d602eb04d5797b824/public/versions/${filename}`;
+
 versions.push({
   version: "V26",
   year: "当前版本",
   title: "让曝光选择颗粒频谱，而不是只改变颗粒响度",
   status: "current",
-  projection: { src: "/versions/v26-t020-projection.jpg", videoSrc: "/versions/v26-t020-projection-live-srgb.mp4", label: "T020 · 2383影院观察的Rec.709监看" },
-  bluray: { src: "/versions/v26-t020-bluray.jpg", videoSrc: "/versions/v26-t020-bluray-live-srgb.mp4", label: "T020 · Period 2K / Rec.709蓝光" },
+  projection: { src: "/versions/v26-t020-projection.jpg", videoSrc: archivedHover("v26-t020-projection-live-srgb.mp4"), label: "T020 · 2383影院观察的Rec.709监看" },
+  bluray: { src: "/versions/v26-t020-bluray.jpg", videoSrc: archivedHover("v26-t020-bluray-live-srgb.mp4"), label: "T020 · Period 2K / Rec.709蓝光" },
   summary: "V26完全锁住V25修正版的色彩、黑位、对比、Gamma和Rec.709 1-1-1输出，只修正乳剂内部一个被简化的地方：快、中、慢三层不再共用同一套五级染料云权重。阴影由更大、更快的晶体统计主导，高光由更细的慢层主导；每个曝光和颜色记录仍重新回标5279公开的48µm扩散RMS，所以变化是颗粒空间频谱与有机运动，而不是更响的噪点。",
   changes: ["将五级染料云分布从全层共享改为快/中/慢三套权重", "阴影保留较宽的大云尾部，高光减少大云尾部", "每帧独立采样有限银盐位点，保持有机沸腾且不形成移动噪点贴图", "5279三记录48µm RMS继续作为最终振幅约束", "V25颜色、黑白灰、MTF、DIR、2383与Period 2K观察器逐项锁定", "首帧亮度和黑位数值回归通过", "加入NPS、层激活、均值漂移与帧间相关诊断", "T020与T032继续各交付1秒5.7K 12-bit双母版", "建立Resolve OFX迁移性能合同与Metal优先架构"],
   errors: ["V25的三速度层已有不同基础半径，但每层内部仍共用同一个五级尺寸分布", "共享分布会让慢层在高光中保留与快层相同的大云尾部，削弱35mm应有的曝光相关细腻变化", "仅用48µm RMS无法唯一决定颗粒观感；同一积分振幅可对应不同空间频谱", "5279没有公开逐亚层完整Wiener/NPS与涂布配方，因此V26权重是由Kodak机制约束的保守模型，不宣称是秘方复原"],
@@ -718,8 +724,8 @@ versions.push({
   additionalTrials: [{
     name: "NJARAW_S001_S001_T032",
     note: "雨天青绿、暗柱、高光树叶与低反差纹理用于验证三速度层切换不会带来色相漂移或CCD式综合色噪点。",
-    projection: { src: "/versions/v26-t032-projection.jpg", videoSrc: "/versions/v26-t032-projection-live-srgb.mp4", label: "T032 · 2383影院观察的Rec.709监看" },
-    bluray: { src: "/versions/v26-t032-bluray.jpg", videoSrc: "/versions/v26-t032-bluray-live-srgb.mp4", label: "T032 · Period 2K / Rec.709蓝光" },
+    projection: { src: "/versions/v26-t032-projection.jpg", videoSrc: archivedHover("v26-t032-projection-live-srgb.mp4"), label: "T032 · 2383影院观察的Rec.709监看" },
+    bluray: { src: "/versions/v26-t032-bluray.jpg", videoSrc: archivedHover("v26-t032-bluray-live-srgb.mp4"), label: "T032 · Period 2K / Rec.709蓝光" },
   }],
   parameters: v26Parameters,
 });
@@ -878,8 +884,8 @@ versions.push({
   year: "当前版本",
   title: "把扫描器的绿色罩层从胶片颜色中分离出来",
   status: "current",
-  projection: { src: "/versions/v27-t020-projection.jpg", videoSrc: "/versions/v27-t020-projection-live-srgb.mp4", label: "T020 · 2383影院观察的Rec.709监看（与V26相同）" },
-  bluray: { src: "/versions/v27-t020-bluray.jpg", videoSrc: "/versions/v27-t020-bluray-live-srgb.mp4", label: "T020 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
+  projection: { src: "/versions/v27-t020-projection.jpg", videoSrc: archivedHover("v27-t020-projection-live-srgb.mp4"), label: "T020 · 2383影院观察的Rec.709监看（与V26相同）" },
+  bluray: { src: "/versions/v27-t020-bluray.jpg", videoSrc: archivedHover("v27-t020-bluray-live-srgb.mp4"), label: "T020 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
   summary: "V27确认V26蓝光版的朦胧绿色并非网页或颗粒造成，而是扫描观察器只在18%灰与一个高密度点校准后留下的密度相关灰轴误差。新版本以2049级中性曝光建立扫描RGB平衡，并逐像素恢复原Rec.709亮度，因此绿色残差下降，但黑位、对比、Gamma、2K孔径与高光亮度不动。V26负片、颗粒、DIR、2383和放映母版全部锁定。",
   changes: ["用完整中性曝光尺度替代扫描器的双锚点灰平衡", "在完成的Period 2K扫描分支中加入密度相关RGB校准", "逐像素保持Rec.709亮度，禁止校准变成调色", "中性通道最大残差从0.01820降至0.00236", "绿色对手残差从0.02172降至0.00242", "否决会让真实RAW更绿、更亮的完全主色分离方案", "V26颗粒、DIR、NPS、MTF、黑位和Gamma全部锁定", "2383放映母版逐字节复用V26", "结合最新hourly研究的不可识别性结论，不凭专利编号或48µm RMS发明新参数", "核对2003年5279临时专利原件：确认编号沿革，但仍无任何5279数值参数", "网站加入完整中英文切换并保存语言选择"],
   errors: ["V26扫描器只在18%灰和一个高密度点定标，无法保证整条灰阶中性", "V26人为保留18%的所谓Spirit/染料残余，但公开资料没有支持其色相和密度形状", "阴影和低中间调出现绿色隆起，中灰锚点正确，亮部偏移方向又改变，所以全局品红无法修复", "2K孔径的柔化与RGB灰轴错误曾在观感上混成同一种绿色雾感", "最新hourly研究仍没有公开5279专属NPS、DIR矩阵或Spirit私有校准，不能借V27改写这些部分"],
@@ -888,8 +894,8 @@ versions.push({
   additionalTrials: [{
     name: "NJARAW_S001_S001_T032",
     note: "雨天青绿、暗柱与低反差纹理用于确认灰轴校准不会把真实绿色错误拉回中性，也不会改变黑位和亮度。",
-    projection: { src: "/versions/v27-t032-projection.jpg", videoSrc: "/versions/v27-t032-projection-live-srgb.mp4", label: "T032 · 2383影院观察的Rec.709监看（与V26相同）" },
-    bluray: { src: "/versions/v27-t032-bluray.jpg", videoSrc: "/versions/v27-t032-bluray-live-srgb.mp4", label: "T032 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
+    projection: { src: "/versions/v27-t032-projection.jpg", videoSrc: archivedHover("v27-t032-projection-live-srgb.mp4"), label: "T032 · 2383影院观察的Rec.709监看（与V26相同）" },
+    bluray: { src: "/versions/v27-t032-bluray.jpg", videoSrc: archivedHover("v27-t032-bluray-live-srgb.mp4"), label: "T032 · 中性灰阶约束的Period 2K / Rec.709蓝光" },
   }],
   parameters: v27Parameters,
 });
