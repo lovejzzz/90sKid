@@ -787,9 +787,11 @@ const parameterLabelsEn: Record<string, string> = {
 
 const exactValueEnglish: Record<string, string> = {
   "Panasonic官方RAW → V-Gamut": "Panasonic official RAW → V-Gamut",
+  "Rec.709 OETF · 完整1-1-1 · 与V25修正版一致": "Rec.709 OETF · complete 1-1-1 · same as corrected V25",
   "R/G/B × 快/中/慢 × 5粒径": "R/G/B × fast/mid/slow × five size classes",
   "2.399963 rad · 黄金角": "2.399963 rad · golden angle",
   "逐帧、逐记录、逐速度群独立": "Independent per frame, record and speed population",
+  "逐帧/记录/速度/粒径/固定条带；线程数不改变结果": "Independent per frame, record, speed, size class and fixed stripe; worker count does not change the result",
   "九亚层合并前的显影域": "Development domain before the nine sublayers merge",
   "均匀H-D严格不漂移": "Exact uniform H-D invariance",
   "D-min已扣除的带符号净光谱密度": "Signed net spectral density with D-min subtracted",
@@ -797,8 +799,11 @@ const exactValueEnglish: Record<string, string> = {
   "3200 K / Kodak氙灯SPD": "3200 K / Kodak xenon SPD",
   "D60相对Oklab a/b · L不变": "Relative D60 OKLab a/b · L unchanged",
   "Oklab恒色相压缩": "OKLab constant-hue compression",
+  "V25修正基线完全锁定；V26不加入艺术调色": "Corrected V25 baseline fully locked; V26 adds no creative grade",
   "Spirit式宽带RGB · 620/540/470 nm": "Spirit-like broadband RGB · 620/540/470 nm",
   "只作用于signed delta；均值分支不变": "Signed delta only; deterministic mean branch unchanged",
+  "σ 0.62 @ 2K · 高频0.36 · opponent 0.66": "σ 0.62 @ 2K · high-frequency 0.36 · opponent 0.66",
+  "与V23完全相同（平均颜色链未改）": "Identical to V23 (mean-colour chain unchanged)",
   "放映1.58 → 0.93 · 扫描1.72 → 0.92": "Projection 1.58 → 0.93 · scan 1.72 → 0.92",
   "放映2.07 → 1.15 · 扫描2.11 → 1.08": "Projection 2.07 → 1.15 · scan 2.11 → 1.08",
   "0.000000（数值精确不变）": "0.000000 (numerically exact)",
@@ -813,6 +818,7 @@ const exactValueEnglish: Record<string, string> = {
   "删除每帧一次完整重复显影计算": "One duplicate full development pass removed per frame",
   "每帧重新采样独立有限位点": "Fresh independent finite-site sampling every frame",
   "97%+核心时间适合GPU迁移": "97%+ of core time is suitable for GPU migration",
+  "两段各24帧 · 5760×4320 · 12-bit ProRes 4444 · 双母版": "24 frames per source · 5760×4320 · 12-bit ProRes 4444 · two masters",
 };
 
 const valueToEnglish = (value: string) => exactValueEnglish[value] ?? value
