@@ -1,5 +1,5 @@
 {
-  "purpose": "V25 observer-correct sRGB web proxies from 12-bit masters",
+  "purpose": "V25 corrected Rec.709-to-sRGB web proxies from 12-bit masters",
   "dimensions": [
     1920,
     1440
@@ -7,8 +7,8 @@
   "fps": "24000/1001",
   "frames": 24,
   "first_frame_source_index": 12,
-  "projection_source": "Display P3-D65 / 48 nit / gamma 2.6",
-  "bluray_source": "Rec.709-D65 / 100 nit / BT.1886 gamma 2.4",
+  "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
+  "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
   "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
   "verification": {
     "v25-t020-projection": {
@@ -17,8 +17,8 @@
         "height": 4320,
         "pix_fmt": "yuv444p12le",
         "color_space": "bt709",
-        "color_transfer": "smpte428",
-        "color_primaries": "smpte432",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
         "bits_per_raw_sample": "12",
         "nb_frames": "24"
       },
@@ -53,8 +53,8 @@
         "height": 4320,
         "pix_fmt": "yuv444p12le",
         "color_space": "bt709",
-        "color_transfer": "smpte428",
-        "color_primaries": "smpte432",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
         "bits_per_raw_sample": "12",
         "nb_frames": "24"
       },

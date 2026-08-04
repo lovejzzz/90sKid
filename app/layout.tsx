@@ -15,18 +15,18 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(`${protocol}://${host}`),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V25：5279乳剂重建，P3-D65影院、Rec.709 BT.1886蓝光与sRGB网页观察器，5.7K 12-bit双母版。",
+    description: "V25：5279乳剂重建，Rec.709 1-1-1放映监看与蓝光扫描、BT.1886参考显示和sRGB网页代理，5.7K 12-bit双母版。",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V25：35mm 5279乳剂、P3影院与Rec.709蓝光标准化输出。",
+      description: "V25：35mm 5279乳剂、Rec.709放映监看与蓝光扫描标准化输出。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: "/versions/v25-t020-projection.jpg", width: 2560, height: 1920, alt: "5279 Emulsion Project · V25 P3 Cinema Reference" }],
+      images: [{ url: "/versions/v25-t020-projection.jpg", width: 2560, height: 1920, alt: "5279 Emulsion Project · V25 2383 Projection Monitor Reference" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V25：35mm 5279乳剂、P3影院与Rec.709蓝光标准化输出。",
+      description: "V25：35mm 5279乳剂、Rec.709放映监看与蓝光扫描标准化输出。",
       images: ["/versions/v25-t020-projection.jpg"],
     },
   };

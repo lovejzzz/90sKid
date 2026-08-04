@@ -51,11 +51,11 @@ mean_display   = trilinear(print_lattice, mean_density)
 formed_display = trilinear(print_lattice, formed_density)
 # MTF、逐帧负片形成和正片细颗粒仍在格点之外执行`;
 
-const observerCode = `# reconstructed 是完成胶片/扫描链后的 display-linear Rec.709 外观
-projection_p3 = M_rec709_to_p3d65 @ reconstructed
-projection_signal = clip(projection_p3, 0, 1) ** (1 / 2.6)
-bluray_signal = clip(reconstructed, 0, 1) ** (1 / 2.4)
-# 网页必须先逆向解码对应EOTF，再统一编码sRGB；不能直接显示母版码值`;
+const observerCode = `# reconstructed 是完成胶片/扫描链后的 monitor-linear Rec.709 外观
+projection_signal = rec709_oetf(projection_monitor_linear)
+bluray_signal = rec709_oetf(cineon_bluray_linear)
+# 两份ProRes均写完整Rec.709 1-1-1；BT.1886只在参考显示端验证
+web_proxy = srgb_oetf(rec709_inverse_oetf(master_signal))`;
 
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
@@ -70,7 +70,7 @@ export default function AlgorithmPage() {
       <main className="algorithm-page wrap">
         <header className="page-header"><span className="eyebrow">METHOD · CURRENT V25</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V25模型的关键公式和真正执行的代码结构。乳剂物理沿用V24；V25把电影输出观察器显式化，并以全分辨率逐像素一致性约束并行加速。</p></header>
 
-        <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>P3 γ2.6 / 709 BT.1886</small></span></div></section>
+        <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709 OETF / 1-1-1</small></span></div></section>
 
         <section className="method-section"><div className="method-index">01</div><div className="method-copy"><span className="section-tag">EXPOSURE</span><h2>从RAW到三条感色记录</h2><p>输入保持在线性光域，不对RAW Bayer值错误套用V-Log曲线。Panasonic官方RAW Gamut变换负责把解码后的扩展线性BT.2020映射到V-Gamut；虚拟曝光随后投向5279三条重叠的感色记录。</p><div className="equation"><span>记录曝光</span><b>E<sub>c</sub>(x,y) = Σ<sub>j</sub> M<sub>cj</sub> · RGB<sub>j</sub>(x,y)</b><small>c ∈ 红感、绿感、蓝感；M是受公开感色曲线约束的重叠响应。</small></div><div className="equation"><span>负片密度</span><b>D<sub>c</sub> = H<sub>c</sub>(log<sub>10</sub>E<sub>c</sub>)</b><small>Hc分别采样5279公开的R/G/B Status-M曲线。</small></div></div></section>
 
@@ -90,11 +90,11 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V24 · COLOUR-GRAIN SEPARATION</span><h2>输出链观察颗粒，但不重新调色</h2><p>三条独立染料记录经过光谱观察会生成较强综合色纹理。V24在signed grain delta中分离Rec.709明度与综合色分量：明度纹理原样保留，综合色纹理分别按2383投影和Period 2K扫描孔径积分。确定性mean RGB不进入这一步，因此平均色相、饱和度和黑白灰严格不动。</p><pre><code>{colourGrainCode}</code></pre></div></section>
 
-        <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V25 · OUTPUT OBSERVERS</span><h2>胶片颜色结束之后，才进入目标显示</h2><p>V24及以前错误地用Rec.709摄影机OETF编码已经完成的display-linear画面。V25让影院和蓝光拥有各自的输出变换：P3-D65 / 48 nit / gamma 2.6，以及Rec.709-D65 / 100 nit / BT.1886。黑位与对比先由胶片、2383、flare或扫描完成链决定，ODT不再偷偷重新塑形。</p><pre><code>{observerCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V25 · OUTPUT OBSERVERS</span><h2>观看条件不是源文件的传递函数</h2><p>第一次V25把BT.1886参考显示EOTF的反函数写入蓝光码值，又把已经完成Rec.709监看适配的2383分支重新编码为P3 gamma 2.6。播放器仍按Rec.709解释文件，导致中间调和暗部明显变亮。修正版让两个监看母版都回到Rec.709 OETF与完整1-1-1；48 nit影院条件保留在投影观察模型中，BT.1886只用于显示端验证。</p><pre><code>{observerCode}</code></pre></div></section>
 
         <section className="method-section"><div className="method-index">11</div><div className="method-copy"><span className="section-tag">EXACT ACCELERATION</span><h2>缓存固定颜色，复用平均负片，并行独立银盐事件</h2><p>193³格点继续缓存固定的分析染料与2383颜色物理。V25另删除每帧一次重复的确定性负片显影，并把45组二项抽样切成固定种子条带。分辨率、粒层数量、随机分布、光学积分和48µm回标都不变。</p><pre><code>{outputLutCode}</code></pre><pre><code>{parallelCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V25 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>线程一致性</b><p>1与8线程全画幅max Δ = 0</p></div><div><b>采样加速</b><p>70.09 → 35.22秒 · 1.99×</p></div><div><b>BT.1886往返</b><p>最大数值误差5.96×10⁻⁸</p></div><div><b>质量捷径</b><p>分辨率、45组颗粒、RMS与MTF均未减少</p></div><div><b>黑位策略</b><p>display-linear锁定；ODT不加lift/crush</p></div><div><b>双母版</b><p>两段各1.001秒 · 5.7K · 12-bit</p></div></div></section>
+        <section className="validation"><span className="section-tag">V25 VALIDATION</span><h2>这次修正通过了什么</h2><div className="validation-grid"><div><b>线程一致性</b><p>1与8线程全画幅max Δ = 0</p></div><div><b>采样加速</b><p>70.09 → 35.22秒 · 1.99×</p></div><div><b>亮度回归</b><p>T020蓝光YAVG 1355 → 1060</p></div><div><b>质量捷径</b><p>分辨率、45组颗粒、RMS与MTF均未减少</p></div><div><b>黑位策略</b><p>胶片完成态锁定；不以错误gamma抬黑</p></div><div><b>双母版</b><p>两段各1.001秒 · 5.7K · 12-bit</p></div></div></section>
       </main>
       <SiteFooter />
     </>

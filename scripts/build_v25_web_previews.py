@@ -19,21 +19,6 @@ SMALL_SIZE = (800, 600)
 FPS = "24000/1001"
 FRAME_COUNT = 24
 REPRESENTATIVE_FRAME = 12
-REC709_TO_XYZ = np.array(
-    [[.412391, .357584, .180481], [.212639, .715169, .072192], [.019331, .119195, .950532]],
-    np.float32,
-)
-XYZ_TO_REC709 = np.array(
-    [[3.240970, -1.537383, -.498611], [-.969244, 1.875968, .041555], [.055630, -.203977, 1.056972]],
-    np.float32,
-)
-XYZ_TO_P3 = np.array(
-    [[2.493497, -.931384, -.402711], [-.829489, 1.762664, .023625], [.035846, -.076172, .956885]],
-    np.float32,
-)
-P3_TO_REC709 = (XYZ_TO_REC709 @ np.linalg.inv(XYZ_TO_P3)).astype(np.float32)
-
-
 def srgb_encode(linear: np.ndarray) -> np.ndarray:
     linear = np.clip(linear, 0.0, 1.0)
     return np.where(
@@ -43,15 +28,20 @@ def srgb_encode(linear: np.ndarray) -> np.ndarray:
     )
 
 
+def rec709_decode(encoded: np.ndarray) -> np.ndarray:
+    encoded = np.clip(encoded, 0.0, 1.0)
+    return np.where(
+        encoded < .081,
+        encoded / 4.5,
+        np.power((encoded + .099) / 1.099, 1 / .45),
+    )
+
+
 def master_signal_to_srgb(signal: np.ndarray, branch: str) -> np.ndarray:
     encoded = signal.astype(np.float32) / 65535.0
-    if branch == "projection":
-        p3_linear = np.power(np.clip(encoded, 0.0, 1.0), 2.6)
-        linear = cv2.transform(p3_linear, P3_TO_REC709)
-    elif branch == "bluray":
-        linear = np.power(np.clip(encoded, 0.0, 1.0), 2.4)
-    else:
+    if branch not in {"projection", "bluray"}:
         raise ValueError(branch)
+    linear = rec709_decode(encoded)
     return np.rint(srgb_encode(linear) * 255.0).astype(np.uint8)
 
 
@@ -74,10 +64,8 @@ def decode_master(
     decoder = subprocess.Popen(
         [
             "ffmpeg", "-v", "error", "-i", str(master), "-an",
-            # ProRes frame headers have no ST 428 transfer enum.  Override only
-            # the YUV->RGB conversion metadata here; the resulting RGB numbers
-            # remain encoded master signal and are decoded by our explicit
-            # branch EOTF below.
+            # Both masters carry complete Rec.709 1-1-1 signalling. Decode the
+            # interchange OETF explicitly before the browser sRGB transform.
             "-vf", "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709",
             "-f", "rawvideo", "-pix_fmt", "rgb48le", "pipe:1",
         ],
@@ -147,7 +135,7 @@ def verify(video: Path, still: Path) -> dict[str, object]:
 def main() -> None:
     site_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--masters-root", type=Path, default=site_root.parent / "outputs" / "native_5k_v25_pipeline_1s")
+    parser.add_argument("--masters-root", type=Path, default=site_root.parent / "outputs" / "native_5k_v25_corrected_1s")
     parser.add_argument("--output-dir", type=Path, default=site_root / "public" / "versions")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -168,11 +156,11 @@ def main() -> None:
         results[stem] = {"master_metadata": probe, **verify(video, large)}
         print(f"built {stem}", flush=True)
     manifest = {
-        "purpose": "V25 observer-correct sRGB web proxies from 12-bit masters",
+        "purpose": "V25 corrected Rec.709-to-sRGB web proxies from 12-bit masters",
         "dimensions": list(VIDEO_SIZE), "fps": FPS, "frames": FRAME_COUNT,
         "first_frame_source_index": REPRESENTATIVE_FRAME,
-        "projection_source": "Display P3-D65 / 48 nit / gamma 2.6",
-        "bluray_source": "Rec.709-D65 / 100 nit / BT.1886 gamma 2.4",
+        "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
+        "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
         "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
         "verification": results,
     }

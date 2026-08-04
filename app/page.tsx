@@ -8,7 +8,7 @@ import { versions } from "./data";
 export default function Home() {
   const current = versions[versions.length - 1];
   const currentGallery = [
-    { src: "/versions/v25-t020-projection.jpg", alt: "V25 T020 P3影院参考" },
+    { src: "/versions/v25-t020-projection.jpg", alt: "V25 T020 2383放映监看参考" },
     { src: "/versions/v25-t020-bluray.jpg", alt: "V25 T020 Rec.709蓝光参考" },
   ];
   return (
@@ -25,11 +25,11 @@ export default function Home() {
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>当前基线 · V25</span><h2>同一张负片，两种明确校准的电影输出</h2><p>胶片物理与V24保持一致。左侧是P3-D65、48 nit、gamma 2.6影院参考；右侧是Rec.709-D65、100 nit、BT.1886蓝光参考。网页不再让浏览器猜母版，而是把两者各自正确解码后统一生成sRGB代理。</p></div>
+          <div className="section-intro"><span>当前基线 · V25</span><h2>同一张负片，两种正确封装的监看输出</h2><p>胶片物理与V24保持一致。左侧把48 nit、gamma 2.6的2383影院观察结果适配到Rec.709监看；右侧是时期2K扫描的Rec.709蓝光完成。两份12-bit母版都使用完整1-1-1信号，BT.1886只定义参考显示器，不再被错误写成源文件反函数。</p></div>
           <div className="current-visual-layout">
             <div className="hero-comparison">
-              <figure><div className="image-title"><b>2383</b><span>P3-D65 / 48 NIT / γ2.6</span></div><InteractiveImage src="/versions/v25-t020-projection.jpg" previewSrc="/versions/v25-t020-projection-sm.jpg" videoSrc="/versions/v25-t020-projection-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 P3影院参考" gallery={currentGallery} initialIndex={0} /><figcaption>5279、2383与氙灯结果进入P3影院参考观察器</figcaption></figure>
-              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 100 NIT / BT.1886</span></div><InteractiveImage src="/versions/v25-t020-bluray.jpg" previewSrc="/versions/v25-t020-bluray-sm.jpg" videoSrc="/versions/v25-t020-bluray-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 Rec.709蓝光参考" gallery={currentGallery} initialIndex={1} /><figcaption>同一乳剂经时期2K扫描与BT.1886 SDR完成</figcaption></figure>
+              <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src="/versions/v25-t020-projection.jpg" previewSrc="/versions/v25-t020-projection-sm.jpg" videoSrc="/versions/v25-t020-projection-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 2383放映监看参考" gallery={currentGallery} initialIndex={0} /><figcaption>48 nit影院观察结果的Rec.709监看呈现</figcaption></figure>
+              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src="/versions/v25-t020-bluray.jpg" previewSrc="/versions/v25-t020-bluray-sm.jpg" videoSrc="/versions/v25-t020-bluray-live-srgb.mp4" sizes="(max-width: 680px) 100vw, 42vw" alt="V25 T020 Rec.709蓝光参考" gallery={currentGallery} initialIndex={1} /><figcaption>时期2K扫描；BT.1886仅用于参考显示验证</figcaption></figure>
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>
@@ -53,7 +53,7 @@ export default function Home() {
         </section>
 
         <section className="route-grid wrap">
-          <Link href="/versions"><span>ARCHIVE</span><h3>版本档案</h3><p>从V4到V24，逐版对照两种观看链，并记录错误和修正。</p><b>进入 →</b></Link>
+          <Link href="/versions"><span>ARCHIVE</span><h3>版本档案</h3><p>从V4到V25，逐版对照两种观看链，并记录错误和修正。</p><b>进入 →</b></Link>
           <Link href="/research"><span>PAPER</span><h3>研究笔记</h3><p>乳剂层、遮罩、DIR、颗粒、黑位、扫描器与完整引用。</p><b>进入 →</b></Link>
           <Link href="/algorithm"><span>METHOD</span><h3>算法说明</h3><p>从RAW到负片、2383与Cineon的公式、流程和关键代码。</p><b>进入 →</b></Link>
         </section>

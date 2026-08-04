@@ -58,7 +58,7 @@ test("lightbox keeps gallery navigation and magnification controls", async () =>
   assert.match(source, /stage\.scrollTop \+= saved\.y/);
 });
 
-test("V25 web videos decode each master observer before sRGB", async () => {
+test("V25 web videos decode corrected Rec.709 masters before sRGB", async () => {
   const data = await readFile(new URL("../app/data.ts", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   const manifest = JSON.parse(await readFile(new URL("../public/versions/v25-live-preview-manifest.json", import.meta.url), "utf8"));
@@ -67,8 +67,8 @@ test("V25 web videos decode each master observer before sRGB", async () => {
   assert.doesNotMatch(styles, /brightness\(1\.04\)/);
   assert.match(manifest.web, /sRGB IEC 61966-2-1/);
   assert.equal(manifest.first_frame_source_index, 12);
-  assert.match(manifest.projection_source, /gamma 2\.6/);
-  assert.match(manifest.bluray_source, /BT\.1886/);
+  assert.match(manifest.projection_source, /Rec\.709-D65 1-1-1/);
+  assert.match(manifest.bluray_source, /BT\.1886 is the reference display EOTF/);
   for (const result of Object.values(manifest.verification)) {
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
     assert.ok(result.first_frame_median_luma_delta <= 0.01);
