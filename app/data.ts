@@ -561,8 +561,8 @@ versions.push({
   year: "当前版本",
   title: "35mm颗粒频谱与综合色分离",
   status: "current",
-  projection: { src: "/versions/v24-t020-projection.jpg", videoSrc: "/versions/v24-t020-projection-live-srgb.mp4", label: "T020 · 5279 → 2383氙灯放映" },
-  bluray: { src: "/versions/v24-t020-bluray.jpg", videoSrc: "/versions/v24-t020-bluray-live-srgb.mp4", label: "T020 · Period 2K / Cineon蓝光" },
+  projection: { src: "/versions/v24-t020-projection.jpg", label: "T020 · 5279 → 2383氙灯放映" },
+  bluray: { src: "/versions/v24-t020-bluray.jpg", label: "T020 · Period 2K / Cineon蓝光" },
   summary: "回应V23更像早期CCD或16mm的观感：V24不重调颜色，而是把公开的48µm RMS与完整空间频谱区分开。五级染料云向较小尺度重新分配，并在放映与扫描的观察阶段只积分综合色颗粒，保留明度颗粒的逐帧有机沸腾。平均色彩、黑白灰、负片MTF、2383与Cineon链均保持V23。",
   changes: ["染料云尺寸分布向35mm细颗粒端移动", "减少大云占比和总体相关尺度", "放映与扫描分别加入综合色颗粒积分", "完整保留明度颗粒与逐帧随机实现", "平均颜色与色调分支保持数值不变", "两段新素材继续各做1秒5.7K 12-bit双母版", "V24四个画面改为1秒Live网页预览，保留静帧放大与左右导航"],
   errors: ["V23虽然改善了离散颗粒形态，但综合色颗粒仍过强，容易被识别为RGB彩噪或早期CCD", "48µm RMS只约束特定孔径下的幅度，不能单独决定颗粒的粗细、低频成团和最终观看尺度", "公开文件没有5279完整Wiener/NPS曲线；V24的尺寸分布仍是受边界约束的模型选择，不是秘方复原", "黑白灰和创作调色没有在V24内重做；这样可以把颗粒判断与调色判断分离"],
@@ -571,8 +571,8 @@ versions.push({
   additionalTrials: [{
     name: "NJARAW_S001_S001_T032",
     note: "雨天青绿和低反差细节用于验证综合色颗粒不会重新变成青绿色CCD噪声。",
-    projection: { src: "/versions/v24-t032-projection.jpg", videoSrc: "/versions/v24-t032-projection-live-srgb.mp4", label: "T032 · 5279 → 2383氙灯放映" },
-    bluray: { src: "/versions/v24-t032-bluray.jpg", videoSrc: "/versions/v24-t032-bluray-live-srgb.mp4", label: "T032 · Period 2K / Cineon蓝光" },
+    projection: { src: "/versions/v24-t032-projection.jpg", label: "T032 · 5279 → 2383氙灯放映" },
+    bluray: { src: "/versions/v24-t032-bluray.jpg", label: "T032 · Period 2K / Cineon蓝光" },
   }],
   parameters: v24Parameters,
 });
@@ -636,8 +636,8 @@ versions.push({
   year: "当前版本",
   title: "把观看条件与交换母版彻底分开",
   status: "current",
-  projection: { src: "/versions/v25-t020-projection.jpg", videoSrc: "/versions/v25-t020-projection-live-srgb.mp4", label: "T020 · 2383影院观察的Rec.709监看" },
-  bluray: { src: "/versions/v25-t020-bluray.jpg", videoSrc: "/versions/v25-t020-bluray-live-srgb.mp4", label: "T020 · Period 2K / Rec.709蓝光" },
+  projection: { src: "/versions/v25-t020-projection.jpg", label: "T020 · 2383影院观察的Rec.709监看" },
+  bluray: { src: "/versions/v25-t020-bluray.jpg", label: "T020 · Period 2K / Rec.709蓝光" },
   summary: "V25不重新调5279颜色，也不改变V24的颗粒、MTF、DIR、2383或扫描完成曲线。第一次V25误把观看条件当成源文件编码：蓝光写入BT.1886反函数，放映监看又被重编码成P3 gamma 2.6，导致普通播放器中间调与暗部过亮。修正版把两份监看母版统一恢复为Rec.709 OETF与完整1-1-1；影院gamma和BT.1886只留在各自观察/显示端。固定种子条带与平均负片复用的无降质加速完整保留。",
   changes: ["修正第一次V25整体提亮的OETF/EOTF错位", "放映分支明确为2383影院观察的Rec.709监看呈现", "蓝光母版恢复Rec.709 OETF与完整1-1-1", "BT.1886只作为参考显示EOTF，不再反写进母版码值", "T020蓝光YAVG由1354.70回到1060.24，V24基线1060.04", "网页大图与Live视频从Rec.709母版统一转换到sRGB", "45组银盐位点固定种子并行与平均负片复用完整保留", "hourly研究只保留已通过官方来源与真实素材验证的结论"],
   errors: ["第一次V25把BT.1886显示EOTF的反函数直接作为蓝光源文件编码，同时仍标记为Rec.709 1-1-1，播放器解释后造成约20–28%的平均码值提亮", "第一次V25把已经经过影院→Rec.709监看适配的2383分支再次转换到P3 gamma 2.6，混合了物理影院观察器与监看交换母版", "P3色度、ST 428 transfer与BT.709 YUV矩阵混写在ProRes中，跨播放器行为不稳定", "参考显示标准不能替代交换信号定义；母版标签、OETF和网页解码必须端到端一致", "公开资料仍不足以识别5279所有层间参数；toe、DLE、Spirit窄带候选和rem-jet残余项因此没有进入V25"],
@@ -646,8 +646,8 @@ versions.push({
   additionalTrials: [{
     name: "NJARAW_S001_S001_T032",
     note: "雨天青绿、暗柱与低反差纹理用于检查两个Rec.709监看分支的黑位、gamma和标签一致性。",
-    projection: { src: "/versions/v25-t032-projection.jpg", videoSrc: "/versions/v25-t032-projection-live-srgb.mp4", label: "T032 · 2383影院观察的Rec.709监看" },
-    bluray: { src: "/versions/v25-t032-bluray.jpg", videoSrc: "/versions/v25-t032-bluray-live-srgb.mp4", label: "T032 · Period 2K / Rec.709蓝光" },
+    projection: { src: "/versions/v25-t032-projection.jpg", label: "T032 · 2383影院观察的Rec.709监看" },
+    bluray: { src: "/versions/v25-t032-bluray.jpg", label: "T032 · Period 2K / Rec.709蓝光" },
   }],
   parameters: v25Parameters,
 });
