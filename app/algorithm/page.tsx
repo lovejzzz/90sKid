@@ -33,11 +33,6 @@ print_logE = interimage_matrix @ (print_logE - lad_logE) + lad_logE
 positive_density = positive_hd_curves(print_logE)
 xyz = integrate(xenon_spd * 10 ** (-spectral_dyes(dye_amount)), cie_xyz)`;
 
-const monitorCode = `neutral = d60_lut(mean(cineon_code) * ones(3))
-delta_ab = d60_lut(cineon_code).ab - neutral.ab
-delta_ab *= smooth_neutral_guard(cineon_chroma, 0.008, 0.040)
-display_oklab.ab += delta_ab       # L不变；绝对D60白点不进入画面`;
-
 const cloudCode = `# V26: rows are fast / medium / slow; every row sums to one
 weights = [[0.12, 0.26, 0.34, 0.20, 0.08],
            [0.16, 0.30, 0.32, 0.17, 0.05],
@@ -86,7 +81,7 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V29</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>这里公开V29模型的关键公式和执行结构。V28修正ProRes RAW的输入原色契约；V29不加入创作调色，而把同一负片的2383与Period 2K结果扩展到完整运动，并验证像素、颗粒时间性、声音、时间码和12-bit交付。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V30</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V30保留V29的5279乳剂、颗粒、DIR和扫描模型，修正2383放映链的官方LAD通道目标，并以三个场景的Panasonic V-709相机基线隔离原场景颜色与胶片观察器作用。模型仍不加入艺术调色。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709 OETF / 1-1-1</small></span></div></section>
 
@@ -104,7 +99,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section split-method"><div className="method-index">07</div><div className="method-copy"><span className="section-tag">THREE OBSERVERS · TWO OUTPUTS</span><h2>同一负片之后，结果开始分叉</h2><div className="method-branches"><article><b>5279 → 2383 → 氙灯</b><p>3200K印片灯穿过负片；2383三条感色层得到曝光，经过其陡峭H-D曲线形成正片染料，再用氙灯光谱和CIE观察器积分。正片MTF、细颗粒、Callier效应和投影flare属于这一支。</p></article><article><b>5279 → Period 2K → Cineon</b><p>Status-M只负责数据表测量轴。成片扫描用较宽的时期RGB探测响应积分透射光，再进行Spirit式film match、2K孔径、Cineon 0.002D/code与蓝光显示完成。</p><pre><code>{scanCode}</code></pre></article></div></div></section>
 
-        <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">MONITOR-ONLY ADAPTATION</span><h2>D60只校准相对色度，不给画面染色</h2><p>胶片、氙灯和CIE观察者给出物理投影颜色，但银幕观看转成Rec.709并不唯一。V22使用公开厂商2383 D60变换作显示目标，同时在每个平均Cineon码值减去它自己的中性响应；只加入Oklab a/b差值，不改L。</p><div className="equation"><span>相对色度</span><b>Δab(q) = ab<sub>D60</sub>(q) − ab<sub>D60</sub>(neutral(mean(q)))</b><small>中性保护区从Cineon色度0.008平滑过渡到0.040。</small></div><pre><code>{monitorCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">V30 · OFFICIAL LAD COLOUR ANCHOR</span><h2>用Kodak通道密度锚定2383，不让供应商LUT定义胶片颜色</h2><p>V30把2383的打印中性点从简化的相等密度改为H-61B官方目标1.09/1.06/1.03 D。供应商D60 LUT与数字化染料曲线的残差仍保留作研究记录，但它们没有足够证据支配最终色相或饱和度，因此显示权重为零。</p><div className="equation"><span>官方LAD与证据权重</span><b>D<sub>LAD</sub>=[1.09,1.06,1.03]　·　w<sub>D60</sub>=w<sub>hue</sub>=w<sub>sat</sub>=0</b><small>这是物理校准修正，不是减蓝或减饱和的创作调色。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V24 · COLOUR-GRAIN SEPARATION</span><h2>输出链观察颗粒，但不重新调色</h2><p>三条独立染料记录经过光谱观察会生成较强综合色纹理。V24在signed grain delta中分离Rec.709明度与综合色分量：明度纹理原样保留，综合色纹理分别按2383投影和Period 2K扫描孔径积分。确定性mean RGB不进入这一步，因此平均色相、饱和度和黑白灰严格不动。</p><pre><code>{colourGrainCode}</code></pre></div></section>
 
@@ -116,7 +111,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V29 FULL-MOTION VALIDATION</span><h2>完整T002母版通过了什么</h2><div className="validation-grid"><div><b>完整运动</b><p>165 / 165帧</p></div><div><b>段边界一致性</b><p>第82帧RGB48逐位相等</p></div><div><b>白场硬截断</b><p>两观察器均为0</p></div><div><b>时间随机性</b><p>每帧形成新乳剂</p></div><div><b>声音与时间码</b><p>24-bit · 4ch · 12:04:05:23</p></div><div><b>输出</b><p>5760×4320 · 12-bit · Rec.709 1-1-1</p></div></div></section>
+        <section className="validation"><span className="section-tag">V30 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>胶片母版</b><p>12-bit ProRes 4444</p></div><div><b>近中性色度</b><p>≤ 0.00455</p></div><div><b>观察器色相差</b><p>中位数≤ 4.99°</p></div><div><b>相机原图</b><p>官方Panasonic V-709</p></div><div><b>线程安全</b><p>顺序观察 · 像素不变</p></div></div></section>
       </main>
       <SiteFooter />
     </>

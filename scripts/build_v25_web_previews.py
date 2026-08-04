@@ -39,7 +39,7 @@ def rec709_decode(encoded: np.ndarray) -> np.ndarray:
 
 def master_signal_to_srgb(signal: np.ndarray, branch: str) -> np.ndarray:
     encoded = signal.astype(np.float32) / 65535.0
-    if branch not in {"projection", "bluray"}:
+    if branch not in {"projection", "bluray", "camera"}:
         raise ValueError(branch)
     linear = rec709_decode(encoded)
     return np.rint(srgb_encode(linear) * 255.0).astype(np.uint8)
@@ -157,19 +157,20 @@ def main() -> None:
     if args.source_label:
         source = args.source_label.lower()
         jobs = {
-            f"{version}-{source}-projection": ("projection", "projection"),
-            f"{version}-{source}-bluray": ("bluray_scan", "bluray"),
+            f"{version}-{source}-projection": ("projection", "05_emulsion_master_prores4444.mov", "projection"),
+            f"{version}-{source}-bluray": ("bluray_scan", "05_emulsion_master_prores4444.mov", "bluray"),
+            f"{version}-{source}-camera": ("camera_baseline", "05_camera_baseline_prores4444.mov", "camera"),
         }
     else:
         jobs = {
-            f"{version}-t020-projection": ("T020/projection", "projection"),
-            f"{version}-t020-bluray": ("T020/bluray_scan", "bluray"),
-            f"{version}-t032-projection": ("T032/projection", "projection"),
-            f"{version}-t032-bluray": ("T032/bluray_scan", "bluray"),
+            f"{version}-t020-projection": ("T020/projection", "05_emulsion_master_prores4444.mov", "projection"),
+            f"{version}-t020-bluray": ("T020/bluray_scan", "05_emulsion_master_prores4444.mov", "bluray"),
+            f"{version}-t032-projection": ("T032/projection", "05_emulsion_master_prores4444.mov", "projection"),
+            f"{version}-t032-bluray": ("T032/bluray_scan", "05_emulsion_master_prores4444.mov", "bluray"),
         }
     results: dict[str, object] = {}
-    for stem, (relative, branch) in jobs.items():
-        master = masters_root / relative / "05_emulsion_master_prores4444.mov"
+    for stem, (relative, master_name, branch) in jobs.items():
+        master = masters_root / relative / master_name
         large, small = args.output_dir / f"{stem}.jpg", args.output_dir / f"{stem}-sm.jpg"
         video = args.output_dir / f"{stem}-live-srgb.mp4"
         with tempfile.TemporaryDirectory(prefix=f"{version}-web-") as directory:
@@ -186,6 +187,7 @@ def main() -> None:
         "first_frame_source_index": args.start_frame + REPRESENTATIVE_FRAME,
         "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
         "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
+        "camera_source": "Panasonic official V-Log to V-709 display transform only; no 5279, 2383, scan or creative grade",
         "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
         "proxy_encoding": "H.264 High / yuv420p / CRF 20 / tune grain; archive masters remain 5.7K 12-bit ProRes 4444",
         "verification": results,

@@ -18,12 +18,13 @@ export default function Home() {
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} T002 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} T002 Rec.709 Blu-ray reference` },
+    ...(current.camera ? [{ src: current.camera.src, alt: `${current.version} T002 Panasonic V-709 camera baseline` }] : []),
   ];
   return (
     <>
       <SiteHeader />
       <main>
-        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/og-v24.jpg")}")` } as CSSProperties}>
+        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v30-t032-projection.jpg")}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>
@@ -35,9 +36,10 @@ export default function Home() {
         <section className="current-section wrap">
           <div className="section-intro"><span>{text("当前基线", "CURRENT BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
           <div className="current-visual-layout">
-            <div className="hero-comparison">
+            <div className={`hero-comparison ${current.camera ? "has-camera" : ""}`}>
               <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T002 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察结果的Rec.709监看呈现", "Rec.709 monitor presentation of the 48-nit cinema observer")}</figcaption></figure>
               <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src={current.bluray.src} previewSrc={current.bluray.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.bluray.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T002 Rec.709 Blu-ray reference`} gallery={currentGallery} initialIndex={1} /><figcaption>{text("时期2K扫描；BT.1886仅用于参考显示验证", "Period 2K scan; BT.1886 is used only for reference-display validation")}</figcaption></figure>
+              {current.camera && <figure><div className="image-title"><b>V-709</b><span>PANASONIC OFFICIAL CAMERA BASELINE</span></div><InteractiveImage src={current.camera.src} previewSrc={current.camera.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.camera.videoSrc} sizes="(max-width: 680px) 100vw, 28vw" alt={`${current.version} T002 Panasonic V-709 camera baseline`} gallery={currentGallery} initialIndex={2} /><figcaption>{text("同一RAW的官方V-709显示基线；不进入胶片管线", "Official V-709 view of the same RAW; no film pipeline")}</figcaption></figure>}
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>
@@ -50,14 +52,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · FULL-MOTION VALIDATION BASELINE</span><h2>{text("最后的准确，不来自更多味道；来自更严格的证据", "The final accuracy comes from stricter evidence—not more flavour")}</h2></div>
+          <div><span className="eyebrow">{current.version} · THREE-SCENE COLOUR EVIDENCE</span><h2>{text("把原场景、胶片负片与两种观察结果分开", "Separating the source scene, film negative and two viewing results")}</h2></div>
           <ol>
-            <li><b>{text("完整运动", "Complete motion")}</b><span>{text("T002全部165帧都进入乳剂形成，不再用一秒或一张截图代表结果。", "All 165 T002 frames pass through emulsion formation; one second or one still no longer stands in for the result.")}</span></li>
-            <li><b>{text("绝对帧随机性", "Absolute-frame randomness")}</b><span>{text("每个物理帧生成新的有限位点染料云；并行接缝不会重置或循环颗粒。", "Every physical frame forms a new finite-site dye-cloud field; parallel boundaries do not reset or loop grain.")}</span></li>
-            <li><b>{text("证据边界", "Evidence boundary")}</b><span>{text("公开资料没有5279专属NPS、DIR矩阵或Spirit光谱，因此这些参数保持V28，不按场景调味。", "Public evidence contains no 5279-specific NPS, DIR matrix or Spirit spectrum, so those parameters remain V28 rather than being tuned to one scene.")}</span></li>
-            <li><b>{text("完整母版", "Complete masters")}</b><span>{text("原始分辨率、12-bit、165帧、24-bit四声道声音和时间码共同接受自动验证。", "Native resolution, 12 bit, 165 frames, 24-bit four-channel audio and timecode all pass automated validation.")}</span></li>
+            <li><b>{text("官方LAD", "Official LAD")}</b><span>{text("2383使用Kodak H-61B的1.09/1.06/1.03 D，不再用相等RGB密度或主观减蓝。", "2383 now uses Kodak H-61B's 1.09/1.06/1.03 D aims—not equal RGB densities or a subjective blue reduction.")}</span></li>
+            <li><b>{text("三个场景", "Three scenes")}</b><span>{text("T002、T020、T032各24帧原分辨率，检验肤色外的树皮、中性暗纹与真实雨天青绿。", "T002, T020 and T032 each contribute 24 native-resolution frames across bark, neutral dark texture and genuine rainy cyan-green colour.")}</span></li>
+            <li><b>{text("相机基线", "Camera baseline")}</b><span>{text("每个例子新增Panasonic官方V-709画面，不进入5279、2383或扫描链，也不加艺术调色。", "Every example adds Panasonic's official V-709 view with no 5279, 2383, scan chain or creative grade.")}</span></li>
+            <li><b>{text("安全计算", "Safe computation")}</b><span>{text("观察器顺序执行，避免Numba并发崩溃；与旧并行结果逐像素完全相同。", "Observers run sequentially to avoid the Numba concurrency abort, with pixel-identical output to the former parallel result.")}</span></li>
           </ol>
-          <Link href="/research#v29" className="button">{text("阅读V29验证研究", "Read the V29 validation study")}</Link>
+          <Link href="/research#v30" className="button">{text("阅读V30色彩研究", "Read the V30 colour study")}</Link>
         </section>
 
         <section className="route-grid wrap">

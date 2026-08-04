@@ -20,6 +20,7 @@ export type VersionEntry = {
   status: "prototype" | "calibration" | "current";
   projection: BranchImage;
   bluray: BranchImage;
+  camera?: BranchImage;
   summary: string;
   changes: string[];
   errors: string[];
@@ -31,6 +32,7 @@ export type VersionEntry = {
     note: string;
     projection: BranchImage;
     bluray: BranchImage;
+    camera?: BranchImage;
   }[];
 };
 
@@ -1016,15 +1018,113 @@ versions.push({
   parameters: v29Parameters,
 });
 
+const v29 = versions[versions.length - 1];
+v29.year = "上一版";
+v29.status = "calibration";
+
+const v30Parameters: ParameterGroup[] = [
+  {
+    title: "输入与母版", titleEn: "INPUT & MASTERS", items: [
+      { label: "测试素材", labelEn: "Test sources", value: "T002 · T020 · T032", valueEn: "T002 · T020 · T032" },
+      { label: "每段长度", labelEn: "Length per source", value: "24帧 · 1.001秒", valueEn: "24 frames · 1.001s" },
+      { label: "RAW解码", labelEn: "RAW decode", value: "AVFoundation extended-linear BT.2020 / D65", valueEn: "AVFoundation extended-linear BT.2020 / D65" },
+      { label: "虚拟曝光", labelEn: "Virtual exposure", value: "+0.45 stop · 三条链完全一致", valueEn: "+0.45 stop · identical for all three branches" },
+      { label: "胶片母版", labelEn: "Film masters", value: "5760×4320 · 12-bit · ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 12-bit · ProRes 4444 · Rec.709 1-1-1" },
+      { label: "相机基线", labelEn: "Camera baseline", value: "Panasonic官方V-Log→V-709 · 无5279/2383/扫描/调色", valueEn: "Official Panasonic V-Log→V-709 · no 5279/2383/scan/grade" },
+      { label: "官方LUT SHA-256", labelEn: "Official LUT SHA-256", value: "f99223675b299339…a4578d", valueEn: "f99223675b299339…a4578d" },
+    ],
+  },
+  {
+    title: "5279乳剂与颗粒", titleEn: "5279 EMULSION & GRAIN", items: [
+      { label: "负片模型", labelEn: "Negative model", value: "V29锁定：九亚层有限位点 · H-D · MTF · 48µm RMS", valueEn: "Locked V29: nine finite-site sublayers · H-D · MTF · 48 µm RMS" },
+      { label: "颗粒形态", labelEn: "Grain morphology", value: "快/中/慢层独立五级多分散染料云", valueEn: "Independent five-class polydisperse dye clouds per fast/mid/slow layer" },
+      { label: "时间随机性", labelEn: "Temporal stochasticity", value: "按绝对源帧号重新形成乳剂；不循环贴图", valueEn: "Fresh emulsion keyed by absolute source frame; no looping plate" },
+      { label: "DIR", labelEn: "DIR", value: "九亚层反应–扩散 · 均匀场局部项归零", valueEn: "Nine-sublayer reaction–diffusion · local term vanishes on uniform fields" },
+      { label: "V30颗粒变化", labelEn: "V30 grain change", value: "无", valueEn: "None", note: "没有新的5279专属NPS测量，不以三个场景主观调味", noteEn: "No new stock-specific NPS measurement; no scene-tuned flavour" },
+    ],
+  },
+  {
+    title: "2383放映链", titleEn: "2383 PROJECTION CHAIN", items: [
+      { label: "Kodak LAD目标 R/G/B", labelEn: "Kodak LAD aims R/G/B", value: "1.09 / 1.06 / 1.03 D", valueEn: "1.09 / 1.06 / 1.03 D" },
+      { label: "V29错误假设", labelEn: "V29 incorrect assumption", value: "相等LAD 1.00 / 1.00 / 1.00", valueEn: "Equal LAD 1.00 / 1.00 / 1.00" },
+      { label: "D60供应商LUT强度", labelEn: "Vendor D60 LUT strength", value: "0", valueEn: "0", note: "不再把Resolve供应商LUT当作Kodak实测光谱", noteEn: "No longer treated as measured Kodak spectral evidence" },
+      { label: "数字化染料曲线色相/饱和控制", labelEn: "Digitized dye-curve hue/saturation control", value: "0 / 0", valueEn: "0 / 0", note: "曲线保留作结构证据，不用未知扫描误差强迫最终色相", noteEn: "Retained as structural evidence, not a final hue authority" },
+      { label: "分析LUT", labelEn: "Analytical LUT", value: "193³ · SHA-256 5a7d99c9e50a…f98c", valueEn: "193³ · SHA-256 5a7d99c9e50a…f98c" },
+      { label: "投影观察", labelEn: "Projection observer", value: "2383氙灯 · 48 nit · gamma 2.6 → Rec.709监看", valueEn: "2383 xenon · 48 nit · gamma 2.6 → Rec.709 monitor view" },
+    ],
+  },
+  {
+    title: "Period 2K / 蓝光", titleEn: "PERIOD 2K / BLU-RAY", items: [
+      { label: "扫描模型", labelEn: "Scan model", value: "V29逐像素不变 · 2K透射域孔径 · Cineon", valueEn: "Pixel-identical to V29 · 2K transmission aperture · Cineon" },
+      { label: "完成态", labelEn: "Finishing", value: "Rec.709 1-1-1 · BT.1886仅作参考显示EOTF", valueEn: "Rec.709 1-1-1 · BT.1886 only as reference-display EOTF" },
+      { label: "艺术调色", labelEn: "Creative grade", value: "无", valueEn: "None" },
+    ],
+  },
+  {
+    title: "数值验证与效率", titleEn: "NUMERICAL VALIDATION & PERFORMANCE", items: [
+      { label: "统一验证", labelEn: "Unified validation", value: "通过 · failures 0", valueEn: "Passed · 0 failures" },
+      { label: "近中性平均色度 T002/T020/T032", labelEn: "Near-neutral mean chroma T002/T020/T032", value: "0.00107 / 0.00455 / 0.00261", valueEn: "0.00107 / 0.00455 / 0.00261" },
+      { label: "两观察器中位色相差", labelEn: "Median observer hue difference", value: "4.80° / 4.99° / 3.95°", valueEn: "4.80° / 4.99° / 3.95°" },
+      { label: "T002双母版", labelEn: "T002 dual masters", value: "995.10秒 · 41.46秒/帧", valueEn: "995.10s · 41.46s/frame" },
+      { label: "T020双母版", labelEn: "T020 dual masters", value: "997.60秒 · 41.57秒/帧", valueEn: "997.60s · 41.57s/frame" },
+      { label: "T032双母版", labelEn: "T032 dual masters", value: "758.43秒 · 31.60秒/帧", valueEn: "758.43s · 31.60s/frame" },
+      { label: "相机基线 T002/T020/T032", labelEn: "Camera baseline T002/T020/T032", value: "114.03 / 113.85 / 110.63秒", valueEn: "114.03 / 113.85 / 110.63s" },
+      { label: "观察器线程", labelEn: "Observer workers", value: "1（安全默认）", valueEn: "1 (safe default)", note: "与双线程旧实现逐像素相同；避免Numba workqueue并发SIGABRT", noteEn: "Pixel-identical to the former two-thread result; avoids Numba workqueue SIGABRT" },
+      { label: "T002相机白端", labelEn: "T002 camera white endpoint", value: "1.4%天空到达V-709白端", valueEn: "1.4% sky reaches the V-709 white endpoint", note: "发生在相机基线，不是5279肩部", noteEn: "Camera baseline behavior, not the 5279 shoulder" },
+      { label: "网页代理", labelEn: "Web proxies", value: "同一第12帧 · sRGB静帧与24帧hover视频", valueEn: "Same frame 12 · sRGB still and 24-frame hover video" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V30",
+  year: "当前基线",
+  title: "用官方LAD校正2383色偏，并以三场景相机基线隔离胶片作用",
+  status: "current",
+  projection: { src: "/versions/v30-t002-projection.jpg", videoSrc: "/versions/v30-t002-projection-live-srgb.mp4", label: "T002 · 5279负片 → 2383影院观察Rec.709监看" },
+  bluray: { src: "/versions/v30-t002-bluray.jpg", videoSrc: "/versions/v30-t002-bluray-live-srgb.mp4", label: "T002 · 5279负片 → Period 2K / Rec.709蓝光" },
+  camera: { src: "/versions/v30-t002-camera.jpg", videoSrc: "/versions/v30-t002-camera-live-srgb.mp4", label: "T002 · Panasonic官方V-709相机基线 · 不进入胶片管线" },
+  summary: "V30复查了放映版残留的蓝紫罩层。根因不是5279本身，而是V29把2383 LAD简化为相等RGB密度，又让第三方D60 LUT和未知误差的数字化染料曲线过度支配色相。V30改用Kodak H-61B公布的2383目标1.09/1.06/1.03 D，并把无法证明属于Kodak材料的色相与饱和控制归零。T002、T020、T032各以一秒原分辨率验证，同时增加仅经过Panasonic官方V-709显示转换的相机基线，以清楚区分原场景、5279负片、2383放映与时期扫描。",
+  changes: ["使用Kodak H-61B的2383 LAD目标1.09/1.06/1.03 D", "移除供应商Resolve D60 LUT对Kodak物理色相的控制", "数字化净染料曲线不再强迫最终色相或饱和度", "T002/T020/T032各完成24帧原分辨率12-bit双母版", "每个例子加入Panasonic官方V-709相机基线", "九幅网页图与九段hover视频由同一第12帧、同一Rec.709→sRGB路径生成", "观察器改为安全顺序执行；结果与并行版逐像素一致", "加入近中性色度、观察器色相差、白端与完整格式门槛"],
+  errors: ["V29错误使用相等LAD 1.00/1.00/1.00，忽略2383官方通道目标并形成蓝紫偏移", "第三方D60 LUT不是Kodak 2383实测光谱，不能作为物理颜色真值", "公开数据表曲线的数字化误差不足以授权高权重全局色相控制", "第一次相机基线把LUT的legal-range输出再次按legal编码，造成虚浮；已在发布前废弃", "两个Python观察线程同时进入Numba workqueue会触发SIGABRT；用户看到的Python退出来自这里"],
+  discoveries: ["2383未处理感光乳剂中的蓝紫滤光染料会在冲洗中洗除，不能模拟成最终放映画面的均匀罩层", "扫描版相对更暖并不证明放映版应该绝对偏蓝；两条链必须分别检验中性轴", "官方不等LAD目标比主观减蓝更能解释并修正偏移", "T032原始雨天场景本身有青绿色与空气雾；相机基线可防止把场景色误当胶片错误", "顺序观察器在这台机器上避免线程争用且与并行结果逐像素相同", "原图对照必须经过必要的相机显示转换；灰色Log画面不是可用的原始参照"],
+  refs: ["R1", "R2", "R3", "R4", "R26", "R27", "R48", "R49", "R50"],
+  parameters: v30Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T020",
+      note: "树皮、菌类、中性暗纹理与真实植被绿用于检验中性轴、暗部颜色和35mm颗粒尺度。",
+      projection: { src: "/versions/v30-t020-projection.jpg", videoSrc: "/versions/v30-t020-projection-live-srgb.mp4", label: "T020 · 5279 → 2383影院观察Rec.709监看" },
+      bluray: { src: "/versions/v30-t020-bluray.jpg", videoSrc: "/versions/v30-t020-bluray-live-srgb.mp4", label: "T020 · 5279 → Period 2K / Rec.709蓝光" },
+      camera: { src: "/versions/v30-t020-camera.jpg", videoSrc: "/versions/v30-t020-camera-live-srgb.mp4", label: "T020 · Panasonic官方V-709相机基线" },
+    },
+    {
+      name: "NJARAW_S001_S001_T032",
+      note: "雨天青绿树林、空气雾与低反差细节用于区分真实场景色、相机显示与胶片观察器偏移。",
+      projection: { src: "/versions/v30-t032-projection.jpg", videoSrc: "/versions/v30-t032-projection-live-srgb.mp4", label: "T032 · 5279 → 2383影院观察Rec.709监看" },
+      bluray: { src: "/versions/v30-t032-bluray.jpg", videoSrc: "/versions/v30-t032-bluray-live-srgb.mp4", label: "T032 · 5279 → Period 2K / Rec.709蓝光" },
+      camera: { src: "/versions/v30-t032-camera.jpg", videoSrc: "/versions/v30-t032-camera-live-srgb.mp4", label: "T032 · Panasonic官方V-709相机基线" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
     if (branch.videoSrc) branch.videoSrc = withBasePath(branch.videoSrc);
   }
+  if (version.camera) {
+    version.camera.src = withBasePath(version.camera.src);
+    if (version.camera.videoSrc) version.camera.videoSrc = withBasePath(version.camera.videoSrc);
+  }
   for (const trial of version.additionalTrials ?? []) {
     for (const branch of [trial.projection, trial.bluray]) {
       branch.src = withBasePath(branch.src);
       if (branch.videoSrc) branch.videoSrc = withBasePath(branch.videoSrc);
+    }
+    if (trial.camera) {
+      trial.camera.src = withBasePath(trial.camera.src);
+      if (trial.camera.videoSrc) trial.camera.videoSrc = withBasePath(trial.camera.videoSrc);
     }
   }
 }
@@ -1077,6 +1177,9 @@ export const references = [
   { id: "R45", title: "Apply built-in camera LUTs in Final Cut Pro", type: "Apple官方RAW转换与Camera LUT阶段说明", url: "https://support.apple.com/en-am/guide/final-cut-pro/ver5d55de8fd/mac" },
   { id: "R46", title: "Adjust camera settings in Final Cut Pro", type: "Apple官方ProRes RAW线性与Log工作流说明", url: "https://support.apple.com/en-euro/guide/final-cut-pro/ver3eb60032c/mac" },
   { id: "R47", title: "CVProResRawMetadata", type: "Apple Core Video开发者文档", url: "https://developer.apple.com/documentation/corevideo/cvproresrawmetadata" },
+  { id: "R48", title: "LAD for KODAK VISION Color Print Film — H-61B", type: "Kodak官方2383通道目标密度", url: "https://www.kodak.com/content/products-brochures/Film/LAD-for-KODAK-VISION-Color-Print-Film-H-61b.pdf" },
+  { id: "R49", title: "Panasonic V-Log to V-709 3D LUT", type: "Panasonic官方显示转换（含GH7）", url: "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/lut/index.html" },
+  { id: "R50", title: "Numba Threading Layers — extra notes", type: "Numba官方并发安全文档", url: "https://numba.readthedocs.io/en/stable/user/threading-layer.html" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

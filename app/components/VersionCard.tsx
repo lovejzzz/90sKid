@@ -41,12 +41,21 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
   const changes = copy?.changes ?? item.changes;
   const errors = copy?.errors ?? item.errors;
   const discoveries = copy?.discoveries ?? item.discoveries;
+  const primaryBranchCount = item.camera ? 3 : 2;
+  const trialBaseIndex = (trialIndex: number) => primaryBranchCount + (
+    item.additionalTrials?.slice(0, trialIndex).reduce(
+      (sum, trial) => sum + (trial.camera ? 3 : 2),
+      0,
+    ) ?? 0
+  );
   const gallery: GalleryItem[] = [
     { src: item.projection.src, alt: branchAlt(item.projection, english ? "2383 projection" : "2383 放映", english) },
     { src: item.bluray.src, alt: branchAlt(item.bluray, english ? "2K DI / Blu-ray" : "2K DI / 蓝光", english) },
+    ...(item.camera ? [{ src: item.camera.src, alt: branchAlt(item.camera, english ? "Camera baseline" : "相机原图", english) }] : []),
     ...(item.additionalTrials?.flatMap((trial) => [
       { src: trial.projection.src, alt: branchAlt(trial.projection, english ? "2383 projection" : "2383 放映", english) },
       { src: trial.bluray.src, alt: branchAlt(trial.bluray, english ? "2K DI / Blu-ray" : "2K DI / 蓝光", english) },
+      ...(trial.camera ? [{ src: trial.camera.src, alt: branchAlt(trial.camera, english ? "Camera baseline" : "相机原图", english) }] : []),
     ]) ?? []),
   ];
   return (
@@ -56,18 +65,20 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
         <div><h2>{title}</h2><p>{summary}</p></div>
       </div>
       <div className="version-visual-layout">
-        <div className="branch-grid">
+        <div className={`branch-grid ${item.camera ? "has-camera" : ""}`}>
           <Branch branch={item.projection} title={text("2383 放映", "2383 PROJECTION")} gallery={gallery} galleryIndex={0} english={english} />
           <Branch branch={item.bluray} title={text("2K DI / 蓝光", "2K DI / BLU-RAY")} gallery={gallery} galleryIndex={1} english={english} />
+          {item.camera && <Branch branch={item.camera} title={text("相机原图", "CAMERA BASELINE")} gallery={gallery} galleryIndex={2} english={english} />}
         </div>
         <ParameterPanel groups={item.parameters} version={item.version} status={item.status} changes={changes} />
       </div>
       {item.additionalTrials?.map((trial, trialIndex) => (
         <section className="source-trial" key={trial.name}>
           <header><div><span>ADDITIONAL SOURCE</span><b>{trial.name}</b></div><p>{english ? (copy?.trialNote ?? trial.note) : trial.note}</p></header>
-          <div className="branch-grid">
-            <Branch branch={trial.projection} title={text("2383 放映", "2383 PROJECTION")} gallery={gallery} galleryIndex={2 + trialIndex * 2} english={english} />
-            <Branch branch={trial.bluray} title={text("2K DI / 蓝光", "2K DI / BLU-RAY")} gallery={gallery} galleryIndex={3 + trialIndex * 2} english={english} />
+          <div className={`branch-grid ${trial.camera ? "has-camera" : ""}`}>
+            <Branch branch={trial.projection} title={text("2383 放映", "2383 PROJECTION")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex)} english={english} />
+            <Branch branch={trial.bluray} title={text("2K DI / 蓝光", "2K DI / BLU-RAY")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 1} english={english} />
+            {trial.camera && <Branch branch={trial.camera} title={text("相机原图", "CAMERA BASELINE")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 2} english={english} />}
           </div>
         </section>
       ))}
