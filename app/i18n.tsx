@@ -13,11 +13,11 @@ type LanguageContextValue = {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("zh");
+  const [language, setLanguageState] = useState<Language>("en");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("5279-language");
-    // The server defaults to Chinese; apply a remembered client preference after hydration.
+    // The public site defaults to English; apply a remembered preference after hydration.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saved === "en" || saved === "zh") setLanguageState(saved);
   }, []);

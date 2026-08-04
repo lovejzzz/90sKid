@@ -1,3 +1,5 @@
+import { withBasePath } from "./basePath";
+
 export type BranchImage = {
   src: string;
   label: string;
@@ -968,9 +970,13 @@ v28.status = "calibration";
 const v29Parameters = (v28.parameters ?? []).map((group) => ({
   ...group,
   items: [
-    ...group.items.filter((item) => group.title !== "数值验证与效率" || ![
-      "正式T020双母版", "正式T032双母版", "两段并行总等待", "T020每帧双母版", "T032每帧双母版", "输出",
-    ].includes(item.label)),
+    ...group.items.filter((item) => {
+      if (group.title === "输入与母版" && ["源素材 A", "源素材 B", "每段长度"].includes(item.label)) return false;
+      if (group.title === "数值验证与效率" && [
+        "正式T020双母版", "正式T032双母版", "两段并行总等待", "T020每帧双母版", "T032每帧双母版", "输出",
+      ].includes(item.label)) return false;
+      return true;
+    }),
     ...(group.title === "输入与母版" ? [
       { label: "V29测试素材", labelEn: "V29 test source", value: "NJARAW_S001_S001_T002", valueEn: "NJARAW_S001_S001_T002" },
       { label: "原始视频", labelEn: "Source video", value: "165帧 · 6.881875秒 · 5760×4320 · 12-bit ProRes RAW HQ", valueEn: "165 frames · 6.881875s · 5760×4320 · 12-bit ProRes RAW HQ" },
@@ -1009,6 +1015,19 @@ versions.push({
   refs: ["R1", "R3", "R7", "R8", "R21", "R22", "R23", "R25", "R34", "R35", "R36", "R37"],
   parameters: v29Parameters,
 });
+
+for (const version of versions) {
+  for (const branch of [version.projection, version.bluray]) {
+    branch.src = withBasePath(branch.src);
+    if (branch.videoSrc) branch.videoSrc = withBasePath(branch.videoSrc);
+  }
+  for (const trial of version.additionalTrials ?? []) {
+    for (const branch of [trial.projection, trial.bluray]) {
+      branch.src = withBasePath(branch.src);
+      if (branch.videoSrc) branch.videoSrc = withBasePath(branch.videoSrc);
+    }
+  }
+}
 
 export const references = [
   { id: "R1", title: "KODAK VISION 500T 5279 / 7279 Technical Data, H-1-5279t", type: "Kodak片种数据", url: "https://125px.com/docs/motionpicture/kodak/5279.pdf" },
