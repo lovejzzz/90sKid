@@ -722,6 +722,36 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 stresses endpoints; T007 stresses water, grass and fine edges; T031 stresses dark neutral surfaces, warm fungi and green surroundings.",
   },
+  V35: {
+    year: "CURRENT BASELINE",
+    title: "Do not change the film—change the computation: an auditable Production graph",
+    summary:
+      "V35 is not a new grade and does not rewrite the film. V34 colour, black, gamma, MTF, DIR, grain amplitude and grain spectrum are frozen. What changes is finite-site execution. Pixel, frame, record, speed layer and size class receive deterministic Philox4x32-10 identities; complete uint32 words are compared directly with a 2^32 fixed-point threshold derived from the float32 probability. Asynchronous Metal sampling overlaps CPU expectation filtering and the V31 colour boundary reuses memory. Twenty-four-frame, five-region colour, clipping, RGB high-frequency correlation, grain-energy and temporal-difference gates all pass while both masters render 23.65% faster than V34.",
+    changes: [
+      "Replaced the 24-bit inverse-CDF candidate with direct Philox-u32 Bernoulli trials; maximum observed probability representation error is 2.269e-10",
+      "Asynchronous Metal finite-site submission exposes shared output memory and overlaps CPU expected-density filtering",
+      "All 45 record/speed/size identities per frame are decoded, deduplicated and persisted in provenance",
+      "Every result records source, algorithm, profile, LUT, bridge, command and stochastic-identity hashes",
+      "The V31 final chroma adapter reuses full-frame buffers; the V34 photographic model and creative boundary stay frozen",
+      "One native 5.7K 12-bit second for T002, T007 and T031, each with projection and period-scan masters",
+    ],
+    errors: [
+      "Calling the first 24-bit inverse-CDF candidate exact-distribution was too absolute; statistical agreement is not infinite mathematical precision",
+      "Same-process parallel observers reproduced a Numba workqueue SIGABRT, so V35 rejects observer_workers=2 before decoding",
+      "Shared-memory observer subprocesses were byte-identical but memory-bandwidth pressure worsened about 10.94 seconds of serial work to roughly 25 seconds",
+      "Single-Gaussian and full-residual convolution saved 0.65–0.9 s/frame but let ~5e-6 density reorder reach isolated 900–960/65535 projection-code differences through 2383 thresholds, so both are rejected",
+      "The Python Metal bridge still owns process-level device/queue state; it is a research tool and cannot become the OFX boundary unchanged",
+    ],
+    discoveries: [
+      "Quality-first validation must include rare threshold events and tails, not only mean colour or PSNR",
+      "Direct uint32 Bernoulli is faster than floating inverse CDF in the 30-site native-frame microbenchmark",
+      "Four formed-negative seeds give layer standard-deviation ratios 0.999918/1.000264/0.999852; NPS difference stays below ordinary reference seed variation",
+      "Twenty-four frames across five regions show no systematic green, blue or magenta shift; scan and projection grain/temporal-energy departures stay below 0.3%",
+      "OFX v1 should be full-frame, serial per instance, supportsTiles=false, with host-owned Metal queues and per-instance resource rings",
+    ],
+    trialNote:
+      "T002 carries the complete five-region temporal gate; T007 stresses water, grass and near-zero hard black; T031 stresses dark neutral texture, warm fungi and green surroundings.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
