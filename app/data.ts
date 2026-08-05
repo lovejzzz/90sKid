@@ -1296,6 +1296,73 @@ v32.year = "当前基线";
 v32.status = "current";
 versions.push(v32);
 
+const v33Parameters: ParameterGroup[] = [
+  {
+    title: "相机输入与曝光边界", titleEn: "CAMERA INPUT & EXPOSURE BOUNDARY", items: [
+      { label: "As Shot见证", labelEn: "As Shot witness", value: "Panasonic V-709 · 0.00 stop · 不进入胶片管线", valueEn: "Panasonic V-709 · 0.00 stop · no film pipeline" },
+      { label: "虚拟胶片EI", labelEn: "Virtual film EI", value: "+0.45 stop · 显式参数", valueEn: "+0.45 stop · explicit parameter" },
+      { label: "自动去绿", labelEn: "Automatic green neutralization", value: "关闭", valueEn: "Disabled", note: "等待同光源灰卡/ColorChecker实测；不使用gray-world", noteEn: "Awaiting same-light gray-card/ColorChecker measurement; no gray-world correction" },
+      { label: "校正位置", labelEn: "Correction location", value: "若被实测授权，仅在5279之前的相机输入边界", valueEn: "If measurement authorizes it: camera input, before 5279 only" },
+      { label: "FCP见证", labelEn: "FCP witness", value: "T031源帧144 · Standard/as-shot · SHA-256 612077c7…aa88", valueEn: "T031 source frame 144 · Standard/as-shot · SHA-256 612077c7…aa88" },
+    ],
+  },
+  {
+    title: "黑场、Toe与Gamma", titleEn: "BLACK, TOE & GAMMA", items: [
+      { label: "硬黑定义", labelEn: "Display-black definition", value: "Rec.709编码亮度 ≤ 1/1023", valueEn: "Rec.709 encoded luma ≤ 1/1023" },
+      { label: "放映硬黑 T002/T007/T031", labelEn: "Projection black T002/T007/T031", value: "0.00095% / 0% / 0.00133%", valueEn: "0.00095% / 0% / 0.00133%" },
+      { label: "扫描硬黑 T002/T007/T031", labelEn: "Scan black T002/T007/T031", value: "1.820% / 0.0133% / 1.349%", valueEn: "1.820% / 0.0133% / 1.349%" },
+      { label: "放映有效log-luma power", labelEn: "Projection effective log-luma power", value: "1.352 / 1.373 / 1.351", valueEn: "1.352 / 1.373 / 1.351" },
+      { label: "扫描有效log-luma power", labelEn: "Scan effective log-luma power", value: "1.514 / 1.343 / 1.504", valueEn: "1.514 / 1.343 / 1.504" },
+      { label: "32级稳健色调映射", labelEn: "32-bin robust tone mapping", value: "两观察器 · 三场景 · 负向步数0", valueEn: "Both observers · three scenes · 0 negative steps" },
+    ],
+  },
+  {
+    title: "母版与稳定性契约", titleEn: "MASTER & STABILITY CONTRACT", items: [
+      { label: "图像变化", labelEn: "Image change", value: "无 · V31/V32成像母版逐字节冻结", valueEn: "None · accepted V31/V32 image masters byte-frozen" },
+      { label: "三段素材", labelEn: "Three sources", value: "T002 0–23 · T007 276–299 · T031 132–155", valueEn: "T002 0–23 · T007 276–299 · T031 132–155" },
+      { label: "母版", labelEn: "Masters", value: "5760×4320 · 24帧 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+      { label: "部分区间音频", labelEn: "Partial-range audio", value: "PCM采样级atrim · 24帧测试=48048 samples", valueEn: "Sample-accurate PCM atrim · 24-frame test=48,048 samples" },
+      { label: "部分区间时间码", labelEn: "Partial-range timecode", value: "按绝对源帧偏移重建", valueEn: "Regenerated at absolute source-frame offset" },
+      { label: "48GB机器并发", labelEn: "48 GiB machine concurrency", value: "1个Archive-Exact原生worker", valueEn: "1 native Archive-Exact worker", note: "只改变调度，不改变随机种子或像素", noteEn: "Scheduling only; no seed or pixel change" },
+      { label: "0-stop三段计算", labelEn: "Three 0-stop renders", value: "358.35秒总计 · 顺序执行", valueEn: "358.35s total · sequential" },
+    ],
+  },
+];
+
+v32.year = "上一版";
+v32.status = "calibration";
+versions.push({
+  version: "V33",
+  year: "当前基线",
+  title: "不把现场绿光当错误：先锁定输入、曝光与黑场边界",
+  status: "current",
+  projection: { src: "/versions/v32-t031-projection.jpg", videoSrc: "/versions/v32-t031-projection-live-srgb.mp4", label: "T031 · V31正常5279 → 2383影院观察 · V33边界复验" },
+  bluray: { src: "/versions/v32-t031-bluray.jpg", videoSrc: "/versions/v32-t031-bluray-live-srgb.mp4", label: "T031 · V31 5279 → Period 2K扫描 · V33黑场复验" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Panasonic官方V-709 · As Shot 0.00 stop见证" },
+  summary: "V33不对轻微绿向做全局品红抵消，也不改变5279、颗粒、DIR、2383或扫描画面。它把FCP Standard参考、0 stop As Shot相机见证与+0.45 stop虚拟胶片EI明确分开；并在三段素材上为黑场裁切、toe占用、对比跨度、有效gamma、原生母版、部分区间音频/时间码和48GB机器内存安全建立可失败的交付门槛。Technical Neutral保留但关闭，直到灰卡/ColorChecker给出可重复证据。",
+  changes: ["T002、T007、T031各增加24帧原生5.7K的0.00-stop As Shot V-709见证", "保留+0.45-stop虚拟胶片EI为显式参数，不再称作未处理相机默认", "FCP Standard T031源帧144成为SHA锁定的独立解码/显示见证", "硬黑、toe、p05–p95对比跨度、32级单调色调映射与有效log-luma power进入自动验收", "Technical Neutral接口保留但默认关闭；未获灰卡证据前不自动去绿", "部分区间音频改为采样精确PCM裁切，时间码按绝对源帧偏移重建", "48GB参考机器自动限制为单个Archive-Exact原生worker；质量与随机种子不变"],
+  errors: ["第一次同时启动三段5.7K float基线造成不可接受的系统内存压力；panic报告显示压缩段已满并逼近swap耗尽，任务在重启时终止", "以三通道同时接近零定义黑场会漏掉有微小色差但亮度已到黑的像素；最终改用与FCP审计一致的Rec.709编码亮度阈值", "没有同光源中性卡时，无法把树林反射、as-shot白平衡与V-709局部残差唯一分离"],
+  discoveries: ["中性数学输入经过BT.2020→V-Gamut→V-Log→官方V-709的最大通道扩散仅0.000589，拒绝全局矩阵绿偏", "扫描完成端的硬黑具有强场景依赖：T007几乎为零，而暗场T002/T031约为1–2%", "放映与扫描对相机基线的稳健色调映射在三场景中均保持单调，不存在隐藏的反转或gamma断点", "worker数量只影响调度；在48GB机器上限制并发比依赖大量swap更快也更可靠", "是否需要Technical Neutral现在是可由灰卡实验回答的问题，而不是靠观感决定的全局tint"],
+  refs: ["R44", "R45", "R46", "R47", "R49"],
+  parameters: v33Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002",
+      note: "明亮天空、人物与暗部共同检验曝光标签、高光端、扫描黑位与综合色度。",
+      projection: { src: "/versions/v31-t002-projection.jpg", videoSrc: "/versions/v31-t002-projection-live-srgb.mp4", label: "T002 · 正常5279 → 2383影院观察 · 图像冻结" },
+      bluray: { src: "/versions/v31-t002-bluray.jpg", videoSrc: "/versions/v31-t002-bluray-live-srgb.mp4", label: "T002 · Period 2K扫描 · 图像冻结" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007",
+      note: "水面高光、细草和深色树林检验toe、亮度单调性与近零硬黑场景。",
+      projection: { src: "/versions/v32-t007-projection.jpg", videoSrc: "/versions/v32-t007-projection-live-srgb.mp4", label: "T007 · 正常5279 → 2383影院观察 · 图像冻结" },
+      bluray: { src: "/versions/v32-t007-bluray.jpg", videoSrc: "/versions/v32-t007-bluray-live-srgb.mp4", label: "T007 · Period 2K扫描 · 图像冻结" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

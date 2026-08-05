@@ -660,6 +660,36 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T031 uses neutral stone, warm mushrooms, moss and dark leaves to stress neutral-axis, chroma and fine-texture stability.",
   },
+  V33: {
+    year: "CURRENT BASELINE",
+    title:
+      "Do not grade away real green light: lock the input, exposure and black boundaries first",
+    summary:
+      "V33 applies no global magenta compensation and changes no 5279, grain, DIR, 2383 or scan pixel. It separates an FCP Standard witness, a 0-stop As Shot camera view and the explicit +0.45-stop virtual film EI. Across three scenes it adds failing gates for display black, toe occupancy, robust contrast, effective gamma, native masters, partial-range audio/timecode and safe scheduling on the 48-GiB reference machine. Technical Neutral exists as a disabled boundary until a gray card or ColorChecker supplies repeatable evidence.",
+    changes: [
+      "Native 24-frame 0.00-stop As Shot V-709 witnesses for T002, T007 and T031",
+      "The +0.45-stop virtual film EI is explicitly labelled and no longer confused with untouched camera exposure",
+      "SHA-locked FCP Standard T031 source-frame-144 witness",
+      "Automated display-black, toe, p05–p95 contrast, 32-bin monotonic tone and effective log-luma-power gates",
+      "Technical Neutral boundary retained but disabled until neutral-card evidence exists",
+      "Sample-accurate PCM trim and absolute-source-frame timecode for partial deliveries",
+      "One native Archive-Exact worker on the 48-GiB reference machine; pixels and random seeds unchanged",
+    ],
+    errors: [
+      "The first three-way concurrent 5.7K float attempt created unacceptable system memory pressure; the panic report showed exhausted compressor segments and near-exhausted swap",
+      "Defining black as all three channels near zero missed pixels whose luma had reached black but retained tiny chroma; the final gate uses the same encoded-luma threshold as the FCP audit",
+      "Without a neutral target under the scene illumination, foliage bounce, As Shot white balance and local V-709 residual cannot be uniquely separated",
+    ],
+    discoveries: [
+      "A neutral mathematical input remains neutral through BT.2020→V-Gamut→V-Log→official V-709; maximum channel spread is 0.000589",
+      "The finished scan's hard-black fraction is strongly scene dependent: nearly zero in T007 and roughly 1–2% in darker T002/T031",
+      "Both observers retain monotonic robust tone mappings across all three scenes; no hidden gamma reversal appears",
+      "Worker count changes scheduling only; avoiding swap on 48 GiB is both safer and more predictable than overcommitting memory",
+      "Technical Neutral is now a falsifiable gray-card question rather than a subjective global tint decision",
+    ],
+    trialNote:
+      "T002 stresses sky and dark completion; T007 stresses water highlights, fine grass and an almost zero-hard-black scene.",
+  },
 };
 
 export function translateBranchLabel(label: string) {

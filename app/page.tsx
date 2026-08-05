@@ -15,7 +15,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = current.version === "V32" ? "T007" : "T002";
+  const sourceName = current.version === "V33" ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
@@ -60,7 +60,7 @@ export default function Home() {
             <li><b>{text("可证伪门槛", "Falsifiable gates")}</b><span>{text("原生格式、高光、硬裁切、时序纹理、中性轴与OFX分块同一性都自动测量。", "Native format, highlights, clipping, temporal texture, neutral axis and OFX tile parity are measured automatically.")}</span></li>
             <li><b>{text("影院标准", "Cinema standard")}</b><span>{text("放映观察另生成ST 428-1 12-bit X′Y′Z′ DCDM序列；不再依赖含义不清的P3 ProRes标签。", "The projection observer also becomes an ST 428-1 12-bit X′Y′Z′ DCDM sequence, avoiding ambiguous P3 ProRes signalling.")}</span></li>
           </ol>
-          <Link href="/research#v32" className="button">{text("阅读V32测量研究", "Read the V32 measurement study")}</Link>
+          <Link href="/research#v33" className="button">{text("阅读V33边界研究", "Read the V33 boundary study")}</Link>
         </section>
 
         <section className="route-grid wrap">
