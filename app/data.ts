@@ -1118,6 +1118,83 @@ const v30 = versions[versions.length - 1];
 v30.year = "上一版";
 v30.status = "calibration";
 
+const v32Parameters: ParameterGroup[] = [
+  {
+    title: "输入与冻结边界", titleEn: "INPUT & FROZEN BOUNDARY", items: [
+      { label: "独立测试素材", labelEn: "Independent sources", value: "T007 · T031", valueEn: "T007 · T031" },
+      { label: "采样范围", labelEn: "Source ranges", value: "T007 276–299 · T031 132–155", valueEn: "T007 276–299 · T031 132–155" },
+      { label: "每段长度", labelEn: "Length per source", value: "24帧 · 1.001秒", valueEn: "24 frames · 1.001s" },
+      { label: "源格式", labelEn: "Source format", value: "GH7 / Atomos · ProRes RAW HQ 12-bit · 5760×4320", valueEn: "GH7 / Atomos · ProRes RAW HQ 12-bit · 5760×4320" },
+      { label: "逐镜头调节", labelEn: "Per-shot tuning", value: "无", valueEn: "None" },
+      { label: "相对V31图像变化", labelEn: "Image change from V31", value: "无 · 全部成像参数冻结", valueEn: "None · all image-forming parameters frozen" },
+    ],
+  },
+  {
+    title: "四种观察与交付", titleEn: "FOUR OBSERVATIONS & DELIVERIES", items: [
+      { label: "相机基线", labelEn: "Camera baseline", value: "Panasonic官方V-709 · 不进入胶片管线", valueEn: "Official Panasonic V-709 · no film pipeline" },
+      { label: "2383放映监看", labelEn: "2383 projection monitor", value: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+      { label: "时期2K扫描", labelEn: "Period 2K scan", value: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+      { label: "影院标准序列", labelEn: "Cinema-standard sequence", value: "2880×2160 · 24fps · ST 428-1 12-bit X′Y′Z′ DCDM TIFF", valueEn: "2880×2160 · 24fps · ST 428-1 12-bit X′Y′Z′ DCDM TIFF" },
+      { label: "DCP状态", labelEn: "DCP status", value: "未封装 · DCDM是JPEG 2000 / MXF之前的无损检验序列", valueEn: "Unpackaged · lossless DCDM test sequence before JPEG 2000 / MXF" },
+    ],
+  },
+  {
+    title: "V31图像形成冻结", titleEn: "V31 IMAGE FORMATION LOCK", items: [
+      { label: "5279负片", labelEn: "5279 negative", value: "九亚层、五粒径、三记录H-D曲线不变", valueEn: "Nine sublayers, five size classes and three record H-D curves unchanged" },
+      { label: "局部效应", labelEn: "Local effects", value: "DIR、染料云扩散、MTF不变", valueEn: "DIR, dye-cloud diffusion and MTF unchanged" },
+      { label: "2383", labelEn: "2383", value: "LAD 1.09/1.06/1.03 D · 明暗与颗粒不变", valueEn: "LAD 1.09/1.06/1.03 D · tone and grain unchanged" },
+      { label: "正常工艺边界", labelEn: "Normal-process boundary", value: "无残余银、skip bleach、ENR或艺术调色", valueEn: "No retained silver, skip bleach, ENR or creative grade" },
+      { label: "V31综合色度规则", labelEn: "V31 chroma rule", value: "扫描低频a/b + 放映高频综合色残差；逐像素Y保持", valueEn: "Scan low-frequency a/b + projection high-frequency opponent residual; per-pixel Y preserved" },
+    ],
+  },
+  {
+    title: "测量门槛与OFX迁移", titleEn: "MEASUREMENT GATES & OFX MIGRATION", items: [
+      { label: "格式门槛", labelEn: "Format gate", value: "24帧 · 5.7K · ProRes 4444 · 12-bit · Rec.709 1-1-1", valueEn: "24 frames · 5.7K · ProRes 4444 · 12-bit · Rec.709 1-1-1" },
+      { label: "时序门槛", labelEn: "Temporal gates", value: "均值、p99、硬裁切、纹理功率、中性轴逐帧检测", valueEn: "Frame-wise mean, p99, hard clip, texture power and neutral axis" },
+      { label: "DCDM回环", labelEn: "DCDM round trip", value: "X′Y′Z′ → 线性Rec.709 p99误差 < 0.003", valueEn: "X′Y′Z′ → linear Rec.709 p99 error < 0.003" },
+      { label: "OFX区域契约", labelEn: "OFX region contract", value: "σ=0.72×宽/2048 · halo=ceil(6σ)", valueEn: "σ=0.72×width/2048 · halo=ceil(6σ)" },
+      { label: "调度规则", labelEn: "Scheduling rule", value: "宿主调度帧 · 随机种子取绝对源帧号", valueEn: "Host-scheduled frames · random seed uses absolute source-frame index" },
+      { label: "质量策略", labelEn: "Quality policy", value: "GPU未通过数值与统计同一性前，以Archive Exact为准", valueEn: "Archive Exact remains authoritative until GPU numerical/statistical parity passes" },
+    ],
+  },
+  {
+    title: "实测效率", titleEn: "MEASURED PERFORMANCE", items: [
+      { label: "T031双母版核心", labelEn: "T031 dual-master core", value: "589.25秒 · 24.55秒/源帧（两母版合计）", valueEn: "589.25s · 24.55s/source frame for both masters" },
+      { label: "T007双母版核心", labelEn: "T007 dual-master core", value: "668.79秒 · 27.87秒/源帧（两母版合计）", valueEn: "668.79s · 27.87s/source frame for both masters" },
+      { label: "主要瓶颈", labelEn: "Primary bottleneck", value: "随机乳剂约18–21秒/帧/worker；观察器约15–17秒/帧/worker", valueEn: "Stochastic emulsion ≈18–21s/frame/worker; observers ≈15–17s/frame/worker" },
+      { label: "编码占比", labelEn: "Encoding share", value: "约0.38–0.58秒/帧/worker · 不是主要瓶颈", valueEn: "≈0.38–0.58s/frame/worker · not the primary bottleneck" },
+      { label: "T031 DCDM", labelEn: "T031 DCDM", value: "23.56秒 · 0.97秒/帧", valueEn: "23.56s · 0.97s/frame" },
+      { label: "T007 DCDM", labelEn: "T007 DCDM", value: "13.55秒 · 0.56秒/帧", valueEn: "13.55s · 0.56s/frame" },
+      { label: "统一验证", labelEn: "Unified validation", value: "通过 · 2场景 · failures 0", valueEn: "Passed · 2 scenes · 0 failures" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V32",
+  year: "当前基线",
+  title: "冻结被认可的画面，把下一步从观感判断变成可重复测量",
+  status: "current",
+  projection: { src: "/versions/v32-t007-projection.jpg", videoSrc: "/versions/v32-t007-projection-live-srgb.mp4", label: "T007 · V31正常5279 → 2383影院观察 · V32测量验证" },
+  bluray: { src: "/versions/v32-t007-bluray.jpg", videoSrc: "/versions/v32-t007-bluray-live-srgb.mp4", label: "T007 · V31 5279 → Period 2K扫描 · V32测量验证" },
+  camera: { src: "/versions/v32-t007-camera.jpg", videoSrc: "/versions/v32-t007-camera-live-srgb.mp4", label: "T007 · Panasonic官方V-709相机基线" },
+  summary: "V32不改变V31的任何画面参数。它用两段全新GH7 ProRes RAW素材，在没有逐镜头调节的前提下复验5279乳剂、正常2383放映与时期2K扫描；并把原生格式、亮度保持、高光裁切、时序纹理、中性轴、OFX分块区域和影院X′Y′Z′交付写成自动门槛。V32因此不是一次新的look，而是把目前可信的look变成可以迁移、复现和否证的基线。",
+  changes: ["T007与T031各新增24帧原分辨率独立场景验证", "V31所有图像形成参数冻结，无逐镜头颜色、曝光、颗粒或对比调整", "逐帧检测亮度、p99高光、硬裁切、纹理功率和近中性a/b漂移", "加入SMPTE ST 428-1 12-bit X′Y′Z′ DCDM无损影院检验序列", "明确否决P3-D65/gamma 2.6 ProRes运输实验，避免MOV/ProRes/播放器元数据歧义", "加入OFX tile/ROI数值同一性契约，为Resolve插件迁移做准备", "逐阶段计时证明瓶颈位于随机乳剂与观察器，而不是ProRes编码"],
+  errors: ["早期P3 ProRes探针同时依赖RGB含义、MOV色彩原子和播放器解释；这重复了V25已经发现的跨播放器不确定性，因此未列为交付", "用缩小后的网页预览做DCDM回环会混入二次缩放误差；最终验证直接解码原分辨率第12帧后再按同一面积核缩放", "第一次T007 V31边界试跑把输出目录误传为文件名，编码器立即拒绝；未产生有效画面，修正路径后重新完整运行"],
+  discoveries: ["当画面已达到可信状态，最有价值的下一步可能是冻结而不是继续调色", "同一算法在水面高光、细草与暖色菌类上无需逐镜头调节，是比单帧好看更强的证据", "DCDM可以完整保存当前放映观察的外观，但不会凭空扩大原Rec.709监看中已经裁掉的色域", "两路12-bit母版并行生成时，随机乳剂与光谱观察器主导时间；编码只占很小部分", "插件分块的halo必须由完整输出宽度决定，否则代理尺寸和tile宽度会暗中改变颜色/颗粒交叉尺度"],
+  refs: ["R26", "R28", "R32", "R44", "R49", "R53"],
+  parameters: v32Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T031",
+      note: "中性石面、暖色菌类、苔藓和暗部叶片检验灰轴、综合色度与高频纹理是否跨场景稳定。",
+      projection: { src: "/versions/v32-t031-projection.jpg", videoSrc: "/versions/v32-t031-projection-live-srgb.mp4", label: "T031 · 正常5279 → 2383影院观察" },
+      bluray: { src: "/versions/v32-t031-bluray.jpg", videoSrc: "/versions/v32-t031-bluray-live-srgb.mp4", label: "T031 · 5279 → Period 2K扫描" },
+      camera: { src: "/versions/v32-t031-camera.jpg", videoSrc: "/versions/v32-t031-camera-live-srgb.mp4", label: "T031 · Panasonic官方V-709相机基线" },
+    },
+  ],
+});
+
 const v31Parameters: ParameterGroup[] = [
   {
     title: "输入与母版", titleEn: "INPUT & MASTERS", items: [
@@ -1208,6 +1285,15 @@ versions.push({
   ],
 });
 
+const v31 = versions[versions.length - 1];
+v31.year = "上一版";
+v31.status = "calibration";
+const v32Index = versions.findIndex((item) => item.version === "V32");
+const [v32] = versions.splice(v32Index, 1);
+v32.year = "当前基线";
+v32.status = "current";
+versions.push(v32);
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1282,6 +1368,7 @@ export const references = [
   { id: "R50", title: "Numba Threading Layers — extra notes", type: "Numba官方并发安全文档", url: "https://numba.readthedocs.io/en/stable/user/threading-layer.html" },
   { id: "R51", title: "Process ECP-2D Specifications, H-24 Module 9A", type: "Kodak正常正片漂白／定影规范", url: "https://www.kodak.com/content/products-brochures/Film/Processing-KODAK-Motion-Picture-Films-Module-9A.pdf" },
   { id: "R52", title: "Motion Picture Film Processing Information — skip bleach / ENR", type: "Kodak特殊工艺说明", url: "https://www.kodak.com/en/motion/page/processing-information/" },
+  { id: "R53", title: "SMPTE ST 428-1:2019 — D-Cinema Distribution Master image characteristics", type: "SMPTE数字影院母版标准", url: "https://pub.smpte.org/pub/st428-1/st428-1-2019.pdf" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

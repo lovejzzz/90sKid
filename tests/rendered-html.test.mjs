@@ -17,17 +17,17 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V31 project home page", async () => {
+test("server-renders the bilingual V32 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /CURRENT BASELINE[\s\S]{0,50}V31/);
+  assert.match(html, /CURRENT BASELINE[\s\S]{0,50}V32/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v31-t002-projection/);
-  assert.match(html, /v31-t002-projection-live-srgb\.mp4/);
-  assert.match(html, /v31-t002-camera/);
+  assert.match(html, /v32-t007-projection/);
+  assert.match(html, /v32-t007-projection-live-srgb\.mp4/);
+  assert.match(html, /v32-t007-camera/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -35,7 +35,7 @@ test("server-renders the bilingual V31 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V31 archive, research and algorithm routes", async () => {
+test("server-renders the V32 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -43,8 +43,8 @@ test("server-renders the V31 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V31/);
-  assert.match(versions, /NJARAW_S001_S001_T032/);
+  assert.match(versions, /V4—[\s\S]{0,30}V32/);
+  assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
   assert.match(research, /V25 · OUTPUT STANDARD/);
@@ -61,7 +61,10 @@ test("server-renders the V31 archive, research and algorithm routes", async () =
   assert.match(research, /V29 · FULL-MOTION VALIDATION/);
   assert.match(research, /V30 · THREE-SCENE COLOUR EVIDENCE/);
   assert.match(research, /V31 · NORMAL-PROCESS CHROMA \/ TONE/);
-  assert.match(algorithm, /CURRENT V31/);
+  assert.match(research, /V32 · MEASUREMENT-FIRST GENERALIZATION/);
+  assert.match(research, /SMPTE ST 428-1/);
+  assert.match(algorithm, /CURRENT V32/);
+  assert.match(algorithm, /V32 · MEASUREMENT \/ DELIVERY CONTRACT/);
   assert.match(algorithm, /V28 · RAW INPUT CONTRACT/);
   assert.match(algorithm, /V27 · SCAN GRAY AXIS/);
   assert.match(algorithm, /193³/);
@@ -219,6 +222,36 @@ test("V31 normal-process previews are frame-matched and web-colour verified", as
   assert.deepEqual(manifest.source_frame_range, [0, 23]);
   assert.equal(manifest.first_frame_source_index, 12);
   assert.equal(Object.keys(manifest.verification).length, 9);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.master_metadata.width, 5760);
+    assert.equal(result.master_metadata.height, 4320);
+    assert.equal(result.master_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.master_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.master_metadata.nb_frames, "24");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
+    assert.ok(result.first_frame_median_luma_delta <= 0.01);
+  }
+});
+
+test("V32 independent-scene previews are frame-matched and web-colour verified", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v32-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(manifest.source_frame_range, {
+    T007: [276, 299],
+    T031: [132, 155],
+  });
+  assert.deepEqual(manifest.first_frame_source_index, {
+    T007: 288,
+    T031: 144,
+  });
+  assert.equal(Object.keys(manifest.verification).length, 6);
   for (const result of Object.values(manifest.verification)) {
     assert.equal(result.master_metadata.width, 5760);
     assert.equal(result.master_metadata.height, 4320);

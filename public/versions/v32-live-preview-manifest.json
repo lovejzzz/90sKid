@@ -1,0 +1,138 @@
+{
+  "purpose": "V32 matched Rec.709-to-sRGB web proxies from two independent measurement-first 12-bit source sets",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "source_frame_range": {
+    "T007": [
+      276,
+      299
+    ],
+    "T031": [
+      132,
+      155
+    ]
+  },
+  "first_frame_source_index": {
+    "T007": 288,
+    "T031": 144
+  },
+  "projection_source": "Rec.709-D65 1-1-1 monitor rendering of the 48-nit gamma-2.6 cinema observer",
+  "bluray_source": "Rec.709-D65 1-1-1 Blu-ray rendering; BT.1886 is the reference display EOTF",
+  "camera_source": "Panasonic official V-Log to V-709 display transform only; no 5279, 2383, scan or creative grade",
+  "web": "sRGB IEC 61966-2-1; no browser-dependent master interpretation",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 20 / tune grain; archive masters remain 5.7K 12-bit ProRes 4444",
+  "verification": {
+    "v32-t007-projection": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010775,
+        0.00923,
+        0.012748
+      ],
+      "first_frame_median_luma_delta": 0.002229
+    },
+    "v32-t007-bluray": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009336,
+        0.007335,
+        0.011667
+      ],
+      "first_frame_median_luma_delta": 0.001117
+    },
+    "v32-t007-camera": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007707,
+        0.005648,
+        0.007867
+      ],
+      "first_frame_median_luma_delta": 0.002975
+    },
+    "v32-t031-projection": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010812,
+        0.009028,
+        0.012522
+      ],
+      "first_frame_median_luma_delta": 0.000263
+    },
+    "v32-t031-bluray": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009714,
+        0.007537,
+        0.011561
+      ],
+      "first_frame_median_luma_delta": 0.000509
+    },
+    "v32-t031-camera": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00846,
+        0.006196,
+        0.008203
+      ],
+      "first_frame_median_luma_delta": 0.000551
+    }
+  }
+}

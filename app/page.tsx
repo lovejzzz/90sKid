@@ -15,16 +15,17 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
+  const sourceName = current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
-    { src: current.projection.src, alt: `${current.version} T002 2383 projection monitor reference` },
-    { src: current.bluray.src, alt: `${current.version} T002 Rec.709 Blu-ray reference` },
-    ...(current.camera ? [{ src: current.camera.src, alt: `${current.version} T002 Panasonic V-709 camera baseline` }] : []),
+    { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
+    { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
+    ...(current.camera ? [{ src: current.camera.src, alt: `${current.version} ${sourceName} Panasonic V-709 camera baseline` }] : []),
   ];
   return (
     <>
       <SiteHeader />
       <main>
-        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v31-t032-projection.jpg")}")` } as CSSProperties}>
+        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v32-t007-projection.jpg")}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>
@@ -37,9 +38,9 @@ export default function Home() {
           <div className="section-intro"><span>{text("当前基线", "CURRENT BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
           <div className="current-visual-layout">
             <div className={`hero-comparison ${current.camera ? "has-camera" : ""}`}>
-              <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T002 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察结果的Rec.709监看呈现", "Rec.709 monitor presentation of the 48-nit cinema observer")}</figcaption></figure>
-              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src={current.bluray.src} previewSrc={current.bluray.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.bluray.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} T002 Rec.709 Blu-ray reference`} gallery={currentGallery} initialIndex={1} /><figcaption>{text("时期2K扫描；BT.1886仅用于参考显示验证", "Period 2K scan; BT.1886 is used only for reference-display validation")}</figcaption></figure>
-              {current.camera && <figure><div className="image-title"><b>V-709</b><span>PANASONIC OFFICIAL CAMERA BASELINE</span></div><InteractiveImage src={current.camera.src} previewSrc={current.camera.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.camera.videoSrc} sizes="(max-width: 680px) 100vw, 28vw" alt={`${current.version} T002 Panasonic V-709 camera baseline`} gallery={currentGallery} initialIndex={2} /><figcaption>{text("同一RAW的官方V-709显示基线；不进入胶片管线", "Official V-709 view of the same RAW; no film pipeline")}</figcaption></figure>}
+              <figure><div className="image-title"><b>2383</b><span>REC.709 MONITOR / 1-1-1</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察结果的Rec.709监看呈现", "Rec.709 monitor presentation of the 48-nit cinema observer")}</figcaption></figure>
+              <figure><div className="image-title"><b>2K DI</b><span>REC.709 / 1-1-1 / BT.1886 DISPLAY</span></div><InteractiveImage src={current.bluray.src} previewSrc={current.bluray.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.bluray.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} Rec.709 Blu-ray reference`} gallery={currentGallery} initialIndex={1} /><figcaption>{text("时期2K扫描；BT.1886仅用于参考显示验证", "Period 2K scan; BT.1886 is used only for reference-display validation")}</figcaption></figure>
+              {current.camera && <figure><div className="image-title"><b>V-709</b><span>PANASONIC OFFICIAL CAMERA BASELINE</span></div><InteractiveImage src={current.camera.src} previewSrc={current.camera.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.camera.videoSrc} sizes="(max-width: 680px) 100vw, 28vw" alt={`${current.version} ${sourceName} Panasonic V-709 camera baseline`} gallery={currentGallery} initialIndex={2} /><figcaption>{text("同一RAW的官方V-709显示基线；不进入胶片管线", "Official V-709 view of the same RAW; no film pipeline")}</figcaption></figure>}
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
           </div>
@@ -52,14 +53,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · NORMAL-PROCESS COLOUR</span><h2>{text("正常胶片的密度可以更深，但染料颜色不应被当成银影抽走", "A normal print may be denser without losing dye colour as if silver were retained")}</h2></div>
+          <div><span className="eyebrow">{current.version} · MEASUREMENT-FIRST BASELINE</span><h2>{text("画面冻结之后，每一次变化都必须先回答：它能被测量吗？", "Once the image is frozen, every change must first answer: can it be measured?")}</h2></div>
           <ol>
-            <li><b>{text("正常漂白", "Normal bleach")}</b><span>{text("ECN-2与ECP-2D形成染料后移除银影；默认链不含留银、ENR或skip bleach。", "ECN-2 and ECP-2D remove the silver image after dye formation; the default chain contains no bypass, ENR or skip bleach.")}</span></li>
-            <li><b>{text("综合色度—明暗解耦", "Chroma / tone decoupling")}</b><span>{text("2383中性曲线只决定L；证据基线保留色相与绝对OKLab综合色度C。", "The 2383 neutral curve sets L while the evidence baseline retains hue and absolute OKLab chroma C.")}</span></li>
-            <li><b>{text("质感锁定", "Texture locked")}</b><span>{text("5279颗粒、DIR、MTF、黑位、Gamma和投影亮度纹理与V30相同。", "5279 grain, DIR, MTF, black, gamma and projection luminance texture are unchanged from V30.")}</span></li>
-            <li><b>{text("三个场景", "Three scenes")}</b><span>{text("T002、T020、T032各24帧原分辨率，以同一参数验证暗部综合色度和真实雨天青绿。", "T002, T020 and T032 each contribute 24 native-resolution frames under one parameter set.")}</span></li>
+            <li><b>{text("画面冻结", "Image frozen")}</b><span>{text("V31的5279、2383、扫描、颗粒、黑位、Gamma和综合色度边界全部不变。", "V31 negative, print, scan, grain, black, gamma and chroma boundary remain unchanged.")}</span></li>
+            <li><b>{text("独立场景", "Independent scenes")}</b><span>{text("T007水面高光与细草、T031中性石面与暖色菌类使用完全相同的参数。", "T007 water highlights and fine grass, plus T031 neutral stone and warm mushrooms, use one parameter set.")}</span></li>
+            <li><b>{text("可证伪门槛", "Falsifiable gates")}</b><span>{text("原生格式、高光、硬裁切、时序纹理、中性轴与OFX分块同一性都自动测量。", "Native format, highlights, clipping, temporal texture, neutral axis and OFX tile parity are measured automatically.")}</span></li>
+            <li><b>{text("影院标准", "Cinema standard")}</b><span>{text("放映观察另生成ST 428-1 12-bit X′Y′Z′ DCDM序列；不再依赖含义不清的P3 ProRes标签。", "The projection observer also becomes an ST 428-1 12-bit X′Y′Z′ DCDM sequence, avoiding ambiguous P3 ProRes signalling.")}</span></li>
           </ol>
-          <Link href="/research#v31" className="button">{text("阅读V31正常工艺研究", "Read the V31 normal-process study")}</Link>
+          <Link href="/research#v32" className="button">{text("阅读V32测量研究", "Read the V32 measurement study")}</Link>
         </section>
 
         <section className="route-grid wrap">

@@ -630,6 +630,36 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T020 tests dark bark colour; T032 tests whether genuine rainy cyan-green atmosphere survives the correction.",
   },
+  V32: {
+    year: "CURRENT BASELINE",
+    title:
+      "Freeze the accepted image; turn the next step from taste into repeatable measurement",
+    summary:
+      "V32 changes no V31 image-forming parameter. Two new GH7 ProRes RAW scenes independently test the 5279 emulsion, normal 2383 projection and period-2K scan without per-shot tuning. Native format, luminance preservation, highlight clipping, temporal texture, neutral-axis stability, OFX tile regions and cinema X′Y′Z′ delivery now become automated release gates. V32 is not a new look; it makes the current credible look portable, reproducible and falsifiable.",
+    changes: [
+      "Two new 24-frame native-resolution trials: T007 and T031",
+      "All V31 image formation frozen; no per-shot exposure, colour, grain or contrast adjustment",
+      "Frame-wise luma, p99 highlight, hard-clip, texture-power and near-neutral a/b gates",
+      "SMPTE ST 428-1 12-bit X′Y′Z′ lossless DCDM cinema test sequence",
+      "P3-D65/gamma-2.6 ProRes transport explicitly rejected because MOV, frame-header and player interpretations are ambiguous",
+      "Numerical OFX tile/ROI parity contract for future Resolve migration",
+      "Stage timing proves that stochastic emulsion and observers—not ProRes encoding—dominate runtime",
+    ],
+    errors: [
+      "The first P3 ProRes probe repeated V25's cross-player metadata ambiguity and was removed from delivery",
+      "A first DCDM round-trip compared against an already reduced web preview and therefore measured a second resampling; final QA decodes the native representative frame",
+      "The first T007 V31-boundary command passed a directory where the encoder expected a file; it failed before producing a valid frame and was rerun with the correct path",
+    ],
+    discoveries: [
+      "Once an image is credible, freezing it can advance the model more than another subjective colour move",
+      "One parameter set surviving water highlights, fine grass, neutral stone and warm mushrooms is stronger evidence than one attractive still",
+      "DCDM can preserve the completed projection observer but cannot invent gamut already absent from its Rec.709 monitor result",
+      "Stochastic emulsion and spectral observation dominate native 5.7K runtime; encoding is a small fraction",
+      "An OFX halo must use full output width or proxy and tile sizes will silently change the crossover scale",
+    ],
+    trialNote:
+      "T031 uses neutral stone, warm mushrooms, moss and dark leaves to stress neutral-axis, chroma and fine-texture stability.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
