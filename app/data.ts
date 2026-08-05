@@ -1431,6 +1431,73 @@ versions.push({
   ],
 });
 
+const v35Parameters: ParameterGroup[] = [
+  {
+    title: "质量冻结与执行边界", titleEn: "QUALITY FREEZE & EXECUTION BOUNDARY", items: [
+      { label: "图像模型", labelEn: "Image model", value: "V34完全冻结", valueEn: "V34 fully frozen" },
+      { label: "不重调", labelEn: "No retune", value: "颜色 · 黑位 · gamma · MTF · DIR · 颗粒振幅/频谱", valueEn: "Colour · black · gamma · MTF · DIR · grain amplitude/spectrum" },
+      { label: "Archive", labelEn: "Archive", value: "V34 NumPy/CPU · 字节级参考", valueEn: "V34 NumPy/CPU · byte-exact reference" },
+      { label: "Production", labelEn: "Production", value: "独立但统计等价的随机实现", valueEn: "Independent, statistically equivalent realization" },
+    ],
+  },
+  {
+    title: "Philox-u32有限位点", titleEn: "PHILOX-U32 FINITE SITES", items: [
+      { label: "生成器", labelEn: "Generator", value: "Philox4x32-10 · 全局像素坐标", valueEn: "Philox4x32-10 · global pixel coordinates" },
+      { label: "伯努利阈值", labelEn: "Bernoulli threshold", value: "floor(float32 p × 2³²)", valueEn: "floor(float32 p × 2³²)" },
+      { label: "实测p域", labelEn: "Observed p domain", value: "1.685×10⁻⁷ — 0.986325", valueEn: "1.685×10⁻⁷ — 0.986325" },
+      { label: "实测n域", labelEn: "Observed n domain", value: "22个离散值 · 1—30", valueEn: "22 discrete values · 1—30" },
+      { label: "概率量化误差", labelEn: "Probability error", value: "最大2.269×10⁻¹⁰", valueEn: "2.269×10⁻¹⁰ maximum" },
+      { label: "身份审计", labelEn: "Identity audit", value: "45次/帧 · 重复0", valueEn: "45 calls/frame · 0 duplicates" },
+    ],
+  },
+  {
+    title: "速度、稳定性与验收", titleEn: "SPEED, STABILITY & GATES", items: [
+      { label: "T002双母版", labelEn: "T002 dual masters", value: "26.200秒/帧 · 比V34快23.65%", valueEn: "26.200 s/frame · 23.65% faster than V34" },
+      { label: "观察器", labelEn: "Observers", value: "可靠串行 · Numba workqueue并发被禁止", valueEn: "Reliable serial · unsafe Numba workqueue concurrency blocked" },
+      { label: "颗粒能量偏差", labelEn: "Grain-energy departure", value: "放映≤0.1485% · 扫描≤0.2635%", valueEn: "Projection ≤0.1485% · scan ≤0.2635%" },
+      { label: "时序差分能量", labelEn: "Temporal-difference energy", value: "放映≤0.1234% · 扫描≤0.1954%", valueEn: "Projection ≤0.1234% · scan ≤0.1954%" },
+      { label: "交付", labelEn: "Delivery", value: "5760×4320 · 24帧 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+    ],
+  },
+];
+
+const v34 = versions.find((item) => item.version === "V34");
+if (v34) {
+  v34.year = "上一版";
+  v34.status = "calibration";
+}
+versions.push({
+  version: "V35",
+  year: "当前基线",
+  title: "不改变胶片，只改变计算：可审计的Production管线",
+  status: "current",
+  projection: { src: "/versions/v35-t031-projection.jpg", videoSrc: "/versions/v35-t031-projection-live-srgb.mp4", label: "T031 · V35正常5279 → 2383影院观察 · Philox-u32 Production" },
+  bluray: { src: "/versions/v35-t031-bluray.jpg", videoSrc: "/versions/v35-t031-bluray-live-srgb.mp4", label: "T031 · V35 5279 → Period 2K扫描 · Philox-u32 Production" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Panasonic官方V-709 · As Shot 0.00 stop见证" },
+  summary: "V35不是新调色，也不重写胶片。V34的颜色、黑位、gamma、MTF、DIR、颗粒振幅与频谱全部冻结；改变的是有限银盐位点的执行方式。每个像素、帧、记录层、速度层和尺寸类通过Philox4x32-10获得确定性身份，直接用完整uint32随机字与float32概率的2³²定点阈值执行伯努利试验。异步Metal采样与CPU期望密度滤波重叠，V31综合色边界复用内存。24帧、五区域的颜色、剪切、RGB高频相关、颗粒能量和时序差分验收全部通过，同时双母版比V34快23.65%。",
+  changes: ["用Philox-u32直接伯努利试验替代24-bit逆CDF候选，实际概率量化误差降至2.269×10⁻¹⁰", "Metal有限位点异步提交并直接共享输出内存，与CPU期望密度滤波重叠", "每帧45个记录层/速度层/尺寸类身份被解码、去重并写入provenance", "所有结果记录素材、算法、Profile、LUT、桥接代码、命令与随机身份哈希", "V31综合色适配器复用全帧缓冲，V34摄影模型与所有艺术边界保持冻结", "T002、T007、T031各制作一秒原生5.7K 12-bit放映与扫描母版"],
+  errors: ["最初把24-bit逆CDF称为exact-distribution过于绝对；统计通过不等于数学无限精度", "同进程并行观察器触发Numba workqueue SIGABRT，因此V35在解码前拒绝observer-workers=2", "共享内存子进程观察器虽逐字节相同，却因内存带宽竞争从10.94秒恶化到约25秒", "单Gaussian和全残差卷积虽然省0.65—0.9秒/帧，却让约5×10⁻⁶密度舍入被2383阈值放大为最高900—960个16-bit code的孤立差异，因此否决", "当前Python Metal桥仍有进程级设备/队列，只是研究工具，不能原样移植到OFX"],
+  discoveries: ["质量优先不只意味着保留平均色彩；非线性印片链要求审计极端尾部和稀有阈值事件", "完整uint32 Bernoulli在30位点全幅微基准中反而比浮点逆CDF更快", "四个完整乳剂种子的层标准差比为0.999918/1.000264/0.999852，NPS差小于参考自身的种子波动", "24帧五区域比较没有系统性绿、蓝或品红偏移，扫描与放映的颗粒/时序能量偏差均低于0.3%", "OFX v1必须全帧、单实例串行、supportsTiles=false，并使用主机拥有的Metal队列与每实例资源环"],
+  refs: ["R50", "R54", "R55", "R56", "R57"],
+  parameters: v35Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002",
+      note: "24帧完整验收场景：五区域颜色、剪切、RGB高频相关、颗粒能量与时序差分全部通过。",
+      projection: { src: "/versions/v35-t002-projection.jpg", videoSrc: "/versions/v35-t002-projection-live-srgb.mp4", label: "T002 · V35正常5279 → 2383影院观察" },
+      bluray: { src: "/versions/v35-t002-bluray.jpg", videoSrc: "/versions/v35-t002-bluray-live-srgb.mp4", label: "T002 · V35 Period 2K扫描" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007",
+      note: "水面、细草与树林检验高光、细纹理、低硬黑场景和有机时序颗粒。",
+      projection: { src: "/versions/v35-t007-projection.jpg", videoSrc: "/versions/v35-t007-projection-live-srgb.mp4", label: "T007 · V35正常5279 → 2383影院观察" },
+      bluray: { src: "/versions/v35-t007-bluray.jpg", videoSrc: "/versions/v35-t007-bluray-live-srgb.mp4", label: "T007 · V35 Period 2K扫描" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1508,6 +1575,8 @@ export const references = [
   { id: "R53", title: "SMPTE ST 428-1:2019 — D-Cinema Distribution Master image characteristics", type: "SMPTE数字影院母版标准", url: "https://pub.smpte.org/pub/st428-1/st428-1-2019.pdf" },
   { id: "R54", title: "OpenFX Image Effect Plug-in Rendering", type: "OpenFX官方渲染与Metal主机队列规范", url: "https://openfx.readthedocs.io/en/main/Reference/ofxRendering.html" },
   { id: "R55", title: "Metal Performance Shaders tuning hints", type: "Apple官方GPU调优指南", url: "https://developer.apple.com/documentation/metalperformanceshaders/tuning-hints" },
+  { id: "R56", title: "Parallel Random Numbers: As Easy as 1, 2, 3 — Random123 / Philox", type: "SC11同行评审论文", url: "https://www.thesalmons.org/john/random123/papers/random123sc11.pdf" },
+  { id: "R57", title: "Metal Best Practices — Command Buffers", type: "Apple官方命令缓冲与同步指南", url: "https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/CommandBuffers.html" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

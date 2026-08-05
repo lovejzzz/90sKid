@@ -19,12 +19,20 @@ corrected = rgb_balance(display_linear)
 corrected *= rec709_y(display_linear) / rec709_y(corrected)
 # black, gamma and per-pixel luminance remain unchanged`;
 
+const productionCode = `# V35 Production: keep the complete uint32 random word
+threshold = floor(float32(probability) * 2**32)
+developed += philox_u32(counter(frame, record, population,
+                                size_class, x, y, lane)) < threshold
+# all 45 identities per frame must be unique; V34 remains Archive exact`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V34</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V34 lets processed-stock 5279 MTF own developer adjacency once and moves the V31 colour boundary before delivery encoding. Each master receives one ProRes generation; grain, interimage DIR, black, gamma and the creative-grade boundary remain unchanged.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V35</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V35 freezes the V34 photographic model and changes only the auditable Production graph: Philox-u32 finite sites, asynchronous Metal, identity deduplication and five-region temporal gates. Colour, black, gamma, MTF, DIR, grain and the creative-grade boundary remain unchanged.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>12-bit output</b><small>Rec.709 or DCDM X′Y′Z′</small></span></div></section>
+
+      <section className="method-section"><div className="method-index">V35</div><div className="method-copy"><span className="section-tag">AUDITABLE PRODUCTION GRAPH</span><h2>The realization may be independent; every identity must remain traceable</h2><p>Production need not reproduce the exact V34 PCG64 grain mosaic, but it must preserve the finite-binomial distribution, 48 µm RMS, NPS, layer statistics and temporal independence. V35 compares complete Philox uint32 words with a 2^32 fixed-point threshold derived from float32 probability. Frame, record, speed population, size class and global pixel coordinates define identity. Asynchronous Metal overlaps CPU expectation filtering; all 45 calls per frame are deduplicated and persisted in provenance.</p><pre><code>{productionCode}</code></pre><div className="equation"><span>PROBABILITY BOUNDARY</span><b>|p<sub>u32</sub>−p<sub>float32</sub>| &lt; 2<sup>−32</sup></b><small>The observed three-source maximum is 2.269e-10; V34 remains the byte-exact Archive reference.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V34</div><div className="method-copy"><span className="section-tag">PROCESSED MTF · SINGLE GENERATION</span><h2>Compute the total response once; encode the result once</h2><p>Kodak's 5279 MTF is measured on processed film and already contains the mid-frequency rise from developer adjacency. V34 retains that total MTF and disables the later duplicate deterministic intralayer DIR term. Interimage transport and stochastic grain coupling remain in development space. Both observers then complete the V31 colour boundary in linear Rec.709 before their sole delivery encode.</p><div className="equation"><span>DETERMINISTIC STRUCTURE</span><b>MTF<sub>out</sub>=MTF<sub>Kodak, ECN-2</sub></b><small>No second DIR-acutance response is multiplied in.</small></div><div className="equation"><span>SINGLE-GENERATION OUTPUT</span><b>Proj<sub>master</sub>=Encode(A(Proj<sub>lin</sub>,Scan<sub>lin</sub>))</b><small>The scan master is Encode(Scanlin); there is no intermediate ProRes round trip.</small></div></div></section>
 
@@ -58,7 +66,7 @@ export function AlgorithmEnglish() {
 
       <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">EVIDENCE BOUNDARY</span><h2>Negative findings are part of the algorithm</h2><p>The latest hourly audit found no public, stock-specific 5279 NPS, no measured 5279 DIR matrix and no 5279 parameter payload in the official JVT packages or the complete certified April 2003 provisional. That provisional names 5279; H022 switches the same identifier to 5218; the later patent returns to 5279. This proves document-branch drift, not a hidden measurement. V27 therefore changes none of those parameters.</p></div></section>
 
-      <section className="validation"><span className="section-tag">V31 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Film masters</b><p>12-bit ProRes 4444</p></div><div><b>Normal process</b><p>No residual-silver term</p></div><div><b>Chroma policy</b><p>Low-frequency dye colour; projection opponent texture</p></div><div><b>Camera original</b><p>Official Panasonic V-709</p></div><div><b>Texture</b><p>V30 grain locked</p></div></div></section>
+      <section className="validation"><span className="section-tag">V35 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Film masters</b><p>12-bit ProRes 4444</p></div><div><b>Stochastic identity</b><p>45 calls/frame · 0 duplicates</p></div><div><b>Five-region temporal</b><p>Grain/difference energy &lt;0.3%</p></div><div><b>Camera original</b><p>Official Panasonic V-709</p></div><div><b>Texture</b><p>V34 image model locked</p></div></div></section>
     </main>
   );
 }
