@@ -1285,9 +1285,11 @@ versions.push({
   ],
 });
 
-const v31 = versions[versions.length - 1];
-v31.year = "上一版";
-v31.status = "calibration";
+const v31 = versions.find((item) => item.version === "V31");
+if (v31) {
+  v31.year = "上一版";
+  v31.status = "calibration";
+}
 const v32Index = versions.findIndex((item) => item.version === "V32");
 const [v32] = versions.splice(v32Index, 1);
 v32.year = "当前基线";

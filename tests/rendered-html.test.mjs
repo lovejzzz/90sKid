@@ -23,7 +23,9 @@ test("server-renders the bilingual V32 project home page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
-  assert.match(html, /CURRENT BASELINE[\s\S]{0,50}V32/);
+  const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
+  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V32/);
+  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V31/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
   assert.match(html, /v32-t007-projection/);
   assert.match(html, /v32-t007-projection-live-srgb\.mp4/);
