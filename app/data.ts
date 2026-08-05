@@ -1363,6 +1363,74 @@ versions.push({
   ],
 });
 
+const v34Parameters: ParameterGroup[] = [
+  {
+    title: "5279处理后MTF边界", titleEn: "5279 PROCESSED-MTF BOUNDARY", items: [
+      { label: "官方MTF条件", labelEn: "Official MTF condition", value: "钨丝灯曝光 · 推荐ECN-2处理后的5279", valueEn: "5279 tungsten-exposed and processed in recommended ECN-2" },
+      { label: "显影邻接归属", labelEn: "Adjacency ownership", value: "只由处理后总MTF计算一次", valueEn: "Owned once by the processed-stock MTF" },
+      { label: "V21重复项", labelEn: "V21 duplicate", value: "确定性层内DIR邻接归零", valueEn: "Deterministic intralayer DIR adjacency set to zero" },
+      { label: "层间与颗粒", labelEn: "Interimage & grain", value: "冻结 · 不用公开资料无法识别的参数重调", valueEn: "Frozen · no retuning of publicly underidentified parameters" },
+      { label: "48 μm RMS", labelEn: "48 μm RMS", value: "三记录曝光相关校准保留", valueEn: "Exposure-conditioned three-record calibration retained" },
+    ],
+  },
+  {
+    title: "单世代成片管线", titleEn: "SINGLE-GENERATION DELIVERY", items: [
+      { label: "放映色彩边界", labelEn: "Projection colour boundary", value: "V31低频扫描a/b + 放映高频opponent + 放映Y", valueEn: "V31 scan low-frequency a/b + projection opponent detail + projection Y" },
+      { label: "中间母版", labelEn: "Intermediate master", value: "取消", valueEn: "Removed" },
+      { label: "ProRes世代", labelEn: "ProRes generations", value: "每个母版1次", valueEn: "One per master" },
+      { label: "扫描隔离回归", labelEn: "Scan isolation regression", value: "管线探针与V30逐文件SHA-256一致", valueEn: "Pipeline probe file-SHA-256 identical to V30" },
+      { label: "色彩空间", labelEn: "Colour space", value: "线性Rec.709内部适配 · 12-bit Rec.709 1-1-1交付", valueEn: "Linear Rec.709 adaptation · 12-bit Rec.709 1-1-1 delivery" },
+    ],
+  },
+  {
+    title: "速度、内存与发布门槛", titleEn: "SPEED, MEMORY & RELEASE GATES", items: [
+      { label: "T020单帧", labelEn: "T020 single frame", value: "约36.08秒 · 两个母版", valueEn: "~36.08 s · both masters" },
+      { label: "旧V30+V31", labelEn: "Old V30+V31", value: "约43.5秒/帧", valueEn: "~43.5 s/frame" },
+      { label: "重复高斯", labelEn: "Dead Gaussian work", value: "9次原生全帧计算跳过 · 输出SHA不变", valueEn: "Nine native full-frame passes skipped · output SHA unchanged" },
+      { label: "48 GiB并发", labelEn: "48 GiB concurrency", value: "1个原生worker", valueEn: "One native worker", note: "双worker虽更快但产生约6.6 GiB swap，已否决", noteEn: "Two workers were faster but produced ~6.6 GiB swap and were rejected" },
+      { label: "三段压力测试", labelEn: "Three stress trials", value: "T002 0–23 · T007 276–299 · T031 132–155", valueEn: "T002 0–23 · T007 276–299 · T031 132–155" },
+      { label: "一秒双母版实测", labelEn: "One-second dual-master timing", value: "T002 823.52秒 · T007 822.26秒 · T031 786.91秒", valueEn: "T002 823.52 s · T007 822.26 s · T031 786.91 s", note: "三段顺序总计2432.69秒；均含24帧、双观察器、音频/时间码与最终哈希", noteEn: "2432.69 s sequential total; each includes 24 frames, both observers, audio/timecode and final hashes" },
+    ],
+  },
+];
+
+const v33 = versions.find((item) => item.version === "V33");
+if (v33) {
+  v33.year = "上一版";
+  v33.status = "calibration";
+}
+versions.push({
+  version: "V34",
+  year: "当前基线",
+  title: "让显影邻接只发生一次，也让母版只编码一次",
+  status: "current",
+  projection: { src: "/versions/v34-t031-projection.jpg", videoSrc: "/versions/v34-t031-projection-live-srgb.mp4", label: "T031 · V34正常5279 → 2383影院观察 · 单世代" },
+  bluray: { src: "/versions/v34-t031-bluray.jpg", videoSrc: "/versions/v34-t031-bluray-live-srgb.mp4", label: "T031 · V34 5279 → Period 2K扫描 · 单世代" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Panasonic官方V-709 · As Shot 0.00 stop见证" },
+  summary: "V34来自一次完整的算法与渲染审计，而不是新的调色。Kodak 5279数据表的MTF是在钨丝灯曝光并经推荐ECN-2处理后测得；Kodak同时说明超过100%的MTF通常来自developer adjacency。旧管线先用V21确定性DIR增加一次邻接锐度，又应用已经拟合整条处理后MTF的核，形成约1–3.5%的局部重复。V34只移除这项重复，颗粒、层间DIR、三速度层、48 μm RMS、颜色、黑场与gamma均不凭观感重调；同时把V31颜色边界移到内存中，让放映和扫描各只经历一次ProRes编码。",
+  changes: ["处理后5279 MTF成为确定性邻接锐度的唯一所有者", "V31颜色边界在两条完整观察器之后、交付编码之前执行", "取消V30中间母版的两次解码与放映二次编码", "Apple扩展线性BT.2020到胶片输入的空V-Gamut往返合并为同一矩阵乘积", "确定性系数归零后跳过9次无效原生高斯计算，输出SHA-256不变", "部分区间音频清单改为如实记录PCM裁切/无损重编码和时间码重建", "T002、T007、T031各以24帧原生5.7K 12-bit双母版验证"],
+  errors: ["旧研究已经写明MTF是处理后整体响应，但V21加入确定性邻接后没有回头重拟合总MTF", "V31先编码V30两条母版，再解码做综合色边界并二次编码放映版；结果可重复但不是无损", "双worker在48 GiB机器上虽达到约28.85秒/帧，却产生约6.6 GiB swap，因此被质量与稳定性门槛否决", "旧的部分区间manifest把实际PCM无损重编码错误写成stream copied", "一个pre-V21 DIR函数已经没有调用却仍留在源码，给未来OFX移植制造歧义"],
+  discoveries: ["官方处理后MTF与DIR化学不是两张可以直接相乘的独立清晰度贴图", "少一次ProRes世代既是提速，也是比更强并行更可靠的画质优化", "合并空的V-Gamut往返在原生帧上99.9926%的12-bit通道码相同，其余是单码舍入边界", "V34的扫描中位亮度与高光端基本不动；变化集中在被重复计算的局部边缘", "未来真正的大幅加速应来自驻留Metal/OpenFX图、资源复用和异步主机队列，而不是在48 GiB上堆Python进程"],
+  refs: ["R1", "R21", "R46", "R54", "R55"],
+  parameters: v34Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002",
+      note: "天空、高光和暗部共同检验单世代成片不会改变黑白端点或制造综合色偏移。",
+      projection: { src: "/versions/v34-t002-projection.jpg", videoSrc: "/versions/v34-t002-projection-live-srgb.mp4", label: "T002 · V34正常5279 → 2383影院观察" },
+      bluray: { src: "/versions/v34-t002-bluray.jpg", videoSrc: "/versions/v34-t002-bluray-live-srgb.mp4", label: "T002 · V34 Period 2K扫描" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007",
+      note: "水面、细草与树林边缘检验重复邻接移除后的自然细节和时序颗粒。",
+      projection: { src: "/versions/v34-t007-projection.jpg", videoSrc: "/versions/v34-t007-projection-live-srgb.mp4", label: "T007 · V34正常5279 → 2383影院观察" },
+      bluray: { src: "/versions/v34-t007-bluray.jpg", videoSrc: "/versions/v34-t007-bluray-live-srgb.mp4", label: "T007 · V34 Period 2K扫描" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Panasonic V-709 · As Shot 0.00 stop" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1438,6 +1506,8 @@ export const references = [
   { id: "R51", title: "Process ECP-2D Specifications, H-24 Module 9A", type: "Kodak正常正片漂白／定影规范", url: "https://www.kodak.com/content/products-brochures/Film/Processing-KODAK-Motion-Picture-Films-Module-9A.pdf" },
   { id: "R52", title: "Motion Picture Film Processing Information — skip bleach / ENR", type: "Kodak特殊工艺说明", url: "https://www.kodak.com/en/motion/page/processing-information/" },
   { id: "R53", title: "SMPTE ST 428-1:2019 — D-Cinema Distribution Master image characteristics", type: "SMPTE数字影院母版标准", url: "https://pub.smpte.org/pub/st428-1/st428-1-2019.pdf" },
+  { id: "R54", title: "OpenFX Image Effect Plug-in Rendering", type: "OpenFX官方渲染与Metal主机队列规范", url: "https://openfx.readthedocs.io/en/main/Reference/ofxRendering.html" },
+  { id: "R55", title: "Metal Performance Shaders tuning hints", type: "Apple官方GPU调优指南", url: "https://developer.apple.com/documentation/metalperformanceshaders/tuning-hints" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

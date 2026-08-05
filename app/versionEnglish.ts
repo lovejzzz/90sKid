@@ -690,6 +690,38 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 stresses sky and dark completion; T007 stresses water highlights, fine grass and an almost zero-hard-black scene.",
   },
+  V34: {
+    year: "CURRENT BASELINE",
+    title:
+      "Let developer adjacency happen once—and let each master encode once",
+    summary:
+      "V34 follows a full algorithm and render audit, not a new grade. Kodak's 5279 MTF was measured after recommended ECN-2 processing, and Kodak explains that MTF above 100% commonly comes from developer adjacency. The old path first added V21 deterministic DIR acutance and then applied a kernel already fitted to the complete processed-stock MTF, creating roughly 1–3.5% local overlap. V34 removes only that duplicate. Grain, interimage DIR, three speed populations, 48 μm RMS, colour, black and gamma are not tuned by taste. The accepted V31 colour boundary now runs in memory, so projection and scan each receive one ProRes generation.",
+    changes: [
+      "Processed-stock 5279 MTF becomes the sole owner of deterministic adjacency acutance",
+      "The accepted V31 colour boundary runs after both complete observers and before delivery encoding",
+      "V30 intermediate-master decoding and the projection's second ProRes generation are removed",
+      "The idle extended-linear BT.2020→V-Gamut→Rec.709 round trip is fused as the product of the same matrices",
+      "Nine zero-contribution native Gaussian passes are skipped with identical output SHA-256",
+      "Partial-range manifests now report PCM trim/re-encode and regenerated timecode accurately",
+      "Three native 24-frame 5.7K 12-bit dual-master trials: T002, T007 and T031",
+    ],
+    errors: [
+      "Earlier research already identified MTF as a total processed response, but V21 deterministic adjacency was never cross-checked against the fitted MTF",
+      "V31 encoded both V30 observers, decoded them for the chroma boundary, then encoded projection again; repeatable did not mean lossless",
+      "Two workers reached about 28.85 s/frame on 48 GiB but created about 6.6 GiB of swap and were rejected by the quality/stability gate",
+      "The partial-range manifest said stream copied even when PCM was correctly decoded, trimmed and losslessly re-encoded",
+      "An uncalled pre-V21 DIR helper remained in source and created ambiguity for a future OFX port",
+    ],
+    discoveries: [
+      "Official processed MTF and DIR chemistry are not two independent sharpness overlays that may simply be multiplied",
+      "Removing a ProRes generation improves both speed and image integrity more safely than aggressive process parallelism",
+      "The fused matrix keeps 99.9926% of native clipped 12-bit channel codes identical; the remainder are one-code rounding boundaries",
+      "Scan median luma and highlight endpoints stay effectively fixed; the model correction is concentrated around formerly double-counted local edges",
+      "The next major speedup belongs to a resident Metal/OpenFX graph with resource reuse and host-queue asynchrony—not more Python processes on 48 GiB",
+    ],
+    trialNote:
+      "T002 stresses endpoints; T007 stresses water, grass and fine edges; T031 stresses dark neutral surfaces, warm fungi and green surroundings.",
+  },
 };
 
 export function translateBranchLabel(label: string) {

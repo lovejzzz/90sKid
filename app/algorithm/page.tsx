@@ -81,9 +81,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V33</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V33继续冻结被认可的胶片画面，并把As Shot 0 stop、虚拟胶片EI、黑场、toe、gamma、局部音频/时间码和内存安全写成明确边界。Technical Neutral等待灰卡证据。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V34</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V34让处理后5279 MTF只拥有一次显影邻接，并把V31颜色边界移到交付编码之前；每个母版只有一个ProRes世代。颗粒、层间DIR、黑位、gamma和艺术调色边界不变。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709或DCDM X′Y′Z′</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V34</div><div className="method-copy"><span className="section-tag">PROCESSED MTF · SINGLE GENERATION</span><h2>总响应只计算一次，成片也只编码一次</h2><p>5279官方MTF来自处理后的胶片，并已经包含显影邻接的中频提升。V34保留这条总MTF，关闭后来重复加入的确定性层内DIR邻接；层间interimage与随机颗粒耦合仍在显影域。两条观察器随后在线性Rec.709中完成V31综合色边界，再分别进入唯一一次交付编码。</p><div className="equation"><span>确定性结构</span><b>MTF<sub>out</sub>=MTF<sub>Kodak, ECN-2</sub></b><small>不再乘以第二条DIR acutance响应。</small></div><div className="equation"><span>单世代输出</span><b>Proj<sub>master</sub>=Encode(A(Proj<sub>lin</sub>,Scan<sub>lin</sub>))</b><small>扫描母版直接Encode(Scanlin)；没有中间ProRes往返。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">00</div><div className="method-copy"><span className="section-tag">V33 · INPUT / TONE / DELIVERY CONTRACT</span><h2>把相机见证、胶片曝光与技术中和拆成三个边界</h2><p>T002、T007与T031使用同一冻结胶片模型。相机见证固定0.00 stop，胶片输入明确为+0.45 stop；Technical Neutral关闭。验证器测量原生12-bit 1-1-1、硬黑、toe、p05–p95对比、32级单调色调映射和有效log-luma power。</p><div className="equation"><span>曝光边界</span><b>Camera=V709(RAW)　·　Film=5279(RAW·2<sup>0.45</sup>)</b><small>白平衡或tint校正若被灰卡授权，只能位于5279之前。</small></div><div className="equation"><span>黑场门槛</span><b>Black = fraction(Y′<sub>709</sub> ≤ 1/1023)</b><small>黑场、toe和gamma分别报告，不再由一个主观“更浓”判断代替。</small></div></div></section>
 
