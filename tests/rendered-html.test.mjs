@@ -28,6 +28,7 @@ test("server-renders the bilingual V32 project home page", async () => {
   assert.match(html, /v32-t007-projection/);
   assert.match(html, /v32-t007-projection-live-srgb\.mp4/);
   assert.match(html, /v32-t007-camera/);
+  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v32-t007-projection/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
