@@ -1,0 +1,157 @@
+{
+  "purpose": "V34 processed-MTF/single-generation film results with frozen V33 0-stop As Shot camera witnesses",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "film_pipeline": "V34 one-generation 12-bit Rec.709 projection and period-scan masters",
+  "camera_pipeline": "V33 Panasonic V-709 As Shot 0.00-stop witness; no film pipeline",
+  "web": "Rec.709 light converted to sRGB IEC 61966-2-1",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 22 / tune grain; native masters remain 5760x4320 12-bit ProRes 4444",
+  "verification": {
+    "v34-t002-projection": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T002/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010675,
+        0.0096,
+        0.012901
+      ],
+      "first_frame_median_luma_delta": 0.001971
+    },
+    "v34-t002-bluray": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T002/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008897,
+        0.007583,
+        0.011518
+      ],
+      "first_frame_median_luma_delta": 0.002559
+    },
+    "t002-camera-reuse": {
+      "source": "v33-t002-camera-as-shot",
+      "first_frame_channel_mae_rgb": [
+        0.006279,
+        0.004736,
+        0.006123
+      ],
+      "first_frame_median_luma_delta": 0.001137
+    },
+    "v34-t007-projection": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T007/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.01202,
+        0.010387,
+        0.014072
+      ],
+      "first_frame_median_luma_delta": 0.002146
+    },
+    "v34-t007-bluray": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010173,
+        0.008104,
+        0.01259
+      ],
+      "first_frame_median_luma_delta": 0.001133
+    },
+    "t007-camera-reuse": {
+      "source": "v33-t007-camera-as-shot",
+      "first_frame_channel_mae_rgb": [
+        0.007244,
+        0.005406,
+        0.007535
+      ],
+      "first_frame_median_luma_delta": 0.000818
+    },
+    "v34-t031-projection": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T031/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.011958,
+        0.01005,
+        0.013657
+      ],
+      "first_frame_median_luma_delta": 6.7e-05
+    },
+    "v34-t031-bluray": {
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v34_processed_mtf_1s/T031/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.01058,
+        0.008308,
+        0.012445
+      ],
+      "first_frame_median_luma_delta": 0.000329
+    },
+    "t031-camera-reuse": {
+      "source": "v33-t031-camera-as-shot",
+      "first_frame_channel_mae_rgb": [
+        0.007761,
+        0.005818,
+        0.007649
+      ],
+      "first_frame_median_luma_delta": 0.00227
+    }
+  }
+}

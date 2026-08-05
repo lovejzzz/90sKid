@@ -15,7 +15,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = current.version === "V32" ? "T007" : "T002";
+  const sourceName = current.version === "V34" || current.version === "V33" ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
@@ -25,7 +25,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <main>
-        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v32-t007-projection.jpg")}")` } as CSSProperties}>
+        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v34-t031-projection.jpg")}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>
@@ -53,14 +53,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · MEASUREMENT-FIRST BASELINE</span><h2>{text("画面冻结之后，每一次变化都必须先回答：它能被测量吗？", "Once the image is frozen, every change must first answer: can it be measured?")}</h2></div>
+          <div><span className="eyebrow">{current.version} · EVIDENCE-FIRST BASELINE</span><h2>{text("每一个物理效应，只能在成像链里拥有一个明确位置。", "Every physical effect gets one explicit place in the image-formation chain.")}</h2></div>
           <ol>
-            <li><b>{text("画面冻结", "Image frozen")}</b><span>{text("V31的5279、2383、扫描、颗粒、黑位、Gamma和综合色度边界全部不变。", "V31 negative, print, scan, grain, black, gamma and chroma boundary remain unchanged.")}</span></li>
-            <li><b>{text("独立场景", "Independent scenes")}</b><span>{text("T007水面高光与细草、T031中性石面与暖色菌类使用完全相同的参数。", "T007 water highlights and fine grass, plus T031 neutral stone and warm mushrooms, use one parameter set.")}</span></li>
-            <li><b>{text("可证伪门槛", "Falsifiable gates")}</b><span>{text("原生格式、高光、硬裁切、时序纹理、中性轴与OFX分块同一性都自动测量。", "Native format, highlights, clipping, temporal texture, neutral axis and OFX tile parity are measured automatically.")}</span></li>
-            <li><b>{text("影院标准", "Cinema standard")}</b><span>{text("放映观察另生成ST 428-1 12-bit X′Y′Z′ DCDM序列；不再依赖含义不清的P3 ProRes标签。", "The projection observer also becomes an ST 428-1 12-bit X′Y′Z′ DCDM sequence, avoiding ambiguous P3 ProRes signalling.")}</span></li>
+            <li><b>{text("MTF只算一次", "MTF once")}</b><span>{text("处理后5279 MTF已经包含显影邻接；V34移除后来重复的确定性DIR锐度。", "Processed-stock 5279 MTF already includes developer adjacency; V34 removes the later deterministic duplicate.")}</span></li>
+            <li><b>{text("母版只编码一次", "One encode per master")}</b><span>{text("V31综合色边界在线性Rec.709内存中完成；放映与扫描不再经过中间ProRes往返。", "The V31 chroma boundary runs in linear Rec.709 memory; neither observer takes an intermediate ProRes round trip.")}</span></li>
+            <li><b>{text("不可识别就不动", "Unknown means frozen")}</b><span>{text("没有5279 NPS或分色楔实测，就不重调颗粒形态、层间DIR或绿色中和。", "Without 5279 NPS or separation-wedge measurements, grain morphology, interimage DIR and green neutralization stay frozen.")}</span></li>
+            <li><b>{text("稳定性优先", "Stability first")}</b><span>{text("48 GiB机器保留一个原生worker；会产生大量swap的并行方案即使更快也不进入baseline。", "The 48-GiB Mac keeps one native worker; a faster scheme that creates heavy swap does not enter the baseline.")}</span></li>
           </ol>
-          <Link href="/research#v32" className="button">{text("阅读V32测量研究", "Read the V32 measurement study")}</Link>
+          <Link href="/research#v34" className="button">{text("阅读V34管线审计", "Read the V34 pipeline audit")}</Link>
         </section>
 
         <section className="route-grid wrap">

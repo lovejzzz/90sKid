@@ -9,22 +9,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("og-v32.png", siteUrl).toString();
+  const socialImageUrl = new URL("versions/v34-t031-projection.jpg", siteUrl).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V32 freezes the accepted V31 5279 image and adds independent native-resolution scenes, temporal gates, ST 428-1 DCDM delivery and an OFX tile-parity contract.",
+    description: "V34 audits the complete 5279 pipeline: processed-stock MTF owns developer adjacency once and each 12-bit master receives one ProRes generation.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "The accepted 5279→2383 image, frozen and tested on independent 5.7K GH7 scenes with temporal, DCDM and OFX parity gates.",
+      description: "Processed-stock 5279 MTF, single-generation 12-bit delivery, and a documented colour/grain evidence boundary.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1536, height: 1024, alt: "5279 Emulsion Project · V32 Measurement-First Baseline" }],
+      images: [{ url: socialImageUrl, width: 2560, height: 1920, alt: "5279 Emulsion Project · V34 processed-MTF baseline" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V32 freezes the accepted 5279 image and adds independent-scene, temporal, DCDM and OFX parity validation.",
+      description: "V34 gives processed-stock MTF and delivery encoding one authoritative pass each.",
       images: [socialImageUrl],
     },
   };

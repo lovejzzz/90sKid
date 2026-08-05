@@ -1,0 +1,70 @@
+{
+  "purpose": "V33 0-stop as-shot Panasonic V-709 exposure witnesses; frozen projection/scan media reuse the accepted V31/V32 web assets",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "camera_exposure_stops": 0.0,
+  "film_virtual_exposure_stops": 0.45,
+  "technical_neutral_enabled": false,
+  "web": "Rec.709 OETF decoded to light, then sRGB IEC 61966-2-1",
+  "verification": {
+    "v33-t002-camera-as-shot": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.006279,
+        0.004736,
+        0.006123
+      ],
+      "first_frame_median_luma_delta": 0.001137
+    },
+    "v33-t007-camera-as-shot": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007244,
+        0.005406,
+        0.007535
+      ],
+      "first_frame_median_luma_delta": 0.000818
+    },
+    "v33-t031-camera-as-shot": {
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007761,
+        0.005818,
+        0.007649
+      ],
+      "first_frame_median_luma_delta": 0.00227
+    }
+  }
+}
