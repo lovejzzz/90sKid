@@ -9,22 +9,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("og-v30.png", siteUrl).toString();
+  const socialImageUrl = new URL("og-v31.png", siteUrl).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V30 corrects the 2383 projection colour with Kodak's official LAD aims and compares three GH7 ProRes RAW scenes through camera, projection and period-scan baselines.",
+    description: "V31 corrects the chroma/lightness coupling in the normal-process 5279-to-2383 observer while retaining the accepted film texture, black, gamma and official Kodak LAD calibration.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "Three native-resolution GH7 scenes compare an official camera baseline with 5279→2383 projection and period 2K scan viewing chains.",
+      description: "Normal ECN-2/ECP-2D colour, three native-resolution GH7 scenes and a 5279→2383 observer without an accidental retained-silver signature.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1733, height: 908, alt: "5279 Emulsion Project · V30 Three-Scene Colour Evidence" }],
+      images: [{ url: socialImageUrl, width: 1536, height: 1024, alt: "5279 Emulsion Project · V31 Normal-Process Colour" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "Official Kodak LAD aims, three GH7 scenes and matched camera / projection / period-scan baselines.",
+      description: "Normal-process colour without an accidental retained-silver signature; Kodak LAD and organic 5279 texture retained.",
       images: [socialImageUrl],
     },
   };

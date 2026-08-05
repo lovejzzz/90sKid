@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <main>
-        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v30-t032-projection.jpg")}")` } as CSSProperties}>
+        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v31-t032-projection.jpg")}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>
@@ -52,14 +52,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · THREE-SCENE COLOUR EVIDENCE</span><h2>{text("把原场景、胶片负片与两种观察结果分开", "Separating the source scene, film negative and two viewing results")}</h2></div>
+          <div><span className="eyebrow">{current.version} · NORMAL-PROCESS COLOUR</span><h2>{text("正常胶片的密度可以更深，但染料颜色不应被当成银影抽走", "A normal print may be denser without losing dye colour as if silver were retained")}</h2></div>
           <ol>
-            <li><b>{text("官方LAD", "Official LAD")}</b><span>{text("2383使用Kodak H-61B的1.09/1.06/1.03 D，不再用相等RGB密度或主观减蓝。", "2383 now uses Kodak H-61B's 1.09/1.06/1.03 D aims—not equal RGB densities or a subjective blue reduction.")}</span></li>
-            <li><b>{text("三个场景", "Three scenes")}</b><span>{text("T002、T020、T032各24帧原分辨率，检验肤色外的树皮、中性暗纹与真实雨天青绿。", "T002, T020 and T032 each contribute 24 native-resolution frames across bark, neutral dark texture and genuine rainy cyan-green colour.")}</span></li>
-            <li><b>{text("相机基线", "Camera baseline")}</b><span>{text("每个例子新增Panasonic官方V-709画面，不进入5279、2383或扫描链，也不加艺术调色。", "Every example adds Panasonic's official V-709 view with no 5279, 2383, scan chain or creative grade.")}</span></li>
-            <li><b>{text("安全计算", "Safe computation")}</b><span>{text("观察器顺序执行，避免Numba并发崩溃；与旧并行结果逐像素完全相同。", "Observers run sequentially to avoid the Numba concurrency abort, with pixel-identical output to the former parallel result.")}</span></li>
+            <li><b>{text("正常漂白", "Normal bleach")}</b><span>{text("ECN-2与ECP-2D形成染料后移除银影；默认链不含留银、ENR或skip bleach。", "ECN-2 and ECP-2D remove the silver image after dye formation; the default chain contains no bypass, ENR or skip bleach.")}</span></li>
+            <li><b>{text("综合色度—明暗解耦", "Chroma / tone decoupling")}</b><span>{text("2383中性曲线只决定L；证据基线保留色相与绝对OKLab综合色度C。", "The 2383 neutral curve sets L while the evidence baseline retains hue and absolute OKLab chroma C.")}</span></li>
+            <li><b>{text("质感锁定", "Texture locked")}</b><span>{text("5279颗粒、DIR、MTF、黑位、Gamma和投影亮度纹理与V30相同。", "5279 grain, DIR, MTF, black, gamma and projection luminance texture are unchanged from V30.")}</span></li>
+            <li><b>{text("三个场景", "Three scenes")}</b><span>{text("T002、T020、T032各24帧原分辨率，以同一参数验证暗部综合色度和真实雨天青绿。", "T002, T020 and T032 each contribute 24 native-resolution frames under one parameter set.")}</span></li>
           </ol>
-          <Link href="/research#v30" className="button">{text("阅读V30色彩研究", "Read the V30 colour study")}</Link>
+          <Link href="/research#v31" className="button">{text("阅读V31正常工艺研究", "Read the V31 normal-process study")}</Link>
         </section>
 
         <section className="route-grid wrap">

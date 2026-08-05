@@ -81,7 +81,7 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V30</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V30保留V29的5279乳剂、颗粒、DIR和扫描模型，修正2383放映链的官方LAD通道目标，并以三个场景的Panasonic V-709相机基线隔离原场景颜色与胶片观察器作用。模型仍不加入艺术调色。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V31</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V31保留V30的5279乳剂、颗粒、DIR、扫描、官方2383 LAD和明暗曲线，只修正2383监看适配中综合色度随L下降的阶段耦合。正常工艺基线不加入留银，也不加入艺术调色。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709 OETF / 1-1-1</small></span></div></section>
 
@@ -101,6 +101,8 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">V30 · OFFICIAL LAD COLOUR ANCHOR</span><h2>用Kodak通道密度锚定2383，不让供应商LUT定义胶片颜色</h2><p>V30把2383的打印中性点从简化的相等密度改为H-61B官方目标1.09/1.06/1.03 D。供应商D60 LUT与数字化染料曲线的残差仍保留作研究记录，但它们没有足够证据支配最终色相或饱和度，因此显示权重为零。</p><div className="equation"><span>官方LAD与证据权重</span><b>D<sub>LAD</sub>=[1.09,1.06,1.03]　·　w<sub>D60</sub>=w<sub>hue</sub>=w<sub>sat</sub>=0</b><small>这是物理校准修正，不是减蓝或减饱和的创作调色。</small></div></div></section>
 
+        <section className="method-section"><div className="method-index">08B</div><div className="method-copy"><span className="section-tag">V31 · NORMAL-PROCESS CHROMA / TONE DECOUPLING</span><h2>2383可以改变明暗，但不能因此把染料颜色当成银影抽走</h2><p>V30把综合色度写成C/L，再以更陡的2383中性曲线替换L；暗部因此同时失去绝对综合色度，与完整亮度颗粒叠加后接近留银。V31在两条完整观察器之后分离频率：Period 2K提供低频OKLab a/b染料颜色，2383保留自己的高频综合色颗粒；V30逐像素线性亮度保持不变。正常ECN-2/ECP-2D移除银影，因此这是工艺边界修正，不是增艳。</p><div className="equation"><span>最终观察边界</span><b>ab<sub>out</sub>=G<sub>σ</sub>＊ab<sub>scan</sub>+[ab<sub>proj</sub>−G<sub>σ</sub>＊ab<sub>proj</sub>]　·　Y<sub>out</sub>=Y<sub>proj</sub></b><small>σ=0.72px@2K；色域围绕目标Y压缩。5279、2383黑位、Gamma与颗粒形成参数全部不变。</small></div></div></section>
+
         <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V24 · COLOUR-GRAIN SEPARATION</span><h2>输出链观察颗粒，但不重新调色</h2><p>三条独立染料记录经过光谱观察会生成较强综合色纹理。V24在signed grain delta中分离Rec.709明度与综合色分量：明度纹理原样保留，综合色纹理分别按2383投影和Period 2K扫描孔径积分。确定性mean RGB不进入这一步，因此平均色相、饱和度和黑白灰严格不动。</p><pre><code>{colourGrainCode}</code></pre></div></section>
 
         <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V25 · OUTPUT OBSERVERS</span><h2>观看条件不是源文件的传递函数</h2><p>第一次V25把BT.1886参考显示EOTF的反函数写入蓝光码值，又把已经完成Rec.709监看适配的2383分支重新编码为P3 gamma 2.6。播放器仍按Rec.709解释文件，导致中间调和暗部明显变亮。修正版让两个监看母版都回到Rec.709 OETF与完整1-1-1；48 nit影院条件保留在投影观察模型中，BT.1886只用于显示端验证。</p><pre><code>{observerCode}</code></pre></div></section>
@@ -111,7 +113,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V30 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>胶片母版</b><p>12-bit ProRes 4444</p></div><div><b>近中性色度</b><p>≤ 0.00455</p></div><div><b>观察器色相差</b><p>中位数≤ 4.99°</p></div><div><b>相机原图</b><p>官方Panasonic V-709</p></div><div><b>线程安全</b><p>顺序观察 · 像素不变</p></div></div></section>
+        <section className="validation"><span className="section-tag">V31 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>胶片母版</b><p>12-bit ProRes 4444</p></div><div><b>正常工艺</b><p>无残余银密度项</p></div><div><b>色度策略</b><p>低频染料颜色；放映高频综合色纹理</p></div><div><b>相机原图</b><p>官方Panasonic V-709</p></div><div><b>质感</b><p>V30颗粒逐项锁定</p></div></div></section>
       </main>
       <SiteFooter />
     </>

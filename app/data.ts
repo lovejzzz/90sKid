@@ -1084,9 +1084,9 @@ const v30Parameters: ParameterGroup[] = [
 
 versions.push({
   version: "V30",
-  year: "当前基线",
+  year: "上一基线",
   title: "用官方LAD校正2383色偏，并以三场景相机基线隔离胶片作用",
-  status: "current",
+  status: "calibration",
   projection: { src: "/versions/v30-t002-projection.jpg", videoSrc: "/versions/v30-t002-projection-live-srgb.mp4", label: "T002 · 5279负片 → 2383影院观察Rec.709监看" },
   bluray: { src: "/versions/v30-t002-bluray.jpg", videoSrc: "/versions/v30-t002-bluray-live-srgb.mp4", label: "T002 · 5279负片 → Period 2K / Rec.709蓝光" },
   camera: { src: "/versions/v30-t002-camera.jpg", videoSrc: "/versions/v30-t002-camera-live-srgb.mp4", label: "T002 · Panasonic官方V-709相机基线 · 不进入胶片管线" },
@@ -1110,6 +1110,100 @@ versions.push({
       projection: { src: "/versions/v30-t032-projection.jpg", videoSrc: "/versions/v30-t032-projection-live-srgb.mp4", label: "T032 · 5279 → 2383影院观察Rec.709监看" },
       bluray: { src: "/versions/v30-t032-bluray.jpg", videoSrc: "/versions/v30-t032-bluray-live-srgb.mp4", label: "T032 · 5279 → Period 2K / Rec.709蓝光" },
       camera: { src: "/versions/v30-t032-camera.jpg", videoSrc: "/versions/v30-t032-camera-live-srgb.mp4", label: "T032 · Panasonic官方V-709相机基线" },
+    },
+  ],
+});
+
+const v30 = versions[versions.length - 1];
+v30.year = "上一版";
+v30.status = "calibration";
+
+const v31Parameters: ParameterGroup[] = [
+  {
+    title: "输入与母版", titleEn: "INPUT & MASTERS", items: [
+      { label: "测试素材", labelEn: "Test sources", value: "T002 · T020 · T032", valueEn: "T002 · T020 · T032" },
+      { label: "每段长度", labelEn: "Length per source", value: "24帧 · 1.001秒", valueEn: "24 frames · 1.001s" },
+      { label: "RAW与虚拟曝光", labelEn: "RAW & virtual exposure", value: "AVFoundation linear BT.2020 / D65 · +0.45 stop", valueEn: "AVFoundation linear BT.2020 / D65 · +0.45 stop" },
+      { label: "母版", labelEn: "Masters", value: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+      { label: "相机基线", labelEn: "Camera baseline", value: "V30逐像素沿用 · Panasonic官方V-709", valueEn: "Pixel-identical V30 baseline · official Panasonic V-709" },
+    ],
+  },
+  {
+    title: "正常工艺边界", titleEn: "NORMAL-PROCESS BOUNDARY", items: [
+      { label: "负片处理", labelEn: "Negative process", value: "正常ECN-2 · 显影银影经漂白/定影移除", valueEn: "Normal ECN-2 · developed silver removed by bleach/fix" },
+      { label: "正片处理", labelEn: "Print process", value: "正常ECP-2D · 画面银影经漂白/定影移除", valueEn: "Normal ECP-2D · picture silver removed by bleach/fix" },
+      { label: "残余银项", labelEn: "Residual-silver term", value: "无", valueEn: "None" },
+      { label: "留银/ENR/skip bleach", labelEn: "Bypass / ENR / skip bleach", value: "不属于baseline；未来必须独立建模", valueEn: "Outside baseline; requires a separate future model" },
+    ],
+  },
+  {
+    title: "5279乳剂与质感", titleEn: "5279 EMULSION & TEXTURE", items: [
+      { label: "负片、DIR、MTF", labelEn: "Negative, DIR, MTF", value: "V30逐项锁定", valueEn: "Locked to V30" },
+      { label: "九亚层与五级粒径", labelEn: "Nine sublayers / five size classes", value: "V30逐项锁定", valueEn: "Locked to V30" },
+      { label: "48µm RMS回标", labelEn: "48 µm RMS calibration", value: "不变", valueEn: "Unchanged" },
+      { label: "投影亮度/综合色纹理", labelEn: "Projection luma/opponent texture", value: "不变", valueEn: "Unchanged" },
+      { label: "V31颗粒变化", labelEn: "V31 grain change", value: "无", valueEn: "None", note: "用户认可的V30质感完整保留", noteEn: "The accepted V30 texture is retained" },
+    ],
+  },
+  {
+    title: "2383综合色度—明暗适配", titleEn: "2383 CHROMA / TONE ADAPTATION", items: [
+      { label: "Kodak LAD目标 R/G/B", labelEn: "Kodak LAD aims R/G/B", value: "1.09 / 1.06 / 1.03 D", valueEn: "1.09 / 1.06 / 1.03 D" },
+      { label: "V30阶段错误", labelEn: "V30 stage error", value: "保持C/L；L下降时绝对综合色度C被同步抽走", valueEn: "Preserved C/L; lower L automatically removed absolute C" },
+      { label: "V31阶段规则", labelEn: "V31 stage rule", value: "扫描低频OKLab a/b + 放映高频综合色残差", valueEn: "Scan low-frequency OKLab a/b + projection high-frequency opponent residual" },
+      { label: "频率交叉", labelEn: "Frequency crossover", value: "σ=0.72px @ 2K · 沿用V24扫描综合色孔径", valueEn: "σ=0.72 px @ 2K · inherited V24 scan opponent aperture" },
+      { label: "明暗保护", labelEn: "Luma protection", value: "逐像素线性Rec.709 Y保持 · 围绕Y压缩色域", valueEn: "Exact per-pixel linear Rec.709 Y · gamut compressed around Y" },
+      { label: "艺术饱和度", labelEn: "Creative saturation", value: "无", valueEn: "None" },
+      { label: "基准投影LUT", labelEn: "Baseline projection LUT", value: "V30锁定 · 193³ · SHA-256 5a7d99c9…f98c", valueEn: "Locked V30 · 193³ · SHA-256 5a7d99c9…f98c" },
+    ],
+  },
+  {
+    title: "验证与效率", titleEn: "VALIDATION & PERFORMANCE", items: [
+      { label: "V30诊断 · 放映综合色度", labelEn: "V30 diagnostic · projection chroma", value: "比扫描低约12–17%", valueEn: "About 12–17% below the scan" },
+      { label: "V30诊断 · 明暗跨度", labelEn: "V30 diagnostic · luma span", value: "比扫描高约27–32%", valueEn: "About 27–32% above the scan" },
+      { label: "V30诊断 · 亮度纹理", labelEn: "V30 diagnostic · luma texture", value: "比扫描高约48–60%", valueEn: "About 48–60% above the scan" },
+      { label: "T002双母版", labelEn: "T002 dual masters", value: "778.76秒 · 32.45秒/帧", valueEn: "778.76s · 32.45s/frame" },
+      { label: "T020双母版", labelEn: "T020 dual masters", value: "764.84秒 · 31.87秒/帧", valueEn: "764.84s · 31.87s/frame" },
+      { label: "T032双母版", labelEn: "T032 dual masters", value: "784.62秒 · 32.69秒/帧", valueEn: "784.62s · 32.69s/frame" },
+      { label: "V31最终边界 T002/T020/T032", labelEn: "V31 final boundary T002/T020/T032", value: "101.22 / 100.35 / 101.68秒", valueEn: "101.22 / 100.35 / 101.68s" },
+      { label: "最终边界速度", labelEn: "Final-boundary speed", value: "约4.14秒/帧", valueEn: "About 4.14s/frame" },
+      { label: "放映/扫描综合色度保持", labelEn: "Projection/scan chroma retention", value: "91.1 / 93.3 / 89.2%", valueEn: "91.1 / 93.3 / 89.2%" },
+      { label: "放映/扫描综合色饱和度", labelEn: "Projection/scan chroma saturation", value: "103.5 / 96.7 / 96.6%", valueEn: "103.5 / 96.7 / 96.6%" },
+      { label: "V30亮度细纹理保持", labelEn: "V30 fine-luma texture retained", value: "99.2 / 98.9 / 99.1%", valueEn: "99.2 / 98.9 / 99.1%" },
+      { label: "扫描回归", labelEn: "Scan regression", value: "三段均与V30 SHA-256完全相同", valueEn: "All three SHA-256-identical to V30" },
+      { label: "统一验证", labelEn: "Unified validation", value: "通过 · failures 0", valueEn: "Passed · 0 failures" },
+      { label: "统一参数", labelEn: "Unified parameters", value: "三场景无逐镜头调节", valueEn: "No per-scene tuning" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V31",
+  year: "当前基线",
+  title: "解除2383综合色度与明暗的错误耦合，让正常工艺不再意外接近留银",
+  status: "current",
+  projection: { src: "/versions/v31-t002-projection.jpg", videoSrc: "/versions/v31-t002-projection-live-srgb.mp4", label: "T002 · 正常5279 → 2383影院观察Rec.709监看" },
+  bluray: { src: "/versions/v31-t002-bluray.jpg", videoSrc: "/versions/v31-t002-bluray-live-srgb.mp4", label: "T002 · 5279 → Period 2K / Rec.709蓝光" },
+  camera: { src: "/versions/v31-t002-camera.jpg", videoSrc: "/versions/v31-t002-camera-live-srgb.mp4", label: "T002 · Panasonic官方V-709相机基线 · 不进入胶片管线" },
+  summary: "V31回应V30放映版类似《拯救大兵瑞恩》留银观感的问题。正常ECN-2与ECP-2D会漂白并定影移除画面银影；V30没有残余银项，却在Rec.709放映适配中保持C/L，使更陡的2383明暗曲线在压低L时同步抽走绝对综合色度C，再与强烈亮度颗粒组合成轻度bleach-bypass判别特征。V31保持V30的5279、颗粒、DIR、MTF、黑位、Gamma、2383 LAD与亮度曲线，在最终成片边界用Period 2K观察器提供低频染料颜色，并保留放映链自己的高频综合色颗粒与逐像素亮度。它不是增艳，也不是艺术调色。",
+  changes: ["正常ECN-2/ECP-2D基线明确排除残余银、skip bleach、ENR与bleach bypass", "最终成片域分离低频染料颜色与高频综合色颗粒", "Period 2K提供低频OKLab a/b；2383保留高频opponent残差", "逐像素保持V30线性Rec.709亮度，并围绕目标Y压缩色域", "V30官方2383 LAD 1.09/1.06/1.03 D完整保留", "5279负片、九亚层颗粒、DIR、MTF、黑位、Gamma和投影亮度纹理不变", "T002/T020/T032各以24帧原分辨率12-bit验证", "扫描母版与V30逐文件SHA-256回归"],
+  errors: ["V30声称分离tone与colour，却把综合色度保存为C/L；替换L后并没有真正保持colour", "第一次V31实现只改缓存内适配，但旧物理/校准混合支路绕过了它，整片被验证拒绝", "第二次探针只校正确定性均值，随后被颗粒均值保持阶段拉回V30，再次被拒绝", "最终修正必须位于两条完整观察器之后，才能同时看见真实成片颜色与颗粒", "不能用全局加饱和或抬黑修复；那会把艺术调色混入baseline"],
+  discoveries: ["留银观感可以由显示适配阶段产生，即使化学模型里没有残余银", "综合色度与饱和度不是同一量：保持C/L不等于在改变L时保持染料综合色度", "正常漂白工艺是baseline的可证伪边界，而不只是一个风格偏好", "未来留银toggle必须显式加入残余银密度并重新通过印片/扫描观察器", "用户喜欢的有机质感来自既有乳剂和亮度纹理，不需要牺牲来修正颜色"],
+  refs: ["R3", "R4", "R48", "R51", "R52"],
+  parameters: v31Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T020",
+      note: "树皮与菌类检验暗部绝对综合色度是否在保持密度结构时仍然存在。",
+      projection: { src: "/versions/v31-t020-projection.jpg", videoSrc: "/versions/v31-t020-projection-live-srgb.mp4", label: "T020 · 正常5279 → 2383影院观察Rec.709监看" },
+      bluray: { src: "/versions/v31-t020-bluray.jpg", videoSrc: "/versions/v31-t020-bluray-live-srgb.mp4", label: "T020 · V30逐像素不变的Period 2K扫描" },
+      camera: { src: "/versions/v31-t020-camera.jpg", videoSrc: "/versions/v31-t020-camera-live-srgb.mp4", label: "T020 · Panasonic官方V-709相机基线" },
+    },
+    {
+      name: "NJARAW_S001_S001_T032",
+      note: "雨天青绿和空气雾检验综合色度恢复不会把真实场景色中和或转暖。",
+      projection: { src: "/versions/v31-t032-projection.jpg", videoSrc: "/versions/v31-t032-projection-live-srgb.mp4", label: "T032 · 正常5279 → 2383影院观察Rec.709监看" },
+      bluray: { src: "/versions/v31-t032-bluray.jpg", videoSrc: "/versions/v31-t032-bluray-live-srgb.mp4", label: "T032 · V30逐像素不变的Period 2K扫描" },
+      camera: { src: "/versions/v31-t032-camera.jpg", videoSrc: "/versions/v31-t032-camera-live-srgb.mp4", label: "T032 · Panasonic官方V-709相机基线" },
     },
   ],
 });
@@ -1186,6 +1280,8 @@ export const references = [
   { id: "R48", title: "LAD for KODAK VISION Color Print Film — H-61B", type: "Kodak官方2383通道目标密度", url: "https://www.kodak.com/content/products-brochures/Film/LAD-for-KODAK-VISION-Color-Print-Film-H-61b.pdf" },
   { id: "R49", title: "Panasonic V-Log to V-709 3D LUT", type: "Panasonic官方显示转换（含GH7）", url: "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/lut/index.html" },
   { id: "R50", title: "Numba Threading Layers — extra notes", type: "Numba官方并发安全文档", url: "https://numba.readthedocs.io/en/stable/user/threading-layer.html" },
+  { id: "R51", title: "Process ECP-2D Specifications, H-24 Module 9A", type: "Kodak正常正片漂白／定影规范", url: "https://www.kodak.com/content/products-brochures/Film/Processing-KODAK-Motion-Picture-Films-Module-9A.pdf" },
+  { id: "R52", title: "Motion Picture Film Processing Information — skip bleach / ENR", type: "Kodak特殊工艺说明", url: "https://www.kodak.com/en/motion/page/processing-information/" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
