@@ -837,7 +837,7 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "T002 stresses toe and dark neutral texture. T007 holds water and green fine detail. T031 exposes the original natural-still / dense-video discrepancy.",
   },
   V39: {
-    year: "CURRENT BASELINE",
+    year: "WITHDRAWN EXPERIMENT",
     title: "Grain is not a residual on the image; density is the image",
     summary:
       "V39 resolves structural misplacements found in the complete research and code audit. V38 formed a finite-site negative but still applied MTF to a display positive, represented 2383 grain as a luminance ratio, normalized granularity after stochastic DIR, and clipped signed wide-gamut basis components before the three physical film records were formed. V39 applies 5279 MTF to processed negative density, constrains developed dye yield before stochastic DIR, and lets the scanner or 2383 observe that single realized density. 2383 MTF and three-record dye clouds are formed in Status-A density with no display grain operation. V38 colour, H-D, black, gamma and dual delivery remain frozen. This is not a prettier grade; it puts image structure back in its measured domains.",
@@ -871,6 +871,39 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     ],
     trialNote:
       "T002 tests toe and low-chroma texture. T007 tests water, grass and high-frequency greens. T031 tests dark organic texture and the full density-to-print path.",
+  },
+  V40: {
+    year: "CURRENT BASELINE",
+    title: "Accurate grain constrains energy, covariance and extreme tails",
+    summary:
+      "V40 withdraws three unsupported V39 inferences: treating Kodak's processed 48 µm RMS measurement as a pre-DIR source-layer target, passing marginal record RMS to the observer without the validated opponent-colour integration, and inventing independent RGB/record Poisson grain for 2383 without stock-specific covariance or NPS evidence. V40 preserves density-domain 5279/2383 MTF and the accepted colour, black and gamma. It restores the RMS constraint to the published post-process boundary, restores opponent integration inside both observers, and prevents the final V31 adapter from reintroducing the high-frequency opponent residual. Intrinsic stochastic 2383 grain remains withheld until it can be measured. This is not chroma denoising; it refuses to create colour degrees of freedom that the evidence does not identify.",
+    changes: [
+      "Restore the 48 µm granularity constraint to Kodak's measured post-process density boundary",
+      "Restore high-frequency opponent-colour integration inside the scan and 2383 observers",
+      "Stop the final V31 adapter from re-adding an already-integrated high-frequency opponent residual",
+      "Withdraw independent stochastic 2383 record populations until covariance/NPS evidence exists",
+      "Withdraw V39's underidentified signed intermediate film-RGB cancellation",
+      "Gate opponent energy and isolated 3×3 primary-colour impulses on every native delivered frame",
+      "Make the first picture authority 12-bit ProRes 4444 XQ, then derive every viewing and website image from it",
+    ],
+    errors: [
+      "V39 matched each record's marginal RMS but did not constrain cross-record covariance or distribution tails",
+      "Kodak's 48 µm number describes processed film and cannot uniquely invert pre-DIR speed-layer yields",
+      "The public 2383 material supplies no exposure-conditioned three-record grain covariance or NPS; independent RGB Poisson was false precision",
+      "V39's signed intermediate film basis introduced underidentified channel cancellation in dark green regions",
+      "The final V31 adapter was re-adding high-frequency opponent colour after the observer had already integrated it",
+      "An 8-bit JPEG representative frame can smooth colour impulses and cannot substitute for a 12-bit movie gate",
+    ],
+    discoveries: [
+      "Grain identity is not only RMS and size: record covariance, skew, extreme tails and observer integration decide whether it reads as silver or digital chroma noise",
+      "Density remains the image variable, but a published posterior granularity measurement cannot be moved arbitrarily earlier in the chemistry",
+      "Without 2383 stochastic statistics, retaining 5279 structure transferred by print MTF is more accurate than inventing print grain",
+      "Native-resolution every-frame tail audits catch sparse failures that representative stills and downscaled proxies miss",
+      "The local Silver Efex engine confirms G=inverse-CDF(Binomial(N,p),u)/N followed by Y'=(1-alpha)Y+alpha G, not display-space additive noise",
+      "Every Silver Efex B&W stock owns a separate measured 1000-square morphology; this supports stock-specific modelling but cannot become 5279 three-record data",
+    ],
+    trialNote:
+      "T002 stresses dark low-chroma tails. T007 tests water, green fine detail and edge integration. T031 tests organic shadow texture through both observers.",
   },
 };
 

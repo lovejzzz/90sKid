@@ -1788,9 +1788,9 @@ const v39Parameters: ParameterGroup[] = [
 
 versions.push({
   version: "V39",
-  year: "当前基线",
+  year: "已撤回的实验",
   title: "颗粒不是正片上的残差：密度本身就是画面",
-  status: "current",
+  status: "calibration",
   projection: { src: "/versions/v39-t031-projection.jpg", videoSrc: "/versions/v39-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V39 5279密度 → 2383密度 → 正常工艺监看" },
   bluray: { src: "/versions/v39-t031-bluray.jpg", videoSrc: "/versions/v39-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V39 5279密度 → Period 2K扫描" },
   camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
@@ -1815,6 +1815,64 @@ versions.push({
       bluray: { src: "/versions/v39-t007-bluray.jpg", videoSrc: "/versions/v39-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V39 Period 2K扫描" },
       camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" },
     },
+  ],
+});
+
+const v40Parameters: ParameterGroup[] = [
+  {
+    title: "发布边界", titleEn: "RELEASE BOUNDARY", items: [
+      { label: "测试素材", labelEn: "Test sources", value: "T002 0–23 · T007 276–299 · T031 132–155", valueEn: "T002 0–23 · T007 276–299 · T031 132–155" },
+      { label: "源与输出", labelEn: "Source and output", value: "GH7 ProRes RAW HQ 12-bit → 5760×4320 yuv444p12le", valueEn: "GH7 ProRes RAW HQ 12-bit → 5760×4320 yuv444p12le" },
+      { label: "艺术调色", labelEn: "Creative grade", value: "无 · V38颜色、H-D、黑位、gamma冻结", valueEn: "None · V38 colour, H-D, black and gamma frozen" },
+      { label: "V39状态", labelEn: "V39 status", value: "撤回 · 暗部跨记录彩色尖峰", valueEn: "Withdrawn · dark cross-record colour spikes" },
+    ],
+  },
+  {
+    title: "5279颗粒形成", titleEn: "5279 GRAIN FORMATION", items: [
+      { label: "密度变量", labelEn: "Density variable", value: "处理后5279记录密度", valueEn: "Processed 5279 record density" },
+      { label: "官方48µm RMS", labelEn: "Published 48 µm RMS", value: "回到处理后/层间耦合后的测量边界", valueEn: "Restored to the measured post-process/post-coupling boundary" },
+      { label: "有限位点", labelEn: "Finite sites", value: "3记录 × 3速度层 × 5粒径 · V38/V37冻结", valueEn: "3 records × 3 speed layers × 5 sizes · frozen from V38/V37" },
+      { label: "综合色积分", labelEn: "Opponent integration", value: "观察器内恢复；末端适配器不再重复加入高频综合色", valueEn: "Restored inside observers; the final adapter no longer re-adds high-frequency opponent colour" },
+      { label: "显示叠加", labelEn: "Display overlay", value: "0", valueEn: "0" },
+      { label: "Silver Efex旁证", labelEn: "Silver Efex evidence", value: "逆二项密度查表 + 实测片种形态；仅指导V41架构", valueEn: "Inverse-binomial density lookup + measured stock morphology; V41 architecture only" },
+    ],
+  },
+  {
+    title: "2383与RAW证据边界", titleEn: "2383 & RAW EVIDENCE BOUNDARY", items: [
+      { label: "2383确定性结构", labelEn: "Deterministic 2383 structure", value: "Status-A密度 + 官方MTF + 分析观察器", valueEn: "Status-A density + published MTF + analytical observer" },
+      { label: "2383随机颗粒", labelEn: "Stochastic 2383 grain", value: "暂不声称 · 缺少分记录协方差/NPS", valueEn: "Withheld · no record covariance/NPS evidence" },
+      { label: "V39有符号中间抵消", labelEn: "V39 signed intermediate cancellation", value: "撤回 · 胶片RGB先限制为非负再形成记录", valueEn: "Withdrawn · film RGB is bounded non-negative before record formation" },
+      { label: "白平衡/RAW解码", labelEn: "White balance / RAW decode", value: "Apple Standard ProRes RAW边界不变", valueEn: "Apple Standard ProRes RAW boundary unchanged" },
+    ],
+  },
+  {
+    title: "逐帧验收", titleEn: "EVERY-FRAME ACCEPTANCE", items: [
+      { label: "彩色尖峰", labelEn: "Colour spikes", value: "144帧原生分辨率：综合色能量 + 3×3孤立原色脉冲", valueEn: "144 native frames: opponent energy + isolated 3×3 primary impulses" },
+      { label: "审计有效域", labelEn: "Audit support", value: "中值半径1 + 邻域半径1；排除无效2px边界", valueEn: "Median radius 1 + neighbourhood radius 1; invalid 2 px perimeter excluded" },
+      { label: "专业母版", labelEn: "Professional master", value: "12-bit Rec.709 / inverse BT.1886 ProRes 4444 XQ", valueEn: "12-bit Rec.709 / inverse BT.1886 ProRes 4444 XQ" },
+      { label: "Mac观看版", labelEn: "Mac viewing copy", value: "从实际母版反解 · sRGB传递 · ProRes 4444 XQ", valueEn: "Decoded from actual master · sRGB transfer · ProRes 4444 XQ" },
+      { label: "网站图像", labelEn: "Website imagery", value: "只从观看版第12帧派生；静帧/视频同帧验证", valueEn: "Derived only from viewing copy frame 12; still/motion identity gated" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V40",
+  year: "当前基线",
+  title: "准确的颗粒必须同时约束能量、协方差与极端尾部",
+  status: "current",
+  projection: { src: "/versions/v40-t031-projection.jpg", videoSrc: "/versions/v40-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V40 5279 → 2383正常工艺监看" },
+  bluray: { src: "/versions/v40-t031-bluray.jpg", videoSrc: "/versions/v40-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V40 5279 → Period 2K扫描" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
+  summary: "V40撤回V39中证据不足的三项推断：把Kodak处理后48µm RMS反推成DIR前源层目标、让边际记录RMS未经综合色积分直接进入观察结果，以及为2383虚构独立三记录Poisson颗粒。V40保留密度域5279/2383 MTF与已验证的颜色、黑位和gamma，把RMS约束放回公开文件真正测量的处理后边界，在扫描与放映观察器中恢复高频综合色积分，并阻止V31末端适配器把已经积分掉的综合色重新加回。没有2383协方差/NPS证据时停止生成其随机项。结果不是把彩噪模糊掉，而是拒绝制造未被证据识别的彩色自由度。",
+  changes: ["将48µm颗粒度约束恢复到Kodak公开的处理后密度边界", "在扫描和2383观察器内恢复高频综合色积分", "关闭V31末端适配器重复加入的高频综合色残差", "撤回无分记录协方差/NPS证据的独立2383 Poisson颗粒", "撤回V39未识别的有符号胶片RGB中间抵消", "加入整体综合色能量与3×3孤立原色脉冲双重门槛", "第一代图像权威升级为12-bit ProRes 4444 XQ，并由其派生观看与网页图像"],
+  errors: ["V39只对齐三条记录各自的RMS，却没有约束跨记录协方差和分布尾部", "Kodak数据表的48µm数值描述处理后胶片，不足以唯一反演DIR前各速度层的随机产额", "2383公开资料没有给出曝光相关三记录颗粒协方差或NPS，独立RGB Poisson是假精确", "V39的有符号中间胶片基底在暗绿色区域产生未识别的通道抵消", "V31末端适配器曾在观察器之后再次加入高频综合色，抵消了V40第一次修正", "8-bit JPEG代表帧会平滑彩色脉冲，不能替代12-bit视频逐帧门禁"],
+  discoveries: ["颗粒真实性不仅是RMS与大小；记录间协方差、偏度、极端尾部和观察器积分同样决定它像银盐还是数码彩噪", "密度仍然是图像变量，但公开的后验颗粒测量不能被任意移动到化学链更早的位置", "没有2383随机统计证据时，保留5279经印片MTF传递的结构比虚构印片颗粒更准确", "逐帧原生分辨率尾部审计比代表帧或缩小代理更能拦截稀疏彩色故障", "本机Silver Efex引擎确认核心是G=F⁻¹Binomial(N,p)(u)/N与Y′=(1−α)Y+αG，不是显示空间加噪", "Silver Efex每款黑白胶片拥有独立1000²实测形态；这只证明片种形态应独立建模，不能把黑白纹理冒充5279三记录参数"],
+  refs: ["R1", "R4", "R5", "R7", "R25", "R58", "R63", "R64", "R65"],
+  parameters: v40Parameters,
+  additionalTrials: [
+    { name: "NJARAW_S001_S001_T002 · Frame 0–23", note: "暗墙、toe和低色度纹理用于最严格的暗部彩色尖峰审计。", projection: { src: "/versions/v40-t002-projection.jpg", videoSrc: "/versions/v40-t002-projection-live-srgb.mp4", label: "T002 · Frame 0–23 · V40 2383正常工艺监看" }, bluray: { src: "/versions/v40-t002-bluray.jpg", videoSrc: "/versions/v40-t002-bluray-live-srgb.mp4", label: "T002 · Frame 0–23 · V40 Period 2K扫描" }, camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Frame 0–23 · Panasonic V-709 As Shot" } },
+    { name: "NJARAW_S001_S001_T007 · Frame 276–299", note: "水面、绿色细节和高频边缘用于综合色积分与35mm清晰度共存检查。", projection: { src: "/versions/v40-t007-projection.jpg", videoSrc: "/versions/v40-t007-projection-live-srgb.mp4", label: "T007 · Frame 276–299 · V40 2383正常工艺监看" }, bluray: { src: "/versions/v40-t007-bluray.jpg", videoSrc: "/versions/v40-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V40 Period 2K扫描" }, camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" } },
   ],
 });
 
@@ -1902,6 +1960,9 @@ export const references = [
   { id: "R60", title: "Evaluating video using QuickTime test pattern files", type: "Apple官方QuickTime Gamma与ColorSync测试说明", url: "https://developer.apple.com/documentation/avfoundation/evaluating-video-using-quicktime-test-pattern-files" },
   { id: "R61", title: "Use presets and reference modes with your Apple display", type: "Apple官方BT.709–BT.1886与P3参考模式说明", url: "https://support.apple.com/en-ca/108321" },
   { id: "R62", title: "MacBook Pro (16-inch, 2024) Technical Specifications", type: "Apple官方Liquid Retina XDR与P3规格", url: "https://support.apple.com/en-us/121554" },
+  { id: "R63", title: "Nik Silver Efex User Guide — Film Grain (Branded)", type: "DxO官方产品技术说明", url: "https://userguides.dxo.com/nikcollection/en/silver-efex/" },
+  { id: "R64", title: "Nik Color Efex User Guide — Grain engine and calibrated branded films", type: "DxO官方颗粒引擎说明", url: "https://userguides.dxo.com/nikcollection/en/color-efex/" },
+  { id: "R65", title: "DxO — The science of film: calibrated grain matrices by tone region", type: "DxO官方胶片测量方法", url: "https://www.dxo.com/en/technology/science-of-film" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
