@@ -780,10 +780,41 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 is the unchanged-window control. T007 restores frame 276 for water and fine foliage; T031 restores frame 132 for dark bark, fungi and surrounding green.",
   },
+  V37: {
+    year: "CURRENT BASELINE",
+    title: "Every frame is new film; the sampler no longer breathes as one field",
+    summary:
+      "V37 answers the overlay-like boil visible in the local QuickTime master. Successive film frames expose different pieces of emulsion, so silver-halide sites should remain independent from frame to frame. The error was not independence itself: V36 also rotated one whole-frame bilinear subpixel sampling phase every frame, adding a second numerical animation. V37 keeps all 45 new Philox emulsion identities per frame and changes only the integration kernel to a 30-degree stable-balanced phase. In the T031 ablation, whole-frame high-frequency variation in projection falls by about 60% and directional variation by about 71%, while the average orientation remains neutral. Colour, H-D, black, gamma, MTF, DIR, grain amplitude, grain size and both observers remain frozen.",
+    changes: [
+      "Continue to form independent silver-halide/dye-cloud sites on every frame; add no temporal smoothing, advection or frozen grain plate",
+      "Replace whole-frame per-frame subpixel rotation with a 30-degree stable-balanced integration phase",
+      "Screen native T031 candidates at 0, 30 and 90 degrees; reject the fixed bias at 0 and over-correction at 90",
+      "Keep the 0.38-pixel radius, five size classes, three speed populations and three colour records unchanged",
+      "Freeze every V36 colour, density, sharpness, black, gamma and observer parameter",
+      "Render one native 5.7K 12-bit second for T002, T007 and T031 in projection and period-scan branches",
+    ],
+    errors: [
+      "The initial V35 T031 tail audit compared frames 0–23 with V34 frames 132–155 and overstated extreme temporal differences; that conclusion is formally withdrawn",
+      "A fixed 0-degree phase greatly stabilized temporal energy but left measurable horizontal/vertical preference and could not be released",
+      "Reducing grain strength or correlating it over time would hide the symptom while violating frame-independent motion-picture emulsion",
+    ],
+    discoveries: [
+      "Independent random fields do not require whole-frame statistics to breathe; a globally changing numerical integration kernel creates an extra animation",
+      "The 30-degree balanced phase retains the V36 mean orientation on T031 while reducing projection high-pass CV to 0.400×",
+      "Scanner aperture and scene structure mask part of the phase benefit, so projection and scan must be measured separately",
+      "Organic grain motion comes from independent density formation under a stable imaging operator—not from moving one noise texture with the scene",
+      "Continuous grain centres and density-domain 2383 formation remain valuable future research, but stay outside the baseline until they pass equivalent gates",
+    ],
+    trialNote:
+      "T002 controls walls, shadows and fine texture. T007 verifies that water and foliage are not frozen or softened. T031 is the phase-selection scene for dark bark, fungi and surrounding green.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/V37稳定乳剂/g, "V37 stable emulsion")
+    .replace(/2383影院观察/g, "2383 cinema observer")
+    .replace(/As Shot见证/g, "As Shot witness")
     .replace(/（与V26相同）/g, "(same as V26)")
     .replace(/中性灰阶约束的/g, "neutral-scale-constrained ")
     .replace(
@@ -804,6 +835,7 @@ export function translateBranchLabel(label: string) {
     .replace(/蓝光/g, "Blu-ray")
     .replace(/放映/g, "projection")
     .replace(/扫描/g, "scan")
+    .replace(/2Kscan/g, "2K scan")
     .replace(/相机原图/g, "camera baseline")
     .replace(/相机基线/g, "camera baseline")
     .replace(/Panasonic官方/g, "official Panasonic ")

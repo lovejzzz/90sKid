@@ -1566,6 +1566,73 @@ versions.push({
   ],
 });
 
+const v37Parameters: ParameterGroup[] = [
+  {
+    title: "乳剂时间结构", titleEn: "TEMPORAL EMULSION STRUCTURE", items: [
+      { label: "位点更新", labelEn: "Site renewal", value: "每一帧独立 · 不平滑、不拖拽、不冻结", valueEn: "Independent every frame · no smoothing, advection or frozen plate" },
+      { label: "积分相位", labelEn: "Integration phase", value: "稳定平衡 · 30°", valueEn: "Stable-balanced · 30°" },
+      { label: "亚像素半径", labelEn: "Subpixel radius", value: "0.38原生像素 · 与V36相同", valueEn: "0.38 native pixel · unchanged from V36" },
+      { label: "随机身份", labelEn: "Stochastic identity", value: "Philox4x32-10 · 每帧45个唯一身份", valueEn: "Philox4x32-10 · 45 unique identities/frame" },
+      { label: "禁止项", labelEn: "Explicitly rejected", value: "时间相关颗粒、固定颗粒片、运动跟随噪点", valueEn: "Temporal correlation, fixed grain plates, motion-following noise" },
+    ],
+  },
+  {
+    title: "V37唯一改动", titleEn: "THE ONLY V37 IMAGE CHANGE", items: [
+      { label: "颜色/H-D", labelEn: "Colour / H-D", value: "冻结V36", valueEn: "Frozen from V36" },
+      { label: "黑位/gamma", labelEn: "Black / gamma", value: "冻结V36", valueEn: "Frozen from V36" },
+      { label: "MTF/DIR", labelEn: "MTF / DIR", value: "冻结V36", valueEn: "Frozen from V36" },
+      { label: "颗粒强度/尺寸", labelEn: "Grain amplitude / size", value: "冻结V36", valueEn: "Frozen from V36" },
+      { label: "改变", labelEn: "Changed", value: "取消每帧全画面采样核旋转", valueEn: "Removed whole-frame sampling-kernel rotation" },
+    ],
+  },
+  {
+    title: "相位消融与交付", titleEn: "PHASE ABLATION & DELIVERY", items: [
+      { label: "候选", labelEn: "Candidates", value: "0° / 30° / 90° · T031原生8帧", valueEn: "0° / 30° / 90° · 8 native T031 frames" },
+      { label: "放映高频CV", labelEn: "Projection high-pass CV", value: "V36的0.400倍 · 约降60%", valueEn: "0.400× V36 · about 60% lower" },
+      { label: "放映方向波动", labelEn: "Projection directional variation", value: "V36的0.287倍 · 约降71%", valueEn: "0.287× V36 · about 71% lower" },
+      { label: "方向均值偏差", labelEn: "Mean directional shift", value: "放映+0.00596 · 扫描+0.00359", valueEn: "Projection +0.00596 · scan +0.00359" },
+      { label: "母版", labelEn: "Masters", value: "5760×4320 · 24帧 · 12-bit ProRes 4444 · Rec.709 1-1-1", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444 · Rec.709 1-1-1" },
+    ],
+  },
+];
+
+const v36Current = versions.find((item) => item.version === "V36");
+if (v36Current) {
+  v36Current.year = "上一版";
+  v36Current.status = "calibration";
+}
+versions.push({
+  version: "V37",
+  year: "当前基线",
+  title: "每一帧仍是新的胶片，但采样器不再整幅呼吸",
+  status: "current",
+  projection: { src: "/versions/v37-t031-projection.jpg", videoSrc: "/versions/v37-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V37稳定乳剂 → 2383影院观察" },
+  bluray: { src: "/versions/v37-t031-bluray.jpg", videoSrc: "/versions/v37-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V37稳定乳剂 → Period 2K扫描" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
+  summary: "V37回应本地QuickTime母版里像覆盖层一样的假沸腾。连续胶片帧本来就来自不同片段，银盐位点应逐帧独立；错误不在独立随机性，而在V36还让整幅画面的双线性亚像素采样相位每帧一起旋转，叠加了第二层数值动画。V37保留每帧全新的45组Philox乳剂身份，只把积分核改为30°稳定平衡相位。T031消融中，放映分支的全帧高频幅度波动约降60%，方向波动约降71%，同时保持平均方向中性。颜色、H-D、黑位、gamma、MTF、DIR、颗粒振幅、颗粒尺寸与两个观察器全部冻结。",
+  changes: ["每帧继续生成独立银盐/染料云位点，不进行时间平滑、运动拖拽或颗粒片冻结", "移除每帧全画面亚像素相位旋转，改用30°稳定平衡积分相位", "对0°、30°、90°进行原生T031相位消融，拒绝0°固定方向偏好与90°过校正", "保持0.38像素亚像素半径、五尺寸类、三速度层和三色记录不变", "冻结V36全部颜色、密度、锐度、黑位、gamma和观察参数", "T002、T007、T031各制作一秒原生5.7K 12-bit放映与扫描母版"],
+  errors: ["最初把V35 T031第0–23帧与V34第132–155帧比较，夸大了极端尾部差异；该结论已经正式作废", "固定0°虽显著稳定时间能量，却留下可测的水平/垂直偏好，因此不能直接发布", "只降低颗粒强度或把颗粒时间相关化会掩盖问题，同时违背逐格胶片乳剂独立性"],
+  discoveries: ["独立随机场不等于整幅统计量必须每帧呼吸；数值积分核的全场变化会制造额外动画", "30°平衡相位在T031保留V36平均方向结构，同时把放映高频CV降至0.400倍", "扫描观察器的孔径和场景结构会掩盖部分相位收益，因此放映与扫描必须分开测量", "颗粒有机感来自逐帧独立的密度形成和稳定的成像算子共同作用，不来自让一张噪点贴图跟随画面", "连续颗粒中心与2383密度域印片仍值得未来研究，但没有通过同等门槛前不进入基线"],
+  refs: ["R1", "R21", "R25", "R58", "R59"],
+  parameters: v37Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002 · Frame 0–23",
+      note: "固定墙面、暗部和细纹理控制场景；静帧与悬停视频来自同一24帧母版。",
+      projection: { src: "/versions/v37-t002-projection.jpg", videoSrc: "/versions/v37-t002-projection-live-srgb.mp4", label: "T002 · Frame 0–23 · V37 2383影院观察" },
+      bluray: { src: "/versions/v37-t002-bluray.jpg", videoSrc: "/versions/v37-t002-bluray-live-srgb.mp4", label: "T002 · Frame 0–23 · V37 Period 2K扫描" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Frame 0–23 · Panasonic V-709 As Shot" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面、细草与树林验证细纹理没有被稳定相位磨平或冻结。",
+      projection: { src: "/versions/v37-t007-projection.jpg", videoSrc: "/versions/v37-t007-projection-live-srgb.mp4", label: "T007 · Frame 276–299 · V37 2383影院观察" },
+      bluray: { src: "/versions/v37-t007-bluray.jpg", videoSrc: "/versions/v37-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V37 Period 2K扫描" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1645,6 +1712,8 @@ export const references = [
   { id: "R55", title: "Metal Performance Shaders tuning hints", type: "Apple官方GPU调优指南", url: "https://developer.apple.com/documentation/metalperformanceshaders/tuning-hints" },
   { id: "R56", title: "Parallel Random Numbers: As Easy as 1, 2, 3 — Random123 / Philox", type: "SC11同行评审论文", url: "https://www.thesalmons.org/john/random123/papers/random123sc11.pdf" },
   { id: "R57", title: "Metal Best Practices — Command Buffers", type: "Apple官方命令缓冲与同步指南", url: "https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/CommandBuffers.html" },
+  { id: "R58", title: "Realistic Film Grain Rendering", type: "IPOL同行评审论文与可复现实作（Newson et al., 2017）", url: "https://www.ipol.im/pub/art/2017/192/" },
+  { id: "R59", title: "A Reproduction Model of Film Grain Texture for Digital Movies", type: "电影颗粒Wiener频谱研究（Munekata et al., 2011）", url: "https://www.researchgate.net/publication/314091949_A_Reproduction_Model_of_Film_Grain_Texture_for_Digital_Movies" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

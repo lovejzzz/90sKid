@@ -25,12 +25,21 @@ developed += philox_u32(counter(frame, record, population,
                                 size_class, x, y, lane)) < threshold
 # all 45 identities per frame must be unique; V34 remains Archive exact`;
 
+const stablePhaseCode = `# V37: frame remains in Philox identity; every frame is new emulsion
+sampled_phase = rng.uniform(0, 2*pi)       # consume to preserve Archive sequence
+class_id = record * 15 + population * 5 + size_class
+phase = 2*pi * frac((class_id + 0.5) * golden_ratio) + pi/6
+offset = 0.38 * [cos(phase), sin(phase)]
+# only integration phase is stable; grain sites are never reused across frames`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V36</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V36 retains the V35 image and Production graph, fixes the absolute-source-frame comparison contract, and jointly validates processed-stock MTF and 48 μm granularity on one 35 mm scale.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V37</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V37 preserves independent emulsion formation on every frame while fixing the whole-field phase of the subpixel integration operator; colour, H-D, MTF, DIR, grain scale and observers remain at V36.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>12-bit output</b><small>Rec.709 or DCDM X′Y′Z′</small></span></div></section>
+
+      <section className="method-section"><div className="method-index">V37</div><div className="method-copy"><span className="section-tag">INDEPENDENT SITES · STABLE INTEGRATION</span><h2>Every film frame renews; the imaging operator should not jump as one field</h2><p>V36 emulsion sites were already independent on every frame, but each record and speed population also drew one whole-field subpixel phase, rotating the bilinear integration kernel from frame to frame. V37 keeps frame in the Philox identity and fixes the 15 size-class phases as a golden-ratio ensemble rotated by 30 degrees. Grain is neither smoothed, motion-following nor frozen; only the extra numerical breathing is removed.</p><pre><code>{stablePhaseCode}</code></pre><div className="equation"><span>TEMPORAL BOUNDARY</span><b>G<sub>t</sub> ⟂ G<sub>t+1</sub>　·　K<sub>integration,t</sub>=K<sub>integration</sub></b><small>Stochastic emulsion remains independent; the transfer of the integration operator stays stable.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V35</div><div className="method-copy"><span className="section-tag">AUDITABLE PRODUCTION GRAPH</span><h2>The realization may be independent; every identity must remain traceable</h2><p>Production need not reproduce the exact V34 PCG64 grain mosaic, but it must preserve the finite-binomial distribution, 48 µm RMS, NPS, layer statistics and temporal independence. V35 compares complete Philox uint32 words with a 2^32 fixed-point threshold derived from float32 probability. Frame, record, speed population, size class and global pixel coordinates define identity. Asynchronous Metal overlaps CPU expectation filtering; all 45 calls per frame are deduplicated and persisted in provenance.</p><pre><code>{productionCode}</code></pre><div className="equation"><span>PROBABILITY BOUNDARY</span><b>|p<sub>u32</sub>−p<sub>float32</sub>| &lt; 2<sup>−32</sup></b><small>The observed three-source maximum is 2.269e-10; V34 remains the byte-exact Archive reference.</small></div></div></section>
 
@@ -66,7 +75,7 @@ export function AlgorithmEnglish() {
 
       <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">EVIDENCE BOUNDARY</span><h2>Negative findings are part of the algorithm</h2><p>The latest hourly audit found no public, stock-specific 5279 NPS, no measured 5279 DIR matrix and no 5279 parameter payload in the official JVT packages or the complete certified April 2003 provisional. That provisional names 5279; H022 switches the same identifier to 5218; the later patent returns to 5279. This proves document-branch drift, not a hidden measurement. V27 therefore changes none of those parameters.</p></div></section>
 
-      <section className="validation"><span className="section-tag">V35 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Film masters</b><p>12-bit ProRes 4444</p></div><div><b>Stochastic identity</b><p>45 calls/frame · 0 duplicates</p></div><div><b>Five-region temporal</b><p>Grain/difference energy &lt;0.3%</p></div><div><b>Camera original</b><p>Official Panasonic V-709</p></div><div><b>Texture</b><p>V34 image model locked</p></div></div></section>
+      <section className="validation"><span className="section-tag">V37 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Film masters</b><p>12-bit ProRes 4444</p></div><div><b>Stochastic identity</b><p>45 calls/frame · 0 duplicates</p></div><div><b>Temporal structure</b><p>Independent sites · stable integration</p></div><div><b>Camera original</b><p>Official Panasonic V-709</p></div><div><b>Texture</b><p>V36 colour and 35 mm structure locked</p></div></div></section>
     </main>
   );
 }

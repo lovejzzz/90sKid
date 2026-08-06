@@ -17,20 +17,20 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V36 project home page", async () => {
+test("server-renders the bilingual V37 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V36/);
-  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V35/);
+  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V37/);
+  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V36/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v36-t031-projection/);
-  assert.match(html, /v36-t031-projection-live-srgb\.mp4/);
+  assert.match(html, /v37-t031-projection/);
+  assert.match(html, /v37-t031-projection-live-srgb\.mp4/);
   assert.match(html, /v33-t031-camera-as-shot/);
-  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v36-t031-projection/);
+  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v37-t031-projection/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -38,7 +38,7 @@ test("server-renders the bilingual V36 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V36 archive, research and algorithm routes", async () => {
+test("server-renders the V37 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -46,7 +46,7 @@ test("server-renders the V36 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V36/);
+  assert.match(versions, /V4—[\s\S]{0,30}V37/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
@@ -68,9 +68,11 @@ test("server-renders the V36 archive, research and algorithm routes", async () =
   assert.match(research, /V33 · CAMERA INPUT \/ BLACK BOUNDARY/);
   assert.match(research, /V34 · PROCESSED MTF \/ SINGLE GENERATION/);
   assert.match(research, /V35 · AUDITABLE PRODUCTION GRAPH/);
+  assert.match(research, /V37 · INDEPENDENT SITES \/ STABLE INTEGRATION/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /CURRENT V36/);
+  assert.match(algorithm, /CURRENT V37/);
+  assert.match(algorithm, /INDEPENDENT SITES · STABLE INTEGRATION/);
   assert.match(algorithm, /AUDITABLE PRODUCTION GRAPH/);
   assert.match(algorithm, /PROCESSED MTF · SINGLE GENERATION/);
   assert.match(algorithm, /V33 · INPUT \/ TONE \/ DELIVERY CONTRACT/);
@@ -371,6 +373,39 @@ test("V36 locks absolute source frames and preserves the native 35 mm image mode
   });
   assert.equal(Object.keys(manifest.verification).length, 9);
   assert.match(manifest.film_pipeline, /no retune/);
+  assert.match(manifest.proxy_encoding, /closed 6-frame GOP/);
+  for (const [key, result] of Object.entries(manifest.verification)) {
+    if (!key.endsWith("camera-reuse")) {
+      assert.equal(result.master_metadata.width, 5760);
+      assert.equal(result.master_metadata.height, 4320);
+      assert.equal(result.master_metadata.pix_fmt, "yuv444p12le");
+      assert.equal(result.master_metadata.bits_per_raw_sample, "12");
+      assert.equal(result.master_metadata.nb_frames, "24");
+    }
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.025);
+    assert.ok(Math.abs(result.first_frame_median_luma_delta) <= 0.01);
+  }
+});
+
+test("V37 renews grain sites under one stable-balanced integration operator", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v37-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.absolute_source_frame_contract, {
+    t002: [0, 23],
+    t007: [276, 299],
+    t031: [132, 155],
+  });
+  assert.equal(Object.keys(manifest.verification).length, 9);
+  assert.match(manifest.film_pipeline, /30-degree stable-balanced/);
   assert.match(manifest.proxy_encoding, /closed 6-frame GOP/);
   for (const [key, result] of Object.entries(manifest.verification)) {
     if (!key.endsWith("camera-reuse")) {

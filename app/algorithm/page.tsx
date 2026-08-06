@@ -72,6 +72,13 @@ developed += philox_u32(counter(frame, record, population,
                                 size_class, x, y, lane)) < threshold
 # 每帧45个身份必须唯一；Archive仍保留V34 NumPy/CPU实现`;
 
+const stablePhaseCode = `# V37：位点仍由frame参与Philox identity，每一帧都是新乳剂
+sampled_phase = rng.uniform(0, 2*pi)       # 继续消耗以保持Archive序列
+class_id = record * 15 + population * 5 + size_class
+phase = 2*pi * frac((class_id + 0.5) * golden_ratio) + pi/6
+offset = 0.38 * [cos(phase), sin(phase)]
+# 只有数值积分相位稳定；grain sites从不跨帧复用`;
+
 const scanNeutralCode = `# V27: 在完整扫描链上预计算2049级中性曝光，而不是猜一项全局品红
 scale_y, scale_rgb = build_spirit_neutral_scale(samples=2049)
 rgb_balanced = rgb * interpolate(scale_y, scale_rgb, rec709_luma(rgb))
@@ -87,9 +94,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V36</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V36保留V35成像与Production图，只修复跨版本绝对源帧契约，并把处理后MTF与48 μm颗粒测量放在同一35mm尺度上联合验收。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V37</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V37保留逐帧独立的乳剂形成，只固定亚像素积分算子的全场相位；颜色、H-D、MTF、DIR、颗粒尺度与观察器均沿用V36。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709或DCDM X′Y′Z′</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V37</div><div className="method-copy"><span className="section-tag">INDEPENDENT SITES · STABLE INTEGRATION</span><h2>每一格胶片都更新，但成像算子不应该整幅跳动</h2><p>V36的乳剂位点本来已经逐帧独立，却又为每个记录层与速度层抽取一个全场亚像素相位，让双线性积分核每帧一起转向。V37保留frame参与Philox身份，只把15组尺寸类相位固定为黄金比例分布并整体旋转30°。因此颗粒不会被时间平滑、跟随运动或冻结；被删除的是额外的数值呼吸。</p><pre><code>{stablePhaseCode}</code></pre><div className="equation"><span>时间边界</span><b>G<sub>t</sub> ⟂ G<sub>t+1</sub>　·　K<sub>integration,t</sub>=K<sub>integration</sub></b><small>随机乳剂逐帧独立；积分核的统计传递在时间上稳定。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V35</div><div className="method-copy"><span className="section-tag">AUDITABLE PRODUCTION GRAPH</span><h2>随机实现可以独立，但每一个身份都必须可追溯</h2><p>Production不要求重现V34 PCG64的同一颗颗粒，但必须保持有限二项分布、48µm RMS、NPS、层间统计与时序独立。V35用完整Philox uint32随机字直接比较float32概率的2³²定点阈值；帧、记录层、速度层、尺寸类与全局像素坐标共同定义身份。异步Metal与CPU期望滤波重叠，45次/帧调用自动去重并写入provenance。</p><pre><code>{productionCode}</code></pre><div className="equation"><span>概率表示边界</span><b>|p<sub>u32</sub>−p<sub>float32</sub>| &lt; 2<sup>−32</sup></b><small>三个素材实测最大2.269×10⁻¹⁰；V34仍是Archive字节级参考。</small></div></div></section>
 
@@ -125,7 +134,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V35 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>胶片母版</b><p>12-bit ProRes 4444</p></div><div><b>随机身份</b><p>45次/帧 · 重复0</p></div><div><b>五区域时序</b><p>颗粒/差分能量偏差&lt;0.3%</p></div><div><b>相机原图</b><p>官方Panasonic V-709</p></div><div><b>质感</b><p>V34成像模型逐项锁定</p></div></div></section>
+        <section className="validation"><span className="section-tag">V37 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>胶片母版</b><p>12-bit ProRes 4444</p></div><div><b>随机身份</b><p>45次/帧 · 重复0</p></div><div><b>时间结构</b><p>独立位点 · 稳定积分</p></div><div><b>相机原图</b><p>官方Panasonic V-709</p></div><div><b>质感</b><p>V36色彩与35mm结构锁定</p></div></div></section>
       </main>
       <SiteFooter />
     </>

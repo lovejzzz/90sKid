@@ -9,13 +9,12 @@ import { ParameterPanel } from "./components/ParameterPanel";
 import { references, versions } from "./data";
 import { useLanguage } from "./i18n";
 import { versionEnglish } from "./versionEnglish";
-import { withBasePath } from "./basePath";
 
 export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = ["V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
+  const sourceName = ["V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
@@ -25,7 +24,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <main>
-        <section className="hero" style={{ "--hero-image": `url("${withBasePath("/versions/v36-t031-projection.jpg")}")` } as CSSProperties}>
+        <section className="hero" style={{ "--hero-image": `url("${current.projection.src}")` } as CSSProperties}>
           <EmulsionFlow />
           <div className="eyebrow">KODAK VISION 500T 5279 · DIGITAL EMULSION STUDY</div>
           <h1>{text(<>颗粒不是覆盖层。<br />颗粒就是影像。</>, <>Grain is not an overlay.<br />Grain is the image.</>)}</h1>
@@ -55,12 +54,12 @@ export default function Home() {
         <section className="v21-panel wrap">
           <div><span className="eyebrow">{current.version} · EVIDENCE-FIRST BASELINE</span><h2>{text("每一个物理效应，只能在成像链里拥有一个明确位置。", "Every physical effect gets one explicit place in the image-formation chain.")}</h2></div>
           <ol>
-            <li><b>{text("先锁定同一帧", "Match the source frame")}</b><span>{text("V36锁定T002 0–23、T007 276–299、T031 132–155；相机、放映、扫描、静帧与视频必须一致。", "V36 locks T002 0–23, T007 276–299 and T031 132–155; camera, projection, scan, still and video must agree.")}</span></li>
+            <li><b>{text("颗粒更新，算子稳定", "Renew the grain; stabilize the operator")}</b><span>{text("V37每帧生成新的乳剂位点，但不再让整幅亚像素积分相位一起旋转。", "V37 forms new emulsion sites on every frame without rotating the whole-field subpixel integration phase.")}</span></li>
             <li><b>{text("母版只编码一次", "One encode per master")}</b><span>{text("V31综合色边界在线性Rec.709内存中完成；放映与扫描不再经过中间ProRes往返。", "The V31 chroma boundary runs in linear Rec.709 memory; neither observer takes an intermediate ProRes round trip.")}</span></li>
             <li><b>{text("不可识别就不动", "Unknown means frozen")}</b><span>{text("没有5279 NPS或分色楔实测，就不重调颗粒形态、层间DIR或绿色中和。", "Without 5279 NPS or separation-wedge measurements, grain morphology, interimage DIR and green neutralization stay frozen.")}</span></li>
             <li><b>{text("可审计随机性", "Auditable stochasticity")}</b><span>{text("每帧45个Philox-u32位点身份必须唯一；不安全并发和稀有2383阈值异常都会阻止发布。", "All 45 Philox-u32 site identities per frame must be unique; unsafe concurrency and rare 2383 threshold outliers block release.")}</span></li>
           </ol>
-          <Link href="/research#v36" className="button">{text("阅读V36同帧与锐度审计", "Read the V36 frame and sharpness audit")}</Link>
+          <Link href="/research#v37" className="button">{text("阅读V37时间颗粒审计", "Read the V37 temporal-grain audit")}</Link>
         </section>
 
         <section className="route-grid wrap">
