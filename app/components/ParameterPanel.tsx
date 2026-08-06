@@ -20,11 +20,11 @@ export function ParameterPanel({ groups, version, status, changes = [] }: Props)
         <em>{available ? text("完整快照", "FULL SNAPSHOT") : text("历史记录", "HISTORICAL")}</em>
       </header>
       <div className="parameter-scroll">
-        {available ? groups.map((group) => (
-          <section key={group.title}>
+        {available ? groups.map((group, groupIndex) => (
+          <section key={`${group.title}-${groupIndex}`}>
             <h3>{language === "en" ? (group.titleEn ?? group.title) : group.title}</h3>
-            <dl>{group.items.map((item) => (
-              <div key={`${group.title}-${item.label}`}>
+            <dl>{group.items.map((item, itemIndex) => (
+              <div key={`${group.title}-${groupIndex}-${item.label}-${itemIndex}`}>
                 <dt>{language === "en" ? (item.labelEn ?? item.label) : item.label}</dt>
                 <dd>{language === "en" ? (item.valueEn ?? item.value) : item.value}{(language === "en" ? item.noteEn : item.note) && <small>{language === "en" ? item.noteEn : item.note}</small>}</dd>
               </div>
