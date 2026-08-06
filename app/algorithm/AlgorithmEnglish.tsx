@@ -28,7 +28,7 @@ developed += philox_u32(counter(frame, record, population,
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V35</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V35 freezes the V34 photographic model and changes only the auditable Production graph: Philox-u32 finite sites, asynchronous Metal, identity deduplication and five-region temporal gates. Colour, black, gamma, MTF, DIR, grain and the creative-grade boundary remain unchanged.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V36</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V36 retains the V35 image and Production graph, fixes the absolute-source-frame comparison contract, and jointly validates processed-stock MTF and 48 μm granularity on one 35 mm scale.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>12-bit output</b><small>Rec.709 or DCDM X′Y′Z′</small></span></div></section>
 

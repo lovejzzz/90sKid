@@ -87,7 +87,7 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V35</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V35冻结V34的摄影模型，只改变可审计的Production执行图：Philox-u32有限位点、异步Metal、身份去重和五区域时序门槛。颜色、黑位、gamma、MTF、DIR、颗粒与艺术调色边界不变。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V36</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V36保留V35成像与Production图，只修复跨版本绝对源帧契约，并把处理后MTF与48 μm颗粒测量放在同一35mm尺度上联合验收。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>12-bit ODT</b><small>Rec.709或DCDM X′Y′Z′</small></span></div></section>
 

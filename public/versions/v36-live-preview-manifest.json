@@ -1,0 +1,207 @@
+{
+  "purpose": "V36 matched-frame 35 mm image-structure release",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t002": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ],
+    "t031": [
+      132,
+      155
+    ]
+  },
+  "film_pipeline": "V35 image model and Production graph; no retune",
+  "camera_pipeline": "V33 Panasonic V-709 As Shot witness; no film pipeline",
+  "web": "Rec.709 light converted to sRGB IEC 61966-2-1",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed 6-frame GOP; native masters remain 5760x4320 12-bit ProRes 4444",
+  "verification": {
+    "v36-t002-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v35_pipeline_bernoulli_u32_1s/T002/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009348,
+        0.008392,
+        0.011476
+      ],
+      "first_frame_median_luma_delta": 0.001944
+    },
+    "v36-t002-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v35_pipeline_bernoulli_u32_1s/T002/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007652,
+        0.006457,
+        0.010148
+      ],
+      "first_frame_median_luma_delta": 0.00262
+    },
+    "t002-camera-reuse": {
+      "source": "v33-t002-camera-as-shot",
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "first_frame_channel_mae_rgb": [
+        0.006279,
+        0.004736,
+        0.006123
+      ],
+      "first_frame_median_luma_delta": 0.001137
+    },
+    "v36-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v36_matched_35mm_1s/T007/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010414,
+        0.008931,
+        0.012428
+      ],
+      "first_frame_median_luma_delta": 0.00213
+    },
+    "v36-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v36_matched_35mm_1s/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008763,
+        0.006823,
+        0.011102
+      ],
+      "first_frame_median_luma_delta": 0.001096
+    },
+    "t007-camera-reuse": {
+      "source": "v33-t007-camera-as-shot",
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "first_frame_channel_mae_rgb": [
+        0.007244,
+        0.005406,
+        0.007535
+      ],
+      "first_frame_median_luma_delta": 0.000818
+    },
+    "v36-t031-projection": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v36_matched_35mm_1s/T031/projection/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.010365,
+        0.008683,
+        0.012067
+      ],
+      "first_frame_median_luma_delta": 3.6e-05
+    },
+    "v36-t031-bluray": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "native_master": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v36_matched_35mm_1s/T031/bluray_scan/05_emulsion_master_prores4444.mov",
+      "master_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009117,
+        0.007038,
+        0.011004
+      ],
+      "first_frame_median_luma_delta": 0.000347
+    },
+    "t031-camera-reuse": {
+      "source": "v33-t031-camera-as-shot",
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "first_frame_channel_mae_rgb": [
+        0.007761,
+        0.005818,
+        0.007649
+      ],
+      "first_frame_median_luma_delta": 0.00227
+    }
+  }
+}

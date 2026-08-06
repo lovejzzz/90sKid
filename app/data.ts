@@ -1498,6 +1498,74 @@ versions.push({
   ],
 });
 
+const v36Parameters: ParameterGroup[] = [
+  {
+    title: "跨版本同帧契约", titleEn: "MATCHED-FRAME COMPARISON", items: [
+      { label: "T002绝对帧", labelEn: "T002 absolute frames", value: "0–23", valueEn: "0–23" },
+      { label: "T007绝对帧", labelEn: "T007 absolute frames", value: "276–299", valueEn: "276–299" },
+      { label: "T031绝对帧", labelEn: "T031 absolute frames", value: "132–155", valueEn: "132–155" },
+      { label: "比较门槛", labelEn: "Comparison gate", value: "相机/放映/扫描/静帧/视频必须同一窗口", valueEn: "Camera/projection/scan/still/video must share one window" },
+      { label: "V35错误", labelEn: "V35 release error", value: "T007与T031误从第0帧开始", valueEn: "T007 and T031 incorrectly began at frame 0" },
+    ],
+  },
+  {
+    title: "35mm锐度与颗粒", titleEn: "35 MM SHARPNESS & GRANULARITY", items: [
+      { label: "图像变化", labelEn: "Image change", value: "无 · V35胶片模型冻结", valueEn: "None · V35 film model frozen" },
+      { label: "5279 MTF50", labelEn: "5279 MTF50", value: "R 51.12 · G 64.75 · B 72.26 cycles/mm", valueEn: "R 51.12 · G 64.75 · B 72.26 cycles/mm" },
+      { label: "MTF峰值", labelEn: "MTF peaks", value: "R 102.23% · G 114.17% · B 121.36%", valueEn: "R 102.23% · G 114.17% · B 121.36%" },
+      { label: "颗粒测量孔径", labelEn: "Granularity aperture", value: "48 μm · 原生映射11.10 px", valueEn: "48 μm · 11.10 px at native mapping" },
+      { label: "物理解释", labelEn: "Physical interpretation", value: "密度构成图像；密度的空间传递构成锐度", valueEn: "Density forms the image; its spatial transfer forms sharpness" },
+    ],
+  },
+  {
+    title: "正确帧复验", titleEn: "CORRECT-FRAME REVALIDATION", items: [
+      { label: "新采样器高频RMS", labelEn: "New sampler high-pass RMS", value: "V34比值1.00121", valueEn: "1.00121 vs V34" },
+      { label: "时序差分RMS", labelEn: "Temporal-difference RMS", value: "V34比值1.00139", valueEn: "1.00139 vs V34" },
+      { label: "颗粒/边缘比", labelEn: "Grain/base-edge ratio", value: "V34比值1.00131", valueEn: "1.00131 vs V34" },
+      { label: "结论", labelEn: "Conclusion", value: "不缩小颗粒、不额外柔化", valueEn: "No grain reduction and no added softening" },
+      { label: "母版", labelEn: "Masters", value: "5760×4320 · 24帧 · 12-bit ProRes 4444", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444" },
+    ],
+  },
+];
+
+const v35 = versions.find((item) => item.version === "V35");
+if (v35) {
+  v35.year = "上一版";
+  v35.status = "calibration";
+  v35.errors.push("发布比较错误：T007与T031使用第0–23帧，而V34分别使用276–299与132–155；画面内容变化被误呈现为颗粒变化");
+}
+versions.push({
+  version: "V36",
+  year: "当前基线",
+  title: "先比较同一帧，再判断35mm的颗粒与锐度",
+  status: "current",
+  projection: { src: "/versions/v36-t031-projection.jpg", videoSrc: "/versions/v36-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V36 5279 → 2383影院观察" },
+  bluray: { src: "/versions/v36-t031-bluray.jpg", videoSrc: "/versions/v36-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V36 5279 → Period 2K扫描" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
+  summary: "V36没有把颗粒磨细，也没有用额外柔化掩盖问题。审计发现V35的T007与T031都误从第0帧开始，而V34使用经过选择的第276帧与第132帧；不同画面运动和纹理因此被当成胶片版本差异。V36锁定相机、放映、扫描、静帧与悬停视频的绝对源帧，并重新核对5279处理后MTF与48 μm diffuse RMS颗粒：密度是画面变量，但只有密度的空间变化才是锐度。正确帧下V35 Production与V34的高频、时序和颗粒/边缘比只差约0.1%，因此胶片模型保持不动。",
+  changes: ["锁定T002 0–23、T007 276–299、T031 132–155三个绝对源帧窗口", "网页每条分支明确显示源帧，禁止不同窗口伪装成版本对比", "在正确T031帧上拆分验证Philox采样器与Production空间核", "新增5279 MTF与48 μm granularity联合物理尺度审计", "保留V35颜色、黑位、gamma、MTF、DIR、颗粒振幅与频谱", "网页hover代理改用更短GOP与更高保真度，减少编码器把胶片颗粒变成块状沸腾"],
+  errors: ["第一轮V36盐值筛选也错误使用第0帧，导致四组随机种子都出现相同假异常；发现帧契约后全部作废", "V35网站把三个场景都写成24帧验证，却没有把绝对起始帧作为发布失败条件", "单独比较MTF或48 μm RMS都不足以证明35mm观感；两者还必须共享画幅与观察尺度"],
+  discoveries: ["V35 T031与新做的第0帧Production输出逐像素一致，证明异常来自片段选择而不是隐藏算法变化", "正确第132帧下Philox与V34的时序差分RMS中位比为1.00139，颗粒/边缘比为1.00131", "颗粒确实构成最终密度图像，但绝对密度不是锐度；MTF描述密度调制随空间频率的保留", "Kodak E-58明确指出噪声频率、负片与正片颗粒、两级MTF和放大倍率共同决定可见graininess", "质量优先也意味着拒绝为了修复错误对比而修改本来正确的胶片模型"],
+  refs: ["R1", "R21", "R25", "R55", "R56"],
+  parameters: v36Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002 · Frame 0–23",
+      note: "V35与V34本来就使用同一窗口；V36保留它作为同帧控制组。",
+      projection: { src: "/versions/v36-t002-projection.jpg", videoSrc: "/versions/v36-t002-projection-live-srgb.mp4", label: "T002 · Frame 0–23 · V36 2383影院观察" },
+      bluray: { src: "/versions/v36-t002-bluray.jpg", videoSrc: "/versions/v36-t002-bluray-live-srgb.mp4", label: "T002 · Frame 0–23 · V36 Period 2K扫描" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Frame 0–23 · Panasonic V-709 As Shot" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "恢复V34选择的水面、细草与树林窗口，以同一空间细节判断35mm颗粒和锐度。",
+      projection: { src: "/versions/v36-t007-projection.jpg", videoSrc: "/versions/v36-t007-projection-live-srgb.mp4", label: "T007 · Frame 276–299 · V36 2383影院观察" },
+      bluray: { src: "/versions/v36-t007-bluray.jpg", videoSrc: "/versions/v36-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V36 Period 2K扫描" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

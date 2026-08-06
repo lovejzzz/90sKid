@@ -752,6 +752,34 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 carries the complete five-region temporal gate; T007 stresses water, grass and near-zero hard black; T031 stresses dark neutral texture, warm fungi and green surroundings.",
   },
+  V36: {
+    year: "CURRENT BASELINE",
+    title: "Match the frame before judging 35 mm grain and sharpness",
+    summary:
+      "V36 does not make the grain finer or hide it with extra softness. The audit found that V35 T007 and T031 began at frame 0, while V34 used the curated frame-276 and frame-132 windows. Source motion and texture were therefore presented as a film-model change. V36 locks camera, projection, scan, still and hover video to the same absolute source frames, then rechecks processed-stock MTF and 48 μm diffuse RMS granularity on one physical scale. At the correct T031 window, Production differs from V34 by only about 0.1% in high-frequency, temporal and grain-to-edge measures, so the film model stays frozen.",
+    changes: [
+      "Lock T002 0–23, T007 276–299 and T031 132–155 as absolute source windows",
+      "Expose source frames in every web branch and fail mismatched comparisons",
+      "Re-run Philox and spatial-kernel ablations at the correct T031 frame",
+      "Add a joint physical-scale audit for 5279 MTF and 48 μm granularity",
+      "Freeze V35 colour, black, gamma, MTF, DIR, grain amplitude and spectrum",
+      "Use a shorter-GOP, higher-fidelity hover proxy so delivery encoding does not exaggerate grain boil",
+    ],
+    errors: [
+      "The first V36 salt screen repeated the frame-0 mistake; all four-salt results were invalidated once the frame contract was found",
+      "V35 recorded 24-frame trials but did not make absolute start frame a release-blocking comparison field",
+      "MTF or 48 μm RMS alone cannot prove a 35 mm impression; both must share film geometry and observer scale",
+    ],
+    discoveries: [
+      "The released V35 T031 frame is pixel-identical to a new frame-0 Production render, proving a segment-selection error rather than a hidden model change",
+      "At frame 132, Philox/V34 median temporal-difference RMS is 1.00139 and grain-to-edge ratio is 1.00131",
+      "Grains constitute the realized density image, but absolute density is not sharpness; MTF describes spatial density-modulation transfer",
+      "Kodak E-58 makes noise frequency, negative and print granularity, both MTF stages and magnification joint determinants of visible graininess",
+      "Quality first includes refusing to retune a correct film model to compensate for an invalid comparison",
+    ],
+    trialNote:
+      "T002 is the unchanged-window control. T007 restores frame 276 for water and fine foliage; T031 restores frame 132 for dark bark, fungi and surrounding green.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
