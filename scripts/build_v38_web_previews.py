@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 
 
-VIDEO_SIZE = (1920, 1440)
+VIDEO_SIZE = (1280, 960)
 LARGE_SIZE = (2560, 1920)
 SMALL_SIZE = (800, 600)
 FPS = "24000/1001"
@@ -108,7 +108,7 @@ def encode_loop(frame_dir: Path, output: Path) -> None:
             "-vf",
             "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p",
             "-c:v", "libx264", "-preset", "slow", "-tune", "grain",
-            "-crf", "15", "-g", "6", "-keyint_min", "6",
+            "-crf", "18", "-g", "6", "-keyint_min", "6",
             "-sc_threshold", "0", "-pix_fmt", "yuv420p",
             "-color_primaries", "bt709", "-color_trc", "iec61966-2-1",
             "-colorspace", "bt709",
@@ -212,7 +212,7 @@ def main() -> None:
         "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444",
         "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444",
         "web": "decoded directly from the sRGB companion; no second OETF inversion",
-        "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+        "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
         "verification": results,
     }
     (assets / "v38-live-preview-manifest.json").write_text(

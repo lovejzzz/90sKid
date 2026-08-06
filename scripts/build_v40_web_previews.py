@@ -86,7 +86,7 @@ def main() -> None:
             "decoded only from the master-derived companion; hover frame zero and JPEG "
             "share source frame 12"
         ),
-        "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+        "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
         "timing": timings,
         "verification": results,
     }

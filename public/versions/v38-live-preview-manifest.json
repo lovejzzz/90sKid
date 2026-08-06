@@ -1,8 +1,8 @@
 {
   "purpose": "V38 single-observer-light delivery consistency release",
   "dimensions": [
-    1920,
-    1440
+    1280,
+    960
   ],
   "fps": "24000/1001",
   "frames": 24,
@@ -25,7 +25,7 @@
   "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444",
   "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444",
   "web": "decoded directly from the sRGB companion; no second OETF inversion",
-  "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
   "verification": {
     "v38-t002-projection": {
       "absolute_source_frames": [

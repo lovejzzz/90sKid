@@ -1,8 +1,8 @@
 {
   "purpose": "V30 matched Rec.709-to-sRGB web proxies from three 12-bit camera/film result sets",
   "dimensions": [
-    1920,
-    1440
+    1280,
+    960
   ],
   "fps": "24000/1001",
   "frames": 24,

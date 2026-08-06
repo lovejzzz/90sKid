@@ -1,8 +1,8 @@
 {
   "purpose": "V28 corrected Rec.709-to-sRGB web proxies from 12-bit masters",
   "dimensions": [
-    1920,
-    1440
+    1280,
+    960
   ],
   "fps": "24000/1001",
   "frames": 24,

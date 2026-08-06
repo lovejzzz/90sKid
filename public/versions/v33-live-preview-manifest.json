@@ -1,8 +1,8 @@
 {
   "purpose": "V33 0-stop as-shot Panasonic V-709 exposure witnesses; frozen projection/scan media reuse the accepted V31/V32 web assets",
   "dimensions": [
-    1920,
-    1440
+    1280,
+    960
   ],
   "fps": "24000/1001",
   "frames": 24,

@@ -555,7 +555,7 @@ const v24Parameters = (v23.parameters ?? []).map((group) => ({
       { label: "现场硬件利用", value: "16核 / 48GB；采样时CPU约80%空闲", note: "参考实现未有效并行化最重随机步骤，不代表硬件弱" },
       { label: "网页观察空间", value: "sRGB IEC 61966-2-1 · D65", note: "静态图与短视频使用同一显示变换；5.7K 12-bit Rec.709母版保持不变" },
       { label: "网页帧对齐", value: "第13帧静态图 = 短视频首帧", note: "24帧循环重排为13–24、1–12，悬停切换不再跳画面" },
-      { label: "网页Live预览", value: "1920 × 1440 · H.264 · 24fps · 1.001秒", note: "sRGB网页代理；逐片验证视频首帧与大图的综合色及中间调误差" },
+      { label: "网页Live预览", value: "1280 × 960 · H.264 · 24fps · 1.001秒", note: "sRGB网页代理；逐片验证视频首帧与大图的综合色及中间调误差" },
     ] : []),
   ],
 }));
@@ -630,7 +630,7 @@ const v25Parameters = (v24.parameters ?? []).map((group) => ({
       { label: "解码 / 双路编码 / 帧", value: "0.68–1.02秒 / 0.31–0.47秒" },
       { label: "网页首帧亮度误差", value: "0.00133–0.00164 median luma" },
       { label: "网页首帧RGB MAE", value: "0.00617–0.01436", note: "复用已验证的sRGB JPEG与H.264代理；全部低于验收阈值0.025" },
-      { label: "Live代理", value: "1920 × 1440 · 24帧 · sRGB transfer" },
+      { label: "Live代理", value: "1280 × 960 · 24帧 · sRGB transfer" },
     ] : []),
   ],
 }));

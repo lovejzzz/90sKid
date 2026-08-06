@@ -1,8 +1,8 @@
 {
   "purpose": "V39 density-formation reconstruction release",
   "dimensions": [
-    1920,
-    1440
+    1280,
+    960
   ],
   "fps": "24000/1001",
   "frames": 24,
@@ -27,7 +27,7 @@
   "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444",
   "quicktime_companion": "master-derived Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444 XQ",
   "web": "decoded directly from the sRGB companion; hover frame zero is the same source frame as the static JPEG",
-  "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
   "timing": {
     "t002": {
       "clock": "time.perf_counter monotonic wall clock",
