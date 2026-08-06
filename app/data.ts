@@ -1633,6 +1633,77 @@ versions.push({
   ],
 });
 
+const v37Current = versions.find((item) => item.version === "V37");
+if (v37Current) {
+  v37Current.year = "上一版";
+  v37Current.status = "calibration";
+  v37Current.errors.push("交付边界错误：已完成的显示线性观察结果再次使用摄影机BT.709 OETF编码，QuickTime与静帧因此呈现不同的暗部、对比和色浓度");
+}
+
+const v38Parameters: ParameterGroup[] = [
+  {
+    title: "唯一观察结果", titleEn: "ONE OBSERVER LIGHT", items: [
+      { label: "胶片模型", labelEn: "Film model", value: "V37完全冻结", valueEn: "V37 frozen in full" },
+      { label: "颜色/H-D/黑位", labelEn: "Colour / H-D / black", value: "无变化", valueEn: "No change" },
+      { label: "颗粒/MTF/DIR", labelEn: "Grain / MTF / DIR", value: "无变化", valueEn: "No change" },
+      { label: "改变位置", labelEn: "Changed boundary", value: "只在observer-linear之后", valueEn: "Only after observer-linear light" },
+      { label: "显示线性一致性", labelEn: "Decoded-light agreement", value: "三场景平均通道误差0.009–0.062%", valueEn: "Three-scene mean channel error 0.009–0.062%" },
+    ],
+  },
+  {
+    title: "双交付", titleEn: "DUAL DELIVERY", items: [
+      { label: "专业母版", labelEn: "Professional master", value: "Rec.709 · inverse BT.1886 γ2.4 · 1-1-1", valueEn: "Rec.709 · inverse BT.1886 γ2.4 · 1-1-1" },
+      { label: "本机观看版", labelEn: "Mac viewing companion", value: "Rec.709原色 · sRGB传递 · MOV 1-13-1", valueEn: "Rec.709 primaries · sRGB transfer · MOV 1-13-1" },
+      { label: "编码", labelEn: "Codec", value: "两者均为12-bit ProRes 4444", valueEn: "Both are 12-bit ProRes 4444" },
+      { label: "网页", labelEn: "Web", value: "只从sRGB观看版生成", valueEn: "Derived only from the sRGB companion" },
+      { label: "XDR参考模式", labelEn: "XDR reference mode", value: "HDTV Video (BT.709–BT.1886)", valueEn: "HDTV Video (BT.709–BT.1886)" },
+    ],
+  },
+  {
+    title: "一致性门槛", titleEn: "CONSISTENCY GATES", items: [
+      { label: "源帧", labelEn: "Source frames", value: "T002 0–23 · T007 276–299 · T031 132–155", valueEn: "T002 0–23 · T007 276–299 · T031 132–155" },
+      { label: "静帧", labelEn: "Still", value: "第12帧 · sRGB观看版直接解码", valueEn: "Frame 12 · direct sRGB-companion decode" },
+      { label: "网页视频", labelEn: "Web video", value: "首帧=静帧 · sRGB · closed GOP 6", valueEn: "First frame=still · sRGB · closed GOP 6" },
+      { label: "禁止", labelEn: "Rejected", value: "把P3/HDR当作额外饱和度或亮度", valueEn: "Using P3/HDR as extra saturation or brightness" },
+      { label: "分辨率", labelEn: "Resolution", value: "5760×4320 · 24帧", valueEn: "5760×4320 · 24 frames" },
+      { label: "实测总时间", labelEn: "Measured total time", value: "T002 666.67s · T007 670.00s · T031 659.50s", valueEn: "T002 666.67s · T007 670.00s · T031 659.50s" },
+      { label: "每源帧", labelEn: "Per source frame", value: "27.48–27.92s · 同时生成四个12-bit视频", valueEn: "27.48–27.92s · four 12-bit videos generated together" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V38",
+  year: "当前基线",
+  title: "同一束观察光，只因显示目标不同而采用不同编码",
+  status: "current",
+  projection: { src: "/versions/v38-t031-projection.jpg", videoSrc: "/versions/v38-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V38 2383观察 · sRGB本机观看链" },
+  bluray: { src: "/versions/v38-t031-bluray.jpg", videoSrc: "/versions/v38-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V38 Period 2K扫描 · sRGB本机观看链" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
+  summary: "V38修正V37静帧自然、QuickTime视频却更黑更浓的问题。V37把已经完成2383或Period 2K观察的显示线性光再次送入摄影机BT.709 OETF；播放器和网页随后以不同传递方式解释同一组码值，暗部和色浓度因此分叉。V38冻结全部胶片成像，只让同一observer-linear结果分别进入inverse BT.1886专业母版与sRGB本机观看版。专业母版用于XDR的HDTV Video参考模式；QuickTime、JPEG和网页共享sRGB观看链。P3与HDR没有被用来制造额外颜色或亮度。",
+  changes: ["冻结V37负片、2383、扫描、颜色、颗粒、MTF、DIR、黑位和gamma", "把交付输入明确为已经完成观察的display-linear Rec.709光，而不是scene-linear摄影机信号", "专业母版改为inverse BT.1886 gamma 2.4的12-bit Rec.709 ProRes 4444", "新增同样12-bit的sRGB QuickTime观看版，使当前Mac默认显示模式与JPEG一致", "JPEG与网页视频只从sRGB观看版的同一第12帧生成", "新增专业母版/本机观看版解码回同一线性光的一致性审计"],
+  errors: ["V25以来的注释把摄影机OETF与BT.1886参考显示混为一条可逆链，但两者并非互逆", "原先网页验证只限制通道MAE≤2.5%与中位亮度差≤1%，足以让可见的暗部差异通过", "V37静帧是精确BT.709逆变换后转sRGB，视频则由QuickTime按Apple视频Gamma解释，因此两者从来没有真正共享ODT"],
+  discoveries: ["在本项目中静帧更接近算法原本的observer-linear结果；视频的额外浓郁主要是交付和播放伪影", "Apple Silicon MacBook Pro的Liquid Retina XDR提供专门的BT.709–BT.1886参考模式，它比凭感觉扩到P3或HDR更适合本项目", "P3显示能力不会恢复已经在Rec.709观察器中压缩掉的颜色；强行扩色域只会更改坐标而不增加证据", "专业母版与sRGB观看版可以有不同码值，但解码回显示线性光后必须相同", "颜色、黑位和gamma的发布验证必须跨母版、静帧、网页视频与真实播放器，而不能只读文件标签"],
+  refs: ["R26", "R27", "R29", "R60", "R61", "R62"],
+  parameters: v38Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002 · Frame 0–23",
+      note: "暗墙、toe与低色度纹理用于检查传递函数是否再次压黑。",
+      projection: { src: "/versions/v38-t002-projection.jpg", videoSrc: "/versions/v38-t002-projection-live-srgb.mp4", label: "T002 · Frame 0–23 · V38 2383观察 · sRGB本机观看链" },
+      bluray: { src: "/versions/v38-t002-bluray.jpg", videoSrc: "/versions/v38-t002-bluray-live-srgb.mp4", label: "T002 · Frame 0–23 · V38 Period 2K扫描 · sRGB本机观看链" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Frame 0–23 · Panasonic V-709 As Shot" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面与绿色细节用于确认修正传递函数没有改变V37颗粒和颜色。",
+      projection: { src: "/versions/v38-t007-projection.jpg", videoSrc: "/versions/v38-t007-projection-live-srgb.mp4", label: "T007 · Frame 276–299 · V38 2383观察 · sRGB本机观看链" },
+      bluray: { src: "/versions/v38-t007-bluray.jpg", videoSrc: "/versions/v38-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V38 Period 2K扫描 · sRGB本机观看链" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1714,6 +1785,9 @@ export const references = [
   { id: "R57", title: "Metal Best Practices — Command Buffers", type: "Apple官方命令缓冲与同步指南", url: "https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/CommandBuffers.html" },
   { id: "R58", title: "Realistic Film Grain Rendering", type: "IPOL同行评审论文与可复现实作（Newson et al., 2017）", url: "https://www.ipol.im/pub/art/2017/192/" },
   { id: "R59", title: "A Reproduction Model of Film Grain Texture for Digital Movies", type: "电影颗粒Wiener频谱研究（Munekata et al., 2011）", url: "https://www.researchgate.net/publication/314091949_A_Reproduction_Model_of_Film_Grain_Texture_for_Digital_Movies" },
+  { id: "R60", title: "Evaluating video using QuickTime test pattern files", type: "Apple官方QuickTime Gamma与ColorSync测试说明", url: "https://developer.apple.com/documentation/avfoundation/evaluating-video-using-quicktime-test-pattern-files" },
+  { id: "R61", title: "Use presets and reference modes with your Apple display", type: "Apple官方BT.709–BT.1886与P3参考模式说明", url: "https://support.apple.com/en-ca/108321" },
+  { id: "R62", title: "MacBook Pro (16-inch, 2024) Technical Specifications", type: "Apple官方Liquid Retina XDR与P3规格", url: "https://support.apple.com/en-us/121554" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

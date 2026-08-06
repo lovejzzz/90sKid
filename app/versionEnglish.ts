@@ -808,10 +808,40 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 controls walls, shadows and fine texture. T007 verifies that water and foliage are not frozen or softened. T031 is the phase-selection scene for dark bark, fungi and surrounding green.",
   },
+  V38: {
+    year: "CURRENT BASELINE",
+    title: "One observer light, encoded explicitly for each display target",
+    summary:
+      "V38 corrects the natural-still / dense-QuickTime split in V37. The completed projection and scan observers already produced display-linear light, but the release then applied the BT.709 camera OETF and allowed QuickTime, JPEG and the browser to invert or approximate it differently. Shadows, contrast and colour density diverged even though the film calculation was identical. V38 freezes the complete V37 image model and encodes one observer-linear result two ways: an inverse-BT.1886 gamma-2.4 professional Rec.709 master, and a 12-bit sRGB-transfer QuickTime companion for direct viewing on this Mac. JPEG and web motion derive only from the companion. P3 and HDR are not used as unmeasured saturation or brightness controls.",
+    changes: [
+      "Freeze the V37 negative, 2383, scan, colour, grain, MTF, DIR, black and gamma",
+      "Define delivery input as completed display-linear Rec.709 observer light—not scene-linear camera exposure",
+      "Encode the professional master with inverse BT.1886 gamma 2.4 in 12-bit Rec.709 ProRes 4444",
+      "Add a separate 12-bit sRGB-transfer QuickTime companion that matches JPEG review in the Mac default display mode",
+      "Generate JPEG and web motion from the same companion and the same representative frame",
+      "Audit both files by decoding them back to one display-linear result",
+    ],
+    errors: [
+      "Since V25, the release comments treated the BT.709 camera OETF and a BT.1886 reference display as a reversible pair even though they are not inverses",
+      "The previous web gate allowed channel MAE up to 2.5% and median-luma error up to 1%, enough for a visible shadow mismatch to pass",
+      "V37 JPEG used an exact BT.709 inverse before sRGB encoding while QuickTime applied Apple's video-gamma interpretation; the two paths never shared one ODT",
+    ],
+    discoveries: [
+      "The still was closer to the intended observer-linear image; much of the video's extra density was a delivery/playback artifact rather than 5279 character",
+      "This MacBook Pro's Liquid Retina XDR includes a dedicated HDTV Video BT.709–BT.1886 reference mode, which is more appropriate than a speculative P3 or HDR expansion",
+      "A P3-capable panel cannot recover colour already bounded by the Rec.709 observer; changing container gamut would add no evidence",
+      "Professional and QuickTime files may carry different code values, but must decode to the same display-linear light",
+      "Release validation must cross the master, still, web proxy and an actual managed player—not only inspect file tags",
+    ],
+    trialNote:
+      "T002 stresses toe and dark neutral texture. T007 holds water and green fine detail. T031 exposes the original natural-still / dense-video discrepancy.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/sRGB本机观看链/g, "sRGB Mac viewing chain")
+    .replace(/V38/g, "V38")
     .replace(/V37稳定乳剂/g, "V37 stable emulsion")
     .replace(/2383影院观察/g, "2383 cinema observer")
     .replace(/As Shot见证/g, "As Shot witness")

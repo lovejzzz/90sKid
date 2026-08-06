@@ -1,0 +1,199 @@
+{
+  "purpose": "V38 single-observer-light delivery consistency release",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t002": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ],
+    "t031": [
+      132,
+      155
+    ]
+  },
+  "film_pipeline": "V37 frozen byte-for-byte before delivery encoding",
+  "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444",
+  "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444",
+  "web": "decoded directly from the sRGB companion; no second OETF inversion",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+  "verification": {
+    "v38-t002-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T002/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008515,
+        0.007419,
+        0.010667
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002784,
+        0.001951,
+        0.000852
+      ],
+      "first_frame_median_luma_delta": 0.001951
+    },
+    "v38-t002-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T002/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.006967,
+        0.005618,
+        0.009318
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001667,
+        0.002708,
+        0.001919
+      ],
+      "first_frame_median_luma_delta": 0.002708
+    },
+    "v38-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009509,
+        0.007985,
+        0.01155
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000607,
+        0.002032,
+        0.001016
+      ],
+      "first_frame_median_luma_delta": 0.002032
+    },
+    "v38-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007886,
+        0.005837,
+        0.010195
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002728,
+        0.001178,
+        0.000205
+      ],
+      "first_frame_median_luma_delta": 0.001178
+    },
+    "v38-t031-projection": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T031/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009534,
+        0.007792,
+        0.011283
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.004715,
+        0.000139,
+        0.000838
+      ],
+      "first_frame_median_luma_delta": 0.000139
+    },
+    "v38-t031-bluray": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "quicktime_companion": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/experiments/emulsion_reconstruction/outputs/native_5k_v38_reference_delivery_1s/T031/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008239,
+        0.006077,
+        0.010069
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001708,
+        0.000382,
+        0.001038
+      ],
+      "first_frame_median_luma_delta": 0.000382
+    }
+  }
+}

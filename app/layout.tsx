@@ -10,22 +10,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("versions/v37-t031-projection.jpg", `${archiveMediaOrigin}/`).toString();
+  const socialImageUrl = new URL("versions/v38-t031-projection.jpg", `${archiveMediaOrigin}/`).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V37 preserves independent emulsion formation on every frame while removing whole-field numerical phase breathing; colour and 35 mm image structure remain frozen.",
+    description: "V38 preserves the V37 emulsion image while making the professional master, QuickTime companion, still and web decode to one observer light.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "A quality-first 5279 reconstruction with auditable finite-site identities, five-region temporal validation and native 12-bit delivery.",
+      description: "A quality-first 5279 reconstruction with auditable finite-site identities and display-consistent native 12-bit delivery.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1920, height: 1440, alt: "5279 Emulsion Project · V37 stable-emulsion baseline" }],
+      images: [{ url: socialImageUrl, width: 1920, height: 1440, alt: "5279 Emulsion Project · V38 reference-display baseline" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V37 keeps every film frame stochastic while stabilizing the numerical integration operator behind the grain.",
+      description: "V38 keeps the V37 film image intact while correcting professional, QuickTime and web delivery.",
       images: [socialImageUrl],
     },
   };
