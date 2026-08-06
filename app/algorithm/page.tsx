@@ -54,12 +54,24 @@ mean_display   = trilinear(print_lattice, mean_density)
 formed_display = trilinear(print_lattice, formed_density)
 # MTF、逐帧负片形成和正片细颗粒仍在格点之外执行`;
 
-const observerCode = `# V38：Lobs已经是完成胶片、印片或扫描后的显示线性观察结果
-professional = pow(Lobs, 1/2.4)       # inverse ideal-black BT.1886
-quicktime    = srgb_oetf(Lobs)        # explicit Mac viewing companion
+const observerCode = `# V39：专业母版是画面权威，伴随版共享其实际压缩结构
+professional = prores4444(pow(Lobs, 1/2.4))
+Lmaster      = pow(decode(professional), 2.4)
+quicktime    = prores4444_xq(srgb_oetf(Lmaster))
 still        = frame(quicktime, 12)   # no second OETF inversion
 web_video    = encode_srgb(quicktime) # same first frame and transfer
-# Decode(professional) ≈ Decode(quicktime) ≈ Lobs`;
+# EOTF(professional) ≈ EOTF(quicktime) ≈ Lmaster`;
+
+const densityFormationCode = `# V39：图像结构停留在其被测量的密度域
+Dneg_mean = mtf_5279(develop_5279(exposure))
+Dneg_real = Dneg_mean + finite_site_density - mean_density
+scan = spirit_2k_observe(Dneg_real)
+
+Dprint_mean = mtf_2383(expose_2383(Dneg_mean))
+Dprint_real = Dprint_mean + mtf_2383(expose_2383(Dneg_real) - expose_2383(Dneg_mean))
+Dprint_real += finite_2383_dye_cloud_density
+projection = xenon_observe(Dprint_real)
+# 没有display RGB grain overlay`;
 
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
@@ -95,11 +107,13 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V38</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V38冻结V37的完整胶片画面，只修复observer-linear结果进入专业母版、QuickTime、静帧与网页时的传递函数边界。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V39</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V39让负片MTF、随机DIR、印片MTF和2383颗粒在各自的密度材料中形成；颜色、黑位、gamma与V38交付边界保持冻结。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
 
-        <section className="method-section"><div className="method-index">V38</div><div className="method-copy"><span className="section-tag">ONE OBSERVER LIGHT · TWO EXPLICIT DELIVERIES</span><h2>编码可以不同，但解码后必须回到同一束观察光</h2><p>V37的静帧准确撤销BT.709 OETF后转sRGB，ProRes却把已经完成观察的显示线性光再次当作摄影机信号编码。QuickTime按Apple视频Gamma解释，暗部、对比与色浓度因此分叉。V38从同一Lobs生成inverse BT.1886专业母版和sRGB本机观看版；JPEG与网页只继承后者。P3和HDR不用于制造未经证据支持的鲜艳度或亮度。</p><pre><code>{observerCode}</code></pre><div className="equation"><span>交付不变量</span><b>EOTF<sub>BT.1886</sub>(V<sub>master</sub>) ≈ EOTF<sub>sRGB</sub>(V<sub>Mac</sub>) ≈ L<sub>obs</sub></b><small>三个原生24帧场景中，两份12-bit ProRes解码到线性光的平均通道差为0.009%–0.062%。</small></div></div></section>
+        <section className="method-section"><div className="method-index">V39</div><div className="method-copy"><span className="section-tag">DENSITY IS THE IMAGE VARIABLE</span><h2>先形成一份真实密度，再让扫描器或印片观察它</h2><p>V38的有限位点已经在负片中生成随机密度，但随后仍把MTF放到显示正片，并把2383颗粒做成投影后的亮度ratio。V39把5279处理后MTF移入负片记录密度，让48µm约束在随机DIR之前决定显影染料产额；2383的MTF和三记录染料云同样在Status-A密度中完成。观察器只把已经形成的材料密度转成观看光，不再给显示RGB添加颗粒。</p><pre><code>{densityFormationCode}</code></pre><div className="equation"><span>同一负片</span><b>D<sub>5279,real</sub>=MTF<sub>5279</sub>(D<sub>mean</sub>)+δD<sub>sites</sub></b><small>MTF与颗粒是独立测量，但位于同一胶片几何和密度链。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V39</div><div className="method-copy"><span className="section-tag">ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES</span><h2>编码可以不同，但解码后必须回到同一份母版光</h2><p>V38解决了摄影机OETF与显示EOTF混用，却仍从浮点Lobs独立压缩两份ProRes。V39的细密度结构让两次有损压缩产生可测分叉。因此V39先生成12-bit BT.1886专业母版，再从该实际母版反解Lmaster，以ProRes 4444 XQ生成sRGB本机观看版；JPEG与网页只继承后者。P3和HDR不用于制造未经证据支持的鲜艳度或亮度。</p><pre><code>{observerCode}</code></pre><div className="equation"><span>交付不变量</span><b>EOTF<sub>BT.1886</sub>(V<sub>master</sub>) ≈ EOTF<sub>sRGB</sub>(V<sub>Mac</sub>) ≈ L<sub>master</sub></b><small>三个原生24帧场景全部通过；最坏通道平均线性光误差0.001092，小于0.0015门槛。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V37</div><div className="method-copy"><span className="section-tag">INDEPENDENT SITES · STABLE INTEGRATION</span><h2>每一格胶片都更新，但成像算子不应该整幅跳动</h2><p>V36的乳剂位点本来已经逐帧独立，却又为每个记录层与速度层抽取一个全场亚像素相位，让双线性积分核每帧一起转向。V37保留frame参与Philox身份，只把15组尺寸类相位固定为黄金比例分布并整体旋转30°。因此颗粒不会被时间平滑、跟随运动或冻结；被删除的是额外的数值呼吸。</p><pre><code>{stablePhaseCode}</code></pre><div className="equation"><span>时间边界</span><b>G<sub>t</sub> ⟂ G<sub>t+1</sub>　·　K<sub>integration,t</sub>=K<sub>integration</sub></b><small>随机乳剂逐帧独立；积分核的统计传递在时间上稳定。</small></div></div></section>
 
@@ -129,7 +143,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">V24 · COLOUR-GRAIN SEPARATION</span><h2>输出链观察颗粒，但不重新调色</h2><p>三条独立染料记录经过光谱观察会生成较强综合色纹理。V24在signed grain delta中分离Rec.709明度与综合色分量：明度纹理原样保留，综合色纹理分别按2383投影和Period 2K扫描孔径积分。确定性mean RGB不进入这一步，因此平均色相、饱和度和黑白灰严格不动。</p><pre><code>{colourGrainCode}</code></pre></div></section>
 
-        <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V38 · OUTPUT OBSERVERS</span><h2>观看条件、显示线性光与文件传递函数必须分开</h2><p>48 nit影院条件留在2383观察模型中，Period 2K完成态留在扫描观察器中。两者输出的都是display-linear Rec.709光。专业视频用inverse BT.1886 gamma 2.4编码；当前Mac默认模式的直接观看版使用sRGB传递。XDR若切换到HDTV Video参考模式，应以专业母版为准。</p><pre><code>{observerCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V39 · OUTPUT OBSERVERS</span><h2>观看条件、显示线性光与文件传递函数必须分开</h2><p>48 nit影院条件留在2383观察模型中，Period 2K完成态留在扫描观察器中。两者输出的都是display-linear Rec.709光。专业视频用inverse BT.1886 gamma 2.4编码；当前Mac默认模式的直接观看版从实际母版派生，使用sRGB传递与ProRes 4444 XQ。XDR若切换到HDTV Video参考模式，应以专业母版为准。</p><pre><code>{observerCode}</code></pre></div></section>
 
         <section className="method-section"><div className="method-index">11</div><div className="method-copy"><span className="section-tag">EXACT ACCELERATION</span><h2>缓存固定颜色，复用平均负片，并行独立银盐事件</h2><p>193³格点继续缓存固定的分析染料与2383颜色物理。V25另删除每帧一次重复的确定性负片显影，并把45组二项抽样切成固定种子条带。分辨率、粒层数量、随机分布、光学积分和48µm回标都不变。</p><pre><code>{outputLutCode}</code></pre><pre><code>{parallelCode}</code></pre></div></section>
 
@@ -137,7 +151,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
 
-        <section className="validation"><span className="section-tag">V38 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>双12-bit交付</b><p>BT.1886母版 + sRGB观看版</p></div><div><b>图像模型</b><p>V37完全冻结</p></div><div><b>时间结构</b><p>独立位点 · 稳定积分</p></div><div><b>网页首帧</b><p>与JPEG同一第12帧</p></div><div><b>显示目标</b><p>明确，不再由播放器猜测</p></div></div></section>
+        <section className="validation"><span className="section-tag">V39 THREE-SCENE VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>双12-bit交付</b><p>BT.1886母版 + sRGB观看版</p></div><div><b>结构域</b><p>5279 / 2383 density-first</p></div><div><b>时间结构</b><p>独立位点 · 稳定积分</p></div><div><b>显示叠加</b><p>颗粒0层</p></div><div><b>颜色边界</b><p>冻结V38，无艺术调色</p></div></div></section>
       </main>
       <SiteFooter />
     </>
