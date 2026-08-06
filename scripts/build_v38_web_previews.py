@@ -39,7 +39,7 @@ def probe(path: Path) -> dict[str, object]:
             "ffprobe", "-v", "error", "-select_streams", "v:0",
             "-show_entries",
             (
-                "stream=width,height,nb_frames,pix_fmt,bits_per_raw_sample,"
+                "stream=width,height,nb_frames,pix_fmt,profile,bits_per_raw_sample,"
                 "color_space,color_transfer,color_primaries"
             ),
             "-of", "json", str(path),

@@ -32,21 +32,35 @@ phase = 2*pi * frac((class_id + 0.5) * golden_ratio) + pi/6
 offset = 0.38 * [cos(phase), sin(phase)]
 # only integration phase is stable; grain sites are never reused across frames`;
 
-const deliveryCode = `# V38: Lobs is completed display-linear observer light
-professional = pow(Lobs, 1/2.4)       # inverse ideal-black BT.1886
-quicktime    = srgb_oetf(Lobs)        # explicit Mac viewing companion
+const deliveryCode = `# V39: the professional master is delivered picture authority
+professional = prores4444(pow(Lobs, 1/2.4))
+Lmaster      = pow(decode(professional), 2.4)
+quicktime    = prores4444_xq(srgb_oetf(Lmaster))
 still        = frame(quicktime, 12)   # no second OETF inversion
 web_video    = encode_srgb(quicktime) # same first frame and transfer
-# Decode(professional) ~= Decode(quicktime) ~= Lobs`;
+# EOTF(professional) ~= EOTF(quicktime) ~= Lmaster`;
+
+const densityFormationCode = `# V39: image structure remains in its measured density domains
+Dneg_mean = mtf_5279(develop_5279(exposure))
+Dneg_real = Dneg_mean + finite_site_density - mean_density
+scan = spirit_2k_observe(Dneg_real)
+
+Dprint_mean = mtf_2383(expose_2383(Dneg_mean))
+Dprint_real = Dprint_mean + mtf_2383(expose_2383(Dneg_real) - expose_2383(Dneg_mean))
+Dprint_real += finite_2383_dye_cloud_density
+projection = xenon_observe(Dprint_real)
+# no display-RGB grain overlay`;
 
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V38</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V38 freezes the complete V37 film image and corrects only the transfer boundary from observer-linear light into professional, QuickTime, still and web delivery.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V39</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V39 forms negative MTF, stochastic DIR, print MTF and 2383 grain inside their respective density materials. Colour, black, gamma and the V38 delivery boundary remain frozen.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>Display delivery</b><small>BT.1886 master / sRGB companion</small></span></div></section>
 
-      <section className="method-section"><div className="method-index">V38</div><div className="method-copy"><span className="section-tag">ONE OBSERVER LIGHT · TWO EXPLICIT DELIVERIES</span><h2>Code values may differ; decoded light must agree</h2><p>V37 stills exactly inverted the BT.709 OETF before sRGB encoding, while ProRes treated already completed display-linear observer light as a camera signal. QuickTime's Apple video-gamma interpretation then diverged in shadows, contrast and colour density. V38 derives an inverse-BT.1886 professional master and an sRGB Mac companion from the same Lobs. JPEG and web inherit only the companion. P3 and HDR are not used as unmeasured colour or brightness controls.</p><pre><code>{deliveryCode}</code></pre><div className="equation"><span>DELIVERY INVARIANT</span><b>EOTF<sub>BT.1886</sub>(V<sub>master</sub>) ≈ EOTF<sub>sRGB</sub>(V<sub>Mac</sub>) ≈ L<sub>obs</sub></b><small>Across three native 24-frame scenes, mean per-channel disagreement after both 12-bit ProRes files decode to light is 0.009–0.062%.</small></div></div></section>
+      <section className="method-section"><div className="method-index">V39</div><div className="method-copy"><span className="section-tag">DENSITY IS THE IMAGE VARIABLE</span><h2>Form one realized density, then let a scanner or print observe it</h2><p>V38 already generated stochastic negative density from finite sites, but then applied MTF to a display positive and represented 2383 grain as a post-projection luminance ratio. V39 moves processed 5279 MTF into negative record density and lets the 48 µm constraint determine developed dye yield before stochastic DIR. 2383 MTF and three-record dye clouds are likewise completed in Status-A density. The observers convert formed material density into viewed light; they never add display-RGB grain.</p><pre><code>{densityFormationCode}</code></pre><div className="equation"><span>ONE NEGATIVE</span><b>D<sub>5279,real</sub>=MTF<sub>5279</sub>(D<sub>mean</sub>)+δD<sub>sites</sub></b><small>MTF and granularity remain separate measurements on one film geometry and density chain.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V39</div><div className="method-copy"><span className="section-tag">ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES</span><h2>Code values may differ; decoded light must agree</h2><p>V38 separated camera OETF from display EOTF, but still compressed two ProRes copies independently from floating-point Lobs. V39's fine density structure made that lossy split measurable. V39 therefore encodes the 12-bit BT.1886 professional master first, recovers Lmaster from that actual file, and creates the sRGB Mac copy as ProRes 4444 XQ. JPEG and web inherit only the companion. P3 and HDR are not used as unmeasured colour or brightness controls.</p><pre><code>{deliveryCode}</code></pre><div className="equation"><span>DELIVERY INVARIANT</span><b>EOTF<sub>BT.1886</sub>(V<sub>master</sub>) ≈ EOTF<sub>sRGB</sub>(V<sub>Mac</sub>) ≈ L<sub>master</sub></b><small>All three native 24-frame scenes pass; the worst per-channel mean light error is 0.001092, below the 0.0015 gate.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V37</div><div className="method-copy"><span className="section-tag">INDEPENDENT SITES · STABLE INTEGRATION</span><h2>Every film frame renews; the imaging operator should not jump as one field</h2><p>V36 emulsion sites were already independent on every frame, but each record and speed population also drew one whole-field subpixel phase, rotating the bilinear integration kernel from frame to frame. V37 keeps frame in the Philox identity and fixes the 15 size-class phases as a golden-ratio ensemble rotated by 30 degrees. Grain is neither smoothed, motion-following nor frozen; only the extra numerical breathing is removed.</p><pre><code>{stablePhaseCode}</code></pre><div className="equation"><span>TEMPORAL BOUNDARY</span><b>G<sub>t</sub> ⟂ G<sub>t+1</sub>　·　K<sub>integration,t</sub>=K<sub>integration</sub></b><small>Stochastic emulsion remains independent; the transfer of the integration operator stays stable.</small></div></div></section>
 
@@ -76,7 +90,7 @@ export function AlgorithmEnglish() {
 
       <section className="method-section"><div className="method-index">09</div><div className="method-copy"><span className="section-tag">COLOUR-GRAIN SEPARATION</span><h2>The observer integrates grain without regrading mean colour</h2><p>Signed grain delta is split into Rec.709 luminance and opponent components. Observer-specific integration affects only the opponent texture; deterministic mean RGB never enters this operation.</p><div className="equation"><span>SIGNED GRAIN</span><b>δY = wᵀδRGB　·　δC = δRGB − δY</b></div></div></section>
 
-      <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V38 · OUTPUT STANDARD</span><h2>Observer conditions, display light and file transfer are separate boundaries</h2><p>The 48-nit cinema condition remains in the 2383 observer and the period finish remains in the scan observer. Their output is display-linear Rec.709 light. The professional file uses inverse BT.1886 gamma 2.4; the direct-view companion for the Mac default display mode uses sRGB. In the XDR HDTV Video reference mode, judge the professional master.</p><pre><code>{deliveryCode}</code></pre></div></section>
+      <section className="method-section"><div className="method-index">10</div><div className="method-copy"><span className="section-tag">V39 · OUTPUT STANDARD</span><h2>Observer conditions, display light and file transfer are separate boundaries</h2><p>The 48-nit cinema condition remains in the 2383 observer and the period finish remains in the scan observer. Their output is display-linear Rec.709 light. The professional file uses inverse BT.1886 gamma 2.4; the direct-view Mac companion is derived from that encoded master and uses sRGB / ProRes 4444 XQ. In the XDR HDTV Video reference mode, judge the professional master.</p><pre><code>{deliveryCode}</code></pre></div></section>
 
       <section className="method-section"><div className="method-index">11</div><div className="method-copy"><span className="section-tag">EXACT ACCELERATION</span><h2>Cache deterministic colour; parallelize independent silver-halide events</h2><p>A 193³ lattice caches exact analytical print samples. Fixed seeded row stripes parallelize 45 binomial populations while remaining bit-identical across worker counts. Mean negative density is shared rather than recomputed.</p></div></section>
 
@@ -84,7 +98,7 @@ export function AlgorithmEnglish() {
 
       <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">EVIDENCE BOUNDARY</span><h2>Negative findings are part of the algorithm</h2><p>The latest hourly audit found no public, stock-specific 5279 NPS, no measured 5279 DIR matrix and no 5279 parameter payload in the official JVT packages or the complete certified April 2003 provisional. That provisional names 5279; H022 switches the same identifier to 5218; the later patent returns to 5279. This proves document-branch drift, not a hidden measurement. V27 therefore changes none of those parameters.</p></div></section>
 
-      <section className="validation"><span className="section-tag">V38 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Dual 12-bit delivery</b><p>BT.1886 master + sRGB companion</p></div><div><b>Image model</b><p>V37 frozen in full</p></div><div><b>Temporal structure</b><p>Independent sites · stable integration</p></div><div><b>Web first frame</b><p>Same frame 12 as JPEG</p></div><div><b>Display target</b><p>Explicit; never guessed by the player</p></div></div></section>
+      <section className="validation"><span className="section-tag">V39 THREE-SCENE VALIDATION</span><h2>Shared release gates</h2><div className="validation-grid"><div><b>Native resolution</b><p>3 × 24 frames · 5760×4320</p></div><div><b>Dual 12-bit delivery</b><p>BT.1886 master + sRGB companion</p></div><div><b>Structure domain</b><p>5279 / 2383 density-first</p></div><div><b>Temporal structure</b><p>Independent sites · stable integration</p></div><div><b>Display overlays</b><p>Zero grain layers</p></div><div><b>Colour boundary</b><p>V38 frozen · no grade</p></div></div></section>
     </main>
   );
 }

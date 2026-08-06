@@ -17,20 +17,20 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V38 project home page", async () => {
+test("server-renders the bilingual V39 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V38/);
-  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V37/);
+  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V39/);
+  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V38/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v38-t031-projection/);
-  assert.match(html, /v38-t031-projection-live-srgb\.mp4/);
+  assert.match(html, /v39-t031-projection/);
+  assert.match(html, /v39-t031-projection-live-srgb\.mp4/);
   assert.match(html, /v33-t031-camera-as-shot/);
-  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v38-t031-projection/);
+  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v39-t031-projection/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -38,7 +38,7 @@ test("server-renders the bilingual V38 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V38 archive, research and algorithm routes", async () => {
+test("server-renders the V39 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -46,7 +46,7 @@ test("server-renders the V38 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V38/);
+  assert.match(versions, /V4—[\s\S]{0,30}V39/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
@@ -70,10 +70,12 @@ test("server-renders the V38 archive, research and algorithm routes", async () =
   assert.match(research, /V35 · AUDITABLE PRODUCTION GRAPH/);
   assert.match(research, /V37 · INDEPENDENT SITES \/ STABLE INTEGRATION/);
   assert.match(research, /V38 · REFERENCE-DISPLAY DELIVERY/);
+  assert.match(research, /V39 · DENSITY-FORMATION RECONSTRUCTION/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /CURRENT V38/);
-  assert.match(algorithm, /ONE OBSERVER LIGHT · TWO EXPLICIT DELIVERIES/);
+  assert.match(algorithm, /CURRENT V39/);
+  assert.match(algorithm, /DENSITY IS THE IMAGE VARIABLE/);
+  assert.match(algorithm, /ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES/);
   assert.match(algorithm, /INDEPENDENT SITES · STABLE INTEGRATION/);
   assert.match(algorithm, /AUDITABLE PRODUCTION GRAPH/);
   assert.match(algorithm, /PROCESSED MTF · SINGLE GENERATION/);
@@ -451,6 +453,46 @@ test("V38 derives web media only from the sRGB 12-bit companion", async () => {
     assert.equal(result.companion_metadata.bits_per_raw_sample, "12");
     assert.equal(result.companion_metadata.nb_frames, "24");
     assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V39 keeps density formation and every delivery exit auditable", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v39-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.absolute_source_frame_contract, {
+    t002: [0, 23],
+    t007: [276, 299],
+    t031: [132, 155],
+  });
+  assert.equal(Object.keys(manifest.verification).length, 6);
+  assert.match(manifest.film_pipeline, /processed 5279 density MTF/);
+  assert.match(manifest.film_pipeline, /Status-A density/);
+  assert.match(manifest.raw_record_boundary, /signed film-basis/);
+  assert.equal(manifest.artistic_grade.startsWith("none"), true);
+  assert.match(manifest.quicktime_companion, /master-derived/);
+  assert.match(manifest.quicktime_companion, /4444 XQ/);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  assert.match(manifest.web, /hover frame zero/);
+  assert.equal(Object.keys(manifest.timing).length, 3);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.companion_metadata.width, 5760);
+    assert.equal(result.companion_metadata.height, 4320);
+    assert.equal(result.companion_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.companion_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.companion_metadata.nb_frames, "24");
+    assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.companion_metadata.profile, "XQ");
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
     assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
   }

@@ -809,7 +809,7 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "T002 controls walls, shadows and fine texture. T007 verifies that water and foliage are not frozen or softened. T031 is the phase-selection scene for dark bark, fungi and surrounding green.",
   },
   V38: {
-    year: "CURRENT BASELINE",
+    year: "PREVIOUS BASELINE",
     title: "One observer light, encoded explicitly for each display target",
     summary:
       "V38 corrects the natural-still / dense-QuickTime split in V37. The completed projection and scan observers already produced display-linear light, but the release then applied the BT.709 camera OETF and allowed QuickTime, JPEG and the browser to invert or approximate it differently. Shadows, contrast and colour density diverged even though the film calculation was identical. V38 freezes the complete V37 image model and encodes one observer-linear result two ways: an inverse-BT.1886 gamma-2.4 professional Rec.709 master, and a 12-bit sRGB-transfer QuickTime companion for direct viewing on this Mac. JPEG and web motion derive only from the companion. P3 and HDR are not used as unmeasured saturation or brightness controls.",
@@ -835,6 +835,42 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     ],
     trialNote:
       "T002 stresses toe and dark neutral texture. T007 holds water and green fine detail. T031 exposes the original natural-still / dense-video discrepancy.",
+  },
+  V39: {
+    year: "CURRENT BASELINE",
+    title: "Grain is not a residual on the image; density is the image",
+    summary:
+      "V39 resolves structural misplacements found in the complete research and code audit. V38 formed a finite-site negative but still applied MTF to a display positive, represented 2383 grain as a luminance ratio, normalized granularity after stochastic DIR, and clipped signed wide-gamut basis components before the three physical film records were formed. V39 applies 5279 MTF to processed negative density, constrains developed dye yield before stochastic DIR, and lets the scanner or 2383 observe that single realized density. 2383 MTF and three-record dye clouds are formed in Status-A density with no display grain operation. V38 colour, H-D, black, gamma and dual delivery remain frozen. This is not a prettier grade; it puts image structure back in its measured domains.",
+    changes: [
+      "Move processed 5279 MTF from display-linear RGB into negative record density",
+      "Apply the published 48 µm RMS constraint to developed dye yield before stochastic DIR/interimage transport",
+      "Move 2383 MTF and independent three-record finite dye clouds into Status-A print density",
+      "Remove the final display-luminance-ratio 2383 grain operation",
+      "Preserve signed BT.2020-to-film basis components and clamp once after physical record exposure is formed",
+      "Make the active profile own the 0.38-pixel phase radius and projection opponent crossover",
+      "Make V39→V38 switching restore every Archive-domain setting explicitly",
+      "Remove duplicate analytical projection work and share dual-observer intermediates with zero pixel error",
+      "Derive the sRGB viewing copy from the encoded BT.1886 master and use ProRes 4444 XQ to retain V39's fine density structure",
+    ],
+    errors: [
+      "V38 applied the published processed-negative MTF to an already formed display positive",
+      "V38 scaled the combined residual after stochastic DIR, so chemistry never saw the calibrated developed event",
+      "V38's fine 2383 term was a post-projection luminance ratio and remained structurally overlay-like",
+      "V38 clipped signed wide-gamut basis values before the film-record sensitivity matrix",
+      "A pointwise 193³ negative-to-output cache cannot represent a spatially formed 2383 density image",
+      "Independently compressing BT.1886 and sRGB copies from floating-point light ceased to be transparent once V39 carried finer density structure",
+    ],
+    discoveries: [
+      "Density is the image variable, but density magnitude is not sharpness; MTF describes the spatial transfer of density modulation",
+      "MTF and granularity must share one physical geometry and density chain while remaining separately measurable properties",
+      "Moving the RMS constraint before chemistry fixes layer order but cannot reveal Kodak's unpublished coating recipe",
+      "Public 2383 material does not identify exposure-conditioned record granularity, so print grain remains subordinate and explicitly bounded",
+      "The released projection is still a normal-process Rec.709 monitor proof with a period-scan low-frequency colour boundary; physical projection remains available but is not mislabelled as a theatre measurement",
+      "Quality-first spatial 2383 formation moves the bottleneck from grain sampling to the accurate analytical observer",
+      "Both transfers must share the delivered master's compression structure; the master-derived XQ companion limits the worst per-channel mean light error to 0.001092",
+    ],
+    trialNote:
+      "T002 tests toe and low-chroma texture. T007 tests water, grass and high-frequency greens. T031 tests dark organic texture and the full density-to-print path.",
   },
 };
 

@@ -1,0 +1,650 @@
+{
+  "purpose": "V39 density-formation reconstruction release",
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t002": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ],
+    "t031": [
+      132,
+      155
+    ]
+  },
+  "film_pipeline": "processed 5279 density MTF + pre-DIR dye-yield calibration; 2383 MTF and finite dye clouds in Status-A density",
+  "raw_record_boundary": "preserve signed film-basis components through the record matrix; clamp physical exposure once after record formation",
+  "artistic_grade": "none; V38 colour, black and gamma frozen",
+  "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444",
+  "quicktime_companion": "master-derived Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444 XQ",
+  "web": "decoded directly from the sRGB companion; hover frame zero is the same source frame as the static JPEG",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 15 / tune grain / closed GOP 6",
+  "timing": {
+    "t002": {
+      "clock": "time.perf_counter monotonic wall clock",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_workers": 1,
+        "validated_print_lut_cache": null,
+        "validated_print_lut_sha256": null,
+        "v35_production_pipeline": true,
+        "metal_binomial_stats": {
+          "calls": 1081,
+          "bridge_seconds": 12.222746849060059,
+          "wall_seconds": 12.311095399199985
+        },
+        "sampler_identity_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 30000000,
+          "maximum_seed": 30232204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "0": 45,
+            "1": 45,
+            "2": 45,
+            "3": 45,
+            "4": 45,
+            "5": 45,
+            "6": 45,
+            "7": 45,
+            "8": 45,
+            "9": 45,
+            "10": 45,
+            "11": 45,
+            "12": 45,
+            "13": 45,
+            "14": 45,
+            "15": 45,
+            "16": 45,
+            "17": 45,
+            "18": 45,
+            "19": 45,
+            "20": 45,
+            "21": 45,
+            "22": 45,
+            "23": 45
+          }
+        }
+      },
+      "pipeline_provenance": {
+        "command": [
+          "python3",
+          "src/render_v39_dual_masters.py",
+          "NJARAW_S001_S001_T002.MOV",
+          "outputs/native_5k_v39_density_reconstruction_1s/T002",
+          "--decoder",
+          ".build/prores_raw_float_decode",
+          "--start-frame",
+          "0",
+          "--frames",
+          "24",
+          "--opencv-threads",
+          "8",
+          "--binomial-workers",
+          "8",
+          "--numba-threads",
+          "8",
+          "--array-workers",
+          "8",
+          "--observer-workers",
+          "1",
+          "--accelerated-cpu-exact",
+          "--v35-production-pipeline",
+          "--print-lut-cache",
+          "cache/print_2383_monitor_output_lut_193_v30.npy"
+        ],
+        "renderer_sha256": "d3c9511b455d7e8b04475c883e8b711c0d2fa90c1270d4b7c4d7f8aca102d834",
+        "algorithm_sha256": "88e66e433a8604385882cd58dcd9ff000833731f55828229e0946b7e317637f1",
+        "profile_sha256": "a65dfd6ff9306ec3920134785c6e5f9a023b25bc0d3c6b57405c281770b8f583",
+        "print_lut_sha256": null,
+        "print_observer_execution": "analytical observer after spatially formed 2383 density",
+        "v35_accel_sha256": "0c9f5982da2066855d18b37faf5dbf7fb92f8966e64ca6734f896731f5458264",
+        "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+        "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+        "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+        "grain_domain_salt_uint32": 0,
+        "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+      },
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 3.33919374695688,
+          "mean_seconds_per_frame": 0.13913307278987,
+          "median_seconds_per_frame": 0.13916343749588123,
+          "p95_seconds_per_frame": 0.16897897049930177,
+          "maximum_seconds_per_frame": 0.23857187500107102
+        },
+        "scene_and_mean_negative": {
+          "total_seconds": 135.46159925096435,
+          "mean_seconds_per_frame": 5.6442333021235145,
+          "median_seconds_per_frame": 5.5536740835086675,
+          "p95_seconds_per_frame": 6.22695088474502,
+          "maximum_seconds_per_frame": 6.279797791998135
+        },
+        "stochastic_emulsion": {
+          "total_seconds": 165.74925041699316,
+          "mean_seconds_per_frame": 6.906218767374715,
+          "median_seconds_per_frame": 6.775344125002448,
+          "p95_seconds_per_frame": 7.771685079401503,
+          "maximum_seconds_per_frame": 8.345589500007918
+        },
+        "observer_render_parallel": {
+          "total_seconds": 963.0285556249728,
+          "mean_seconds_per_frame": 40.1261898177072,
+          "median_seconds_per_frame": 40.04114520850271,
+          "p95_seconds_per_frame": 41.16634796879516,
+          "maximum_seconds_per_frame": 41.62444849999156
+        },
+        "encode_write_both": {
+          "total_seconds": 10.361682710019522,
+          "mean_seconds_per_frame": 0.43173677958414675,
+          "median_seconds_per_frame": 0.4151109170052223,
+          "p95_seconds_per_frame": 0.5655139213442452,
+          "maximum_seconds_per_frame": 0.5797407500067493
+        },
+        "final_projection_adapter": {
+          "total_seconds": 86.8688178750308,
+          "mean_seconds_per_frame": 3.6195340781262835,
+          "median_seconds_per_frame": 3.6010446250002133,
+          "p95_seconds_per_frame": 3.7303121669552635,
+          "maximum_seconds_per_frame": 3.8364620420034043
+        }
+      },
+      "total_wall_seconds_before_hashes": 1372.713554832997,
+      "effective_seconds_per_frame_for_two_masters": 57.19639811804154,
+      "audio_timecode_finalize_seconds": 48.69879320800828,
+      "total_with_audio_timecode_seconds": 1421.4123480410053
+    },
+    "t007": {
+      "clock": "time.perf_counter monotonic wall clock",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_workers": 1,
+        "validated_print_lut_cache": null,
+        "validated_print_lut_sha256": null,
+        "v35_production_pipeline": true,
+        "metal_binomial_stats": {
+          "calls": 1081,
+          "bridge_seconds": 11.840479969978333,
+          "wall_seconds": 11.93130875089264
+        },
+        "sampler_identity_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 32760000,
+          "maximum_seed": 32992204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "276": 45,
+            "277": 45,
+            "278": 45,
+            "279": 45,
+            "280": 45,
+            "281": 45,
+            "282": 45,
+            "283": 45,
+            "284": 45,
+            "285": 45,
+            "286": 45,
+            "287": 45,
+            "288": 45,
+            "289": 45,
+            "290": 45,
+            "291": 45,
+            "292": 45,
+            "293": 45,
+            "294": 45,
+            "295": 45,
+            "296": 45,
+            "297": 45,
+            "298": 45,
+            "299": 45
+          }
+        }
+      },
+      "pipeline_provenance": {
+        "command": [
+          "python3",
+          "src/render_v39_dual_masters.py",
+          "NJARAW_S001_S001_T007.MOV",
+          "outputs/native_5k_v39_density_reconstruction_1s/T007",
+          "--decoder",
+          ".build/prores_raw_float_decode",
+          "--start-frame",
+          "276",
+          "--frames",
+          "24",
+          "--opencv-threads",
+          "8",
+          "--binomial-workers",
+          "8",
+          "--numba-threads",
+          "8",
+          "--array-workers",
+          "8",
+          "--observer-workers",
+          "1",
+          "--accelerated-cpu-exact",
+          "--v35-production-pipeline",
+          "--print-lut-cache",
+          "cache/print_2383_monitor_output_lut_193_v30.npy"
+        ],
+        "renderer_sha256": "d3c9511b455d7e8b04475c883e8b711c0d2fa90c1270d4b7c4d7f8aca102d834",
+        "algorithm_sha256": "88e66e433a8604385882cd58dcd9ff000833731f55828229e0946b7e317637f1",
+        "profile_sha256": "a65dfd6ff9306ec3920134785c6e5f9a023b25bc0d3c6b57405c281770b8f583",
+        "print_lut_sha256": null,
+        "print_observer_execution": "analytical observer after spatially formed 2383 density",
+        "v35_accel_sha256": "0c9f5982da2066855d18b37faf5dbf7fb92f8966e64ca6734f896731f5458264",
+        "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+        "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+        "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+        "grain_domain_salt_uint32": 0,
+        "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+      },
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 4.030849914997816,
+          "mean_seconds_per_frame": 0.16795207979157567,
+          "median_seconds_per_frame": 0.13948081249691313,
+          "p95_seconds_per_frame": 0.15325414114558952,
+          "maximum_seconds_per_frame": 1.0623187909950502
+        },
+        "scene_and_mean_negative": {
+          "total_seconds": 136.61982771000476,
+          "mean_seconds_per_frame": 5.692492821250198,
+          "median_seconds_per_frame": 5.632564666506369,
+          "p95_seconds_per_frame": 6.340203785691119,
+          "maximum_seconds_per_frame": 6.648926834008307
+        },
+        "stochastic_emulsion": {
+          "total_seconds": 169.54320879097213,
+          "mean_seconds_per_frame": 7.064300366290506,
+          "median_seconds_per_frame": 6.954227458496462,
+          "p95_seconds_per_frame": 7.871741431301051,
+          "maximum_seconds_per_frame": 9.552430541007197
+        },
+        "observer_render_parallel": {
+          "total_seconds": 967.0953863320319,
+          "mean_seconds_per_frame": 40.295641097167994,
+          "median_seconds_per_frame": 40.16796100000647,
+          "p95_seconds_per_frame": 41.24078315360312,
+          "maximum_seconds_per_frame": 41.41860512501444
+        },
+        "encode_write_both": {
+          "total_seconds": 10.256953082061955,
+          "mean_seconds_per_frame": 0.4273730450859148,
+          "median_seconds_per_frame": 0.41267535400402267,
+          "p95_seconds_per_frame": 0.5155723669005965,
+          "maximum_seconds_per_frame": 0.5331028750078985
+        },
+        "final_projection_adapter": {
+          "total_seconds": 85.84568391702487,
+          "mean_seconds_per_frame": 3.576903496542703,
+          "median_seconds_per_frame": 3.546276917004434,
+          "p95_seconds_per_frame": 3.668739921447559,
+          "maximum_seconds_per_frame": 3.7159529170021415
+        }
+      },
+      "total_wall_seconds_before_hashes": 1381.4110313749989,
+      "effective_seconds_per_frame_for_two_masters": 57.55879297395828,
+      "audio_timecode_finalize_seconds": 48.43240254200646,
+      "total_with_audio_timecode_seconds": 1429.8434339170053
+    },
+    "t031": {
+      "clock": "time.perf_counter monotonic wall clock",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_workers": 1,
+        "validated_print_lut_cache": null,
+        "validated_print_lut_sha256": null,
+        "v35_production_pipeline": true,
+        "metal_binomial_stats": {
+          "calls": 1081,
+          "bridge_seconds": 13.945164322853088,
+          "wall_seconds": 14.033678528896417
+        },
+        "sampler_identity_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 31320000,
+          "maximum_seed": 31552204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "132": 45,
+            "133": 45,
+            "134": 45,
+            "135": 45,
+            "136": 45,
+            "137": 45,
+            "138": 45,
+            "139": 45,
+            "140": 45,
+            "141": 45,
+            "142": 45,
+            "143": 45,
+            "144": 45,
+            "145": 45,
+            "146": 45,
+            "147": 45,
+            "148": 45,
+            "149": 45,
+            "150": 45,
+            "151": 45,
+            "152": 45,
+            "153": 45,
+            "154": 45,
+            "155": 45
+          }
+        }
+      },
+      "pipeline_provenance": {
+        "command": [
+          "python3",
+          "src/render_v39_dual_masters.py",
+          "NJARAW_S001_S001_T031.MOV",
+          "outputs/native_5k_v39_density_reconstruction_1s/T031",
+          "--decoder",
+          ".build/prores_raw_float_decode",
+          "--start-frame",
+          "132",
+          "--frames",
+          "24",
+          "--opencv-threads",
+          "8",
+          "--binomial-workers",
+          "8",
+          "--numba-threads",
+          "8",
+          "--array-workers",
+          "8",
+          "--observer-workers",
+          "1",
+          "--accelerated-cpu-exact",
+          "--v35-production-pipeline",
+          "--print-lut-cache",
+          "cache/print_2383_monitor_output_lut_193_v30.npy"
+        ],
+        "renderer_sha256": "d3c9511b455d7e8b04475c883e8b711c0d2fa90c1270d4b7c4d7f8aca102d834",
+        "algorithm_sha256": "88e66e433a8604385882cd58dcd9ff000833731f55828229e0946b7e317637f1",
+        "profile_sha256": "a65dfd6ff9306ec3920134785c6e5f9a023b25bc0d3c6b57405c281770b8f583",
+        "print_lut_sha256": null,
+        "print_observer_execution": "analytical observer after spatially formed 2383 density",
+        "v35_accel_sha256": "0c9f5982da2066855d18b37faf5dbf7fb92f8966e64ca6734f896731f5458264",
+        "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+        "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+        "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+        "grain_domain_salt_uint32": 0,
+        "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+      },
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 4.826260792964604,
+          "mean_seconds_per_frame": 0.2010941997068585,
+          "median_seconds_per_frame": 0.1789502715037088,
+          "p95_seconds_per_frame": 0.2875033499454729,
+          "maximum_seconds_per_frame": 0.6612917919992469
+        },
+        "scene_and_mean_negative": {
+          "total_seconds": 153.14266741700703,
+          "mean_seconds_per_frame": 6.380944475708627,
+          "median_seconds_per_frame": 6.360991208501218,
+          "p95_seconds_per_frame": 7.265528887460823,
+          "maximum_seconds_per_frame": 8.747937790991273
+        },
+        "stochastic_emulsion": {
+          "total_seconds": 184.4084964590147,
+          "mean_seconds_per_frame": 7.683687352458946,
+          "median_seconds_per_frame": 7.739451125002233,
+          "p95_seconds_per_frame": 8.9422560644045,
+          "maximum_seconds_per_frame": 9.004319416009821
+        },
+        "observer_render_parallel": {
+          "total_seconds": 1036.7668117909925,
+          "mean_seconds_per_frame": 43.19861715795802,
+          "median_seconds_per_frame": 43.360713916496024,
+          "p95_seconds_per_frame": 44.70916136076048,
+          "maximum_seconds_per_frame": 46.00478687499708
+        },
+        "encode_write_both": {
+          "total_seconds": 12.967905458965106,
+          "mean_seconds_per_frame": 0.5403293941235461,
+          "median_seconds_per_frame": 0.5630672499901266,
+          "p95_seconds_per_frame": 0.6242446563453995,
+          "maximum_seconds_per_frame": 0.6546900420071324
+        },
+        "final_projection_adapter": {
+          "total_seconds": 97.45659208495636,
+          "mean_seconds_per_frame": 4.060691336873181,
+          "median_seconds_per_frame": 4.085827124996285,
+          "p95_seconds_per_frame": 4.359836645646283,
+          "maximum_seconds_per_frame": 4.4657730420003645
+        }
+      },
+      "total_wall_seconds_before_hashes": 1497.6926459160022,
+      "effective_seconds_per_frame_for_two_masters": 62.403860246500095,
+      "audio_timecode_finalize_seconds": 40.02214266698866,
+      "total_with_audio_timecode_seconds": 1537.7147885829909
+    }
+  },
+  "verification": {
+    "v39-t002-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "source_companion": "T002/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008631,
+        0.007235,
+        0.01491
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001894,
+        0.002258,
+        0.002805
+      ],
+      "first_frame_median_luma_delta": 0.002258
+    },
+    "v39-t002-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "source_companion": "T002/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008038,
+        0.006097,
+        0.013945
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000834,
+        0.0025,
+        0.001778
+      ],
+      "first_frame_median_luma_delta": 0.0025
+    },
+    "v39-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "source_companion": "T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009393,
+        0.007624,
+        0.016385
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000885,
+        0.000546,
+        0.000942
+      ],
+      "first_frame_median_luma_delta": 0.000546
+    },
+    "v39-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "source_companion": "T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00872,
+        0.006155,
+        0.015195
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001508,
+        0.001298,
+        0.000319
+      ],
+      "first_frame_median_luma_delta": 0.001298
+    },
+    "v39-t031-projection": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "source_companion": "T031/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.0095,
+        0.007552,
+        0.01521
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002234,
+        0.000845,
+        0.001652
+      ],
+      "first_frame_median_luma_delta": 0.000845
+    },
+    "v39-t031-bluray": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "source_companion": "T031/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009133,
+        0.006483,
+        0.014526
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002223,
+        0.000385,
+        0.00087
+      ],
+      "first_frame_median_luma_delta": 0.000385
+    }
+  }
+}

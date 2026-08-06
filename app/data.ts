@@ -1704,6 +1704,120 @@ versions.push({
   ],
 });
 
+const v38Delivery = versions.find((item) => item.version === "V38");
+if (v38Delivery) {
+  v38Delivery.year = "上一版";
+  v38Delivery.status = "calibration";
+}
+
+const v39Parameters: ParameterGroup[] = [
+  {
+    title: "输入与冻结边界", titleEn: "INPUT & FROZEN BOUNDARY", items: [
+      { label: "测试素材", labelEn: "Test sources", value: "T002 0–23 · T007 276–299 · T031 132–155", valueEn: "T002 0–23 · T007 276–299 · T031 132–155" },
+      { label: "源格式", labelEn: "Source format", value: "GH7 / ProRes RAW HQ 12-bit · 5760×4320 · 24000/1001", valueEn: "GH7 / ProRes RAW HQ 12-bit · 5760×4320 · 24000/1001" },
+      { label: "RAW观察", labelEn: "RAW observer", value: "Apple Standard ProRes RAW · extended-linear BT.2020 / D65", valueEn: "Apple Standard ProRes RAW · extended-linear BT.2020 / D65" },
+      { label: "虚拟胶片EI", labelEn: "Virtual film EI", value: "+0.45 stop（不改相机As Shot见证）", valueEn: "+0.45 stop (camera As Shot witness unchanged)" },
+      { label: "传感器噪声边界", labelEn: "Sensor-noise boundary", value: "photochemical · 不额外叠加数码噪点", valueEn: "photochemical · no added digital-noise layer" },
+      { label: "35mm画幅宽度", labelEn: "35 mm image width", value: "24.9mm ↔ 5760px", valueEn: "24.9 mm ↔ 5760 px" },
+      { label: "色彩/H-D/黑位/gamma", labelEn: "Colour / H-D / black / gamma", value: "冻结V38", valueEn: "Frozen from V38" },
+      { label: "艺术调色", labelEn: "Creative grade", value: "无", valueEn: "None" },
+    ],
+  },
+  {
+    title: "5279密度形成", titleEn: "5279 DENSITY FORMATION", items: [
+      { label: "图像变量", labelEn: "Image variable", value: "ECN-2后5279记录密度 D = −log₁₀T", valueEn: "Processed 5279 record density D = −log₁₀T" },
+      { label: "MTF位置", labelEn: "MTF placement", value: "负片记录密度 · 在扫描/印片之前", valueEn: "Negative record density · before scan or printing" },
+      { label: "颗粒形成", labelEn: "Grain formation", value: "3记录 × 3速度层 × 5粒径有限位点", valueEn: "3 records × 3 speed layers × 5 finite-site sizes" },
+      { label: "48µm RMS约束", labelEn: "48 µm RMS constraint", value: "显影染料产额在随机DIR之前校准", valueEn: "Developed dye yield calibrated before stochastic DIR" },
+      { label: "18%灰R/G/B门槛", labelEn: "18% gray R/G/B gate", value: "0.006135 / 0.008985 / 0.033836 D", valueEn: "0.006135 / 0.008985 / 0.033836 D" },
+      { label: "官方目标R/G/B", labelEn: "Published targets R/G/B", value: "0.006144 / 0.008974 / 0.033930 D", valueEn: "0.006144 / 0.008974 / 0.033930 D" },
+      { label: "时间结构", labelEn: "Temporal structure", value: "逐格新位点 · 30°稳定45类积分相位", valueEn: "Fresh sites each frame · stable 30° 45-class integration phase" },
+    ],
+  },
+  {
+    title: "冻结的35mm结构常数", titleEn: "FROZEN 35 MM STRUCTURE CONSTANTS", items: [
+      { label: "快/中/慢速度偏移", labelEn: "Fast / mid / slow speed offsets", value: "0.0 / 0.5 / 1.3 logE", valueEn: "0.0 / 0.5 / 1.3 logE" },
+      { label: "容量比例", labelEn: "Capacity fractions", value: "126 / 149 / 161（归一化）", valueEn: "126 / 149 / 161 (normalized)" },
+      { label: "R记录ECD µm", labelEn: "R-record ECD µm", value: "1.28 / 0.83 / 0.58", valueEn: "1.28 / 0.83 / 0.58" },
+      { label: "G记录ECD µm", labelEn: "G-record ECD µm", value: "1.36 / 0.79 / 0.52", valueEn: "1.36 / 0.79 / 0.52" },
+      { label: "B记录ECD µm", labelEn: "B-record ECD µm", value: "1.14 / 0.88 / 0.68", valueEn: "1.14 / 0.88 / 0.68" },
+      { label: "有效位点 R/G/B", labelEn: "Effective sites R/G/B", value: "17/60/79 · 16/64/88 · 22/55/70", valueEn: "17/60/79 · 16/64/88 · 22/55/70" },
+      { label: "五级半径因子", labelEn: "Five radius factors", value: "0.62 / 0.78 / 0.98 / 1.22 / 1.55", valueEn: "0.62 / 0.78 / 0.98 / 1.22 / 1.55" },
+      { label: "快层五级权重", labelEn: "Fast-layer weights", value: ".12 / .26 / .34 / .20 / .08", valueEn: ".12 / .26 / .34 / .20 / .08" },
+      { label: "中层五级权重", labelEn: "Mid-layer weights", value: ".16 / .30 / .32 / .17 / .05", valueEn: ".16 / .30 / .32 / .17 / .05" },
+      { label: "慢层五级权重", labelEn: "Slow-layer weights", value: ".22 / .34 / .29 / .12 / .03", valueEn: ".22 / .34 / .29 / .12 / .03" },
+      { label: "5279 MTF core σ R/G/B", labelEn: "5279 MTF core σ R/G/B", value: ".85 / .67 / .60px @ 5760", valueEn: ".85 / .67 / .60 px @ 5760" },
+      { label: "邻接量 R/G/B", labelEn: "Adjacency amount R/G/B", value: ".08 / .25 / .35 · 2px/6px带宽", valueEn: ".08 / .25 / .35 · 2 px / 6 px bands" },
+      { label: "随机DIR", labelEn: "Stochastic DIR", value: "层间强度 .085 · 耦合尺度 .42", valueEn: "Interimage strength .085 · coupling scale .42" },
+    ],
+  },
+  {
+    title: "2383密度形成", titleEn: "2383 DENSITY FORMATION", items: [
+      { label: "印片变量", labelEn: "Print variable", value: "2383 Status-A密度", valueEn: "2383 Status-A density" },
+      { label: "2383 MTF位置", labelEn: "2383 MTF placement", value: "印片密度 · 在氙灯投影/监看之前", valueEn: "Print density · before xenon projection/monitor proof" },
+      { label: "2383颗粒", labelEn: "2383 grain", value: "三个印片记录各自有限Poisson染料云", valueEn: "Independent finite Poisson dye clouds in each print record" },
+      { label: "印片云半径/光学σ", labelEn: "Print cloud radius / optical σ", value: "0.42px / 0.28px @ 5760", valueEn: "0.42 px / 0.28 px @ 5760" },
+      { label: "印片位点/密度尺度", labelEn: "Print sites / density scale", value: "520位点/原生像素面积 · 0.10×密度残差", valueEn: "520 sites/native-pixel area · 0.10× density residual" },
+      { label: "显示叠加", labelEn: "Display overlay", value: "0 · 已删除亮度ratio颗粒", valueEn: "0 · luminance-ratio grain removed" },
+      { label: "LAD R/G/B", labelEn: "LAD R/G/B", value: "1.09 / 1.06 / 1.03 D", valueEn: "1.09 / 1.06 / 1.03 D" },
+      { label: "观察器", labelEn: "Observer", value: "空间2383密度后的完整分析观察器", valueEn: "Full analytical observer after spatial 2383 density" },
+      { label: "193³输出缓存", labelEn: "193³ output cache", value: "V39正式画面不使用", valueEn: "Not used for the V39 image" },
+    ],
+  },
+  {
+    title: "RAW记录边界", titleEn: "RAW RECORD BOUNDARY", items: [
+      { label: "旧顺序", labelEn: "Old order", value: "BT.2020→胶片RGB后先裁负值，再形成记录", valueEn: "Clip negative basis values before forming records" },
+      { label: "V39顺序", labelEn: "V39 order", value: "保留有符号基底→记录灵敏度矩阵→物理曝光裁零", valueEn: "Preserve signed basis → record-sensitivity matrix → clamp physical exposure" },
+      { label: "白平衡", labelEn: "White balance", value: "不改变 · 仍由Apple标准RAW转换/as-shot元数据拥有", valueEn: "Unchanged · still owned by Apple Standard RAW conversion/as-shot metadata" },
+      { label: "受影响像素 T002/T007/T031", labelEn: "Affected pixels T002/T007/T031", value: "1.1113% / 0.2924% / 0.9971%", valueEn: "1.1113% / 0.2924% / 0.9971%" },
+      { label: "用途", labelEn: "Purpose", value: "修复饱和色/深暗部的基底裁切，不做全局减绿", valueEn: "Correct saturated/deep-shadow basis clipping; no global green trim" },
+    ],
+  },
+  {
+    title: "交付、验证与效率", titleEn: "DELIVERY, VALIDATION & PERFORMANCE", items: [
+      { label: "专业母版", labelEn: "Professional master", value: "5760×4320 · yuv444p12le ProRes 4444 · Rec.709 / BT.1886", valueEn: "5760×4320 · yuv444p12le ProRes 4444 · Rec.709 / BT.1886" },
+      { label: "本机观看版", labelEn: "Mac viewing companion", value: "由实际母版反解 · 12-bit ProRes 4444 XQ · Rec.709原色 / sRGB传递", valueEn: "Derived from encoded master · 12-bit ProRes 4444 XQ · Rec.709 primaries / sRGB transfer" },
+      { label: "参数所有权", labelEn: "Parameter ownership", value: "0.38px相位半径与0.72@2K综合色交叉由活动profile拥有", valueEn: "Active profile owns 0.38 px phase radius and 0.72@2K chroma crossover" },
+      { label: "优化同一性", labelEn: "Optimization identity", value: "分析投影复用与双观察器共享：最大像素误差0.0", valueEn: "Analytical projection reuse and shared dual graph: max pixel error 0.0" },
+      { label: "单帧探针", labelEn: "Single-frame probe", value: "63.26秒/源帧 · 同时生成四个12-bit视频", valueEn: "63.26s/source frame · four 12-bit videos together" },
+      { label: "正式三场景计时", labelEn: "Formal three-scene timing", value: "T002 1372.71秒 · T007 1381.41秒 · T031 1497.69秒", valueEn: "T002 1372.71s · T007 1381.41s · T031 1497.69s", note: "72帧双观察器共4251.82秒；57.20–62.40秒/帧。XQ伴随版、音频/时间码与hash另137.15秒。", noteEn: "4251.82s for 72 dual-observer frames; 57.20–62.40s/frame. XQ companions, audio/timecode and hashes add 137.15s." },
+      { label: "双交付线性光门槛", labelEn: "Dual-delivery light gate", value: "全部通过 · 最坏通道平均误差0.001092 < 0.0015", valueEn: "All passed · worst channel mean 0.001092 < 0.0015" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V39",
+  year: "当前基线",
+  title: "颗粒不是正片上的残差：密度本身就是画面",
+  status: "current",
+  projection: { src: "/versions/v39-t031-projection.jpg", videoSrc: "/versions/v39-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V39 5279密度 → 2383密度 → 正常工艺监看" },
+  bluray: { src: "/versions/v39-t031-bluray.jpg", videoSrc: "/versions/v39-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V39 5279密度 → Period 2K扫描" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Frame 132–155 · Panasonic V-709 As Shot见证" },
+  summary: "V39解决完整代码与研究复查中发现的结构错位。V38虽然从有限银盐位点生成负片密度，但随后仍把MTF放到显示正片、把2383颗粒做成亮度ratio，并在随机DIR之后乘回48µm RMS；广色域到胶片记录也过早裁掉有符号基底。V39让5279 MTF作用于处理后负片密度，让公开RMS约束在随机DIR前决定显影染料产额，再让扫描器或2383观察这一份真实密度。2383自己的MTF与三记录染料云也在Status-A密度中形成，显示端不再加颗粒。颜色、H-D、黑位、gamma和双交付保持V38；这不是更好看的调色，而是把图像结构放回其测量域。",
+  changes: ["将5279处理后MTF从display-linear RGB移入负片记录密度", "把5279 RMS约束移到随机DIR/层间耦合之前的显影染料产额", "将2383 MTF与三记录有限染料云移入Status-A印片密度", "删除最终显示亮度ratio式2383颗粒叠加", "BT.2020→胶片基底保留有符号分量，在记录曝光形成后只裁切一次", "修复0.38px相位半径和投影综合色交叉参数的profile所有权", "V38配置可在同一解释器中从V39完全复位", "准确分析观察器消除重复求值并共享双观察器中间量，优化前后逐像素相同", "sRGB观看版改从实际编码后的BT.1886母版反解，并用ProRes 4444 XQ保留V39高频密度结构"],
+  errors: ["V38把公开的处理后负片MTF错误地作用于已经形成的正片显示RGB", "V38在随机DIR之后缩放组合残差，使化学耦合看不到正确幅度的显影事件", "V38的2383细颗粒是投影后亮度ratio，结构上仍像覆盖层", "V38在形成三条物理胶片记录之前裁掉广色域矩阵产生的负基底分量", "193³负片到最终输出缓存无法表达空间形成后的2383密度，因此V39正式画面改走完整分析观察器", "最初让BT.1886与sRGB从浮点光各自独立压缩；V39细密度结构暴露了两次有损ProRes实现不再完全一致"],
+  discoveries: ["密度是图像变量，但密度数值本身不是锐度；MTF描述密度调制如何随空间频率传递", "MTF与颗粒必须处于同一物理几何和密度链中，但仍是两种独立可测量特性", "把RMS乘子移到化学之前可以修复层间作用次序，却不能凭公开曲线反推出Kodak未公开的涂层配方", "2383公开资料不足以识别曝光相关的三记录颗粒振幅，因此印片颗粒保持从属并明确标为证据边界", "V39的放映仍是正常工艺Rec.709监看证明，低频颜色边界包含时期扫描参照；纯物理投影函数保留但不冒充某一影院实测", "质量优先意味着V39不用快速点输出LUT近似空间2383；主要时间转移到准确观察器", "两个传递函数交付要共享实际母版的压缩结构；由母版派生的4444 XQ伴随版把最坏通道平均线性光误差压到0.001092"],
+  refs: ["R1", "R4", "R5", "R7", "R25", "R44", "R45", "R47", "R58"],
+  parameters: v39Parameters,
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T002 · Frame 0–23",
+      note: "暗墙、toe与低色度纹理验证密度域颗粒、黑位和RAW记录裁切不会互相冒充。",
+      projection: { src: "/versions/v39-t002-projection.jpg", videoSrc: "/versions/v39-t002-projection-live-srgb.mp4", label: "T002 · Frame 0–23 · V39 2383正常工艺监看" },
+      bluray: { src: "/versions/v39-t002-bluray.jpg", videoSrc: "/versions/v39-t002-bluray-live-srgb.mp4", label: "T002 · Frame 0–23 · V39 Period 2K扫描" },
+      camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Frame 0–23 · Panasonic V-709 As Shot" },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面、细草和高频绿色验证锐度传递与细颗粒属于同一35mm密度介质。",
+      projection: { src: "/versions/v39-t007-projection.jpg", videoSrc: "/versions/v39-t007-projection-live-srgb.mp4", label: "T007 · Frame 276–299 · V39 2383正常工艺监看" },
+      bluray: { src: "/versions/v39-t007-bluray.jpg", videoSrc: "/versions/v39-t007-bluray-live-srgb.mp4", label: "T007 · Frame 276–299 · V39 Period 2K扫描" },
+      camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Frame 276–299 · Panasonic V-709 As Shot" },
+    },
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
