@@ -8,14 +8,13 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 [lovejzzz.github.io/90sKid](https://lovejzzz.github.io/90sKid/)
 
-## Current baseline: V29
+## Current baseline: V40
 
-- Complete 165-frame, 5760×4320 motion validation
-- 12-bit ProRes 4444 projection and period-scan masters
-- A new finite-site emulsion keyed by absolute source-frame number
-- Bit-exact segment-boundary validation
-- Source 24-bit, four-channel PCM and timecode retained in local masters
-- Public website includes only optimized stills and short hover previews, not the full output masters
+- Matched physical 5279, FSD finite-site-density, and deterministic no-grain controls
+- Three one-second, 5760×4320 scene comparisons with 12-bit ProRes 4444 XQ masters
+- Native-frame release gates reject sparse chroma impulses and metadata mismatches
+- T003 DKC-Pro control documents what the outdoor chart does and does not identify
+- Public deployments stream optimized comparison media from the GitHub Pages archive; full masters remain local
 
 ## Local development
 
