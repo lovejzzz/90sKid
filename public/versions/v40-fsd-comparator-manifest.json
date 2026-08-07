@@ -1,0 +1,228 @@
+{
+  "purpose": "V40 physical 5279 / FSD / deterministic controlled comparison",
+  "dimensions": [
+    1280,
+    960
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t002": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ],
+    "t031": [
+      132,
+      155
+    ]
+  },
+  "physical_v40": {
+    "status": "unchanged canonical V40 release",
+    "root": "native_5k_v40_colour_grain_repair_1s"
+  },
+  "fsd": {
+    "name": "Finite-Site Density",
+    "site_count": 176,
+    "inverse_binomial_lookup": [
+      512,
+      512
+    ],
+    "correlation_sigma_native_pixels": 0.597,
+    "strength": 1.0,
+    "density_domain": "post-observer IEC 61966-2-1 signal",
+    "colour_rule": "fixed deterministic opponent field; gamut-limit the density excursion only; no independent RGB impulses",
+    "status": "independent comparator, not a replacement for physical 5279"
+  },
+  "deterministic": "same RAW, colour, black, gamma, 5279 expectation and 2383 observer; stochastic density disabled",
+  "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444 XQ",
+  "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444 XQ",
+  "web": "decoded only from the companion; hover frame zero and JPEG share source frame 12",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
+  "verification": {
+    "v40-t002-fsd": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T002/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T002/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00772,
+        0.006727,
+        0.008337
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.0014,
+        0.00282,
+        0.001982
+      ],
+      "first_frame_median_luma_delta": 0.00282
+    },
+    "v40-t002-deterministic": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T002/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "T002/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00643,
+        0.00517,
+        0.00704
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001667,
+        0.002258,
+        0.002753
+      ],
+      "first_frame_median_luma_delta": 0.002258
+    },
+    "v40-t007-fsd": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T007/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008496,
+        0.006595,
+        0.009033
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00106,
+        0.002329,
+        0.001991
+      ],
+      "first_frame_median_luma_delta": 0.002329
+    },
+    "v40-t007-deterministic": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "T007/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007805,
+        0.005785,
+        0.0084
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001405,
+        0.002424,
+        0.002932
+      ],
+      "first_frame_median_luma_delta": 0.002424
+    },
+    "v40-t031-fsd": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "T031/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T031/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008606,
+        0.006638,
+        0.009076
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00193,
+        0.000746,
+        0.00087
+      ],
+      "first_frame_median_luma_delta": 0.000746
+    },
+    "v40-t031-deterministic": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "T031/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "T031/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008086,
+        0.005919,
+        0.008568
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001729,
+        0.000777,
+        0.000675
+      ],
+      "first_frame_median_luma_delta": 0.000777
+    }
+  }
+}

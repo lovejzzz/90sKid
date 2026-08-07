@@ -48,6 +48,12 @@ test("server-renders the V40 archive, research and algorithm routes", async () =
   );
   assert.match(versions, /V4—[\s\S]{0,30}V40/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
+  assert.match(versions, /CONTROLLED PIPELINE COMPARISON/);
+  assert.match(versions, /V40 PHYSICAL 5279/);
+  assert.match(versions, /FSD FINITE-SITE DENSITY/);
+  assert.match(versions, /DETERMINISTIC NO-GRAIN/);
+  assert.match(versions, /v40-t031-fsd-live-srgb\.mp4/);
+  assert.match(versions, /v40-t031-deterministic-live-srgb\.mp4/);
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
   assert.match(research, /V25 · OUTPUT STANDARD/);
@@ -72,6 +78,16 @@ test("server-renders the V40 archive, research and algorithm routes", async () =
   assert.match(research, /V38 · REFERENCE-DISPLAY DELIVERY/);
   assert.match(research, /V39 · DENSITY-FORMATION RECONSTRUCTION/);
   assert.match(research, /V40 · COLOUR-GRAIN COVARIANCE REPAIR/);
+  assert.match(research, /V40 · THREE-PIPELINE CONTROL/);
+  assert.match(research, /T003 · CHART INPUT AUDIT/);
+  assert.match(research, /R\/G=1\.175/);
+  assert.match(research, /DGK Color Tools/);
+  assert.match(research, /printed title strip/);
+  assert.match(research, /L\*=23/);
+  assert.match(research, /N=176/);
+  assert.match(research, /NEUTRAL TRANSPORT THROUGH V40/);
+  assert.match(research, /0\.002530/);
+  assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
   assert.match(algorithm, /CURRENT V40/);
@@ -523,6 +539,35 @@ test("V40 publishes only master-derived XQ media after the colour-tail repair", 
   assert.match(manifest.quicktime_companion, /derived from the encoded master/);
   assert.equal(manifest.artistic_grade.startsWith("none"), true);
   assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.companion_metadata.width, 5760);
+    assert.equal(result.companion_metadata.height, 4320);
+    assert.equal(result.companion_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.companion_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.companion_metadata.nb_frames, "24");
+    assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.companion_metadata.profile, "XQ");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V40 FSD comparison contains exactly the two new 12-bit controls", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v40-fsd-comparator-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.equal(manifest.fsd.site_count, 176);
+  assert.equal(manifest.fsd.correlation_sigma_native_pixels, 0.597);
+  assert.match(manifest.fsd.status, /independent comparator/);
+  assert.equal(Object.keys(manifest.verification).length, 6);
   for (const result of Object.values(manifest.verification)) {
     assert.equal(result.companion_metadata.width, 5760);
     assert.equal(result.companion_metadata.height, 4320);

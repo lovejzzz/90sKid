@@ -885,6 +885,9 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "Withdraw V39's underidentified signed intermediate film-RGB cancellation",
       "Gate opponent energy and isolated 3×3 primary-colour impulses on every native delivered frame",
       "Make the first picture authority 12-bit ProRes 4444 XQ, then derive every viewing and website image from it",
+      "Add FSD finite-site density and a deterministic no-grain baseline as controlled comparisons without changing physical V40",
+      "Withdraw FSD's random gamut-boundary chroma scaling and reform its density in the post-observer signal domain with a fixed opponent field",
+      "Audit the Apple-standard RAW input with the T003 DKC-Pro chart; its warm as-shot evidence does not justify a global magenta trim or automatic white balance",
     ],
     errors: [
       "V39 matched each record's marginal RMS but did not constrain cross-record covariance or distribution tails",
@@ -901,6 +904,11 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "Native-resolution every-frame tail audits catch sparse failures that representative stills and downscaled proxies miss",
       "The local Silver Efex engine confirms G=inverse-CDF(Binomial(N,p),u)/N followed by Y'=(1-alpha)Y+alpha G, not display-space additive noise",
       "Every Silver Efex B&W stock owns a separate measured 1000-square morphology; this supports stock-specific modelling but cannot become 5279 three-record data",
+      "FSD's first linear-RGB colour transport failed the native dark-tail gate; the corrected post-observer signal-domain definition holds opponent colour fixed and removes the sparse primary impulses without blur or desaturation",
+      "Without copying a stock texture, FSD at N=176 and sigma 0.597 px matches physical V40's calibration-frame luma RMS, high-pass energy and spatial correlation while retaining much lower opponent residual by design",
+      "DKC-Pro rows are not equal height and a printed title strip precedes patches 7–12; the first chroma sampling was withdrawn, and the corrected grid leaves an input matrix as a plausible boundary that still needs controlled-light validation",
+      "A synthetic D65 gray ramp stays below 0.00018 maximum delta u-prime/v-prime through both observers, rejecting a neutral-green crossover; a constant warm ramp produces 0.00253/0.00220 exposure-dependent crossover whose true 5279 magnitude remains unmeasured",
+      "T003 neutral patches 2–5 average R/G=1.172 and B/G=0.748, rejecting a fixed shared green-decode hypothesis; real daylight still cannot identify a new white balance, black offset or camera matrix",
     ],
     trialNote:
       "T002 stresses dark low-chroma tails. T007 tests water, green fine detail and edge integration. T031 tests organic shadow texture through both observers.",
@@ -909,6 +917,9 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/完整三记录5279乳剂形成/g, "Full three-record 5279 emulsion formation")
+    .replace(/逆二项密度形成的独立对照/g, "Independent inverse-binomial density control")
+    .replace(/随机密度关闭；颜色、MTF与观察器保持/g, "Stochastic density disabled; colour, MTF and observer retained")
     .replace(/sRGB本机观看链/g, "sRGB Mac viewing chain")
     .replace(/V38/g, "V38")
     .replace(/V37稳定乳剂/g, "V37 stable emulsion")

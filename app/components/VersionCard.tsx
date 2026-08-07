@@ -82,6 +82,38 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
           </div>
         </section>
       ))}
+      {item.pipelineComparisons && (
+        <section className="pipeline-comparisons">
+          <header className="pipeline-comparisons-intro">
+            <span>{text("受控管线对比", "CONTROLLED PIPELINE COMPARISON")}</span>
+            <h3>{text("三种密度形成，同一个观察边界", "Three density models, one observer boundary")}</h3>
+            <p>{text("这不是三个调色预设。物理5279是V40主模型；FSD是由Silver Efex研究启发的有限位点对照；确定性基线关闭随机密度。", "These are not three grades. Physical 5279 is the V40 model; FSD is a finite-site control informed by the Silver Efex study; the deterministic baseline disables stochastic density.")}</p>
+          </header>
+          {item.pipelineComparisons.map((comparison) => {
+            const comparisonGallery: GalleryItem[] = comparison.outputs.map((output) => ({
+              src: output.branch.src,
+              alt: branchAlt(output.branch, english ? output.titleEn : output.title, english),
+            }));
+            return (
+              <section className="pipeline-comparison-set" key={comparison.name}>
+                <header><b>{comparison.name}</b><p>{english ? comparison.noteEn : comparison.note}</p></header>
+                <div className="pipeline-comparison-grid">
+                  {comparison.outputs.map((output, outputIndex) => (
+                    <Branch
+                      key={output.titleEn}
+                      branch={output.branch}
+                      title={english ? output.titleEn : output.title}
+                      gallery={comparisonGallery}
+                      galleryIndex={outputIndex}
+                      english={english}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </section>
+      )}
       <details open={open}>
         <summary>{text("完整 Changelog", "Full changelog")}</summary>
         <div className="change-grid">
