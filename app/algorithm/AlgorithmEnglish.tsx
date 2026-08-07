@@ -66,12 +66,25 @@ projection = final_adapter(scan_low_chroma, projection_luma, opponent_hf=0)
 assert dark_opponent_p9999 <= 0.035
 assert isolated_primary_impulses_gt_0_06_per_million <= 5`;
 
+const v41ColourCode = `# V41: chart data estimates direction; retain a conservative 12.5% step
+xyz_d50 = bradford_d65_to_d50(bt2020_to_xyz(scene_linear))
+chroma  = xyz_d50 - neutral_axis(xyz_d50)
+corrected = chroma + 0.125 * (cross_group_matrix @ chroma - chroma)
+scene_v41 = restore_exact_d65_luminance(corrected)
+
+# signed intermediates survive only when every combined record is non-negative
+signed_records = film_basis_signed @ record_sensitivity.T
+records = where(all(signed_records >= 0), signed_records,
+                film_basis_clipped @ record_sensitivity.T)`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V40</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V40 retains density formation without mistaking marginal RMS for a complete colour-grain model. Covariance, extreme tails and every delivered frame now belong to the release contract.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V41</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V41 bounds input-chroma direction with two chart clips, retains only a conservative 12.5% step, and freezes V40 grain, black, contrast and gamma.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>Display delivery</b><small>BT.1886 master / sRGB companion</small></span></div></section>
+
+      <section className="method-section"><div className="method-index">V41</div><div className="method-copy"><span className="section-tag">T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED</span><h2>Correct a probable error while keeping unsupported magnitude unknown</h2><p>T003 and the independent T005 repeat one hue/chroma residual direction across synthetic and natural colours. Full strength and 25% both become excessive after final 2383 formation, so production retains 12.5% and changes no white balance, exposure, black, contrast or gamma. Wide-gamut intermediates are no longer clipped unconditionally, but signed values survive only when all three combined 5279 record exposures remain non-negative.</p><pre><code>{v41ColourCode}</code></pre><div className="equation"><span>EVIDENCE BOUNDARY</span><b>Direction identified · magnitude provisional</b><small>Two same-condition outdoor clips authorize one conservative step, not a complete GH7 characterization.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V40</div><div className="method-copy"><span className="section-tag">MEASURED RANDOMNESS · BOUNDED COLOUR TAILS</span><h2>Density remains the image; unknown stochastic freedom is not film</h2><p>V39 correctly moved image structure into density, but inverted Kodak&apos;s processed 48 µm RMS into pre-DIR speed-layer yields and created independent 2383 Poisson records without covariance or NPS evidence. Marginal RMS could pass while sparse primary-colour spikes appeared in dark regions. V40 restores the 5279 granularity constraint to its measured post-process boundary, restores shared luminance/opponent integration in both observers, and keeps only evidenced deterministic 2383 density and MTF. This is not display-space chroma denoising; the pipeline stops generating unidentified colour randomness.</p><pre><code>{v40BoundaryCode}</code></pre><div className="equation"><span>RELEASE CONDITION</span><b>RMS + Covariance + Tail + Observer</b><small>All 144 delivered frames across three scenes and two branches must pass at native 5760×4320.</small></div></div></section>
 

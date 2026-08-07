@@ -20,6 +20,7 @@ export type VersionEntry = {
   status: "prototype" | "calibration" | "current";
   projection: BranchImage;
   bluray: BranchImage;
+  fsd?: BranchImage;
   camera?: BranchImage;
   summary: string;
   changes: string[];
@@ -32,6 +33,7 @@ export type VersionEntry = {
     note: string;
     projection: BranchImage;
     bluray: BranchImage;
+    fsd?: BranchImage;
     camera?: BranchImage;
   }[];
   pipelineComparisons?: {
@@ -1941,6 +1943,95 @@ versions.push({
   ],
 });
 
+const v40 = versions[versions.length - 1];
+v40.year = "上一基线";
+v40.status = "calibration";
+
+const v41Parameters: ParameterGroup[] = [
+  {
+    title: "色卡证据与校正边界", titleEn: "CHART EVIDENCE & CORRECTION BOUNDARY", items: [
+      { label: "拟合见证", labelEn: "Fit witness", value: "T003 · Frame 160 · DKC-Pro 18色块", valueEn: "T003 · frame 160 · DKC-Pro 18 patches" },
+      { label: "独立复核", labelEn: "Independent holdout", value: "T005 · Frame 160 · 更近、轻微失焦", valueEn: "T005 · frame 160 · closer, mildly defocused", note: "失焦不妨碍色块中位数；眩光较强的块不作为单独权威", noteEn: "Defocus does not invalidate patch medians; glare-heavy patches are not treated as standalone authority" },
+      { label: "共同拍摄条件", labelEn: "Shared capture condition", value: "GH7 · ISO 500 · 5500 K · 户外方向光", valueEn: "GH7 · ISO 500 · 5500 K · directional outdoor light" },
+      { label: "修正坐标", labelEn: "Correction basis", value: "D65线性BT.2020 → Bradford D50 XYZ色度偏差", valueEn: "D65 linear BT.2020 → Bradford D50 XYZ chroma deviation" },
+      { label: "修正强度", labelEn: "Correction strength", value: "12.5% · 保守一步", valueEn: "12.5% · conservative step", note: "100%使植被与黄色明显过校正，25%仍令最终画面中位色度约+15%，均被否决", noteEn: "100% visibly over-corrected foliage/yellow; 25% still raised final median chroma about 15%; both were rejected" },
+      { label: "明确禁止", labelEn: "Explicitly excluded", value: "自动白平衡、曝光、Gamma、黑位与艺术饱和度", valueEn: "Auto-WB, exposure, gamma, black and creative saturation" },
+    ],
+  },
+  {
+    title: "跨素材验证", titleEn: "CROSS-SOURCE VALIDATION", items: [
+      { label: "T003合成色中位色相误差", labelEn: "T003 synthetic median hue error", value: "10.69° → 8.98°", valueEn: "10.69° → 8.98°" },
+      { label: "T005合成色中位色相误差", labelEn: "T005 synthetic median hue error", value: "9.49° → 7.79°", valueEn: "9.49° → 7.79°" },
+      { label: "T003自然色中位色相误差", labelEn: "T003 natural median hue error", value: "7.75° → 6.97°", valueEn: "7.75° → 6.97°" },
+      { label: "T005自然色中位色相误差", labelEn: "T005 natural median hue error", value: "5.52° → 4.67°", valueEn: "5.52° → 4.67°" },
+      { label: "输入亮度保持", labelEn: "Input luminance preservation", value: "两素材最大相对变化 < 1×10⁻⁵", valueEn: "Maximum relative change < 1×10⁻⁵ on both sources" },
+      { label: "T005最终2383平均亮度", labelEn: "T005 final 2383 mean luminance", value: "相对V40 −0.43%", valueEn: "−0.43% versus V40" },
+      { label: "T005最终2383中位色度", labelEn: "T005 final 2383 median chroma", value: "相对V40 +7.48%", valueEn: "+7.48% versus V40" },
+    ],
+  },
+  {
+    title: "记录边界", titleEn: "RECORD BOUNDARY", items: [
+      { label: "V40边界", labelEn: "V40 boundary", value: "胶片中间基底先裁为非负", valueEn: "Clip the intermediate film basis non-negative" },
+      { label: "V41边界", labelEn: "V41 boundary", value: "仅当三条5279记录曝光均非负时保留有符号中间值", valueEn: "Retain signed intermediates only when all three 5279 record exposures remain non-negative" },
+      { label: "不安全回退", labelEn: "Unsafe fallback", value: "自动回到V40非负基底", valueEn: "Automatically return to V40's non-negative basis" },
+      { label: "作用", labelEn: "Purpose", value: "避免高饱和青/绿的硬边界偏色，同时禁止V39式负曝光", valueEn: "Reduce hard-boundary hue error in saturated cyan/green while forbidding V39-style negative exposure" },
+    ],
+  },
+  {
+    title: "三管线与冻结参数", titleEn: "THREE PIPELINES & FROZEN PARAMETERS", items: [
+      { label: "物理5279", labelEn: "Physical 5279", value: "V40颗粒、DIR、MTF、综合色积分全部冻结", valueEn: "V40 grain, DIR, MTF and opponent integration frozen" },
+      { label: "FSD", labelEn: "FSD", value: "N=176 · σ=0.597px · 独立有限密度对照", valueEn: "N=176 · sigma 0.597 px · independent finite-density control" },
+      { label: "确定性基线", labelEn: "Deterministic baseline", value: "同一颜色与观察器 · 随机密度=0", valueEn: "Same colour and observers · stochastic density=0" },
+      { label: "黑位/对比/Gamma", labelEn: "Black / contrast / gamma", value: "与V40逐项冻结", valueEn: "Frozen item-for-item from V40" },
+      { label: "交付", labelEn: "Delivery", value: "三素材各24帧 · 5760×4320 · 12-bit ProRes 4444 XQ", valueEn: "24 frames per source · 5760×4320 · 12-bit ProRes 4444 XQ" },
+    ],
+  },
+  {
+    title: "本机实测渲染时间", titleEn: "MEASURED RENDER TIME ON THIS MACHINE", items: [
+      { label: "物理5279双母版", labelEn: "Physical 5279 dual masters", value: "52.72秒/帧 · 三素材平均", valueEn: "52.72 s/frame · three-source mean" },
+      { label: "物理负片均值", labelEn: "Physical mean negative", value: "7.69秒/帧", valueEn: "7.69 s/frame" },
+      { label: "随机乳剂", labelEn: "Stochastic emulsion", value: "6.38秒/帧", valueEn: "6.38 s/frame" },
+      { label: "物理双观察器", labelEn: "Physical dual observer", value: "33.86秒/帧", valueEn: "33.86 s/frame", note: "当前最大的单项瓶颈", noteEn: "Current largest single-stage bottleneck" },
+      { label: "FSD+确定性双分支", labelEn: "FSD + deterministic pair", value: "46.14秒/帧 · 三素材平均", valueEn: "46.14 s/frame · three-source mean" },
+      { label: "FSD密度形成", labelEn: "FSD density formation", value: "2.65秒/帧", valueEn: "2.65 s/frame" },
+      { label: "计时口径", labelEn: "Timing scope", value: "原生5760×4320 · 8线程 · 不含最终哈希", valueEn: "Native 5760×4320 · 8 threads · hashes excluded" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V41",
+  year: "当前基线",
+  title: "让色卡指出方向，但不让一次拍摄变成调色",
+  status: "current",
+  projection: { src: "/versions/v41-t031-projection.jpg", videoSrc: "/versions/v41-t031-projection-live-srgb.mp4", label: "T031 · Frame 132–155 · V41物理5279 → 2383正常工艺监看" },
+  bluray: { src: "/versions/v41-t031-bluray.jpg", videoSrc: "/versions/v41-t031-bluray-live-srgb.mp4", label: "T031 · Frame 132–155 · V41物理5279 → Period 2K扫描" },
+  fsd: { src: "/versions/v41-t031-fsd.jpg", videoSrc: "/versions/v41-t031-fsd-live-srgb.mp4", label: "T031 · Frame 132–155 · V41颜色 → FSD有限位点密度" },
+  camera: { src: "/versions/v33-t031-camera-as-shot.jpg", videoSrc: "/versions/v33-t031-camera-as-shot-live-srgb.mp4", label: "T031 · Panasonic V-709 As Shot见证" },
+  summary: "V41用T003色卡指出输入色度残差的方向，再用更近但轻微失焦的T005作为独立复核。两段素材在合成色与自然色上重复出同一类低饱和与色相残差，因此问题很可能存在；但二者都来自同一5500 K户外方向光，仍不足以建立完整GH7相机特性。V41只采用拟合矩阵的12.5%，保持线性亮度与中性轴，不碰白平衡、曝光、黑位、对比或Gamma。同时把V40的硬中间基底裁切改为“记录安全”的有符号传输：只有三条5279记录曝光全部非负时才保留，否则自动回退。",
+  changes: ["加入T005近距离色卡作为未参与拟合的独立复核", "在Bradford D50色度偏差域建立跨组残差方向，并严格恢复D65场景亮度", "否决100%与25%过强修正，最终只采用12.5%保守步长", "T003与T005的合成色、自然色中位色相误差全部下降", "自然色色度误差在两个素材上同时改善", "用记录曝光非负作为有符号中间传输的物理安全条件", "V40颗粒、DIR、MTF、2383、扫描、黑位、对比与Gamma全部冻结", "物理5279、FSD与无颗粒确定性基线共享同一V41颜色入口"],
+  errors: ["一次户外方向光色卡不能定量识别完整相机矩阵、光源SPD或5279专属综合色响应", "第一轮100%矩阵使植被与黄色明显过校正", "25%版本虽通过色卡，最终2383中位色度仍提升约15%，证据等级不足以支撑", "T005失焦不影响大色块中位数，但局部眩光和梯度限制单块精度", "V41仍是可回退的色度边界实验；均匀D65与钨丝灯色卡到来前不能称为最终GH7标定"],
+  discoveries: ["失焦色卡仍可作为大面积色块统计见证，前提是采样远离边界并报告块内离散度", "独立素材重复同一方向，比在一张色卡上提高拟合阶数更有价值", "色卡空间的100%误差修正经过负片与2383非线性后会被放大，必须在最终成像结果再次设门槛", "保守12.5%步长在两个素材、两组色块上都降低色相误差，同时输入亮度变化低于1×10⁻⁵", "V40的非负中间基底不是RAW裁切；真正的物理条件是组合后的三条感光记录曝光不得为负", "FSD与物理5279应该共享颜色入口，但仍保持两种不同的密度形成假设"],
+  refs: ["R1", "R4", "R26", "R27", "R44", "R47", "R58", "R63", "R66"],
+  parameters: v41Parameters,
+  additionalTrials: [
+    { name: "NJARAW_S001_S001_T002 · Frame 0–23", note: "暗墙、toe与低色度纹理用于检查保守色度校正不会制造暗部彩点或改变黑位。", projection: { src: "/versions/v41-t002-projection.jpg", videoSrc: "/versions/v41-t002-projection-live-srgb.mp4", label: "T002 · V41物理5279 → 2383正常工艺监看" }, bluray: { src: "/versions/v41-t002-bluray.jpg", videoSrc: "/versions/v41-t002-bluray-live-srgb.mp4", label: "T002 · V41物理5279 → Period 2K扫描" }, fsd: { src: "/versions/v41-t002-fsd.jpg", videoSrc: "/versions/v41-t002-fsd-live-srgb.mp4", label: "T002 · V41颜色 → FSD有限位点密度" }, camera: { src: "/versions/v33-t002-camera-as-shot.jpg", videoSrc: "/versions/v33-t002-camera-as-shot-live-srgb.mp4", label: "T002 · Panasonic V-709 As Shot见证" } },
+    { name: "NJARAW_S001_S001_T007 · Frame 276–299", note: "水面、高频边缘与绿色细节用于检查饱和度修正、35mm锐度和颗粒能否共存。", projection: { src: "/versions/v41-t007-projection.jpg", videoSrc: "/versions/v41-t007-projection-live-srgb.mp4", label: "T007 · V41物理5279 → 2383正常工艺监看" }, bluray: { src: "/versions/v41-t007-bluray.jpg", videoSrc: "/versions/v41-t007-bluray-live-srgb.mp4", label: "T007 · V41物理5279 → Period 2K扫描" }, fsd: { src: "/versions/v41-t007-fsd.jpg", videoSrc: "/versions/v41-t007-fsd-live-srgb.mp4", label: "T007 · V41颜色 → FSD有限位点密度" }, camera: { src: "/versions/v33-t007-camera-as-shot.jpg", videoSrc: "/versions/v33-t007-camera-as-shot-live-srgb.mp4", label: "T007 · Panasonic V-709 As Shot见证" } },
+  ],
+  pipelineComparisons: [
+    ...(["t031", "t002", "t007"] as const).map((source) => ({
+      name: source === "t031" ? "T031 · Frame 132–155" : source === "t002" ? "T002 · Frame 0–23" : "T007 · Frame 276–299",
+      note: "同一V41颜色、5279均值与2383观察器；只改变随机密度形成机制。",
+      noteEn: "Same V41 colour, 5279 mean and 2383 observer; only stochastic density formation changes.",
+      outputs: [
+        { title: "V41物理5279", titleEn: "V41 PHYSICAL 5279", branch: { src: `/versions/v41-${source}-projection.jpg`, videoSrc: `/versions/v41-${source}-projection-live-srgb.mp4`, label: "完整三记录5279乳剂形成" } },
+        { title: "FSD有限位点密度", titleEn: "FSD FINITE-SITE DENSITY", branch: { src: `/versions/v41-${source}-fsd.jpg`, videoSrc: `/versions/v41-${source}-fsd-live-srgb.mp4`, label: "逆二项密度形成的独立对照" } },
+        { title: "无颗粒确定性基线", titleEn: "DETERMINISTIC NO-GRAIN", branch: { src: `/versions/v41-${source}-deterministic.jpg`, videoSrc: `/versions/v41-${source}-deterministic-live-srgb.mp4`, label: "随机密度关闭；颜色、MTF与观察器保持" } },
+      ],
+    })),
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -1950,6 +2041,10 @@ for (const version of versions) {
     version.camera.src = withBasePath(version.camera.src);
     if (version.camera.videoSrc) version.camera.videoSrc = withBasePath(version.camera.videoSrc);
   }
+  if (version.fsd) {
+    version.fsd.src = withBasePath(version.fsd.src);
+    if (version.fsd.videoSrc) version.fsd.videoSrc = withBasePath(version.fsd.videoSrc);
+  }
   for (const trial of version.additionalTrials ?? []) {
     for (const branch of [trial.projection, trial.bluray]) {
       branch.src = withBasePath(branch.src);
@@ -1958,6 +2053,10 @@ for (const version of versions) {
     if (trial.camera) {
       trial.camera.src = withBasePath(trial.camera.src);
       if (trial.camera.videoSrc) trial.camera.videoSrc = withBasePath(trial.camera.videoSrc);
+    }
+    if (trial.fsd) {
+      trial.fsd.src = withBasePath(trial.fsd.src);
+      if (trial.fsd.videoSrc) trial.fsd.videoSrc = withBasePath(trial.fsd.videoSrc);
     }
   }
   for (const comparison of version.pipelineComparisons ?? []) {

@@ -17,20 +17,21 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V40 project home page", async () => {
+test("server-renders the bilingual V41 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V40/);
-  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V39/);
+  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V41/);
+  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V40/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v40-t031-projection/);
-  assert.match(html, /v40-t031-projection-live-srgb\.mp4/);
+  assert.match(html, /v41-t031-projection/);
+  assert.match(html, /v41-t031-projection-live-srgb\.mp4/);
+  assert.match(html, /v41-t031-fsd-live-srgb\.mp4/);
   assert.match(html, /v33-t031-camera-as-shot/);
-  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v40-t031-projection/);
+  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v41-t031-projection/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -38,7 +39,7 @@ test("server-renders the bilingual V40 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V40 archive, research and algorithm routes", async () => {
+test("server-renders the V41 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -46,14 +47,14 @@ test("server-renders the V40 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V40/);
+  assert.match(versions, /V4—[\s\S]{0,30}V41/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(versions, /CONTROLLED PIPELINE COMPARISON/);
-  assert.match(versions, /V40 PHYSICAL 5279/);
+  assert.match(versions, /V41 PHYSICAL 5279/);
   assert.match(versions, /FSD FINITE-SITE DENSITY/);
   assert.match(versions, /DETERMINISTIC NO-GRAIN/);
-  assert.match(versions, /v40-t031-fsd-live-srgb\.mp4/);
-  assert.match(versions, /v40-t031-deterministic-live-srgb\.mp4/);
+  assert.match(versions, /v41-t031-fsd-live-srgb\.mp4/);
+  assert.match(versions, /v41-t031-deterministic-live-srgb\.mp4/);
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
   assert.match(research, /V25 · OUTPUT STANDARD/);
@@ -79,6 +80,8 @@ test("server-renders the V40 archive, research and algorithm routes", async () =
   assert.match(research, /V39 · DENSITY-FORMATION RECONSTRUCTION/);
   assert.match(research, /V40 · COLOUR-GRAIN COVARIANCE REPAIR/);
   assert.match(research, /V40 · THREE-PIPELINE CONTROL/);
+  assert.match(research, /V41 · TWO-CHART-BOUNDED COLOUR TRANSPORT/);
+  assert.match(research, /12\.5% retained/);
   assert.match(research, /T003 · CHART INPUT AUDIT/);
   assert.match(research, /R\/G=1\.175/);
   assert.match(research, /DGK Color Tools/);
@@ -90,8 +93,8 @@ test("server-renders the V40 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /CURRENT V40/);
-  assert.match(algorithm, /Density remains the image; unknown stochastic freedom is not film/);
+  assert.match(algorithm, /CURRENT V41/);
+  assert.match(algorithm, /T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED/);
   assert.match(algorithm, /ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES/);
   assert.match(algorithm, /INDEPENDENT SITES · STABLE INTEGRATION/);
   assert.match(algorithm, /AUDITABLE PRODUCTION GRAPH/);
@@ -568,6 +571,43 @@ test("V40 FSD comparison contains exactly the two new 12-bit controls", async ()
   assert.equal(manifest.fsd.correlation_sigma_native_pixels, 0.597);
   assert.match(manifest.fsd.status, /independent comparator/);
   assert.equal(Object.keys(manifest.verification).length, 6);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.companion_metadata.width, 5760);
+    assert.equal(result.companion_metadata.height, 4320);
+    assert.equal(result.companion_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.companion_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.companion_metadata.nb_frames, "24");
+    assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.companion_metadata.profile, "XQ");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V41 publishes four-view media from chart-bounded native 12-bit sources", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v41-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.absolute_source_frame_contract, {
+    t002: [0, 23],
+    t007: [276, 299],
+    t031: [132, 155],
+  });
+  assert.equal(manifest.colour_evidence.strength, 0.125);
+  assert.match(manifest.colour_evidence.independent_holdout, /T005/);
+  assert.match(manifest.record_boundary, /all combined 5279 record exposures are non-negative/);
+  assert.match(manifest.pipelines.physical, /V41 shared colour input/);
+  assert.match(manifest.pipelines.fsd, /N=176/);
+  assert.equal(Object.keys(manifest.verification).length, 12);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
   for (const result of Object.values(manifest.verification)) {
     assert.equal(result.companion_metadata.width, 5760);
     assert.equal(result.companion_metadata.height, 4320);

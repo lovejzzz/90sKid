@@ -1,0 +1,1011 @@
+{
+  "purpose": "V41 chart-bounded colour transport with controlled density comparisons",
+  "dimensions": [
+    1280,
+    960
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t002": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ],
+    "t031": [
+      132,
+      155
+    ]
+  },
+  "colour_evidence": {
+    "fit": "T003 frame 160 DKC-Pro",
+    "independent_holdout": "T005 frame 160 DKC-Pro, closer and mildly defocused",
+    "strength": 0.125,
+    "preserved": "D65 scene luminance and neutral axis",
+    "withheld": "white balance, exposure, black, gamma and creative saturation"
+  },
+  "record_boundary": "retain signed intermediate values only when all combined 5279 record exposures are non-negative; otherwise use the V40 non-negative basis",
+  "pipelines": {
+    "physical": "V40 stochastic 5279 formation with V41 shared colour input",
+    "fsd": "N=176, sigma=0.597 px independent finite-site density control",
+    "deterministic": "same mean colour and observer with stochastic density disabled"
+  },
+  "professional_master": "Rec.709 / inverse BT.1886 gamma 2.4 / 12-bit ProRes 4444 XQ",
+  "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444 XQ",
+  "web": "decoded only from the companion; hover frame zero and JPEG share source frame 12",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
+  "timing": {
+    "t002": {
+      "physical": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "binomial_workers": 8,
+          "numba_threads": 8,
+          "array_workers": 8,
+          "observer_workers": 1,
+          "validated_print_lut_cache": "cache/print_2383_monitor_output_lut_193_v30.npy",
+          "validated_print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "v35_production_pipeline": true,
+          "metal_binomial_stats": {
+            "calls": 1081,
+            "bridge_seconds": 12.260777115821838,
+            "wall_seconds": 12.35022850430687
+          },
+          "sampler_identity_audit": {
+            "mode": "bernoulli",
+            "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+            "domain_salt_uint32": 0,
+            "total_calls": 1080,
+            "duplicate_identity_count": 0,
+            "minimum_seed": 30000000,
+            "maximum_seed": 30232204,
+            "minimum_trials": 1,
+            "maximum_trials": 30,
+            "frames_audited": 24,
+            "calls_per_frame": 45,
+            "frame_call_counts": {
+              "0": 45,
+              "1": 45,
+              "2": 45,
+              "3": 45,
+              "4": 45,
+              "5": 45,
+              "6": 45,
+              "7": 45,
+              "8": 45,
+              "9": 45,
+              "10": 45,
+              "11": 45,
+              "12": 45,
+              "13": 45,
+              "14": 45,
+              "15": 45,
+              "16": 45,
+              "17": 45,
+              "18": 45,
+              "19": 45,
+              "20": 45,
+              "21": 45,
+              "22": 45,
+              "23": 45
+            }
+          }
+        },
+        "pipeline_provenance": {
+          "command": [
+            "python3",
+            "src/render_v41_dual_masters.py",
+            "NJARAW_S001_S001_T002.MOV",
+            "outputs/native_5k_v41_chart_bounded_colour_1s/physical/T002",
+            "--decoder",
+            ".build/prores_raw_float_decode",
+            "--start-frame",
+            "0",
+            "--frames",
+            "24",
+            "--opencv-threads",
+            "8",
+            "--binomial-workers",
+            "8",
+            "--numba-threads",
+            "8",
+            "--array-workers",
+            "8",
+            "--observer-workers",
+            "1",
+            "--accelerated-cpu-exact",
+            "--v35-production-pipeline"
+          ],
+          "renderer_sha256": "0fa26ee153125d2dc4a80d4dd1f6759978dfb365414d7943e8c9b6bcc1c1ed6c",
+          "algorithm_sha256": "a113c7ca294b7461bcd955bc24818c4380f2d7210106cb293e477d053ad815fe",
+          "profile_sha256": "16f7d43c842c499738b624975f5e3f39ff1da987ff204003bdbbd084b51d2c45",
+          "print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "print_observer_execution": "hybrid: analytical observer for the deterministic spatial 2383 density mean; validated pointwise negative-density output LUT for the signed 5279 stochastic observer delta",
+          "v35_accel_sha256": "7387f8f5c7a39bd44bad6194b8789f5f7cc0e8caecb15beb892d73e2e294b81f",
+          "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+          "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+          "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+          "grain_domain_salt_uint32": 0,
+          "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+        },
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 4.3594481711043045,
+            "mean_seconds_per_frame": 0.18164367379601268,
+            "median_seconds_per_frame": 0.16848656251386274,
+            "p95_seconds_per_frame": 0.2871784340182783,
+            "maximum_seconds_per_frame": 0.30341733401292004
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 194.72901466410258,
+            "mean_seconds_per_frame": 8.113708944337608,
+            "median_seconds_per_frame": 8.229425937490305,
+            "p95_seconds_per_frame": 9.289278149958408,
+            "maximum_seconds_per_frame": 9.617831833020318
+          },
+          "stochastic_emulsion": {
+            "total_seconds": 155.91873103898251,
+            "mean_seconds_per_frame": 6.496613793290938,
+            "median_seconds_per_frame": 6.308979811990866,
+            "p95_seconds_per_frame": 7.40171857677924,
+            "maximum_seconds_per_frame": 7.636264083004789
+          },
+          "observer_render_parallel": {
+            "total_seconds": 811.9063903760398,
+            "mean_seconds_per_frame": 33.82943293233499,
+            "median_seconds_per_frame": 33.63246808349504,
+            "p95_seconds_per_frame": 35.392262398154706,
+            "maximum_seconds_per_frame": 36.10945133399218
+          },
+          "encode_write_both": {
+            "total_seconds": 12.078675747005036,
+            "mean_seconds_per_frame": 0.5032781561252099,
+            "median_seconds_per_frame": 0.5071356039843522,
+            "p95_seconds_per_frame": 0.5809459250536747,
+            "maximum_seconds_per_frame": 0.6107542910031043
+          },
+          "final_projection_adapter": {
+            "total_seconds": 97.32858258107444,
+            "mean_seconds_per_frame": 4.055357607544768,
+            "median_seconds_per_frame": 4.027059021012974,
+            "p95_seconds_per_frame": 4.278925889346283,
+            "maximum_seconds_per_frame": 4.3520815419906285
+          }
+        },
+        "total_wall_seconds_before_hashes": 1280.1042714159994,
+        "effective_seconds_per_frame_for_two_masters": 53.337677975666644,
+        "audio_timecode_and_authority_finalize_seconds": 38.426879375008866,
+        "total_with_audio_timecode_seconds": 1318.5311507910083
+      },
+      "comparators": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "numba_threads": 8,
+          "array_workers": 8
+        },
+        "pipeline": "V41 Finite-Site Density (FSD) comparator",
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 3.046099210943794,
+            "mean_seconds_per_frame": 0.1269208004559914,
+            "median_seconds_per_frame": 0.11105191698879935,
+            "p95_seconds_per_frame": 0.14734101515641668,
+            "maximum_seconds_per_frame": 0.31450637499801815
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 188.0148609590251,
+            "mean_seconds_per_frame": 7.8339525399593795,
+            "median_seconds_per_frame": 7.79799799999455,
+            "p95_seconds_per_frame": 8.127057443796366,
+            "maximum_seconds_per_frame": 8.487643583997851
+          },
+          "deterministic_dual_observer": {
+            "total_seconds": 802.853163999971,
+            "mean_seconds_per_frame": 33.45221516666546,
+            "median_seconds_per_frame": 33.40977066650521,
+            "p95_seconds_per_frame": 34.04276942946308,
+            "maximum_seconds_per_frame": 34.08228191599483
+          },
+          "fsd_density_formation": {
+            "total_seconds": 62.92939695797395,
+            "mean_seconds_per_frame": 2.6220582065822478,
+            "median_seconds_per_frame": 2.6125641245016595,
+            "p95_seconds_per_frame": 2.687752704352897,
+            "maximum_seconds_per_frame": 2.822895666991826
+          },
+          "encode_write_four": {
+            "total_seconds": 10.011394668137655,
+            "mean_seconds_per_frame": 0.4171414445057356,
+            "median_seconds_per_frame": 0.41348231249139644,
+            "p95_seconds_per_frame": 0.45467706510826245,
+            "maximum_seconds_per_frame": 0.4577474170073401
+          }
+        },
+        "total_wall_seconds_before_hashes": 1094.5975607080036,
+        "encoded_comparator_branches": [
+          "deterministic",
+          "fsd"
+        ],
+        "effective_seconds_per_frame": 45.60823169616682
+      }
+    },
+    "t007": {
+      "physical": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "binomial_workers": 8,
+          "numba_threads": 8,
+          "array_workers": 8,
+          "observer_workers": 1,
+          "validated_print_lut_cache": "cache/print_2383_monitor_output_lut_193_v30.npy",
+          "validated_print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "v35_production_pipeline": true,
+          "metal_binomial_stats": {
+            "calls": 1081,
+            "bridge_seconds": 12.123098969459534,
+            "wall_seconds": 12.226864947442664
+          },
+          "sampler_identity_audit": {
+            "mode": "bernoulli",
+            "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+            "domain_salt_uint32": 0,
+            "total_calls": 1080,
+            "duplicate_identity_count": 0,
+            "minimum_seed": 32760000,
+            "maximum_seed": 32992204,
+            "minimum_trials": 1,
+            "maximum_trials": 30,
+            "frames_audited": 24,
+            "calls_per_frame": 45,
+            "frame_call_counts": {
+              "276": 45,
+              "277": 45,
+              "278": 45,
+              "279": 45,
+              "280": 45,
+              "281": 45,
+              "282": 45,
+              "283": 45,
+              "284": 45,
+              "285": 45,
+              "286": 45,
+              "287": 45,
+              "288": 45,
+              "289": 45,
+              "290": 45,
+              "291": 45,
+              "292": 45,
+              "293": 45,
+              "294": 45,
+              "295": 45,
+              "296": 45,
+              "297": 45,
+              "298": 45,
+              "299": 45
+            }
+          }
+        },
+        "pipeline_provenance": {
+          "command": [
+            "python3",
+            "src/render_v41_dual_masters.py",
+            "NJARAW_S001_S001_T007.MOV",
+            "outputs/native_5k_v41_chart_bounded_colour_1s/physical/T007",
+            "--decoder",
+            ".build/prores_raw_float_decode",
+            "--start-frame",
+            "276",
+            "--frames",
+            "24",
+            "--opencv-threads",
+            "8",
+            "--binomial-workers",
+            "8",
+            "--numba-threads",
+            "8",
+            "--array-workers",
+            "8",
+            "--observer-workers",
+            "1",
+            "--accelerated-cpu-exact",
+            "--v35-production-pipeline"
+          ],
+          "renderer_sha256": "0fa26ee153125d2dc4a80d4dd1f6759978dfb365414d7943e8c9b6bcc1c1ed6c",
+          "algorithm_sha256": "a113c7ca294b7461bcd955bc24818c4380f2d7210106cb293e477d053ad815fe",
+          "profile_sha256": "16f7d43c842c499738b624975f5e3f39ff1da987ff204003bdbbd084b51d2c45",
+          "print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "print_observer_execution": "hybrid: analytical observer for the deterministic spatial 2383 density mean; validated pointwise negative-density output LUT for the signed 5279 stochastic observer delta",
+          "v35_accel_sha256": "7387f8f5c7a39bd44bad6194b8789f5f7cc0e8caecb15beb892d73e2e294b81f",
+          "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+          "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+          "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+          "grain_domain_salt_uint32": 0,
+          "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+        },
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 6.6012936259794515,
+            "mean_seconds_per_frame": 0.2750539010824771,
+            "median_seconds_per_frame": 0.14940397898317315,
+            "p95_seconds_per_frame": 0.2058047081067343,
+            "maximum_seconds_per_frame": 3.0837674999784213
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 183.50026474898914,
+            "mean_seconds_per_frame": 7.645844364541214,
+            "median_seconds_per_frame": 7.732609999511624,
+            "p95_seconds_per_frame": 8.463735843752511,
+            "maximum_seconds_per_frame": 8.598987042001681
+          },
+          "stochastic_emulsion": {
+            "total_seconds": 147.747274875961,
+            "mean_seconds_per_frame": 6.156136453165042,
+            "median_seconds_per_frame": 6.096950312508852,
+            "p95_seconds_per_frame": 6.562578073142504,
+            "maximum_seconds_per_frame": 6.72153049998451
+          },
+          "observer_render_parallel": {
+            "total_seconds": 809.0717817521363,
+            "mean_seconds_per_frame": 33.711324239672344,
+            "median_seconds_per_frame": 33.71321637550136,
+            "p95_seconds_per_frame": 34.26874651873804,
+            "maximum_seconds_per_frame": 34.559550417005084
+          },
+          "encode_write_both": {
+            "total_seconds": 10.561890168057289,
+            "mean_seconds_per_frame": 0.440078757002387,
+            "median_seconds_per_frame": 0.4324462504882831,
+            "p95_seconds_per_frame": 0.4843715124996379,
+            "maximum_seconds_per_frame": 0.5043153750011697
+          },
+          "final_projection_adapter": {
+            "total_seconds": 94.49886612396222,
+            "mean_seconds_per_frame": 3.937452755165092,
+            "median_seconds_per_frame": 3.9426841040112777,
+            "p95_seconds_per_frame": 4.0139722893,
+            "maximum_seconds_per_frame": 4.046748249995289
+          }
+        },
+        "total_wall_seconds_before_hashes": 1255.5327014159993,
+        "effective_seconds_per_frame_for_two_masters": 52.31386255899997,
+        "audio_timecode_and_authority_finalize_seconds": 38.38766854198184,
+        "total_with_audio_timecode_seconds": 1293.9203699579812
+      },
+      "comparators": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "numba_threads": 8,
+          "array_workers": 8
+        },
+        "pipeline": "V41 Finite-Site Density (FSD) comparator",
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 4.376696830004221,
+            "mean_seconds_per_frame": 0.18236236791684254,
+            "median_seconds_per_frame": 0.14354533300502226,
+            "p95_seconds_per_frame": 0.1636400222982047,
+            "maximum_seconds_per_frame": 1.1174454169813544
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 196.5623802919872,
+            "mean_seconds_per_frame": 8.190099178832801,
+            "median_seconds_per_frame": 8.052280207994045,
+            "p95_seconds_per_frame": 9.140669727696514,
+            "maximum_seconds_per_frame": 9.77346120798029
+          },
+          "deterministic_dual_observer": {
+            "total_seconds": 798.6997736680205,
+            "mean_seconds_per_frame": 33.27915723616752,
+            "median_seconds_per_frame": 33.25309802101401,
+            "p95_seconds_per_frame": 33.83941910443245,
+            "maximum_seconds_per_frame": 33.88231099999393
+          },
+          "fsd_density_formation": {
+            "total_seconds": 63.28221625002334,
+            "mean_seconds_per_frame": 2.6367590104176393,
+            "median_seconds_per_frame": 2.6206951039930573,
+            "p95_seconds_per_frame": 2.76160279741307,
+            "maximum_seconds_per_frame": 2.775089749979088
+          },
+          "encode_write_four": {
+            "total_seconds": 10.360436793969711,
+            "mean_seconds_per_frame": 0.43168486641540466,
+            "median_seconds_per_frame": 0.41396456249640323,
+            "p95_seconds_per_frame": 0.5084966169917606,
+            "maximum_seconds_per_frame": 0.588511332985945
+          }
+        },
+        "total_wall_seconds_before_hashes": 1101.069895833003,
+        "encoded_comparator_branches": [
+          "deterministic",
+          "fsd"
+        ],
+        "effective_seconds_per_frame": 45.87791232637513
+      }
+    },
+    "t031": {
+      "physical": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "binomial_workers": 8,
+          "numba_threads": 8,
+          "array_workers": 8,
+          "observer_workers": 1,
+          "validated_print_lut_cache": "cache/print_2383_monitor_output_lut_193_v30.npy",
+          "validated_print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "v35_production_pipeline": true,
+          "metal_binomial_stats": {
+            "calls": 1081,
+            "bridge_seconds": 11.682689309120178,
+            "wall_seconds": 11.779466294159647
+          },
+          "sampler_identity_audit": {
+            "mode": "bernoulli",
+            "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+            "domain_salt_uint32": 0,
+            "total_calls": 1080,
+            "duplicate_identity_count": 0,
+            "minimum_seed": 31320000,
+            "maximum_seed": 31552204,
+            "minimum_trials": 1,
+            "maximum_trials": 30,
+            "frames_audited": 24,
+            "calls_per_frame": 45,
+            "frame_call_counts": {
+              "132": 45,
+              "133": 45,
+              "134": 45,
+              "135": 45,
+              "136": 45,
+              "137": 45,
+              "138": 45,
+              "139": 45,
+              "140": 45,
+              "141": 45,
+              "142": 45,
+              "143": 45,
+              "144": 45,
+              "145": 45,
+              "146": 45,
+              "147": 45,
+              "148": 45,
+              "149": 45,
+              "150": 45,
+              "151": 45,
+              "152": 45,
+              "153": 45,
+              "154": 45,
+              "155": 45
+            }
+          }
+        },
+        "pipeline_provenance": {
+          "command": [
+            "python3",
+            "src/render_v41_dual_masters.py",
+            "NJARAW_S001_S001_T031.MOV",
+            "outputs/native_5k_v41_chart_bounded_colour_1s/physical/T031",
+            "--decoder",
+            ".build/prores_raw_float_decode",
+            "--start-frame",
+            "132",
+            "--frames",
+            "24",
+            "--opencv-threads",
+            "8",
+            "--binomial-workers",
+            "8",
+            "--numba-threads",
+            "8",
+            "--array-workers",
+            "8",
+            "--observer-workers",
+            "1",
+            "--accelerated-cpu-exact",
+            "--v35-production-pipeline"
+          ],
+          "renderer_sha256": "0fa26ee153125d2dc4a80d4dd1f6759978dfb365414d7943e8c9b6bcc1c1ed6c",
+          "algorithm_sha256": "a113c7ca294b7461bcd955bc24818c4380f2d7210106cb293e477d053ad815fe",
+          "profile_sha256": "16f7d43c842c499738b624975f5e3f39ff1da987ff204003bdbbd084b51d2c45",
+          "print_lut_sha256": "5a7d99c9e50a9816205a3ecc06e4adc81f520fb3baa6f0aeba6f351093a4f98c",
+          "print_observer_execution": "hybrid: analytical observer for the deterministic spatial 2383 density mean; validated pointwise negative-density output LUT for the signed 5279 stochastic observer delta",
+          "v35_accel_sha256": "7387f8f5c7a39bd44bad6194b8789f5f7cc0e8caecb15beb892d73e2e294b81f",
+          "metal_bridge_python_sha256": "57a05efc3dcc19f9694ce1b8947ad0afcff2df9dc7cb3519c2194de229697217",
+          "metal_bridge_source_sha256": "18076b281d980f1ce71586eb3c0de47b02cb5327cd1d3809ce2dde44b3b216da",
+          "finite_site_seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class; Philox counter also uses global pixel index, a sampler-domain tag and the uint32 domain salt 0 in the high key word",
+          "grain_domain_salt_uint32": 0,
+          "finite_site_distribution_claim": "statistically validated Philox uint32 Bernoulli trials against floor(float32_probability * 2^32); independent production realization, not archive-bit-identical NumPy RNG"
+        },
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 3.8592725839989726,
+            "mean_seconds_per_frame": 0.16080302433329052,
+            "median_seconds_per_frame": 0.13426097900082823,
+            "p95_seconds_per_frame": 0.16115804189903427,
+            "maximum_seconds_per_frame": 0.8085779590182938
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 175.35331691801548,
+            "mean_seconds_per_frame": 7.306388204917312,
+            "median_seconds_per_frame": 7.07944920801674,
+            "p95_seconds_per_frame": 8.132487064348243,
+            "maximum_seconds_per_frame": 8.507003959006397
+          },
+          "stochastic_emulsion": {
+            "total_seconds": 155.7099403749162,
+            "mean_seconds_per_frame": 6.487914182288175,
+            "median_seconds_per_frame": 6.427351000005729,
+            "p95_seconds_per_frame": 6.9427815750415895,
+            "maximum_seconds_per_frame": 7.023989042005269
+          },
+          "observer_render_parallel": {
+            "total_seconds": 817.0419618329615,
+            "mean_seconds_per_frame": 34.0434150763734,
+            "median_seconds_per_frame": 33.99841102049686,
+            "p95_seconds_per_frame": 34.458856848238796,
+            "maximum_seconds_per_frame": 34.601240709016565
+          },
+          "encode_write_both": {
+            "total_seconds": 10.425595667969901,
+            "mean_seconds_per_frame": 0.4343998194987459,
+            "median_seconds_per_frame": 0.42352550000941847,
+            "p95_seconds_per_frame": 0.4814628999389242,
+            "maximum_seconds_per_frame": 0.4870746670057997
+          },
+          "final_projection_adapter": {
+            "total_seconds": 94.51395583193516,
+            "mean_seconds_per_frame": 3.9380814929972985,
+            "median_seconds_per_frame": 3.9311565834941575,
+            "p95_seconds_per_frame": 4.004210214329942,
+            "maximum_seconds_per_frame": 4.041566375002731
+          }
+        },
+        "total_wall_seconds_before_hashes": 1260.1631967499852,
+        "effective_seconds_per_frame_for_two_masters": 52.50679986458272,
+        "audio_timecode_and_authority_finalize_seconds": 38.94677879099618,
+        "total_with_audio_timecode_seconds": 1299.1099755409814
+      },
+      "comparators": {
+        "clock": "time.perf_counter monotonic wall clock",
+        "machine": {
+          "system": "Darwin",
+          "release": "25.5.0",
+          "machine": "arm64",
+          "opencv_threads": 8,
+          "numba_threads": 8,
+          "array_workers": 8
+        },
+        "pipeline": "V41 Finite-Site Density (FSD) comparator",
+        "stage_summaries": {
+          "decode_read": {
+            "total_seconds": 3.9760283320210874,
+            "mean_seconds_per_frame": 0.16566784716754532,
+            "median_seconds_per_frame": 0.149643354001455,
+            "p95_seconds_per_frame": 0.15906803750986,
+            "maximum_seconds_per_frame": 0.7107730419957079
+          },
+          "scene_and_mean_negative": {
+            "total_seconds": 199.47967820899794,
+            "mean_seconds_per_frame": 8.311653258708247,
+            "median_seconds_per_frame": 8.149035499998718,
+            "p95_seconds_per_frame": 9.123932081239763,
+            "maximum_seconds_per_frame": 9.204649999999674
+          },
+          "deterministic_dual_observer": {
+            "total_seconds": 819.0790994130366,
+            "mean_seconds_per_frame": 34.12829580887652,
+            "median_seconds_per_frame": 34.14211531249748,
+            "p95_seconds_per_frame": 34.638835503569865,
+            "maximum_seconds_per_frame": 34.947197000001324
+          },
+          "fsd_density_formation": {
+            "total_seconds": 64.33346292097121,
+            "mean_seconds_per_frame": 2.6805609550404674,
+            "median_seconds_per_frame": 2.6804532919923076,
+            "p95_seconds_per_frame": 2.7302992624943725,
+            "maximum_seconds_per_frame": 2.7566948749881703
+          },
+          "encode_write_four": {
+            "total_seconds": 10.700743583933217,
+            "mean_seconds_per_frame": 0.4458643159972174,
+            "median_seconds_per_frame": 0.43786143748729955,
+            "p95_seconds_per_frame": 0.4922286079920013,
+            "maximum_seconds_per_frame": 0.5379839170200285
+          }
+        },
+        "total_wall_seconds_before_hashes": 1126.2704384169774,
+        "encoded_comparator_branches": [
+          "deterministic",
+          "fsd"
+        ],
+        "effective_seconds_per_frame": 46.92793493404073
+      }
+    }
+  },
+  "verification": {
+    "v41-t002-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "physical/T002/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T002/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007821,
+        0.006744,
+        0.01009
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000849,
+        0.002434,
+        0.001732
+      ],
+      "first_frame_median_luma_delta": 0.002434
+    },
+    "v41-t002-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "physical/T002/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T002/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007979,
+        0.006362,
+        0.01127
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.0,
+        0.003319,
+        0.002537
+      ],
+      "first_frame_median_luma_delta": 0.003319
+    },
+    "v41-t002-fsd": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "comparators/T002/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T002/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007699,
+        0.006715,
+        0.008542
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001416,
+        0.00249,
+        0.001856
+      ],
+      "first_frame_median_luma_delta": 0.00249
+    },
+    "v41-t002-deterministic": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "comparators/T002/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T002/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00641,
+        0.005171,
+        0.007283
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001683,
+        0.002259,
+        0.002365
+      ],
+      "first_frame_median_luma_delta": 0.002259
+    },
+    "v41-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "physical/T007/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008606,
+        0.006655,
+        0.010775
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00089,
+        0.002106,
+        0.002943
+      ],
+      "first_frame_median_luma_delta": 0.002106
+    },
+    "v41-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "physical/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009185,
+        0.006564,
+        0.012329
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001966,
+        0.001663,
+        0.002805
+      ],
+      "first_frame_median_luma_delta": 0.001663
+    },
+    "v41-t007-fsd": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "comparators/T007/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T007/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008508,
+        0.006633,
+        0.009318
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000849,
+        0.002048,
+        0.00207
+      ],
+      "first_frame_median_luma_delta": 0.002048
+    },
+    "v41-t007-deterministic": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "comparators/T007/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T007/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007796,
+        0.00579,
+        0.008655
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001169,
+        0.002193,
+        0.002969
+      ],
+      "first_frame_median_luma_delta": 0.002193
+    },
+    "v41-t031-projection": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "physical/T031/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T031/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00874,
+        0.006747,
+        0.01067
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001333,
+        0.000549,
+        0.000854
+      ],
+      "first_frame_median_luma_delta": 0.000549
+    },
+    "v41-t031-bluray": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "physical/T031/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "physical/T031/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009561,
+        0.006642,
+        0.01212
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001364,
+        0.001111,
+        0.001667
+      ],
+      "first_frame_median_luma_delta": 0.001111
+    },
+    "v41-t031-fsd": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "comparators/T031/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T031/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00859,
+        0.006638,
+        0.009346
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00193,
+        0.000509,
+        0.000854
+      ],
+      "first_frame_median_luma_delta": 0.000509
+    },
+    "v41-t031-deterministic": {
+      "absolute_source_frames": [
+        132,
+        155
+      ],
+      "picture_authority": "comparators/T031/deterministic/05_emulsion_master_prores4444.mov",
+      "source_companion": "comparators/T031/deterministic/06_quicktime_preview_srgb_prores4444.mov",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008047,
+        0.005908,
+        0.008826
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00176,
+        0.000607,
+        0.000818
+      ],
+      "first_frame_median_luma_delta": 0.000607
+    }
+  }
+}

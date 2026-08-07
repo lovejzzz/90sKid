@@ -88,6 +88,17 @@ projection = final_adapter(scan_low_chroma, projection_luma, opponent_hf=0)
 assert dark_opponent_p9999 <= 0.035
 assert isolated_primary_impulses_gt_0_06_per_million <= 5`;
 
+const v41ColourCode = `# V41：色卡只估计误差方向；12.5%保守步长且严格保持场景亮度
+xyz_d50 = bradford_d65_to_d50(bt2020_to_xyz(scene_linear))
+chroma  = xyz_d50 - neutral_axis(xyz_d50)
+corrected = chroma + 0.125 * (cross_group_matrix @ chroma - chroma)
+scene_v41 = restore_exact_d65_luminance(corrected)
+
+# 有符号中间值只有在三条组合记录曝光全部非负时才安全
+signed_records = film_basis_signed @ record_sensitivity.T
+records = where(all(signed_records >= 0), signed_records,
+                film_basis_clipped @ record_sensitivity.T)`;
+
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
     rng = Generator(SeedSequence([frame_record_layer_class_seed, stripe.index]))
@@ -122,9 +133,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V40</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V40保留密度成像，但不再把边际RMS误当成完整彩色颗粒模型；协方差、极端尾部和每个交付帧都成为发布条件。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V41</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V41以两段色卡约束输入色度方向，只采用12.5%的保守修正；V40颗粒、黑位、对比与Gamma保持冻结。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V41</div><div className="method-copy"><span className="section-tag">T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED</span><h2>修正一个很可能存在的误差，同时把证据不足的幅度留作未知</h2><p>T003与未参与拟合的T005在合成色和自然色上重复同一色相／色度残差方向。全量矩阵和25%候选都在最终2383画面中过强，因此生产版只保留12.5%；不修改白平衡、曝光、黑位、对比或Gamma。中间广色域分量不再一律硬裁，但只有组合后的三条5279记录曝光全部非负时才保留有符号值。</p><pre><code>{v41ColourCode}</code></pre><div className="equation"><span>证据边界</span><b>Direction identified · magnitude provisional</b><small>两个同条件户外素材允许迈出保守一步，不允许宣称完整GH7相机标定。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V40</div><div className="method-copy"><span className="section-tag">MEASURED RANDOMNESS · BOUNDED COLOUR TAILS</span><h2>密度仍是画面，但未知的随机自由度不能假装成胶片</h2><p>V39把图像结构移回密度域，却把Kodak处理后48µm RMS反演成DIR前各速度层产额，并为2383建立没有分记录协方差或NPS证据的独立Poisson颗粒。边际RMS可以正确，最终暗部仍会出现稀疏原色尖峰。V40把5279颗粒度约束放回公开测量的处理后边界，让两条观察器共同积分明度与综合色高频；2383只保留有资料支持的确定性密度与MTF。不是在显示端降彩噪，而是从源头停止生成未识别的彩色随机项。</p><pre><code>{v40BoundaryCode}</code></pre><div className="equation"><span>发布条件</span><b>RMS + Covariance + Tail + Observer</b><small>三段、两分支、全部144个交付帧必须在原生5760×4320通过。</small></div></div></section>
 

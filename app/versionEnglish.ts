@@ -913,6 +913,39 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 stresses dark low-chroma tails. T007 tests water, green fine detail and edge integration. T031 tests organic shadow texture through both observers.",
   },
+  V41: {
+    year: "CURRENT BASELINE",
+    title: "Let the chart reveal direction without turning one shoot into a grade",
+    summary:
+      "V41 uses T003 to estimate the direction of the remaining input-chroma residual, then treats the closer, mildly defocused T005 as a true holdout. Both clips repeat the same under-chroma and hue-error direction across synthetic and natural colours, so the boundary is probably real. But both were captured outdoors at 5500 K under directional light, which is not enough to characterize the GH7. V41 therefore applies only 12.5% of the fitted correction, preserves scene luminance and the neutral axis, and leaves white balance, exposure, black, contrast and gamma untouched. It also replaces V40's hard intermediate-basis clip with record-safe signed transport: signed values survive only when all three 5279 record exposures remain non-negative; unsafe pixels fall back to V40.",
+    changes: [
+      "Add the closer T005 chart as an independent holdout that was never used to fit the transform",
+      "Estimate a cross-group residual in Bradford-adapted D50 chroma while restoring exact D65 scene luminance",
+      "Reject the visibly excessive 100% result and the still-too-large 25% result; retain a conservative 12.5% step",
+      "Reduce median hue error in synthetic and natural groups on both T003 and T005",
+      "Improve natural-colour chroma error on both clips",
+      "Use non-negative 5279 record exposure as the safety condition for signed intermediate transport",
+      "Freeze all V40 grain, DIR, MTF, 2383, scan, black, contrast and gamma parameters",
+      "Feed physical 5279, FSD and deterministic controls from the same V41 colour boundary",
+    ],
+    errors: [
+      "One outdoor directional-light chart cannot identify a complete camera matrix, illuminant SPD or stock-specific interimage response",
+      "The first 100% matrix visibly over-corrected foliage and yellow patches",
+      "The 25% candidate passed chart gates but still raised final 2383 median chroma by about 15%, beyond the evidence",
+      "T005 defocus is acceptable for patch medians, but local glare and gradients limit individual-patch precision",
+      "V41 remains a reversible colour-boundary experiment, not a final GH7 characterization before uniform D65 and tungsten controls",
+    ],
+    discoveries: [
+      "A defocused chart can still witness large-patch statistics when sampling stays away from edges and within-patch dispersion is reported",
+      "Repeating the direction on a disjoint clip is more informative than increasing fit order on one chart",
+      "A 100% correction in chart space can be amplified by negative and 2383 nonlinearities, so the final formed image needs its own gate",
+      "A 12.5% step lowers hue error in both groups on both clips while keeping input luminance change below 1e-5",
+      "V40's non-negative intermediate basis was not a RAW clip; the physical safety condition is non-negative exposure in the combined records",
+      "FSD and physical 5279 should share a colour boundary while remaining distinct density-formation hypotheses",
+    ],
+    trialNote:
+      "T002 tests dark low-chroma tails and black stability. T007 tests water, green fine detail, saturation and 35 mm sharpness. T031 tests organic shadow texture through both observers.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
