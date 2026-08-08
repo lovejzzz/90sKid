@@ -8,12 +8,14 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 [lovejzzz.github.io/90sKid](https://lovejzzz.github.io/90sKid/)
 
-## Current baseline: V40
+## Current baseline: V41
 
-- Matched physical 5279, FSD finite-site-density, and deterministic no-grain controls
+- Two-chart-bounded colour transport: T003 fits the input-chroma residual direction, the independent T005 holdout confirms it, and only a conservative 12.5% step is applied
+- Record-safe signed intermediates replace V40's hard basis clip; V40 grain, black, contrast and gamma stay frozen
+- Matched physical 5279, FSD finite-site-density, and deterministic no-grain controls share the same V41 colour boundary
 - Three one-second, 5760×4320 scene comparisons with 12-bit ProRes 4444 XQ masters
 - Native-frame release gates reject sparse chroma impulses and metadata mismatches
-- T003 DKC-Pro control documents what the outdoor chart does and does not identify
+- T003/T005 DKC-Pro controls document what the outdoor charts do and do not identify
 - Public deployments stream optimized comparison media from the GitHub Pages archive; full masters remain local
 
 ## Local development
