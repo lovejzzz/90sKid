@@ -2134,6 +2134,12 @@ export const references = [
   { id: "R64", title: "Nik Color Efex User Guide — Grain engine and calibrated branded films", type: "DxO官方颗粒引擎说明", url: "https://userguides.dxo.com/nikcollection/en/color-efex/" },
   { id: "R65", title: "DxO — The science of film: calibrated grain matrices by tone region", type: "DxO官方胶片测量方法", url: "https://www.dxo.com/en/technology/science-of-film" },
   { id: "R66", title: "Complete Guide to Using the DKC-Pro Color Chart — colourimetry data", type: "DGK Color Tools官方色卡说明与CIELAB参考值", url: "https://dgkcolor.tools/wp-content/uploads/2019/09/Complete-Guide-to-the-DKC-Pro-Color-Chart_Final.pdf" },
+  { id: "R67", title: "What is the Space of Spectral Sensitivity Functions for Digital Color Cameras?", type: "WACV 2013同行评审论文 · 28台相机单色仪实测SSF数据库", url: "https://www.gujinwei.org/research/camspec/camspec.pdf" },
+  { id: "R68", title: "ISO 17321-1 — Colour characterisation of digital still cameras: stimuli, metrology and test procedures", type: "ISO相机色彩特性化标准", url: "https://www.iso.org/obp/ui/#iso:std:iso:17321:-1" },
+  { id: "R69", title: "SpectralMeasurements — DIY monochromator camera SSF data including Lumix GH1 / GH2 / GF3", type: "独立研究者自建单色仪实测仓库", url: "https://github.com/ilia3101/SpectralMeasurements" },
+  { id: "R70", title: "rawtoaces-data — camera spectral sensitivities, illuminant SPDs and CIE CMFs", type: "AMPAS / ASWF官方光谱数据仓库", url: "https://github.com/AcademySoftwareFoundation/rawtoaces-data" },
+  { id: "R71", title: "Open Film Tools — camera spectral response and lens transmission database", type: "高校相机特性化研究项目", url: "http://andreas-karge.info/OFTP.html" },
+  { id: "R72", title: "Physlight — Camera Spectral Sensitivity Curves (Weta Digital lightsaber system)", type: "Zenodo公开实测数据", url: "https://zenodo.org/records/6590768" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));
