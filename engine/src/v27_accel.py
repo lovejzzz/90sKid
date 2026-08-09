@@ -1468,12 +1468,32 @@ def apply(
         work_scale: float,
     ) -> np.ndarray:
         coupling_started = time.perf_counter()
-        copy_started = time.perf_counter()
-        coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
-        profile_stochastic("coupling_initial_copy", copy_started)
-        marginal_started = time.perf_counter()
-        marginal = np.clip(4.0 * activations * (1.0 - activations), 0.0, 1.0)
-        profile_stochastic("coupling_marginal", marginal_started)
+        marginal_tile_pixels = getattr(
+            module, "_WAVEFRONT_INPLACE_MARGINAL_TILE_PIXELS", None
+        )
+        if marginal_tile_pixels is None:
+            copy_started = time.perf_counter()
+            coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
+            profile_stochastic("coupling_initial_copy", copy_started)
+            marginal_started = time.perf_counter()
+            marginal = np.clip(
+                4.0 * activations * (1.0 - activations), 0.0, 1.0
+            )
+            profile_stochastic("coupling_marginal", marginal_started)
+        else:
+            import wavefront_tile_lab_v001
+
+            marginal_started = time.perf_counter()
+            marginal = wavefront_tile_lab_v001.activation_marginal_inplace(
+                activations,
+                tile_pixels=int(marginal_tile_pixels),
+            )
+            profile_stochastic("coupling_marginal", marginal_started)
+            # Contract the activation lifetime before allocating the coupled
+            # output; the accepted default retains its historical order above.
+            copy_started = time.perf_counter()
+            coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
+            profile_stochastic("coupling_initial_copy", copy_started)
         for source_record in range(3):
             for source_population in range(3):
                 source = layer_deviation[..., source_record, source_population]

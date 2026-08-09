@@ -102,6 +102,7 @@ def main() -> None:
     parser.add_argument("--workset-pixels", type=int, default=0)
     parser.add_argument("--in-flight", type=int, default=2)
     parser.add_argument("--negative-only", action="store_true")
+    parser.add_argument("--marginal-workset-pixels", type=int, default=0)
     args = parser.parse_args()
     if args.workset_pixels < 0:
         raise ValueError("workset pixels cannot be negative")
@@ -128,6 +129,13 @@ def main() -> None:
             tile_in_flight=args.in_flight,
         )
         v35_accel.warm_metal_binomial("bernoulli")
+    wavefront_v001 = None
+    if args.marginal_workset_pixels:
+        import wavefront_tile_lab_v001 as wavefront_v001
+
+        wavefront_v001.install(
+            legacy.model, tile_pixels=args.marginal_workset_pixels
+        )
     for key in metal_binomial_bridge.STATS:
         metal_binomial_bridge.STATS[key] = 0
 
@@ -191,10 +199,21 @@ def main() -> None:
         if not args.workset_pixels
         else plane_bytes
     )
+    wavefront_snapshot = (
+        wavefront_v001.snapshot() if wavefront_v001 is not None else None
+    )
     report = {
-        "experiment": "V43H Wavefront Tile Lab",
+        "experiment": (
+            "Wavefront Tile Lab v0.0.1"
+            if wavefront_v001 is not None
+            else "V43H Wavefront Tile Lab"
+        ),
         "scope": (
-            "finite-site Philox/Bernoulli only; optical filtering, DIR, "
+            "exact tiled activation-to-DIR-marginal lifetime contraction; "
+            "finite-site sampling, optical filtering, DIR equations, "
+            "projection and scan remain unchanged"
+            if wavefront_v001 is not None
+            else "finite-site Philox/Bernoulli only; optical filtering, DIR, "
             "projection and scan remain whole-frame"
         ),
         "source": str(args.source),
@@ -206,6 +225,9 @@ def main() -> None:
             "workset_pixels_actual_max": actual_tile_pixels,
             "in_flight": args.in_flight if args.workset_pixels else 1,
             "full_width_row_tiles": bool(args.workset_pixels),
+            "marginal_workset_pixels": (
+                args.marginal_workset_pixels or None
+            ),
         },
         "timing_seconds": {
             "negative_formation": negative_seconds,
@@ -218,12 +240,20 @@ def main() -> None:
             / 1024**3,
             "scalar_plane_mib": plane_bytes / 1024**2,
             "estimated_sampler_transient_mib": sampler_transient / 1024**2,
+            "activation_tensor_mib": plane_bytes * 9 / 1024**2,
+            "v001_marginal_scratch_mib": (
+                None
+                if wavefront_snapshot is None
+                else float(wavefront_snapshot["maximum_scratch_bytes"])
+                / 1024**2
+            ),
         },
         "hashes": {name: sha256(array) for name, array in arrays.items()},
         "reference_comparison": comparisons,
         "all_reference_arrays_identical": bool(comparisons)
         and all(row["identical"] for row in comparisons.values()),
         "metal_sampler_stats": dict(metal_binomial_bridge.STATS),
+        "wavefront_v001_stats": wavefront_snapshot,
         "sampler_identity_audit": v35_accel.sampler_audit_snapshot(),
     }
     (args.output / "report.json").write_text(

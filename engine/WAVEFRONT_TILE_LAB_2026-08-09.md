@@ -124,6 +124,14 @@ filter, nine-layer and DIR arrays, and only the shortest GPU stage is queued.
 
 ## Next evidence-gated experiment
 
+Update: Wavefront Tile Lab v0.0.1 completed the first exact lifetime
+contraction. It reuses the nine-plane activation tensor as the DIR marginal,
+reducing negative-formation peak RSS by about 475 MiB while preserving every
+formed-density, projection and scan value. See
+`WAVEFRONT_TILE_LAB_V0.0.1_2026-08-09.md` for the implementation and evidence.
+
+The remaining resident-island target is:
+
 Build a separate resident planar island, still outside the release renderer:
 
 ```text
