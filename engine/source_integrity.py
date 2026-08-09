@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create or verify the versioned V42 engine-source recovery manifest."""
+"""Create or verify the versioned engine-source recovery manifest."""
 
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ def verify() -> None:
     changed = [str(path) for path, checksum in expected.items() if digest(path) != checksum]
     if changed:
         raise SystemExit(f"engine source checksum drift: {changed}")
-    print(f"V42 source integrity verified: {len(expected)} protected files")
+    print(f"engine source integrity verified: {len(expected)} protected files")
 
 
 def main() -> None:

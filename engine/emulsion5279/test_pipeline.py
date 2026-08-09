@@ -48,6 +48,43 @@ class PipelineContractTests(unittest.TestCase):
         self.assertTrue(report["production_execution_conformant"])
         self.assertTrue(all(report["checks"].values()))
 
+    def test_v43h_is_isolated_and_v42_resets_every_hypothesis(self) -> None:
+        import v43h_profile
+        import v42_profile
+
+        e = legacy.model
+        config = EngineConfig(profile="v43h", mode=EngineMode.REFERENCE)
+        v43h_profile.apply(e)
+        report = research_conformance(e, v43h_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(e.PRINT_GRAIN_DOMAIN, "hypothesis_common_density")
+        np.testing.assert_array_equal(
+            e.SPIRIT_PERIOD_OBSERVER_CENTRES_NM,
+            np.array([622.5, 542.5, 467.5], dtype=np.float32),
+        )
+
+        v42_profile.apply(e)
+        self.assertEqual(e.PRINT_GRAIN_DOMAIN, "none")
+        self.assertEqual(e.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE, 0.0)
+        np.testing.assert_array_equal(
+            e.SPIRIT_PERIOD_OBSERVER_CENTRES_NM,
+            np.array([620.0, 540.0, 470.0], dtype=np.float32),
+        )
+
+    def test_v43h_common_print_density_has_no_record_separation(self) -> None:
+        import v43h_profile
+
+        e = legacy.model
+        v43h_profile.apply(e)
+        density = np.full((48, 64, 3), 1.0, dtype=np.float32)
+        formed = e.form_2383_hypothesis_common_grain_density(
+            density, frame_index=12, grain_scale=1.0
+        )
+        delta = formed - density
+        np.testing.assert_array_equal(delta[..., 0], delta[..., 1])
+        np.testing.assert_array_equal(delta[..., 1], delta[..., 2])
+        self.assertLess(abs(float(delta.mean())), 2e-4)
+
     def test_two_delivery_encodings_reconstruct_the_same_light(self) -> None:
         rng = np.random.default_rng(5279)
         projection = rng.uniform(0.0, 1.0, (12, 16, 3)).astype(np.float32)

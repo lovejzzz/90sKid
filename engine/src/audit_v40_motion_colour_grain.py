@@ -78,6 +78,13 @@ def measure_frame(encoded: np.ndarray) -> dict[str, float | int]:
     return {
         "excluded_perimeter_pixels": 2,
         "dark_pixel_count": count,
+        "luma_p001": float(np.quantile(luma[valid], 0.001)),
+        "luma_p01": float(np.quantile(luma[valid], 0.01)),
+        "luma_p50": float(np.quantile(luma[valid], 0.50)),
+        "luma_p99": float(np.quantile(luma[valid], 0.99)),
+        "luma_p999": float(np.quantile(luma[valid], 0.999)),
+        "display_black_fraction": float(np.mean(luma[valid] <= (1.0 / 1023.0))),
+        "display_white_fraction": float(np.mean(luma[valid] >= (1022.0 / 1023.0))),
         "dark_opponent_p9999": float(np.quantile(tail, 0.9999)),
         "dark_spikes_gt_0_04_per_million": float(np.sum(dark & (opponent_range > 0.04)) / count * 1e6),
         "dark_spikes_gt_0_05_per_million": float(np.sum(dark & (opponent_range > 0.05)) / count * 1e6),

@@ -17,10 +17,26 @@ if str(LEGACY_SRC) not in sys.path:
 
 import emulsion_experiment as model  # noqa: E402
 import v42_profile as profile  # noqa: E402
+import v43h_profile  # noqa: E402
 
 
-def source_fingerprints() -> dict[str, str]:
+PROFILES = {
+    "v42": profile,
+    "v43h": v43h_profile,
+}
+
+
+def profile_for(version: str):
+    try:
+        return PROFILES[version]
+    except KeyError as error:
+        raise ValueError(f"unsupported emulsion profile: {version}") from error
+
+
+def source_fingerprints(active_profile=profile) -> dict[str, str]:
     return {
         "model_sha256": hashlib.sha256(Path(model.__file__).read_bytes()).hexdigest(),
-        "profile_sha256": hashlib.sha256(Path(profile.__file__).read_bytes()).hexdigest(),
+        "profile_sha256": hashlib.sha256(
+            Path(active_profile.__file__).read_bytes()
+        ).hexdigest(),
     }

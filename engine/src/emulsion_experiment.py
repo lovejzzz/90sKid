@@ -435,6 +435,12 @@ NEGATIVE_5279_DMIN_SPECTRAL_DENSITY = np.array(
 # colour correction. AutoDmin alone is not the complete scanner setup. A strong
 # but incomplete correction retains a small stock/scanner residual instead of
 # pretending that the proprietary factory calibration is known exactly.
+SPIRIT_PERIOD_OBSERVER_CENTRES_NM = np.array(
+    [620.0, 540.0, 470.0], dtype=np.float32
+)
+SPIRIT_PERIOD_OBSERVER_SIGMAS_NM = np.array(
+    [52.0, 44.0, 38.0], dtype=np.float32
+)
 SPIRIT_PRIMARY_CORRECTION_STRENGTH = 0.82
 # A Spirit's optical film match removes scanner/dye cross-talk but should not
 # force the dense shoulder to behave like three perfectly independent linear
@@ -614,6 +620,14 @@ PRINT_2383_CALLIER_GAIN_RGB = np.array([0.012, 0.010, 0.014], dtype=np.float32)
 IMAGE_STRUCTURE_DOMAIN = "display_residual"
 PRINT_GRAIN_DOMAIN = "display_ratio"
 PRINT_2383_FINE_GRAIN_DENSITY_SCALE = 0.10
+# V43H may opt into a deliberately weak, common-mode print-density event.  The
+# public 2383 sheet does not publish a record covariance or NPS, so the accepted
+# V42 baseline leaves this disabled.  These defaults are inert until a profile
+# selects ``hypothesis_common_density``.
+PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE = 0.0
+PRINT_2383_HYPOTHESIS_SITE_COUNT = 900.0
+PRINT_2383_HYPOTHESIS_RADIUS_PX_5760 = 0.30
+PRINT_2383_HYPOTHESIS_OPTICAL_SIGMA_PX_5760 = 0.23
 # FilmLight's typical reference projection is 16 foot-lamberts with a one-percent
 # flare signal. Keep a clean-transmission toggle, but the default projection look
 # must reproduce the viewed cinema reference on a low-flare display.
@@ -1175,8 +1189,12 @@ def _negative_5279_period_telecine_weights() -> np.ndarray:
     cross-talk that the scanner's later optical-film-match matrix must correct.
     """
     wavelength = NEGATIVE_DYE_WAVELENGTHS_NM[:, None]
-    centres = np.array([620.0, 540.0, 470.0], dtype=np.float32)[None, :]
-    sigmas = np.array([52.0, 44.0, 38.0], dtype=np.float32)[None, :]
+    centres = np.asarray(
+        SPIRIT_PERIOD_OBSERVER_CENTRES_NM, dtype=np.float32
+    )[None, :]
+    sigmas = np.asarray(
+        SPIRIT_PERIOD_OBSERVER_SIGMAS_NM, dtype=np.float32
+    )[None, :]
     weights = np.exp(-0.5 * np.square((wavelength - centres) / sigmas))
     return (weights / np.sum(weights, axis=0, keepdims=True)).astype(np.float32)
 
@@ -4022,6 +4040,55 @@ def form_2383_fine_grain_density(
     ).astype(np.float32)
 
 
+def form_2383_hypothesis_common_grain_density(
+    print_density: np.ndarray,
+    frame_index: int,
+    grain_scale: float,
+) -> np.ndarray:
+    """V43H-only common-mode 2383 density hypothesis.
+
+    V39's independent C/M/Y print populations created isolated primary-colour
+    tails and were withdrawn.  The public 2383 record does not identify their
+    covariance, so this hypothesis takes the most conservative non-zero case:
+    one very fine stochastic density event is shared by all three print
+    records.  It is formed in Status-A density, passed through the print
+    observer, and remains subordinate to transferred 5279 structure.
+    """
+    source = np.asarray(print_density, dtype=np.float32)
+    dmin = PRINT_2383_DENSITY_RGB[:, 0]
+    span = np.maximum(PRINT_2383_DMAX - dmin, 1e-6)
+    normalized = np.clip((source - dmin) / span, 0.0, 1.0)
+    # Equal record weighting deliberately avoids inventing a spectral
+    # preference.  The event amplitude is estimated from all three records;
+    # downstream it is explicitly interpreted as a spectrally neutral optical
+    # density perturbation, not as three independently measured dye records.
+    probability = np.mean(normalized, axis=-1).astype(np.float32)
+    native_scale = source.shape[1] / 5760.0
+    rng = np.random.default_rng(1_383_000 + int(frame_index))
+    formed = poisson_dye_cloud_layer(
+        probability,
+        rng,
+        PRINT_2383_HYPOTHESIS_RADIUS_PX_5760 * native_scale * grain_scale,
+        PRINT_2383_HYPOTHESIS_OPTICAL_SIGMA_PX_5760 * native_scale,
+        PRINT_2383_HYPOTHESIS_SITE_COUNT
+        / max(native_scale * native_scale, 1e-6),
+    )
+    common = (formed - probability).astype(np.float32)
+    # Remove the finite-frame conditional bias without changing the common
+    # stochastic field or its spatial spectrum.
+    repeated_level = np.repeat(probability[..., None], 3, axis=-1)
+    repeated_delta = np.repeat(common[..., None], 3, axis=-1)
+    common = remove_tonal_grain_bias(
+        repeated_level, repeated_delta
+    )[..., 0]
+    density_delta = (
+        PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE
+        * float(np.mean(span))
+        * common
+    )
+    return (source + density_delta[..., None]).astype(np.float32)
+
+
 def apply_spirit_2k_scan_aperture_to_density(
     scanner_density: np.ndarray,
 ) -> np.ndarray:
@@ -4331,7 +4398,8 @@ def reconstruct_density_pair_to_dual_display_v39(
     frame_index: int,
     grain_scale: float,
     output_encoding: str = "linear_rec709",
-) -> tuple[np.ndarray, np.ndarray]:
+    return_mean_pair: bool = False,
+) -> tuple[np.ndarray, ...]:
     """Render V39 projection and scan while sharing physical intermediates.
 
     The public single-observer function remains useful for tests and alternate
@@ -4377,6 +4445,15 @@ def reconstruct_density_pair_to_dual_display_v39(
     )
     print_mean = print_2383_density_from_negative(negative_printer_mean)
     print_mean_mtf = apply_2383_mtf_to_print_density(print_mean, grain_scale)
+    print_hypothesis_density_delta = None
+    if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
+        print_hypothesis_density = form_2383_hypothesis_common_grain_density(
+            print_mean_mtf, frame_index, grain_scale
+        )
+        print_hypothesis_density_delta = np.mean(
+            print_hypothesis_density - print_mean_mtf,
+            axis=-1,
+        ).astype(np.float32)
     formed_projection = None
     if (
         not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
@@ -4428,6 +4505,19 @@ def reconstruct_density_pair_to_dual_display_v39(
         projection = mean_projection + finish_projection_grain_delta(
             visible_delta,
         )
+        if print_hypothesis_density_delta is not None:
+            # Use the same observer-side integration that protects the
+            # accepted 5279 branch from unmeasured high-frequency opponent
+            # tails.  V43H defines this unmeasured candidate as a spectrally
+            # neutral optical-density event, so its stated model is the scalar
+            # transmission 10^-delta.  An alternative equal-record spectral
+            # interpretation remains an ablation, not a claimed identity.
+            print_hypothesis_projection = mean_projection * np.power(
+                10.0, -print_hypothesis_density_delta[..., None]
+            )
+            projection += finish_projection_grain_delta(
+                print_hypothesis_projection - mean_projection
+            )
     else:
         assert formed_projection is not None
         projection = formed_projection
@@ -4447,7 +4537,24 @@ def reconstruct_density_pair_to_dual_display_v39(
             return np.clip(image, 0.0, 1.0).astype(np.float32)
         raise ValueError(f"unknown output encoding: {output_encoding}")
 
-    return encode(projection), encode(scan)
+    result = (encode(projection), encode(scan))
+    if not return_mean_pair:
+        return result
+    if not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+        raise ValueError("mean observer pair requires managed formed density")
+    deterministic_scan = compress_oklab_chroma_to_rec709(mean_scan)
+    if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
+        deterministic_scan = neutralize_spirit_finished_gray_scale(
+            deterministic_scan
+        )
+    deterministic_projection = preserve_perceptual_grain_mean(
+        mean_projection, mean_projection
+    )
+    return (
+        *result,
+        encode(deterministic_projection),
+        encode(deterministic_scan),
+    )
 
 
 def label_panel(image: np.ndarray, text: str) -> np.ndarray:

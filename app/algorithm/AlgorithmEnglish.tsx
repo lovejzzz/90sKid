@@ -77,12 +77,26 @@ signed_records = film_basis_signed @ record_sensitivity.T
 records = where(all(signed_records >= 0), signed_records,
                 film_basis_clipped @ record_sensitivity.T)`;
 
+const v43hCode = `# V43H overrides only unmeasured candidates; every other V42 constant is frozen
+negative_nps = preserve_rms_48um(
+    redistribute_spatial_spectrum(scale=0.72, five_size_classes=True))
+spirit = lerp(v42_broad_observer, bounded_candidate, weight=0.25)
+
+# weak common print density only; no independent RGB print impulses
+delta_print = 0.06 * (binomial(900, p) / 900 - p)
+print_light = mean_print_light * 10 ** (-delta_print[..., None])
+
+projection, scan, deterministic = observe_once(realized_negative)
+fsd = independent_fsd(deterministic, N=176, sigma=0.597)`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · CURRENT V42</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V42 freezes the V41 image model and turns its research constraints, Production identity audit and single-master delivery into executable release conditions.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · V43H HYPOTHESIS / V42 BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V42 remains the accepted research baseline. V43H places only unmeasured candidates inside an isolated, removable experiment profile.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>Display delivery</b><small>BT.1886 master / sRGB companion</small></span></div></section>
+
+      <section className="method-section"><div className="method-index">V43H</div><div className="method-copy"><span className="section-tag">HYPOTHESIS EDITION · ISOLATED / REVERSIBLE</span><h2>Completing an unknown does not turn a prediction into a measurement</h2><p>V43H freezes V42 RAW interpretation, colour, H-D, DIR, MTF, 48 µm RMS, black and gamma. It tests only three central candidates that have documentary direction but no direct numerical measurement: a finer 35 mm spatial spectrum, a 25% move toward a synthetic period Spirit observer, and weak spectrally neutral common-density 2383 texture. Projection and scan share one realized negative; FSD reads the deterministic mean returned by that same spectral integration and remains an independent control.</p><pre><code>{v43hCode}</code></pre><div className="equation"><span>VERSION BOUNDARY</span><b>V43H = V42 + isolated hypotheses</b><small>Every new degree of freedom can be removed independently; the experiment profile cannot rewrite V42.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V42</div><div className="method-copy"><span className="section-tag">RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY</span><h2>An executable closure of V41 research—not a second “V2” visual style</h2><p>V42 adds no grade and claims no new 5279 material measurement. It makes the V37 stable integration phase, V40 processed-granularity boundary and withheld 2383 randomness, and V41 12.5% chart-bounded transport runtime gates. Production defaults to the validated Philox-u32 Bernoulli Metal realization and requires all 45 stochastic identities per frame to be complete and unique. The two 12-bit BT.1886 masters are written first; sRGB companions, stills and web media may only derive from those delivered files. V29 audio and timecode retention remains part of release finalization.</p><div className="equation"><span>VERSION MEANING</span><b>V42 image model = V41 accepted baseline</b><small>The version advances because engine, audit and delivery contracts became formal release behavior—not because a new aesthetic look was invented.</small></div></div></section>
 

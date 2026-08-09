@@ -1,4 +1,4 @@
-"""Command-line renderer for the explicit-stage V42 engine."""
+"""Command-line renderer for explicit V42/V43H engine profiles."""
 
 from __future__ import annotations
 
@@ -48,6 +48,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--array-workers", type=int, default=8)
     parser.add_argument("--grain-domain-salt", type=int, default=0)
     parser.add_argument(
+        "--profile", choices=("v42", "v43h"), default="v42"
+    )
+    parser.add_argument(
         "--experimental-overrides",
         action="store_true",
         help="permit non-baseline exposure/grain controls and mark the result experimental",
@@ -60,6 +63,7 @@ def main() -> None:
     if args.frames < 1:
         raise ValueError("frames must be positive")
     config = EngineConfig(
+        profile=args.profile,
         exposure_stops=args.exposure_stops,
         grain_scale=args.grain_scale,
         oversample=args.oversample,
@@ -93,7 +97,7 @@ def main() -> None:
                 elapsed = time.perf_counter() - started
                 eta = elapsed / (offset + 1) * (args.frames - offset - 1)
                 print(
-                    f"V42 frame {offset + 1}/{args.frames} · "
+                    f"{args.profile.upper()} frame {offset + 1}/{args.frames} · "
                     f"elapsed {elapsed:.1f}s · ETA {eta:.1f}s",
                     flush=True,
                 )

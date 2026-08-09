@@ -80,6 +80,7 @@ img { display:block; max-width:100%; }
 .archive-list { display:grid; gap:56px; padding-bottom:120px; }
 .version-card { background:var(--card); border:1px solid var(--line); padding:38px; scroll-margin-top:90px; }
 .version-card.is-current { box-shadow:inset 5px 0 var(--red); }
+.version-card.is-hypothesis { box-shadow:inset 5px 0 #a572da; }
 .version-heading { display:grid; grid-template-columns:180px 1fr; gap:40px; margin-bottom:28px; }
 .version-heading > div:first-child { display:flex; align-items:baseline; gap:12px; }
 .version-number { font:600 44px/1 var(--font-geist-mono); letter-spacing:-.08em; }

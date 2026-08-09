@@ -17,7 +17,7 @@ export type VersionEntry = {
   version: string;
   year: string;
   title: string;
-  status: "prototype" | "calibration" | "current";
+  status: "prototype" | "calibration" | "current" | "hypothesis";
   projection: BranchImage;
   bluray: BranchImage;
   fsd?: BranchImage;
@@ -2074,7 +2074,7 @@ const v42Parameters: ParameterGroup[] = [
     title: "数据保护", titleEn: "DATA PROTECTION", items: [
       { label: "事故", labelEn: "Incident", value: "V41前引擎目录丢失 · 删除触发器未知", valueEn: "Pre-V42 engine directory lost · deletion trigger unknown" },
       { label: "恢复", labelEn: "Recovery", value: "895条编辑记录 → 199个文件", valueEn: "895 edit records → 199 files" },
-      { label: "当前保护", labelEn: "Current protection", value: "214个作者文件 · Git远端 · SHA-256 manifest · CI", valueEn: "214 authored files · remote Git · SHA-256 manifest · CI" },
+      { label: "当前保护", labelEn: "Current protection", value: "218个作者文件 · Git远端 · SHA-256 manifest · CI", valueEn: "218 authored files · remote Git · SHA-256 manifest · CI", note: "V42恢复时为214；V43H新增4个受保护文件", noteEn: "214 at V42 recovery; V43H adds four protected files" },
       { label: "生成数据", labelEn: "Generated data", value: "视频不进Git；82MB缓存由版本化builder重建并核验hash", valueEn: "Video excluded; 82 MB cache rebuilt by versioned builder and hash-verified" },
     ],
   },
@@ -2095,6 +2095,99 @@ versions.push({
   discoveries: ["真正可确认的根因是关键源码只有一份未版本化副本；具体删除触发器无法由现存日志确定", "版本正确性不应由某一次随机颗粒的像素哈希定义，而应由成像方程、统计合同和交付权威共同定义", "Archive与Production可以产生不同乳剂实例，同时遵守同一H-D、48µm RMS、NPS和时间独立边界", "把研究常量做成运行时断言，可以阻止旧Profile泄漏或优化代码静默改写成像", "从实际12-bit母版派生全部观看文件，才能从结构上消除截图与视频成为两幅画面的可能"],
   refs: v41.refs,
   parameters: v42Parameters,
+});
+
+const v42 = versions[versions.length - 1];
+v42.year = "研究基线";
+v42.status = "calibration";
+
+const v43hParameters: ParameterGroup[] = [
+  {
+    title: "版本边界", titleEn: "VERSION BOUNDARY", items: [
+      { label: "版本类别", labelEn: "Release class", value: "假想版 · 预测，不是测量", valueEn: "Hypothesis Edition · prediction, not measurement" },
+      { label: "问题", labelEn: "Question", value: "补全最可能但尚未测量的部分后，5279可能是什么样？", valueEn: "What might 5279 look like if the most likely unmeasured parts are completed?" },
+      { label: "正式基线", labelEn: "Accepted baseline", value: "V42仍是研究一致性基线", valueEn: "V42 remains the research-conformant baseline" },
+      { label: "没有加入", labelEn: "Not added", value: "白平衡、曝光、黑位、Gamma、饱和度或艺术调色", valueEn: "No white balance, exposure, black, gamma, saturation or creative grade" },
+    ],
+  },
+  {
+    title: "V43H新假设", titleEn: "V43H NEW HYPOTHESES", items: [
+      { label: "负片相关尺度", labelEn: "Negative correlation scale", value: "V42 × 0.72", valueEn: "V42 × 0.72", note: "保持官方48µm RMS，只重新分配空间频谱", noteEn: "Official 48 µm RMS retained; only spatial spectrum is redistributed" },
+      { label: "五级半径倍率", labelEn: "Five radius factors", value: "0.46 · 0.64 · 0.83 · 1.04 · 1.30", valueEn: "0.46 · 0.64 · 0.83 · 1.04 · 1.30" },
+      { label: "五级光学倍率", labelEn: "Five optical factors", value: "0.72 · 0.83 · 0.94 · 1.06 · 1.18", valueEn: "0.72 · 0.83 · 0.94 · 1.06 · 1.18" },
+      { label: "快层五级权重", labelEn: "Fast-layer weights", value: "0.10 · 0.25 · 0.36 · 0.22 · 0.07", valueEn: "0.10 · 0.25 · 0.36 · 0.22 · 0.07" },
+      { label: "中层五级权重", labelEn: "Medium-layer weights", value: "0.17 · 0.32 · 0.32 · 0.15 · 0.04", valueEn: "0.17 · 0.32 · 0.32 · 0.15 · 0.04" },
+      { label: "慢层五级权重", labelEn: "Slow-layer weights", value: "0.26 · 0.36 · 0.27 · 0.09 · 0.02", valueEn: "0.26 · 0.36 · 0.27 · 0.09 · 0.02" },
+      { label: "Spirit候选权重", labelEn: "Spirit candidate weight", value: "25%", valueEn: "25%", note: "不是Spirit实测响应", noteEn: "Not a measured Spirit response" },
+      { label: "Spirit中心 R/G/B", labelEn: "Spirit centres R/G/B", value: "622.5 · 542.5 · 467.5 nm", valueEn: "622.5 · 542.5 · 467.5 nm" },
+      { label: "Spirit σ R/G/B", labelEn: "Spirit σ R/G/B", value: "49.4 · 41.8 · 36.1 nm", valueEn: "49.4 · 41.8 · 36.1 nm" },
+      { label: "2383颗粒候选", labelEn: "2383 grain candidate", value: "光谱中性共模密度", valueEn: "spectrally neutral common density", note: "振幅取自三记录平均；禁止V39式独立RGB脉冲", noteEn: "Amplitude from the three-record mean; V39-style independent RGB impulses prohibited" },
+      { label: "2383密度尺度 / 位点", labelEn: "2383 density scale / sites", value: "0.06 / 900", valueEn: "0.06 / 900" },
+      { label: "2383半径 / 光学σ", labelEn: "2383 radius / optical σ", value: "0.30 / 0.23 px @ 5760", valueEn: "0.30 / 0.23 px @ 5760" },
+    ],
+  },
+  {
+    title: "三路模型与相机见证", titleEn: "THREE MODELS & CAMERA WITNESS", items: [
+      { label: "放映", labelEn: "Projection", value: "同一V43H 5279负片 → 2383 → 氙灯观察", valueEn: "Same V43H 5279 negative → 2383 → xenon observer" },
+      { label: "扫描", labelEn: "Scan", value: "同一V43H 5279负片 → Period Spirit / Cineon", valueEn: "Same V43H 5279 negative → period Spirit / Cineon" },
+      { label: "FSD", labelEn: "FSD", value: "N=176 · σ=0.597px · 强度1.0", valueEn: "N=176 · σ=0.597 px · strength 1.0", note: "独立后观察器有限密度对照，不并入5279", noteEn: "Independent post-observer finite-density control; not merged into 5279" },
+      { label: "相机原图", labelEn: "Camera witness", value: "Apple Standard ProRes RAW → Panasonic官方V-709 · 0 stop", valueEn: "Apple Standard ProRes RAW → Panasonic official V-709 · 0 stop" },
+    ],
+  },
+  {
+    title: "交付、门禁与效率", titleEn: "DELIVERY, GATES & PERFORMANCE", items: [
+      { label: "专业母版", labelEn: "Professional master", value: "5760×4320 · 24帧 · 12-bit ProRes 4444 XQ · BT.1886", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444 XQ · BT.1886" },
+      { label: "QuickTime伴随版", labelEn: "QuickTime companion", value: "从实际母版解码 → sRGB · 12-bit XQ", valueEn: "Decoded from actual master → sRGB · 12-bit XQ" },
+      { label: "随机身份", labelEn: "Stochastic identities", value: "45 / 帧 · 24帧1080次 · 0重复", valueEn: "45 / frame · 1,080 across 24 frames · zero duplicates" },
+      { label: "V39彩噪门禁", labelEn: "V39 colour-spike gate", value: "逐帧暗部综合色尾部 + 孤立原色脉冲", valueEn: "Every-frame dark opponent tails + isolated primary impulses", note: "离散计数采用432项Bonferroni 1%全家族误报率", noteEn: "Discrete counts use a Bonferroni 1% family-wise false-rejection rate across 432 tests" },
+      { label: "T020四路总耗时", labelEn: "T020 four-view wall time", value: "1708.30秒 · 28分28.30秒", valueEn: "1,708.30 s · 28m 28.30s" },
+      { label: "T020有效每帧", labelEn: "T020 effective per frame", value: "71.18秒", valueEn: "71.18 s" },
+      { label: "T020负片 / 双观察器 / FSD", labelEn: "T020 negative / dual observer / FSD", value: "13.89 / 49.00 / 3.08秒每帧", valueEn: "13.89 / 49.00 / 3.08 s per frame" },
+      { label: "T032四路总耗时", labelEn: "T032 four-view wall time", value: "1725.66秒 · 71.90秒/帧", valueEn: "1,725.66 s · 71.90 s/frame" },
+      { label: "T007四路总耗时", labelEn: "T007 four-view wall time", value: "1699.91秒 · 70.83秒/帧", valueEn: "1,699.91 s · 70.83 s/frame" },
+    ],
+  },
+];
+
+const v43hBranch = (source: string, branch: string, label: string): BranchImage => ({
+  src: `/versions/v43h-${source}-${branch}.jpg`,
+  videoSrc: `/versions/v43h-${source}-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V43H",
+  year: "假想版",
+  title: "把最可能、尚未测量的部分隔离成一场可撤回实验",
+  status: "hypothesis",
+  projection: v43hBranch("t020", "projection", "T020 · V43H 5279 → 2383氙灯放映"),
+  bluray: v43hBranch("t020", "bluray", "T020 · V43H 5279 → Period 2K / Cineon扫描"),
+  fsd: v43hBranch("t020", "fsd", "T020 · 独立FSD有限密度对照"),
+  camera: v43hBranch("t020", "camera", "T020 · Panasonic官方V-709相机见证 · 无胶片管线"),
+  summary: "V43H回答一个明确的假设问题：如果把现有研究中最可能、但仍没有直接测量的5279颗粒空间频谱、时期Spirit观察器与2383微弱颗粒补全，结果可能是什么样？V42的颜色、H-D、DIR、MTF、48µm RMS、黑位、Gamma与RAW解释全部冻结。V43H只在独立Profile内收窄35mm染料云频谱、向受资料约束的Spirit候选移动25%，并测试弱小、光谱中性的共模2383密度纹理。放映和扫描共享同一块实现的V43H负片；FSD保持独立；相机V-709只作原图见证。",
+  changes: ["建立不污染V42的V43H独立Profile与hypothesis_not_measurement来源标签", "保留官方48µm RMS振幅，收窄和加密35mm颗粒的空间频谱", "Period扫描器只向受DFT架构与Kodak通用telecine曲线约束的候选移动25%", "加入弱小、由三记录平均估计振幅的2383光谱中性共模密度纹理，禁止独立RGB印片颗粒", "放映与扫描由同一次V43H负片显影共同产生，确定性观察器复用同一次光谱积分", "FSD继续作为独立有限密度路线，不升级成5279物理模型", "三个指定素材均输出放映、扫描、FSD和Panasonic官方V-709原图见证", "四路均先写原生5.7K 12-bit XQ母版，再从实际文件派生sRGB伴随版、静帧与网页hover视频"],
+  errors: ["V43H的颗粒NPS不是Kodak测量；48µm RMS不能唯一决定空间频谱", "Spirit中心与带宽不是DFT公开响应，只是从宽观察器向合成候选的四分之一步", "2383三记录颗粒协方差和曝光相关NPS没有公开，因此共模项只能是从属预测", "T003/T005户外色卡不足以授权新白平衡、完整GH7矩阵或全局饱和度修正", "第一轮离散尖峰门禁错误地把Poisson期望计数当成硬上限；T007真实绿色边缘的17个候选只因超过ceil(14.7)=15而误判失败", "V43H通过交付门禁只证明内部一致，不能把预测参数变成5279事实"],
+  discoveries: ["V39式坏电视彩噪的直接机制是未识别的2383独立RGB Poisson尾部；共模密度不会制造孤立原色尖峰", "同一观察器积分可以同时返回物理实现与确定性均值，FSD无需重新跑一遍193³光谱图", "T032同帧V42→V43H的平均通道变化小于0.001，保留了预测性差异而没有偷偷调色", "颗粒细腻程度可以在官方48µm RMS不变时改变，因为振幅积分与空间NPS不是同一约束", "随机事件率必须用统计上界审计：432项测试采用Bonferroni 1%全家族误报率，V39的上千/百万尖峰仍会数量级失败", "假想版最重要的产品边界不是好看，而是每一个未经测量的自由度都能被单独撤回"],
+  refs: ["R1", "R4", "R7", "R8", "R21", "R25", "R44", "R49", "R58", "R59"],
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T032 · Frame 0–23",
+      note: "雨天青绿、暗柱与低反差纹理：检查Spirit候选是否产生统一色偏，以及三路颗粒是否保持35mm尺度。",
+      projection: v43hBranch("t032", "projection", "T032 · V43H 2383放映"),
+      bluray: v43hBranch("t032", "bluray", "T032 · V43H Period 2K扫描"),
+      fsd: v43hBranch("t032", "fsd", "T032 · FSD有限密度"),
+      camera: v43hBranch("t032", "camera", "T032 · Panasonic官方V-709原图"),
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面、绿色细节与较高局部饱和：检查颗粒/锐度匹配、综合色尾部和高频观察器积分。",
+      projection: v43hBranch("t007", "projection", "T007 · V43H 2383放映"),
+      bluray: v43hBranch("t007", "bluray", "T007 · V43H Period 2K扫描"),
+      fsd: v43hBranch("t007", "fsd", "T007 · FSD有限密度"),
+      camera: v43hBranch("t007", "camera", "T007 · Panasonic官方V-709原图"),
+    },
+  ],
+  parameters: v43hParameters,
 });
 
 for (const version of versions) {

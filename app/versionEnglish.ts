@@ -481,7 +481,7 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "T032 tests exposure-conditioned grain in rain, low contrast and cyan-green detail.",
   },
   V27: {
-    year: "CURRENT BASELINE",
+    year: "RESEARCH BASELINE",
     title: "Separating a scanner's green veil from film colour",
     summary:
       "V27 identifies the pale green veil in the Blu-ray branch as a level-dependent scanner neutral-axis error, not 5279 colour or grain. A 2049-level neutral exposure scale corrects RGB balance while preserving each pixel's Rec.709 luminance, black, contrast and gamma.",
@@ -977,6 +977,40 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     ],
     trialNote:
       "V42 currently inherits the matched V41 visual witnesses because the image model is frozen; new media will replace them only after native one-second validation.",
+  },
+  V43H: {
+    year: "HYPOTHESIS EDITION",
+    title: "Isolate the most likely unmeasured pieces as one reversible experiment",
+    summary:
+      "V43H asks a bounded question: what might 5279 look like if the most probable—but still unmeasured—negative grain spectrum, period Spirit observer and subordinate 2383 texture were completed? V42 colour, H-D, DIR, MTF, 48 µm RMS, black, gamma and RAW interpretation remain frozen. An isolated profile narrows the 35 mm cloud spectrum, moves one quarter toward a documented-family Spirit candidate and tests weak, spectrally neutral common-density 2383 texture. Projection and scan share one realized V43H negative; FSD remains independent; Panasonic V-709 is only a camera witness.",
+    changes: [
+      "Create a V43H-only profile with explicit hypothesis_not_measurement provenance",
+      "Keep official 48 µm RMS amplitude while narrowing and densifying the candidate 35 mm spatial spectrum",
+      "Move the period scanner only 25% toward a candidate bounded by DFT architecture and Kodak's generic telecine plot",
+      "Test weak, spectrally neutral common-density 2383 texture, estimate its amplitude from the three-record mean, and prohibit independent RGB print impulses",
+      "Produce projection and scan from the same V43H negative realization and reuse one spectral integration for the deterministic observer",
+      "Keep FSD as an independent finite-density route rather than promoting it into physical 5279",
+      "Render all three requested sources as projection, scan, FSD and official Panasonic V-709 camera witness",
+      "Write native 5.7K 12-bit XQ masters first, then derive sRGB companions, stills and hover media from the encoded files",
+    ],
+    errors: [
+      "V43H's grain NPS is not a Kodak measurement; 48 µm RMS cannot uniquely identify a spatial spectrum",
+      "The Spirit centres and bandwidths are not disclosed DFT responses—only a quarter-step toward a synthetic candidate",
+      "Public 2383 data do not identify three-record grain covariance or exposure-conditioned NPS, so the common-mode term remains subordinate",
+      "The outdoor T003/T005 charts do not authorize a new white balance, complete GH7 matrix or global saturation correction",
+      "The first discrete-spike gate mistook a Poisson expected count for a hard maximum; 17 real green-edge candidates on T007 failed only because ceil(14.7) was 15",
+      "Passing delivery gates proves internal consistency, not that predicted parameters have become 5279 facts",
+    ],
+    discoveries: [
+      "V39's broken-television colour noise came directly from unidentified independent RGB print-Poisson tails; common density does not create isolated primary impulses",
+      "One observer integration can return both the physical realization and deterministic mean, so FSD does not require a second 193³ spectral graph",
+      "The matched T032 V42→V43H mean-channel change remains below 0.001, preserving a predictive difference without adding a grade",
+      "Grain fineness can change while official 48 µm RMS stays fixed because aperture amplitude and spatial NPS are different constraints",
+      "A stochastic event rate needs a statistical acceptance bound: 432 tests now use a Bonferroni one-percent family-wise false-rejection rate, while V39's thousands-per-million failure remains orders of magnitude outside it",
+      "The central product boundary of a Hypothesis Edition is reversibility: every unmeasured degree of freedom must remain independently removable",
+    ],
+    trialNote:
+      "T032 tests a rainy cyan-green scene, dark columns and low contrast; T007 tests water, green fine detail, local saturation and the sharpness/grain relationship. Every example includes projection, period scan, independent FSD and the unfilmed Panasonic V-709 witness.",
   },
 };
 

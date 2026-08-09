@@ -1,4 +1,4 @@
-"""Explicit-stage V42 research-conformant frame engine."""
+"""Explicit-stage research-conformant frame engine with isolated profiles."""
 
 from __future__ import annotations
 
@@ -36,10 +36,11 @@ class FormedNegative:
 
 
 class Emulsion5279Engine:
-    """Own the configured V42 graph without exposing historical profile mutation."""
+    """Own one configured graph without exposing historical profile mutation."""
 
     def __init__(self, config: EngineConfig | None = None) -> None:
         self.config = config or EngineConfig()
+        self.profile = legacy.profile_for(self.config.profile)
         self._configured = False
 
     @property
@@ -51,7 +52,7 @@ class Emulsion5279Engine:
 
             sampler_audit = v35_accel.sampler_audit_snapshot()
         return {
-            "engine_api": "emulsion5279-v42",
+            "engine_api": f"emulsion5279-{self.config.profile}",
             "profile": self.config.profile,
             "input_colour_contract": self.config.input_colour.value,
             "delivery_contract": [
@@ -60,10 +61,10 @@ class Emulsion5279Engine:
             ],
             "print_lattice_sha256": PRINT_2383_OUTPUT_LATTICE.sha256,
             "research_conformance": assert_research_conformance(
-                legacy.model, legacy.profile, self.config
+                legacy.model, self.profile, self.config
             ),
             "production_sampler_audit": sampler_audit,
-            **legacy.source_fingerprints(),
+            **legacy.source_fingerprints(self.profile),
         }
 
     def validate_rendered_frames(self, expected_frames: int) -> dict[str, object] | None:
@@ -87,7 +88,7 @@ class Emulsion5279Engine:
         return audit
 
     def configure(self) -> None:
-        """Select V42 once and install its evidence-gated execution graph."""
+        """Select one profile and install its evidence-gated execution graph."""
         global _ACTIVE_CONFIG
         if self._configured:
             return
@@ -101,7 +102,7 @@ class Emulsion5279Engine:
                 )
             verify_v41_runtime_assets()
             e = legacy.model
-            legacy.profile.apply(e)
+            self.profile.apply(e)
             cv2.setNumThreads(self.config.opencv_threads)
             e.BINOMIAL_PARALLEL_WORKERS = self.config.binomial_workers
             e._PRINT_2383_MONITOR_OUTPUT_LUT = np.load(
@@ -132,7 +133,7 @@ class Emulsion5279Engine:
                     domain_salt=self.config.grain_domain_salt,
                 )
                 v35_accel.warm_metal_binomial("bernoulli")
-            assert_research_conformance(e, legacy.profile, self.config)
+            assert_research_conformance(e, self.profile, self.config)
             _ACTIVE_CONFIG = self.config
             self._configured = True
 
@@ -153,7 +154,7 @@ class Emulsion5279Engine:
         film_rgb = e.scene_to_5279_film_rgb(
             frame,
             exposure_stops=self.config.exposure_stops,
-            raw_colour=legacy.profile.PROFILE["raw_colour"],
+            raw_colour=self.profile.PROFILE["raw_colour"],
             include_optical_scatter=True,
             sensor_noise_treatment="photochemical",
         )
@@ -182,11 +183,42 @@ class Emulsion5279Engine:
         projection = adapt_frame_linear(
             projection,
             scan,
-            legacy.profile.PROFILE.get(
+            self.profile.PROFILE.get(
                 "final_adapter_opponent_high_frequency_retention", 1.0
             ),
         )
         return ObserverPair(projection, scan)
+
+    def observe_with_mean(
+        self, negative: FormedNegative, absolute_frame: int
+    ) -> tuple[ObserverPair, ObserverPair]:
+        """Return physical and deterministic observers from shared intermediates."""
+        self.configure()
+        projection, scan, mean_projection, mean_scan = (
+            legacy.model.reconstruct_density_pair_to_dual_display_v39(
+                negative.mean_record_density,
+                negative.formed_record_density,
+                int(absolute_frame),
+                self.config.grain_scale,
+                "linear_rec709",
+                return_mean_pair=True,
+            )
+        )
+        from apply_v31_normal_process_adapter import adapt_frame_linear
+
+        retention = self.profile.PROFILE.get(
+            "final_adapter_opponent_high_frequency_retention", 1.0
+        )
+        return (
+            ObserverPair(
+                adapt_frame_linear(projection, scan, retention),
+                scan,
+            ),
+            ObserverPair(
+                adapt_frame_linear(mean_projection, mean_scan, retention),
+                mean_scan,
+            ),
+        )
 
     @staticmethod
     def encode_reference(observers: ObserverPair) -> EncodedObserverPair:

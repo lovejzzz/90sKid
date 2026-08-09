@@ -21,6 +21,8 @@ def _close(actual: float, expected: float, tolerance: float = 1e-9) -> bool:
 def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict[str, Any]:
     """Report code-level ownership of the latest accepted research boundaries."""
 
+    hypothesis = config.profile == "v43h"
+
     checks = {
         # V37: independent sites, stable numerical integration operator.
         "v37_stable_balanced_phase": model.GRAIN_SUBPIXEL_PHASE_MODE
@@ -38,8 +40,8 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
         "v40_formed_density_observer_management": bool(
             model.FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
         ),
-        "v40_no_unmeasured_2383_stochastic_population": model.PRINT_GRAIN_DOMAIN
-        == "none",
+        "v40_or_v43h_explicit_2383_grain_boundary": model.PRINT_GRAIN_DOMAIN
+        == ("hypothesis_common_density" if hypothesis else "none"),
         "v40_archive_pointwise_signed_grain_observer": (
             model.PROJECTION_GRAIN_DELTA_OBSERVER == "archive_pointwise"
         ),
@@ -71,10 +73,44 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
             and config.grain_domain_salt == 0
         ),
     }
+    if hypothesis:
+        expected = profile.PROFILE
+        checks.update(
+            {
+                "v43h_is_explicitly_not_a_measurement": (
+                    expected.get("release_class") == "hypothesis_not_measurement"
+                ),
+                "v43h_kodak_48um_rms_authority_retained": (
+                    model.GRAIN_CALIBRATION_DOMAIN == "post_coupling_residual"
+                    and _close(model.NEGATIVE_GRAIN_CORRELATION_SCALE, 0.72)
+                ),
+                "v43h_spirit_quarter_step_isolated": (
+                    np.array_equal(
+                        np.asarray(model.SPIRIT_PERIOD_OBSERVER_CENTRES_NM),
+                        np.asarray(profile.SPIRIT_PERIOD_OBSERVER_CENTRES_NM),
+                    )
+                    and np.array_equal(
+                        np.asarray(model.SPIRIT_PERIOD_OBSERVER_SIGMAS_NM),
+                        np.asarray(profile.SPIRIT_PERIOD_OBSERVER_SIGMAS_NM),
+                    )
+                ),
+                "v43h_2383_common_mode_is_subordinate": (
+                    _close(
+                        model.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE,
+                        0.06,
+                    )
+                    and _close(model.PRINT_2383_HYPOTHESIS_SITE_COUNT, 900.0)
+                ),
+            }
+        )
     image_model_conformant = all(checks.values())
     production_execution = config.mode is EngineMode.PRODUCTION_METAL
     return {
-        "contract": "accepted-v37-through-v42",
+        "contract": (
+            "accepted-v37-through-v42-plus-isolated-v43h-hypotheses"
+            if hypothesis
+            else "accepted-v37-through-v42"
+        ),
         "checks": checks,
         "image_model_conformant": image_model_conformant,
         "production_execution_conformant": (

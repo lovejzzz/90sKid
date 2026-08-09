@@ -99,6 +99,18 @@ signed_records = film_basis_signed @ record_sensitivity.T
 records = where(all(signed_records >= 0), signed_records,
                 film_basis_clipped @ record_sensitivity.T)`;
 
+const v43hCode = `# V43H只覆盖未测量的候选项；V42其余常量冻结
+negative_nps = preserve_rms_48um(
+    redistribute_spatial_spectrum(scale=0.72, five_size_classes=True))
+spirit = lerp(v42_broad_observer, bounded_candidate, weight=0.25)
+
+# 2383只允许弱共模密度；没有独立RGB印片脉冲
+delta_print = 0.06 * (binomial(900, p) / 900 - p)
+print_light = mean_print_light * 10 ** (-delta_print[..., None])
+
+projection, scan, deterministic = observe_once(realized_negative)
+fsd = independent_fsd(deterministic, N=176, sigma=0.597)`;
+
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
     rng = Generator(SeedSequence([frame_record_layer_class_seed, stripe.index]))
@@ -133,9 +145,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V42</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V42冻结V41的画面模型，把研究约束、Production随机身份审计与单一母版交付变成可执行的发布条件。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V43H HYPOTHESIS / V42 BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V42仍是研究基线；V43H只把尚未测量的候选项放入隔离、可撤回的实验Profile。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V43H</div><div className="method-copy"><span className="section-tag">HYPOTHESIS EDITION · ISOLATED / REVERSIBLE</span><h2>补全未知，不等于把猜测写成测量</h2><p>V43H冻结V42的RAW解释、颜色、H-D、DIR、MTF、48µm RMS、黑位与Gamma，只测试三个有资料方向但没有直接数值测量的中心候选：更细密的35mm空间频谱、向时期Spirit合成观察器移动25%，以及弱小、光谱中性的2383共模密度纹理。放映和扫描共享同一份实现负片；FSD只读取同次光谱积分返回的确定性均值，仍是一条独立对照。</p><pre><code>{v43hCode}</code></pre><div className="equation"><span>版本边界</span><b>V43H = V42 + isolated hypotheses</b><small>每个新自由度都能单独关闭；V42不会被实验Profile改写。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V42</div><div className="method-copy"><span className="section-tag">RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY</span><h2>这是V41研究成果的可执行收口，不是另一条“V2”画面风格</h2><p>V42不增加调色，也不声称取得新的5279材料测量。它把V37稳定积分相位、V40处理后颗粒度边界与无虚构2383随机颗粒、V41的12.5%色卡约束逐项做成运行门槛；Production默认使用经验证的Philox-u32 Bernoulli Metal实现，并要求每帧45个随机身份完整且无重复。两条12-bit BT.1886母版先落盘，sRGB观看版、截图与网页素材只能从实际母版反解生成；音频与时间码按V29边界保留。</p><div className="equation"><span>版本含义</span><b>V42 image model = V41 accepted baseline</b><small>版本号前进是因为引擎、审计与交付契约成为正式发布的一部分，而不是因为创造了新的审美外观。</small></div></div></section>
 

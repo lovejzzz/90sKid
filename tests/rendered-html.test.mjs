@@ -17,21 +17,20 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V42 project home page", async () => {
+test("server-renders the bilingual V43H hypothesis over the V42 baseline", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V42/);
-  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V41/);
+  assert.match(currentSection, /CURRENT HYPOTHESIS[\s\S]{0,80}V43H/);
+  assert.match(currentSection, /V42 REMAINS THE BASELINE/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v41-t031-projection/);
-  assert.match(html, /v41-t031-projection-live-srgb\.mp4/);
-  assert.match(html, /v41-t031-fsd-live-srgb\.mp4/);
-  assert.match(html, /v33-t031-camera-as-shot/);
-  assert.match(html, /https:\/\/lovejzzz\.github\.io\/90sKid\/versions\/v41-t031-projection/);
+  assert.match(html, /v43h-t020-projection/);
+  assert.match(html, /v43h-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /v43h-t020-fsd-live-srgb\.mp4/);
+  assert.match(html, /v43h-t020-camera-live-srgb\.mp4/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -39,7 +38,7 @@ test("server-renders the bilingual V42 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V42 archive, research and algorithm routes", async () => {
+test("server-renders the V43H archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -47,7 +46,11 @@ test("server-renders the V42 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V42/);
+  assert.match(versions, /V4—[\s\S]{0,30}V43H/);
+  assert.match(versions, /HYPOTHESIS EDITION/);
+  assert.match(versions, /NJARAW_S001_S001_T020/);
+  assert.match(versions, /NJARAW_S001_S001_T032/);
+  assert.match(versions, /NJARAW_S001_S001_T007/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(versions, /CONTROLLED PIPELINE COMPARISON/);
   assert.match(versions, /V41 PHYSICAL 5279/);
@@ -83,6 +86,7 @@ test("server-renders the V42 archive, research and algorithm routes", async () =
   assert.match(research, /V41 · TWO-CHART-BOUNDED COLOUR TRANSPORT/);
   assert.match(research, /V42 · RESEARCH-CONFORMANT ENGINE/);
   assert.match(research, /V42 · DATA-LOSS INCIDENT \/ PREVENTION/);
+  assert.match(research, /V43H · HYPOTHESIS EDITION/);
   assert.match(research, /214 authored files|214个作者文件/);
   assert.match(research, /deletion trigger|删除触发器/);
   assert.match(research, /12\.5% retained/);
@@ -97,7 +101,8 @@ test("server-renders the V42 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /CURRENT V42/);
+  assert.match(algorithm, /V43H HYPOTHESIS \/ V42 BASELINE/);
+  assert.match(algorithm, /HYPOTHESIS EDITION · ISOLATED \/ REVERSIBLE/);
   assert.match(algorithm, /RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY/);
   assert.match(algorithm, /T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED/);
   assert.match(algorithm, /ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES/);
@@ -614,6 +619,45 @@ test("V41 publishes four-view media from chart-bounded native 12-bit sources", a
   assert.equal(Object.keys(manifest.verification).length, 12);
   assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
   for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.companion_metadata.width, 5760);
+    assert.equal(result.companion_metadata.height, 4320);
+    assert.equal(result.companion_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.companion_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.companion_metadata.nb_frames, "24");
+    assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.companion_metadata.profile, "XQ");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V43H publishes three four-view hypothesis trials from native 12-bit authorities", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v43h-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.release, "V43H Hypothesis Edition");
+  assert.equal(manifest.release_class, "hypothesis_not_measurement");
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.absolute_source_frame_contract, {
+    t020: [0, 23],
+    t032: [0, 23],
+    t007: [276, 299],
+  });
+  assert.match(manifest.pipelines.projection, /2383 xenon/);
+  assert.match(manifest.pipelines.scan, /same V43H negative/);
+  assert.match(manifest.pipelines.fsd, /independent/);
+  assert.match(manifest.pipelines.camera, /no film pipeline/);
+  assert.equal(Object.keys(manifest.verification).length, 12);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.release_class, "hypothesis_not_measurement");
     assert.equal(result.companion_metadata.width, 5760);
     assert.equal(result.companion_metadata.height, 4320);
     assert.equal(result.companion_metadata.pix_fmt, "yuv444p12le");
