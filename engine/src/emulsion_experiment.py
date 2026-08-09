@@ -886,7 +886,11 @@ def compress_oklab_chroma_to_rec709(
         high = np.where(fits, high, scale)
     lab[:, 1:3] *= low[:, None]
     result[out] = oklab_to_linear_rec709(lab)
-    return np.clip(result, lower_bound, 1.0).astype(np.float32)
+    # ``result`` is already an owned float32 buffer.  Clipping it in place
+    # preserves every code value while avoiding two complete image copies
+    # (one from ``clip`` and another from ``astype``) at this frequent boundary.
+    np.clip(result, lower_bound, 1.0, out=result)
+    return result
 
 
 def smoothstep(edge0: float, edge1: float, value: np.ndarray) -> np.ndarray:
@@ -2034,9 +2038,40 @@ def apply_2383_h61_colour_delta_lut(
     return result.reshape(source.shape).astype(np.float32)
 
 
+def projection_monitor_scan_metrics(
+    scan_reference: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Build the shared scan-side quantities for the 2383 monitor observer.
+
+    The colour match and the neutral-highlight guard consume the same scan
+    luminance target.  Keeping that target in one immutable tuple avoids a
+    second full-frame max/min, luminance sum and interpolation without changing
+    either observer equation.
+    """
+    scan = np.asarray(scan_reference)
+    reference_luma = np.einsum(
+        "...c,c->...", np.maximum(scan, 0.0), [0.2126, 0.7152, 0.0722]
+    )
+    target_luma = np.interp(
+        reference_luma,
+        PRINT_MONITOR_SCAN_LUMA_ANCHORS,
+        PRINT_MONITOR_TARGET_LUMA_ANCHORS,
+    ).astype(np.float32)
+    scaled_reference = scan * (
+        target_luma / np.maximum(reference_luma, 1e-6)
+    )[..., None]
+    reference_lab = linear_rec709_to_oklab(np.maximum(scaled_reference, 0.0))
+    scan_max = np.max(scan, axis=-1)
+    scan_relative_chroma = (
+        scan_max - np.min(scan, axis=-1)
+    ) / np.maximum(scan_max, 1e-6)
+    return reference_lab, target_luma, scan_relative_chroma
+
+
 def match_2383_projection_to_rec709_monitor(
     physical_projection: np.ndarray,
     scan_reference: np.ndarray,
+    scan_metrics: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
 ) -> np.ndarray:
     """Translate a physical 2383/xenon view into a Rec.709 monitor view.
 
@@ -2054,18 +2089,12 @@ def match_2383_projection_to_rec709_monitor(
     # 2383's steeper toe/midtone/shoulder relationship. The former per-colour
     # lightness blend darkened green/yellow regions more than blue and created
     # an apparent whole-frame cool shift even when neutral patches were correct.
-    reference_luma = np.einsum(
-        "...c,c->...", np.maximum(scan_reference, 0.0), [0.2126, 0.7152, 0.0722]
-    )
-    target_luma = np.interp(
-        reference_luma,
-        PRINT_MONITOR_SCAN_LUMA_ANCHORS,
-        PRINT_MONITOR_TARGET_LUMA_ANCHORS,
-    ).astype(np.float32)
-    scaled_reference = scan_reference * (
-        target_luma / np.maximum(reference_luma, 1e-6)
-    )[..., None]
-    reference_lab = linear_rec709_to_oklab(np.maximum(scaled_reference, 0.0))
+    if scan_metrics is None:
+        reference_lab, _target_luma, _scan_relative_chroma = (
+            projection_monitor_scan_metrics(scan_reference)
+        )
+    else:
+        reference_lab, _target_luma, _scan_relative_chroma = scan_metrics
     lightness = reference_lab[..., 0]
 
     physical_ab = physical_lab[..., 1:3]
@@ -2314,8 +2343,11 @@ def _render_2383_monitor_projection_base_from_record_density(
             if scan_source is None
             else scan_source[row0:row1]
         )
+        scan_metrics = projection_monitor_scan_metrics(stripe_scan_reference)
         calibrated_view = match_2383_projection_to_rec709_monitor(
-            calibrated_physical, stripe_scan_reference
+            calibrated_physical,
+            stripe_scan_reference,
+            scan_metrics=scan_metrics,
         )
 
         physical_max = np.max(physical_view, axis=-1)
@@ -2345,20 +2377,7 @@ def _render_2383_monitor_projection_base_from_record_density(
             oklab_to_linear_rec709(hybrid_lab)
         )
 
-        scan_max = np.max(stripe_scan_reference, axis=-1)
-        scan_relative_chroma = (
-            scan_max - np.min(stripe_scan_reference, axis=-1)
-        ) / np.maximum(scan_max, 1e-6)
-        scan_luma = np.einsum(
-            "...c,c->...",
-            np.maximum(stripe_scan_reference, 0.0),
-            [0.2126, 0.7152, 0.0722],
-        )
-        target_neutral = np.interp(
-            scan_luma,
-            PRINT_MONITOR_SCAN_LUMA_ANCHORS,
-            PRINT_MONITOR_TARGET_LUMA_ANCHORS,
-        ).astype(np.float32)
+        _reference_lab, target_neutral, scan_relative_chroma = scan_metrics
         neutral_highlight_weight = (
             smoothstep(0.82, 0.94, target_neutral)
             * (1.0 - smoothstep(0.010, 0.060, scan_relative_chroma))
@@ -2367,7 +2386,8 @@ def _render_2383_monitor_projection_base_from_record_density(
             hybrid * (1.0 - neutral_highlight_weight[..., None])
             + target_neutral[..., None] * neutral_highlight_weight[..., None]
         )
-    return np.clip(result, 0.0, 1.0).astype(np.float32)
+    np.clip(result, 0.0, 1.0, out=result)
+    return result.astype(np.float32, copy=False)
 
 
 def continuous_cineon_code_from_record_density(
@@ -2484,11 +2504,11 @@ def apply_2383_d60_relative_chroma_calibration(
         cineon_chroma = np.max(cineon, axis=-1) - np.min(cineon, axis=-1)
         neutral_guard = smoothstep(0.008, 0.040, cineon_chroma)
         lab += delta * neutral_guard[..., None] * strength
-    return np.clip(
-        compress_oklab_chroma_to_rec709(oklab_to_linear_rec709(lab)),
-        0.0,
-        1.0,
-    ).astype(np.float32)
+    # The gamut compressor already owns the [0, 1] float32 boundary.  A second
+    # clip/astype here only copied the native frame twice.
+    return compress_oklab_chroma_to_rec709(
+        oklab_to_linear_rec709(lab)
+    ).astype(np.float32, copy=False)
 
 
 def render_2383_monitor_projection_from_record_density(
@@ -2802,12 +2822,19 @@ def finish_projection_grain_delta(grain_delta: np.ndarray) -> np.ndarray:
     opponent_low = cv2.GaussianBlur(
         opponent, (0, 0), sigma, borderType=cv2.BORDER_REFLECT
     )
-    opponent = (
-        opponent_low
-        + PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
-        * (opponent - opponent_low)
-    )
-    opponent *= PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH
+    if PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION == 0.0:
+        # V40 and later explicitly withdraw this unidentified high-frequency
+        # opponent remainder.  Avoid forming and multiplying a full-frame
+        # residual whose coefficient is exactly zero.
+        opponent = opponent_low
+    else:
+        opponent = (
+            opponent_low
+            + PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
+            * (opponent - opponent_low)
+        )
+    if PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH != 1.0:
+        opponent *= PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH
     return (common + opponent).astype(np.float32)
 
 

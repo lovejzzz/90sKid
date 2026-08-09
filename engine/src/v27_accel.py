@@ -654,6 +654,7 @@ def apply(
     def match_projection_zero_physical_authority(
         physical_projection: np.ndarray,
         scan_reference: np.ndarray,
+        scan_metrics: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
     ) -> np.ndarray:
         physical = np.asarray(physical_projection, dtype=np.float32)
         scan = np.asarray(scan_reference, dtype=np.float32)
@@ -664,29 +665,21 @@ def apply(
             or module.PRINT_MONITOR_PHYSICAL_HUE_WEIGHT != 0.0
             or module.PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT != 0.0
         ):
-            return reference_match_projection(physical, scan)
+            return reference_match_projection(
+                physical, scan, scan_metrics=scan_metrics
+            )
 
         # V31 withdrew unmeasured physical hue and saturation authority. The
         # historical general expression still evaluated every physical OKLab,
         # norm and smoothstep before multiplying those branches by exact zero.
         # Preserve the surviving scan-reference arithmetic and its operation
         # order without evaluating a colour contribution that cannot exist.
-        reference_luma = np.einsum(
-            "...c,c->...",
-            np.maximum(scan, 0.0),
-            [0.2126, 0.7152, 0.0722],
-        )
-        target_luma = np.interp(
-            reference_luma,
-            module.PRINT_MONITOR_SCAN_LUMA_ANCHORS,
-            module.PRINT_MONITOR_TARGET_LUMA_ANCHORS,
-        ).astype(np.float32)
-        scaled_reference = scan * (
-            target_luma / np.maximum(reference_luma, 1e-6)
-        )[..., None]
-        reference_lab = module.linear_rec709_to_oklab(
-            np.maximum(scaled_reference, 0.0)
-        )
+        if scan_metrics is None:
+            reference_lab, _target_luma, _scan_relative_chroma = (
+                module.projection_monitor_scan_metrics(scan)
+            )
+        else:
+            reference_lab, _target_luma, _scan_relative_chroma = scan_metrics
         lightness = reference_lab[..., 0]
         reference_ab = reference_lab[..., 1:3]
         reference_chroma = np.linalg.norm(reference_ab, axis=-1)
@@ -700,17 +693,11 @@ def apply(
         reference_saturation = reference_chroma / np.maximum(
             reference_lab[..., 0], 0.025
         )
-        saturation = np.clip(
-            reference_saturation,
-            0.88 * reference_saturation,
-            1.18 * reference_saturation + 1e-5,
-        )
+        # The lower bound is <= the non-negative reference value and the upper
+        # bound is >= it, so this historical self-clip is exactly an identity.
+        saturation = reference_saturation
         if module.PRINT_MONITOR_CHROMA_ADAPTATION == "absolute_chroma":
-            target_chroma = np.clip(
-                reference_chroma,
-                0.94 * reference_chroma,
-                1.12 * reference_chroma + 1e-5,
-            )
+            target_chroma = reference_chroma
         elif module.PRINT_MONITOR_CHROMA_ADAPTATION == "relative_saturation":
             target_chroma = saturation * lightness
         else:
@@ -1045,7 +1032,8 @@ def apply(
                 + module.BLURAY_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
                 * (opponent[row0:row1] - opponent_low[row0:row1])
             )
-            opponent_rows *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
+            if module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH != 1.0:
+                opponent_rows *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
             mean_luma = np.einsum(
                 "...c,c->...",
                 np.maximum(mean_source[row0:row1], 0.0),

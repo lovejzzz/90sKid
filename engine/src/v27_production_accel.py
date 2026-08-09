@@ -62,7 +62,8 @@ def apply(module, *, residual_convolution: bool = False) -> None:
             + module.BLURAY_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
             * (opponent - opponent_low)
         ).astype(np.float32)
-        opponent *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
+        if module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH != 1.0:
+            opponent *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
         mean_luma = np.einsum(
             "...c,c->...", np.maximum(mean, 0.0), weights
         ).astype(np.float32)

@@ -62,9 +62,25 @@ whose configured coefficient is zero.
   the historical three-value mean without those redundant native RGB images.
 - Exact-zero short circuits for deterministic grain de-bias, withdrawn
   projection colour authority and withdrawn high-frequency opponent retention.
+- One shared scan-side metric bundle for the 2383 monitor colour match and its
+  neutral-highlight guard. This removes a duplicate full-frame max/min,
+  luminance reduction and neutral-curve interpolation.
+- In-place clipping at the frequently used OKLab/Rec.709 gamut boundary and at
+  the analytical projection result. The buffers were already owned float32
+  arrays; the former clip-plus-astype sequence copied the complete image twice.
+- Exact-one short circuits for the projection and Blu-ray opponent-strength
+  multipliers, plus removal of mathematically self-bounding saturation clips in
+  the zero-physical-authority V31 monitor adapter.
 
 Reference NumPy functions remain available as fallbacks. The fused kernels are
 execution choices, not new film equations.
+
+At 1440 x 1080, controlled same-process kernel trials measured the in-place
+gamut boundary at 1.14x and the shared scan metric path at 1.33x their
+historical implementations. The V43H zero-retention projection-grain tail fell
+from 36.94 ms to 32.61 ms (1.13x). These are kernel measurements, not claims
+about end-to-end render speed; native performance still varies materially with
+machine load and thermal state.
 
 ## Rejected experiments
 
@@ -120,7 +136,7 @@ delivered picture.
 
 ## Regression gates
 
-- `engine.emulsion5279.test_pipeline`: 17 / 17 passed;
+- `engine.emulsion5279.test_pipeline`: 19 / 19 passed;
 - FSD, V32 kernel and V41 colour-transport suites: 8 / 8 passed;
 - website build and rendered-HTML suite: 21 / 21 passed;
 - native master comparisons: 12 / 12 exact.

@@ -130,6 +130,51 @@ class PipelineContractTests(unittest.TestCase):
         e.PRINT_2383_D60_RELATIVE_CHROMA_DELTA_PATH = original
         np.testing.assert_array_equal(actual, expected)
 
+    def test_shared_projection_scan_metrics_are_bit_exact(self) -> None:
+        """Sharing scan-side 2383 metrics cannot change the colour match."""
+        e = legacy.model
+        legacy.profile.apply(e)
+        rng = np.random.default_rng(238343)
+        physical = rng.uniform(0.0, 1.0, (72, 96, 3)).astype(np.float32)
+        scan = rng.uniform(0.0, 1.0, physical.shape).astype(np.float32)
+        expected = e.match_2383_projection_to_rec709_monitor(physical, scan)
+        metrics = e.projection_monitor_scan_metrics(scan)
+        actual = e.match_2383_projection_to_rec709_monitor(
+            physical, scan, scan_metrics=metrics
+        )
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_zero_projection_hf_residual_shortcut_is_bit_exact(self) -> None:
+        """V40+'s zero-retention branch preserves the historical equation."""
+        e = legacy.model
+        legacy.profile.apply(e)
+        self.assertEqual(e.PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION, 0.0)
+        rng = np.random.default_rng(4043)
+        delta = rng.normal(0.0, 0.01, (72, 96, 3)).astype(np.float32)
+        luma = np.einsum(
+            "...c,c->...", delta, [0.2126, 0.7152, 0.0722]
+        )
+        common = luma[..., None]
+        opponent = delta - common
+        sigma = max(
+            e.PROJECTION_CHROMA_GRAIN_SIGMA_AT_2K * delta.shape[1] / 2048.0,
+            0.05,
+        )
+        opponent_low = cv2.GaussianBlur(
+            opponent, (0, 0), sigma, borderType=cv2.BORDER_REFLECT
+        )
+        historical = (
+            common
+            + (
+                opponent_low
+                + e.PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
+                * (opponent - opponent_low)
+            )
+            * e.PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH
+        ).astype(np.float32)
+        optimized = e.finish_projection_grain_delta(delta)
+        np.testing.assert_array_equal(optimized, historical)
+
     def test_deterministic_grain_mean_shortcut_is_bit_exact(self) -> None:
         """The no-grain observer must retain the historical float32 result."""
         e = legacy.model
