@@ -1,4 +1,4 @@
-"""Second-generation, explicit-stage V41 frame engine."""
+"""Explicit-stage V42 research-conformant frame engine."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from .contracts import (
     ObserverPair,
     RenderedFrame,
 )
+from .conformance import assert_research_conformance
 from . import legacy
 
 
@@ -35,7 +36,7 @@ class FormedNegative:
 
 
 class Emulsion5279Engine:
-    """Own a configured V41 graph without exposing historical profile mutation."""
+    """Own the configured V42 graph without exposing historical profile mutation."""
 
     def __init__(self, config: EngineConfig | None = None) -> None:
         self.config = config or EngineConfig()
@@ -43,8 +44,14 @@ class Emulsion5279Engine:
 
     @property
     def provenance(self) -> dict[str, object]:
+        self.configure()
+        sampler_audit: dict[str, object] | None = None
+        if self.config.mode is EngineMode.PRODUCTION_METAL:
+            import v35_accel
+
+            sampler_audit = v35_accel.sampler_audit_snapshot()
         return {
-            "engine_api": "emulsion5279-v2",
+            "engine_api": "emulsion5279-v42",
             "profile": self.config.profile,
             "input_colour_contract": self.config.input_colour.value,
             "delivery_contract": [
@@ -52,11 +59,35 @@ class Emulsion5279Engine:
                 DeliveryEncoding.QUICKTIME_SRGB.value,
             ],
             "print_lattice_sha256": PRINT_2383_OUTPUT_LATTICE.sha256,
+            "research_conformance": assert_research_conformance(
+                legacy.model, legacy.profile, self.config
+            ),
+            "production_sampler_audit": sampler_audit,
             **legacy.source_fingerprints(),
         }
 
+    def validate_rendered_frames(self, expected_frames: int) -> dict[str, object] | None:
+        """Close the Production identity gate before an output is published."""
+        if self.config.mode is not EngineMode.PRODUCTION_METAL:
+            return None
+        import v35_accel
+
+        audit = v35_accel.sampler_audit_snapshot()
+        if audit["frames_audited"] != int(expected_frames):
+            raise RuntimeError(
+                "Production sampler audit did not cover every rendered frame: "
+                f"{audit['frames_audited']}/{expected_frames}"
+            )
+        if audit["total_calls"] != int(expected_frames) * 45:
+            raise RuntimeError(
+                "Production sampler call count drifted from 45 identities per frame"
+            )
+        if audit["duplicate_identity_count"] != 0:
+            raise RuntimeError("Production sampler produced duplicate identities")
+        return audit
+
     def configure(self) -> None:
-        """Select V41 once and install only output-identical acceleration."""
+        """Select V42 once and install its evidence-gated execution graph."""
         global _ACTIVE_CONFIG
         if self._configured:
             return
@@ -65,7 +96,7 @@ class Emulsion5279Engine:
                 return
             if _ACTIVE_CONFIG is not None and _ACTIVE_CONFIG != self.config:
                 raise RuntimeError(
-                    "the archival V41 backend owns process-global caches; use one "
+                    "the recovered V41 backend owns process-global caches; use one "
                     "EngineConfig per process until the remaining kernels are lifted"
                 )
             verify_v41_runtime_assets()
@@ -76,7 +107,10 @@ class Emulsion5279Engine:
             e._PRINT_2383_MONITOR_OUTPUT_LUT = np.load(
                 PRINT_2383_OUTPUT_LATTICE.path, allow_pickle=False
             )
-            if self.config.mode is EngineMode.ARCHIVE_EXACT_CPU:
+            if self.config.mode in (
+                EngineMode.ARCHIVE_EXACT_CPU,
+                EngineMode.PRODUCTION_METAL,
+            ):
                 import v27_accel
 
                 v27_accel.apply(
@@ -86,6 +120,19 @@ class Emulsion5279Engine:
                     exact_only=True,
                 )
                 v27_accel.warm(e)
+            if self.config.mode is EngineMode.PRODUCTION_METAL:
+                import v27_production_accel
+                import v35_accel
+
+                v27_production_accel.apply(e)
+                v35_accel.apply_metal_binomial(
+                    e,
+                    mode="bernoulli",
+                    asynchronous=True,
+                    domain_salt=self.config.grain_domain_salt,
+                )
+                v35_accel.warm_metal_binomial("bernoulli")
+            assert_research_conformance(e, legacy.profile, self.config)
             _ACTIVE_CONFIG = self.config
             self._configured = True
 
@@ -142,13 +189,19 @@ class Emulsion5279Engine:
         return ObserverPair(projection, scan)
 
     @staticmethod
-    def encode(observers: ObserverPair) -> tuple[EncodedObserverPair, EncodedObserverPair]:
+    def encode_reference(observers: ObserverPair) -> EncodedObserverPair:
         e = legacy.model
-        master = EncodedObserverPair(
+        return EncodedObserverPair(
             projection=e.bt1886_reference_encode(observers.projection_linear_rec709),
             scan=e.bt1886_reference_encode(observers.scan_linear_rec709),
             encoding=DeliveryEncoding.REFERENCE_BT1886,
         )
+
+    @staticmethod
+    def encode(observers: ObserverPair) -> tuple[EncodedObserverPair, EncodedObserverPair]:
+        """Analytical transfer-pair helper for tests, not release file writing."""
+        e = legacy.model
+        master = Emulsion5279Engine.encode_reference(observers)
         quicktime = EncodedObserverPair(
             projection=e.srgb_encode(observers.projection_linear_rec709).astype(np.float32),
             scan=e.srgb_encode(observers.scan_linear_rec709).astype(np.float32),
@@ -168,13 +221,13 @@ class Emulsion5279Engine:
             formed_at = time.perf_counter()
             observers = self.observe(negative, absolute_frame)
             observed_at = time.perf_counter()
-            master, quicktime = self.encode(observers)
+            master = self.encode_reference(observers)
             encoded_at = time.perf_counter()
         return RenderedFrame(
             absolute_frame=int(absolute_frame),
             observers=observers,
             reference_master=master,
-            quicktime_companion=quicktime,
+            quicktime_companion=None,
             stage_seconds={
                 "negative_formation": formed_at - started,
                 "dual_observer": observed_at - formed_at,

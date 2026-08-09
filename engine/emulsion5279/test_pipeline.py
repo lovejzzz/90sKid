@@ -1,12 +1,23 @@
 from __future__ import annotations
 
+import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
 import numpy as np
+import cv2
 
-from .contracts import DeliveryEncoding, EngineConfig, EngineMode, ObserverPair
+from .contracts import (
+    DeliveryEncoding,
+    EngineConfig,
+    EngineMode,
+    ObserverPair,
+    RenderedFrame,
+)
+from .conformance import research_conformance
+from .io import DualDeliveryWriter
 from .pipeline import Emulsion5279Engine
 from . import legacy
 
@@ -19,6 +30,23 @@ class PipelineContractTests(unittest.TestCase):
             EngineConfig(oversample=0)
         with self.assertRaises(ValueError):
             EngineConfig(grain_scale=-1.0)
+        with self.assertRaises(ValueError):
+            EngineConfig(exposure_stops=0.0)
+        experimental = EngineConfig(
+            exposure_stops=0.0,
+            research_baseline=False,
+            mode=EngineMode.REFERENCE,
+        )
+        self.assertFalse(experimental.research_baseline)
+
+    def test_default_executes_the_latest_research_sampler_contract(self) -> None:
+        config = EngineConfig()
+        self.assertEqual(config.mode, EngineMode.PRODUCTION_METAL)
+        legacy.profile.apply(legacy.model)
+        report = research_conformance(legacy.model, legacy.profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(report["production_execution_conformant"])
+        self.assertTrue(all(report["checks"].values()))
 
     def test_two_delivery_encodings_reconstruct_the_same_light(self) -> None:
         rng = np.random.default_rng(5279)
@@ -69,6 +97,114 @@ class PipelineContractTests(unittest.TestCase):
         engine = Emulsion5279Engine(EngineConfig(mode=EngineMode.REFERENCE))
         raw = np.asarray([[[0.2, 1.4, 8.0]]], dtype=np.float32)
         np.testing.assert_array_equal(engine._validate_raw_frame(raw), raw)
+
+    def test_release_companion_and_still_derive_from_encoded_master(self) -> None:
+        width, height, frames = 64, 48, 2
+        yy, xx = np.mgrid[0:height, 0:width].astype(np.float32)
+        xx /= width - 1
+        yy /= height - 1
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with DualDeliveryWriter(root, width, height, "24/1", frames) as writer:
+                for frame_index in range(frames):
+                    phase = frame_index * 0.01
+                    observers = ObserverPair(
+                        np.stack(
+                            [
+                                0.05 + 0.75 * xx,
+                                0.08 + 0.70 * yy,
+                                0.06 + 0.65 * (0.6 * xx + 0.4 * yy),
+                            ],
+                            axis=2,
+                        ).astype(np.float32)
+                        + phase,
+                        np.stack(
+                            [
+                                0.07 + 0.65 * yy,
+                                0.06 + 0.68 * xx,
+                                0.09 + 0.60 * (0.4 * xx + 0.6 * yy),
+                            ],
+                            axis=2,
+                        ).astype(np.float32)
+                        + phase,
+                    )
+                    writer.write(
+                        RenderedFrame(
+                            frame_index,
+                            observers,
+                            Emulsion5279Engine.encode_reference(observers),
+                        )
+                    )
+            for branch in ("projection", "bluray_scan"):
+                branch_root = root / branch
+                master = branch_root / "05_emulsion_master_prores4444.mov"
+                companion = branch_root / "06_quicktime_preview_srgb_prores4444.mov"
+                still = branch_root / "still_emulsion.jpg"
+                self.assertTrue(master.exists() and companion.exists() and still.exists())
+                metadata = json.loads(
+                    subprocess.check_output(
+                        [
+                            "ffprobe",
+                            "-v",
+                            "error",
+                            "-select_streams",
+                            "v:0",
+                            "-show_entries",
+                            "stream=pix_fmt,profile,color_transfer,nb_frames",
+                            "-of",
+                            "json",
+                            str(companion),
+                        ],
+                        text=True,
+                    )
+                )["streams"][0]
+                self.assertEqual(metadata["profile"], "XQ")
+                self.assertEqual(metadata["pix_fmt"], "yuv444p12le")
+                self.assertEqual(metadata["color_transfer"], "iec61966-2-1")
+                self.assertEqual(int(metadata["nb_frames"]), frames)
+
+                def decode(path: Path) -> np.ndarray:
+                    payload = subprocess.check_output(
+                        [
+                            "ffmpeg",
+                            "-v",
+                            "error",
+                            "-i",
+                            str(path),
+                            "-vf",
+                            (
+                                "setparams=range=tv:color_primaries=bt709:"
+                                "color_trc=bt709:colorspace=bt709"
+                            ),
+                            "-pix_fmt",
+                            "rgb48le",
+                            "-f",
+                            "rawvideo",
+                            "-",
+                        ]
+                    )
+                    return (
+                        np.frombuffer(payload, "<u2")
+                        .reshape(frames, height, width, 3)
+                        .astype(np.float32)
+                        / 65535.0
+                    )
+
+                master_code = decode(master)
+                companion_code = decode(companion)
+                np.testing.assert_allclose(
+                    legacy.model.bt1886_reference_decode(master_code),
+                    legacy.model.srgb_decode(companion_code),
+                    rtol=0.0,
+                    atol=0.004,
+                )
+                still_rgb = cv2.cvtColor(
+                    cv2.imread(str(still), cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB
+                ).astype(np.float32) / 255.0
+                self.assertLess(
+                    float(np.mean(np.abs(still_rgb - companion_code[frames // 2]))),
+                    0.02,
+                )
 
 
 if __name__ == "__main__":

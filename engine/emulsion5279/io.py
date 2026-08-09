@@ -77,6 +77,152 @@ def _xq_command(path: Path, width: int, height: int, fps: str) -> list[str]:
     return command
 
 
+def _read_exact(stream, size: int) -> bytes:
+    parts: list[bytes] = []
+    remaining = size
+    while remaining:
+        part = stream.read(remaining)
+        if not part:
+            break
+        parts.append(part)
+        remaining -= len(part)
+    return b"".join(parts)
+
+
+def rebuild_srgb_companion_from_master(
+    master: Path,
+    companion: Path,
+    frames: int,
+) -> None:
+    """Make the review movie and still from the delivered 12-bit master.
+
+    This is the V39--V41 single-picture-authority contract.  The companion is
+    not a second lossy realization from the pre-encode float image: it decodes
+    the actual BT.1886 ProRes master, reconstructs reference light, and applies
+    only the sRGB display transfer.
+    """
+
+    width, height, fps = legacy.model.probe_video(master)
+    decoder = subprocess.Popen(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-i",
+            str(master),
+            "-map",
+            "0:v:0",
+            "-vf",
+            (
+                "setparams=color_primaries=bt709:color_trc=bt709:"
+                "colorspace=bt709"
+            ),
+            "-frames:v",
+            str(frames),
+            "-pix_fmt",
+            "rgb48le",
+            "-f",
+            "rawvideo",
+            "-",
+        ],
+        stdout=subprocess.PIPE,
+    )
+    temporary = companion.with_name(companion.stem + ".rebuilt.mov")
+    temporary.unlink(missing_ok=True)
+    encoder = subprocess.Popen(
+        _xq_command(temporary, width, height, fps), stdin=subprocess.PIPE
+    )
+    if decoder.stdout is None or encoder.stdin is None:
+        raise RuntimeError("failed to open master-derived delivery pipes")
+    frame_bytes = width * height * 3 * 2
+    representative: np.ndarray | None = None
+    completed = 0
+    try:
+        for frame_index in range(frames):
+            payload = _read_exact(decoder.stdout, frame_bytes)
+            if len(payload) != frame_bytes:
+                break
+            master_code = (
+                np.frombuffer(payload, "<u2")
+                .reshape(height, width, 3)
+                .astype(np.float32)
+                / 65535.0
+            )
+            light = legacy.model.bt1886_reference_decode(master_code)
+            srgb = legacy.model.srgb_encode(light).astype(np.float32)
+            encoded = np.rint(np.clip(srgb, 0.0, 1.0) * 65535.0).astype("<u2")
+            encoder.stdin.write(encoded.tobytes())
+            if frame_index == frames // 2:
+                representative = srgb.copy()
+            completed += 1
+    finally:
+        decoder.stdout.close()
+        encoder.stdin.close()
+    decoder_status = decoder.wait()
+    encoder_status = encoder.wait()
+    if decoder_status or encoder_status or completed != frames:
+        temporary.unlink(missing_ok=True)
+        raise RuntimeError(
+            "master-derived sRGB rebuild failed: "
+            f"decoder={decoder_status}, encoder={encoder_status}, "
+            f"frames={completed}/{frames}"
+        )
+    legacy.model.finalize_prores_srgb_metadata(temporary)
+    temporary.replace(companion)
+    if representative is None:
+        raise RuntimeError("no representative master-derived frame captured")
+    pixels = np.rint(np.clip(representative, 0.0, 1.0) * 255.0).astype(np.uint8)
+    cv2.imwrite(
+        str(companion.parent / "still_emulsion.jpg"),
+        cv2.cvtColor(pixels, cv2.COLOR_RGB2BGR),
+        [cv2.IMWRITE_JPEG_QUALITY, 96],
+    )
+
+
+def retain_source_audio_and_timecode(
+    output: Path,
+    source: Path,
+    start_frame: int,
+    frames: int,
+    fps: str,
+) -> dict[str, object]:
+    """Apply the accepted V29 source-stream contract to every V42 movie."""
+
+    from render_v29_full_release import (
+        probe_source,
+        remux_source_audio_and_timecode,
+    )
+
+    source_probe = probe_source(source)
+    source_frames = int(source_probe["streams"][0]["nb_frames"])
+    outputs: list[str] = []
+    for directory in ("projection", "bluray_scan"):
+        root = Path(output) / directory
+        for filename, transfer in (
+            ("05_emulsion_master_prores4444.mov", "rec709"),
+            ("06_quicktime_preview_srgb_prores4444.mov", "srgb"),
+        ):
+            movie = root / filename
+            remux_source_audio_and_timecode(
+                movie,
+                source,
+                movie,
+                "V42",
+                start_frame=int(start_frame),
+                frames=int(frames),
+                fps=fps,
+                source_frames=source_frames,
+                transfer=transfer,
+            )
+            outputs.append(str(movie))
+    return {
+        "contract": "V29 frame-accurate source PCM/timecode retention",
+        "source_frames": source_frames,
+        "range": [int(start_frame), int(start_frame) + int(frames) - 1],
+        "outputs_finalized": outputs,
+    }
+
+
 @dataclass(slots=True)
 class _Writer:
     path: Path
@@ -117,10 +263,18 @@ class _Writer:
 
 
 class DualDeliveryWriter:
-    """Write both observers in reference-master and QuickTime encodings."""
+    """Write two observer masters, then derive every viewing deliverable."""
 
-    def __init__(self, output: Path, width: int, height: int, fps: str) -> None:
+    def __init__(
+        self,
+        output: Path,
+        width: int,
+        height: int,
+        fps: str,
+        frames: int,
+    ) -> None:
         self.output = Path(output)
+        self.frames = int(frames)
         self._writers: dict[tuple[str, DeliveryEncoding], _Writer] = {}
         for branch, directory in (
             ("projection", "projection"),
@@ -134,31 +288,11 @@ class DualDeliveryWriter:
                 height,
                 fps,
             )
-            self._writers[(branch, DeliveryEncoding.QUICKTIME_SRGB)] = _Writer.open(
-                root / "06_quicktime_preview_srgb_prores4444.mov",
-                DeliveryEncoding.QUICKTIME_SRGB,
-                width,
-                height,
-                fps,
-            )
 
     def write(self, frame: RenderedFrame) -> None:
-        for encoded in (frame.reference_master, frame.quicktime_companion):
-            self._writers[("projection", encoded.encoding)].write(encoded.projection)
-            self._writers[("scan", encoded.encoding)].write(encoded.scan)
-
-    def save_stills(self, frame: RenderedFrame) -> None:
-        for branch, image in (
-            ("projection", frame.quicktime_companion.projection),
-            ("bluray_scan", frame.quicktime_companion.scan),
-        ):
-            output = self.output / branch / "still_emulsion.jpg"
-            pixels = np.rint(np.clip(image, 0.0, 1.0) * 255.0).astype(np.uint8)
-            cv2.imwrite(
-                str(output),
-                cv2.cvtColor(pixels, cv2.COLOR_RGB2BGR),
-                [cv2.IMWRITE_JPEG_QUALITY, 96],
-            )
+        encoded = frame.reference_master
+        self._writers[("projection", encoded.encoding)].write(encoded.projection)
+        self._writers[("scan", encoded.encoding)].write(encoded.scan)
 
     def close(self) -> None:
         errors: list[Exception] = []
@@ -169,6 +303,13 @@ class DualDeliveryWriter:
                 errors.append(error)
         if errors:
             raise errors[0]
+        for directory in ("projection", "bluray_scan"):
+            root = self.output / directory
+            rebuild_srgb_companion_from_master(
+                root / "05_emulsion_master_prores4444.mov",
+                root / "06_quicktime_preview_srgb_prores4444.mov",
+                self.frames,
+            )
 
     def __enter__(self) -> "DualDeliveryWriter":
         return self

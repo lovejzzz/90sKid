@@ -2032,6 +2032,71 @@ versions.push({
   ],
 });
 
+const v41 = versions[versions.length - 1];
+v41.year = "上一图像基线";
+v41.status = "calibration";
+
+const v42Parameters: ParameterGroup[] = [
+  {
+    title: "版本边界", titleEn: "VERSION BOUNDARY", items: [
+      { label: "V42是什么", labelEn: "What V42 is", value: "研究一致性、执行图与交付权威版本", valueEn: "Research-conformance, execution-graph and delivery-authority release" },
+      { label: "图像模型", labelEn: "Image model", value: "V41全部已接受成像参数冻结", valueEn: "All accepted V41 image-formation parameters frozen" },
+      { label: "不声称", labelEn: "Not claimed", value: "新的5279光谱、涂层、DIR、NPS或相机标定", valueEn: "No new 5279 spectrum, coating, DIR, NPS or camera characterization" },
+      { label: "当前画面见证", labelEn: "Current picture witness", value: "沿用V41同帧Production结果，等待V42完整一秒重渲染", valueEn: "V41 matched-frame Production witness retained pending the V42 one-second rerender" },
+    ],
+  },
+  {
+    title: "可执行研究门禁", titleEn: "EXECUTABLE RESEARCH GATES", items: [
+      { label: "V37时间结构", labelEn: "V37 temporal structure", value: "逐帧独立位点 · 0.38px · 稳定30°积分", valueEn: "Independent frame sites · 0.38 px · stable 30° integration" },
+      { label: "V40颗粒边界", labelEn: "V40 grain boundary", value: "处理后48µm RMS · 无虚构2383随机层 · 无重复综合色高频", valueEn: "Post-process 48 µm RMS · no invented 2383 population · no duplicate HF opponent path" },
+      { label: "V41颜色边界", labelEn: "V41 colour boundary", value: "12.5%综合色残差 · D65亮度/中性轴保持 · 记录正值安全条件", valueEn: "12.5% chroma residual · D65 luminance/neutral preservation · record-positive safety" },
+      { label: "失败行为", labelEn: "Failure behaviour", value: "任一常量漂移即拒绝baseline渲染", valueEn: "Any invariant drift refuses baseline rendering" },
+    ],
+  },
+  {
+    title: "Production与Archive", titleEn: "PRODUCTION & ARCHIVE", items: [
+      { label: "默认Production", labelEn: "Production default", value: "Philox-u32 Bernoulli Metal · 每帧45身份唯一", valueEn: "Philox-u32 Bernoulli Metal · 45 unique identities per frame" },
+      { label: "Archive参考", labelEn: "Archive reference", value: "CPU/NumPy保留，用于方程复现，不冒充同一颗粒实例", valueEn: "CPU/NumPy retained for equation reproduction, not the same grain realization" },
+      { label: "冻结baseline控制", labelEn: "Frozen baseline controls", value: "+0.45 stop · grain 1.0 · oversample 1 · salt 0", valueEn: "+0.45 stop · grain 1.0 · oversample 1 · salt 0" },
+      { label: "实验覆盖", labelEn: "Experimental overrides", value: "必须显式标记experimental，不能继续署名baseline", valueEn: "Must be explicitly labeled experimental and cannot retain baseline status" },
+    ],
+  },
+  {
+    title: "单一画面权威", titleEn: "SINGLE PICTURE AUTHORITY", items: [
+      { label: "专业母版", labelEn: "Professional master", value: "5760×4320 · 12-bit ProRes 4444 XQ · Rec.709/BT.1886", valueEn: "5760×4320 · 12-bit ProRes 4444 XQ · Rec.709/BT.1886" },
+      { label: "QuickTime伴随版", labelEn: "QuickTime companion", value: "解码实际母版 → 参考光 → sRGB → 12-bit XQ", valueEn: "Decode delivered master → reference light → sRGB → 12-bit XQ" },
+      { label: "静帧", labelEn: "Still", value: "从母版派生sRGB路径的代表帧生成", valueEn: "Generated from the master-derived sRGB representative frame" },
+      { label: "T003原生验证", labelEn: "Native T003 validation", value: "Frame 160 · 全部门禁通过 · 63.87秒 · 45/45身份 · 0重复", valueEn: "Frame 160 · all gates pass · 63.87 s · 45/45 identities · zero duplicates" },
+      { label: "源流保留", labelEn: "Source streams", value: "24-bit PCM · 源帧偏移时间码12:32:56:08", valueEn: "24-bit PCM · source-frame-offset timecode 12:32:56:08" },
+    ],
+  },
+  {
+    title: "数据保护", titleEn: "DATA PROTECTION", items: [
+      { label: "事故", labelEn: "Incident", value: "V41前引擎目录丢失 · 删除触发器未知", valueEn: "Pre-V42 engine directory lost · deletion trigger unknown" },
+      { label: "恢复", labelEn: "Recovery", value: "895条编辑记录 → 199个文件", valueEn: "895 edit records → 199 files" },
+      { label: "当前保护", labelEn: "Current protection", value: "214个作者文件 · Git远端 · SHA-256 manifest · CI", valueEn: "214 authored files · remote Git · SHA-256 manifest · CI" },
+      { label: "生成数据", labelEn: "Generated data", value: "视频不进Git；82MB缓存由版本化builder重建并核验hash", valueEn: "Video excluded; 82 MB cache rebuilt by versioned builder and hash-verified" },
+    ],
+  },
+];
+
+versions.push({
+  version: "V42",
+  year: "当前基线",
+  title: "让研究结论成为引擎会主动守住的边界",
+  status: "current",
+  projection: { ...v41.projection, inherited: true, label: "T031 · V41同帧画面见证 · V42冻结图像模型 / 2383观察" },
+  bluray: { ...v41.bluray, inherited: true, label: "T031 · V41同帧画面见证 · V42冻结图像模型 / Period 2K扫描" },
+  fsd: v41.fsd ? { ...v41.fsd, inherited: true, label: "T031 · V41 FSD对照见证 · V42研究边界" } : undefined,
+  camera: v41.camera ? { ...v41.camera, inherited: true } : undefined,
+  summary: "V42不是一次新的调色，也不声称获得了新的5279测量。它冻结V41已接受的颜色、密度、颗粒、DIR、MTF、黑位、Gamma与双观察器，把V37–V41研究结论第一次写成引擎启动时必须通过的门禁。经验证的Philox-u32 Bernoulli Metal成为默认Production；Archive CPU保留为可复现参考，但不再把不同随机实现误称为同一颗粒。交付也只保留一份画面权威：先编码12-bit BT.1886母版，再从这个实际文件派生sRGB QuickTime与静帧。",
+  changes: ["将新显式引擎正式命名为V42，避免软件“V2”与画面版本史混淆", "增加V37稳定相位、V40颗粒协方差修复、V41颜色/记录边界的运行时断言", "默认启用V35–V41验证过的Philox-u32 Bernoulli Metal Production图，并在发布前核验每帧45个随机身份完整且无重复", "保留Archive CPU与Reference NumPy作为研究参考，不要求逐颗粒复刻Production", "冻结baseline的+0.45 stop、grain 1.0、oversample 1与salt 0；任何修改必须标记实验", "只在成像阶段写BT.1886专业母版，sRGB和JPEG全部从编码后的实际母版派生；按V29契约恢复源音频与时间码", "修正旧恢复说明：字节一致证明的是Archive重构，不是Metal与NumPy产生同一颗随机乳剂", "公开记录V41实验引擎目录的数据丢失事故；将214个源代码、测试和研究文件纳入SHA-256清单与GitHub CI保护"],
+  errors: ["V41以前的完整实验引擎只存在于本地、未纳入Git；原experiments/emulsion_reconstruction目录消失后必须从895条成功编辑记录恢复199个文件", "调查没有发现可归因给Claude、Python崩溃、macOS watchdog或某条清理命令的证据；删除触发原因保持unknown，不伪造结论", "V42当前公开主画面暂沿用V41同帧Production见证；正式V42一秒三素材重渲染尚未发布", "研究门禁能防止已知结论漂移，但不能替代尚不存在的5279 NPS、涂层和扫描器实测", "V41的12.5%色度残差仍是可回退的户外色卡证据，不因更名V42而升级为完整GH7特性"],
+  discoveries: ["真正可确认的根因是关键源码只有一份未版本化副本；具体删除触发器无法由现存日志确定", "版本正确性不应由某一次随机颗粒的像素哈希定义，而应由成像方程、统计合同和交付权威共同定义", "Archive与Production可以产生不同乳剂实例，同时遵守同一H-D、48µm RMS、NPS和时间独立边界", "把研究常量做成运行时断言，可以阻止旧Profile泄漏或优化代码静默改写成像", "从实际12-bit母版派生全部观看文件，才能从结构上消除截图与视频成为两幅画面的可能"],
+  refs: v41.refs,
+  parameters: v42Parameters,
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

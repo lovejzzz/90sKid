@@ -14,18 +14,18 @@ export function generateMetadata(): Metadata {
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V41 applies a two-chart-bounded chroma transport while freezing the V40 density, grain, black, contrast and gamma model.",
+    description: "V42 freezes the accepted V41 image model and makes research conformance, audited Production sampling and single-master 12-bit delivery executable.",
     openGraph: {
       title: "5279 Emulsion Project",
       description: "A quality-first 5279 reconstruction with auditable finite-site identities and display-consistent native 12-bit delivery.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 2560, height: 1920, alt: "5279 Emulsion Project · V41 chart-bounded colour transport" }],
+      images: [{ url: socialImageUrl, width: 2560, height: 1920, alt: "5279 Emulsion Project · V42 research-conformant engine" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V41 moves a repeated chart residual only 12.5%, preserves luminance, and keeps the film model free of creative grading.",
+      description: "V42 makes the accepted V41 research boundary executable without adding a grade or unmeasured film parameters.",
       images: [socialImageUrl],
     },
   };

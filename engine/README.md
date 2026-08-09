@@ -1,17 +1,30 @@
 # Virtual-emulsion reconstruction experiment
 
-## Current entry point: explicit-stage V41 engine
+## Current entry point: V42 research-conformant engine
 
 The validated historical implementation and research record were recovered in
-full on 2026-08-08. New work starts through `engine.emulsion5279`, which makes
-the RAW, 5279 negative, two observer and two delivery boundaries explicit while
-remaining byte-identical to the released V41 renderer.
+full on 2026-08-08. New work starts through `engine.emulsion5279`. V42 makes
+the RAW, 5279 negative, two-observer and single-picture-authority delivery
+boundaries explicit. It freezes V41 image formation while enforcing the latest
+accepted research in executable code.
 
 Bootstrap the generated 2383 observer cache:
 
 ```bash
 python3 engine/bootstrap.py
 ```
+
+Verify that no recovered source or research record has silently disappeared:
+
+```bash
+python3 engine/source_integrity.py
+```
+
+When an intentional authored-file change is ready for review, regenerate the
+versioned inventory with `python3 engine/source_integrity.py --write`. CI checks
+the same manifest on every pull request and main-branch push. Generated movie
+files remain outside Git; source code, tests and research never belong only in
+an ignored experiment directory.
 
 Render one or more native ProRes RAW frames after compiling the AVFoundation
 decoder in `engine/src/prores_raw_float_decode.swift`:
@@ -31,8 +44,8 @@ PYTHONPATH=engine/src python3 -m unittest -v \
   engine.src.test_v41_colour_transport
 ```
 
-Recovery and byte-identity evidence is recorded in
-[`RECOVERY_AND_V2_VALIDATION_2026-08-08.md`](RECOVERY_AND_V2_VALIDATION_2026-08-08.md).
+Recovery, reference identity and V42 Production evidence are recorded in
+[`V42_ENGINE_RECOVERY_AND_CONFORMANCE_2026-08-09.md`](V42_ENGINE_RECOVERY_AND_CONFORMANCE_2026-08-09.md).
 
 Pipeline engineering notes:
 

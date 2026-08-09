@@ -16,7 +16,7 @@ if str(LEGACY_SRC) not in sys.path:
     sys.path.insert(0, str(LEGACY_SRC))
 
 import emulsion_experiment as model  # noqa: E402
-import v41_profile as profile  # noqa: E402
+import v42_profile as profile  # noqa: E402
 
 
 def source_fingerprints() -> dict[str, str]:

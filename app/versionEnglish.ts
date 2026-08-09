@@ -946,6 +946,38 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T002 tests dark low-chroma tails and black stability. T007 tests water, green fine detail, saturation and 35 mm sharpness. T031 tests organic shadow texture through both observers.",
   },
+  V42: {
+    year: "CURRENT BASELINE",
+    title: "Make the engine actively defend the conclusions of the research",
+    summary:
+      "V42 is not a new grade and does not claim a new Kodak measurement. It freezes V41 colour, density, grain, DIR, MTF, black, gamma and both observers, then turns the accepted V37–V41 conclusions into startup gates the engine must pass. The validated Philox-u32 Bernoulli Metal graph is now the Production default. Archive CPU remains a reproducible reference, but a different stochastic implementation is no longer described as the same grain realization. Delivery has one picture authority: encode the 12-bit BT.1886 master first, then derive the sRGB QuickTime companion and still from that delivered file.",
+    changes: [
+      "Name the explicit engine V42 so a software 'V2' cannot be confused with the image-version history",
+      "Assert V37 stable integration, V40 colour-grain repair and V41 colour/record boundaries at runtime",
+      "Make the validated Philox-u32 Bernoulli Metal graph the default Production execution",
+      "Retain Archive CPU and Reference NumPy as research references without demanding particle-for-particle identity",
+      "Freeze +0.45 stop, grain 1.0, oversample 1 and salt 0 for the baseline; any override must be marked experimental",
+      "Write only the BT.1886 professional picture during formation and derive sRGB/JPEG from the encoded master",
+      "Correct the recovery record: byte identity proves the Archive refactor, not identical Metal and NumPy emulsions",
+      "Record the V41 engine-directory loss explicitly and protect 214 authored source, test and research files with a SHA-256 inventory checked by GitHub CI",
+    ],
+    errors: [
+      "Before recovery, the complete engine lived only in an unversioned local experiment directory; its disappearance required reconstructing 199 files from 895 successful edit records",
+      "No surviving evidence attributes the deletion trigger to Claude, the Python crash, the macOS watchdog event or a cleanup command; the trigger remains unknown",
+      "The public hero currently retains the matched V41 Production witness; the formal V42 one-second three-source rerender is not yet published",
+      "Executable gates prevent known research drift but cannot replace missing 5279 NPS, coating or scanner measurements",
+      "V41's 12.5% colour residual remains reversible outdoor-chart evidence; the V42 name does not promote it to a complete GH7 characterization",
+    ],
+    discoveries: [
+      "Version correctness should be defined by formation equations, statistical contracts and delivery authority—not one fortunate random pixel hash",
+      "Archive and Production may form different emulsion instances while obeying the same H-D, 48 µm RMS, NPS and temporal-independence boundaries",
+      "Runtime research assertions prevent profile leakage or optimization code from silently rewriting the image model",
+      "Deriving every viewing file from the delivered 12-bit master structurally prevents the still and movie from becoming different pictures",
+      "The established failure cause was a single unversioned source copy; the exact deletion mechanism cannot be reconstructed from the surviving logs",
+    ],
+    trialNote:
+      "V42 currently inherits the matched V41 visual witnesses because the image model is frozen; new media will replace them only after native one-second validation.",
+  },
 };
 
 export function translateBranchLabel(label: string) {

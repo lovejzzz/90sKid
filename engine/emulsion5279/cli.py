@@ -1,4 +1,4 @@
-"""Command-line renderer for the explicit-stage second-generation engine."""
+"""Command-line renderer for the explicit-stage V42 engine."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 from .contracts import EngineConfig, EngineMode
-from .io import DualDeliveryWriter, ProResRawDecoder
+from .io import DualDeliveryWriter, ProResRawDecoder, retain_source_audio_and_timecode
 from .pipeline import Emulsion5279Engine
 
 
@@ -40,12 +40,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         choices=[mode.value for mode in EngineMode],
-        default=EngineMode.ARCHIVE_EXACT_CPU.value,
+        default=EngineMode.PRODUCTION_METAL.value,
     )
     parser.add_argument("--opencv-threads", type=int, default=8)
     parser.add_argument("--binomial-workers", type=int, default=8)
     parser.add_argument("--numba-threads", type=int, default=8)
     parser.add_argument("--array-workers", type=int, default=8)
+    parser.add_argument("--grain-domain-salt", type=int, default=0)
+    parser.add_argument(
+        "--experimental-overrides",
+        action="store_true",
+        help="permit non-baseline exposure/grain controls and mark the result experimental",
+    )
     return parser
 
 
@@ -62,35 +68,46 @@ def main() -> None:
         binomial_workers=args.binomial_workers,
         numba_threads=args.numba_threads,
         array_workers=args.array_workers,
+        grain_domain_salt=args.grain_domain_salt,
+        research_baseline=not args.experimental_overrides,
     )
     engine = Emulsion5279Engine(config)
     engine.configure()
     args.output.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
     timings: list[dict[str, float]] = []
-    representative = None
     with ProResRawDecoder(
         args.decoder, args.input, args.start_frame, args.frames
     ) as decoder:
         with DualDeliveryWriter(
-            args.output, decoder.width, decoder.height, decoder.fps
+            args.output,
+            decoder.width,
+            decoder.height,
+            decoder.fps,
+            args.frames,
         ) as writer:
             for offset, (absolute_frame, raw) in enumerate(decoder):
                 frame = engine.render_frame(raw, absolute_frame)
                 writer.write(frame)
                 timings.append(dict(frame.stage_seconds))
-                if offset == args.frames // 2:
-                    representative = frame
                 elapsed = time.perf_counter() - started
                 eta = elapsed / (offset + 1) * (args.frames - offset - 1)
                 print(
-                    f"V41-v2 frame {offset + 1}/{args.frames} · "
+                    f"V42 frame {offset + 1}/{args.frames} · "
                     f"elapsed {elapsed:.1f}s · ETA {eta:.1f}s",
                     flush=True,
                 )
-            if representative is None:
-                raise RuntimeError("no representative frame was rendered")
-            writer.save_stills(representative)
+
+    engine.validate_rendered_frames(args.frames)
+    finalization_started = time.perf_counter()
+    source_delivery = retain_source_audio_and_timecode(
+        args.output,
+        args.input,
+        args.start_frame,
+        args.frames,
+        decoder.fps,
+    )
+    source_delivery["seconds"] = time.perf_counter() - finalization_started
 
     report = {
         "engine": engine.provenance,
@@ -111,8 +128,11 @@ def main() -> None:
             "binomial_workers": config.binomial_workers,
             "numba_threads": config.numba_threads,
             "array_workers": config.array_workers,
+            "grain_domain_salt": config.grain_domain_salt,
+            "research_baseline": config.research_baseline,
         },
         "stage_summaries": _summarize(timings),
+        "source_delivery": source_delivery,
         "total_wall_seconds": time.perf_counter() - started,
     }
     (args.output / "timing.json").write_text(

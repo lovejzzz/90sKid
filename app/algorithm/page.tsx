@@ -133,9 +133,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V41</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V41以两段色卡约束输入色度方向，只采用12.5%的保守修正；V40颗粒、黑位、对比与Gamma保持冻结。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · CURRENT V42</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V42冻结V41的画面模型，把研究约束、Production随机身份审计与单一母版交付变成可执行的发布条件。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V42</div><div className="method-copy"><span className="section-tag">RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY</span><h2>这是V41研究成果的可执行收口，不是另一条“V2”画面风格</h2><p>V42不增加调色，也不声称取得新的5279材料测量。它把V37稳定积分相位、V40处理后颗粒度边界与无虚构2383随机颗粒、V41的12.5%色卡约束逐项做成运行门槛；Production默认使用经验证的Philox-u32 Bernoulli Metal实现，并要求每帧45个随机身份完整且无重复。两条12-bit BT.1886母版先落盘，sRGB观看版、截图与网页素材只能从实际母版反解生成；音频与时间码按V29边界保留。</p><div className="equation"><span>版本含义</span><b>V42 image model = V41 accepted baseline</b><small>版本号前进是因为引擎、审计与交付契约成为正式发布的一部分，而不是因为创造了新的审美外观。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V41</div><div className="method-copy"><span className="section-tag">T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED</span><h2>修正一个很可能存在的误差，同时把证据不足的幅度留作未知</h2><p>T003与未参与拟合的T005在合成色和自然色上重复同一色相／色度残差方向。全量矩阵和25%候选都在最终2383画面中过强，因此生产版只保留12.5%；不修改白平衡、曝光、黑位、对比或Gamma。中间广色域分量不再一律硬裁，但只有组合后的三条5279记录曝光全部非负时才保留有符号值。</p><pre><code>{v41ColourCode}</code></pre><div className="equation"><span>证据边界</span><b>Direction identified · magnitude provisional</b><small>两个同条件户外素材允许迈出保守一步，不允许宣称完整GH7相机标定。</small></div></div></section>
 

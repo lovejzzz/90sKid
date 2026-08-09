@@ -24,10 +24,11 @@ class DeliveryEncoding(str, Enum):
 
 
 class EngineMode(str, Enum):
-    """Execution choices; neither changes the selected film model."""
+    """Execution choices; none changes the selected film model."""
 
     REFERENCE = "reference_numpy"
     ARCHIVE_EXACT_CPU = "archive_exact_cpu"
+    PRODUCTION_METAL = "production_philox_metal"
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,26 +40,48 @@ class EngineConfig:
     two observers are owned by the versioned profile.
     """
 
-    profile: str = "v41"
+    profile: str = "v42"
     input_colour: InputColourContract = (
         InputColourContract.AVFOUNDATION_EXTENDED_LINEAR_BT2020
     )
     exposure_stops: float = 0.45
     grain_scale: float = 1.0
     oversample: int = 1
-    mode: EngineMode = EngineMode.ARCHIVE_EXACT_CPU
+    mode: EngineMode = EngineMode.PRODUCTION_METAL
     opencv_threads: int = 8
     binomial_workers: int = 8
     numba_threads: int = 8
     array_workers: int = 8
+    grain_domain_salt: int = 0
+    research_baseline: bool = True
 
     def __post_init__(self) -> None:
-        if self.profile != "v41":
-            raise ValueError("the second-generation baseline currently supports V41 only")
+        if self.profile != "v42":
+            raise ValueError("the research-conformant engine currently supports V42 only")
         if self.oversample < 1:
             raise ValueError("oversample must be positive")
         if self.grain_scale < 0.0:
             raise ValueError("grain_scale cannot be negative")
+        if not 0 <= int(self.grain_domain_salt) <= 0xFFFFFFFF:
+            raise ValueError("grain_domain_salt must fit uint32")
+        if self.research_baseline:
+            baseline = {
+                "exposure_stops": (self.exposure_stops, 0.45),
+                "grain_scale": (self.grain_scale, 1.0),
+                "oversample": (self.oversample, 1),
+                "grain_domain_salt": (self.grain_domain_salt, 0),
+            }
+            changed = [
+                f"{name}={actual!r} (baseline {expected!r})"
+                for name, (actual, expected) in baseline.items()
+                if actual != expected
+            ]
+            if changed:
+                raise ValueError(
+                    "V42 research baseline parameters are frozen; use an "
+                    "explicit experimental configuration for overrides: "
+                    + ", ".join(changed)
+                )
         for name in (
             "opencv_threads",
             "binomial_workers",
@@ -91,7 +114,9 @@ class RenderedFrame:
     absolute_frame: int
     observers: ObserverPair
     reference_master: EncodedObserverPair
-    quicktime_companion: EncodedObserverPair
+    # Release rendering leaves this empty: the sRGB companion is derived from
+    # the encoded professional master, never realized independently here.
+    quicktime_companion: EncodedObserverPair | None = None
     stage_seconds: Mapping[str, float] = field(default_factory=dict)
 
     def __post_init__(self) -> None:

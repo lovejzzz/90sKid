@@ -17,15 +17,15 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V41 project home page", async () => {
+test("server-renders the bilingual V42 project home page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V41/);
-  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V40/);
+  assert.match(currentSection, /CURRENT BASELINE[\s\S]{0,50}V42/);
+  assert.doesNotMatch(currentSection, /CURRENT BASELINE[\s\S]{0,50}V41/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
   assert.match(html, /v41-t031-projection/);
   assert.match(html, /v41-t031-projection-live-srgb\.mp4/);
@@ -39,7 +39,7 @@ test("server-renders the bilingual V41 project home page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V41 archive, research and algorithm routes", async () => {
+test("server-renders the V42 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -47,7 +47,7 @@ test("server-renders the V41 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V41/);
+  assert.match(versions, /V4—[\s\S]{0,30}V42/);
   assert.match(versions, /NJARAW_S001_S001_T031/);
   assert.match(versions, /CONTROLLED PIPELINE COMPARISON/);
   assert.match(versions, /V41 PHYSICAL 5279/);
@@ -81,6 +81,10 @@ test("server-renders the V41 archive, research and algorithm routes", async () =
   assert.match(research, /V40 · COLOUR-GRAIN COVARIANCE REPAIR/);
   assert.match(research, /V40 · THREE-PIPELINE CONTROL/);
   assert.match(research, /V41 · TWO-CHART-BOUNDED COLOUR TRANSPORT/);
+  assert.match(research, /V42 · RESEARCH-CONFORMANT ENGINE/);
+  assert.match(research, /V42 · DATA-LOSS INCIDENT \/ PREVENTION/);
+  assert.match(research, /214 authored files|214个作者文件/);
+  assert.match(research, /deletion trigger|删除触发器/);
   assert.match(research, /12\.5% retained/);
   assert.match(research, /T003 · CHART INPUT AUDIT/);
   assert.match(research, /R\/G=1\.175/);
@@ -93,7 +97,8 @@ test("server-renders the V41 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /CURRENT V41/);
+  assert.match(algorithm, /CURRENT V42/);
+  assert.match(algorithm, /RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY/);
   assert.match(algorithm, /T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED/);
   assert.match(algorithm, /ONE MASTER LIGHT · TWO EXPLICIT DELIVERIES/);
   assert.match(algorithm, /INDEPENDENT SITES · STABLE INTEGRATION/);
