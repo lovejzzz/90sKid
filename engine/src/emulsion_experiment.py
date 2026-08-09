@@ -3612,13 +3612,9 @@ def form_5279_multilayer_record_density(
                 removable = np.where(class_counts > 1, class_counts, 0)
                 class_counts[int(np.argmax(removable))] -= 1
 
-            population_allocation_started = time.perf_counter()
-            population_deviation = np.zeros_like(probability, dtype=np.float32)
-            record_operator(
-                "outer_population_allocation", population_allocation_started
-            )
             population_kernel_power = 0.0
             sampled_phase = float(rng.uniform(0.0, 2.0 * math.pi))
+            class_specs = []
             for size_class, class_sites in enumerate(class_counts):
                 class_weight = float(class_sites) / float(total_sites)
                 if GRAIN_SUBPIXEL_PHASE_MODE == "frame_random":
@@ -3658,31 +3654,15 @@ def form_5279_multilayer_record_density(
                     + population * 100
                     + size_class
                 )
-                class_deviation = binomial_dye_cloud_deviation(
-                    probability,
-                    rng,
-                    class_radius,
-                    class_sigma,
-                    int(class_sites),
-                    subpixel_offset,
-                    sample_seed=sample_seed,
-                )
-                class_accumulation_started = time.perf_counter()
-                if globals().get(
-                    "_WAVEFRONT_INPLACE_CLASS_ACCUMULATION", False
-                ):
-                    import wavefront_tile_lab_v002
-
-                    wavefront_tile_lab_v002.weight_and_accumulate_class(
-                        population_deviation,
-                        class_deviation,
+                class_specs.append(
+                    (
                         class_weight,
+                        class_radius,
+                        class_sigma,
+                        int(class_sites),
+                        subpixel_offset,
+                        sample_seed,
                     )
-                else:
-                    population_deviation += class_weight * class_deviation
-                record_operator(
-                    "outer_class_deviation_accumulation",
-                    class_accumulation_started,
                 )
                 kernel_power_started = time.perf_counter()
                 population_kernel_power += (
@@ -3699,6 +3679,58 @@ def form_5279_multilayer_record_density(
                 record_operator(
                     "outer_filtered_kernel_power", kernel_power_started
                 )
+
+            population_batch = globals().get(
+                "_WAVEFRONT_POPULATION_OPTICAL_BATCH"
+            )
+            if population_batch is not None:
+                population_deviation = population_batch(
+                    probability,
+                    rng,
+                    class_specs,
+                )
+            else:
+                population_allocation_started = time.perf_counter()
+                population_deviation = np.zeros_like(
+                    probability, dtype=np.float32
+                )
+                record_operator(
+                    "outer_population_allocation", population_allocation_started
+                )
+                for (
+                    class_weight,
+                    class_radius,
+                    class_sigma,
+                    class_sites,
+                    subpixel_offset,
+                    sample_seed,
+                ) in class_specs:
+                    class_deviation = binomial_dye_cloud_deviation(
+                        probability,
+                        rng,
+                        class_radius,
+                        class_sigma,
+                        int(class_sites),
+                        subpixel_offset,
+                        sample_seed=sample_seed,
+                    )
+                    class_accumulation_started = time.perf_counter()
+                    if globals().get(
+                        "_WAVEFRONT_INPLACE_CLASS_ACCUMULATION", False
+                    ):
+                        import wavefront_tile_lab_v002
+
+                        wavefront_tile_lab_v002.weight_and_accumulate_class(
+                            population_deviation,
+                            class_deviation,
+                            class_weight,
+                        )
+                    else:
+                        population_deviation += class_weight * class_deviation
+                    record_operator(
+                        "outer_class_deviation_accumulation",
+                        class_accumulation_started,
+                    )
 
             variance_started = time.perf_counter()
             layer_deviation[..., channel, population] = population_deviation

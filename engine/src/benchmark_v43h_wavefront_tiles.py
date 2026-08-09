@@ -16,6 +16,7 @@ import math
 import resource
 import subprocess
 import time
+from functools import wraps
 from pathlib import Path
 
 import numpy as np
@@ -67,6 +68,12 @@ def compare_reference(
         raise ValueError(f"reference contract mismatch: {path}")
     candidate_hash = sha256(candidate)
     baseline_hash = sha256(baseline)
+    total = int(candidate.size)
+    signed_sum = 0.0
+    absolute_sum = 0.0
+    squared_sum = 0.0
+    quantized_12bit_changed = 0
+    quantized_12bit_maximum = 0
     if candidate_hash == baseline_hash:
         maximum = 0.0
         changed = 0
@@ -75,19 +82,53 @@ def compare_reference(
         changed = 0
         for y0 in range(0, candidate.shape[0], 64):
             y1 = min(y0 + 64, candidate.shape[0])
-            delta = np.abs(
+            signed_delta = (
                 candidate[y0:y1].astype(np.float64)
                 - baseline[y0:y1].astype(np.float64)
             )
+            delta = np.abs(signed_delta)
             maximum = max(maximum, float(delta.max()))
             changed += int(np.count_nonzero(delta))
-    return {
+            signed_sum += float(signed_delta.sum())
+            absolute_sum += float(delta.sum())
+            squared_sum += float(np.square(signed_delta).sum())
+            if candidate.dtype == np.dtype("<u2"):
+                candidate_12bit = np.rint(
+                    candidate[y0:y1].astype(np.float64) / 65535.0 * 4095.0
+                ).astype(np.int32)
+                baseline_12bit = np.rint(
+                    baseline[y0:y1].astype(np.float64) / 65535.0 * 4095.0
+                ).astype(np.int32)
+                delta_12bit = np.abs(candidate_12bit - baseline_12bit)
+                quantized_12bit_changed += int(np.count_nonzero(delta_12bit))
+                quantized_12bit_maximum = max(
+                    quantized_12bit_maximum,
+                    int(delta_12bit.max()),
+                )
+    result = {
         "identical": candidate_hash == baseline_hash,
         "candidate_sha256": candidate_hash,
         "reference_sha256": baseline_hash,
         "maximum_absolute_delta": maximum,
         "changed_values": changed,
+        "changed_fraction": changed / total,
+        "mean_signed_delta": signed_sum / total,
+        "mean_absolute_delta": absolute_sum / total,
+        "root_mean_square_delta": math.sqrt(squared_sum / total),
     }
+    if candidate.dtype == np.dtype("<u2"):
+        result.update(
+            {
+                "quantized_12bit_changed_values": quantized_12bit_changed,
+                "quantized_12bit_changed_fraction": (
+                    quantized_12bit_changed / total
+                ),
+                "quantized_12bit_maximum_absolute_delta": (
+                    quantized_12bit_maximum
+                ),
+            }
+        )
+    return result
 
 
 def main() -> None:
@@ -104,6 +145,7 @@ def main() -> None:
     parser.add_argument("--negative-only", action="store_true")
     parser.add_argument("--marginal-workset-pixels", type=int, default=0)
     parser.add_argument("--v002", action="store_true")
+    parser.add_argument("--v010", action="store_true")
     args = parser.parse_args()
     if args.workset_pixels < 0:
         raise ValueError("workset pixels cannot be negative")
@@ -132,7 +174,15 @@ def main() -> None:
         v35_accel.warm_metal_binomial("bernoulli")
     wavefront_v001 = None
     wavefront_v002 = None
-    if args.v002:
+    wavefront_v010 = None
+    if args.v010:
+        import wavefront_tile_lab_v010 as wavefront_v010
+
+        wavefront_v010.install(
+            legacy.model,
+            marginal_tile_pixels=args.marginal_workset_pixels or 250_000,
+        )
+    elif args.v002:
         import wavefront_tile_lab_v002 as wavefront_v002
 
         wavefront_v002.install(
@@ -147,6 +197,32 @@ def main() -> None:
         )
     for key in metal_binomial_bridge.STATS:
         metal_binomial_bridge.STATS[key] = 0
+    legacy.model._V27_STOCHASTIC_PROFILE = {}
+    negative_stage_profile: dict[str, dict[str, float | int]] = {}
+    for function_name in (
+        "scene_to_5279_film_rgb",
+        "film_records_from_rgb",
+        "develop_5279_record_density",
+        "form_5279_multilayer_record_density",
+    ):
+        original = getattr(legacy.model, function_name)
+
+        @wraps(original)
+        def profiled(*positional, _name=function_name, _original=original, **keywords):
+            function_started = time.perf_counter()
+            result = _original(*positional, **keywords)
+            entry = negative_stage_profile.setdefault(
+                _name, {"calls": 0, "seconds": 0.0}
+            )
+            entry["calls"] = int(entry["calls"]) + 1
+            entry["seconds"] = (
+                float(entry["seconds"])
+                + time.perf_counter()
+                - function_started
+            )
+            return result
+
+        setattr(legacy.model, function_name, profiled)
 
     raw = decode_frame(args.source, args.decoder, args.frame, args.cache)
     started = time.perf_counter()
@@ -209,12 +285,16 @@ def main() -> None:
         else plane_bytes
     )
     wavefront_snapshot = None
-    if wavefront_v002 is not None:
+    if wavefront_v010 is not None:
+        wavefront_snapshot = wavefront_v010.snapshot()
+    elif wavefront_v002 is not None:
         wavefront_snapshot = wavefront_v002.snapshot()
     elif wavefront_v001 is not None:
         wavefront_snapshot = wavefront_v001.snapshot()
     lab_version = (
-        "0.0.2"
+        "0.1.0"
+        if wavefront_v010 is not None
+        else "0.0.2"
         if wavefront_v002 is not None
         else "0.0.1" if wavefront_v001 is not None else None
     )
@@ -225,6 +305,11 @@ def main() -> None:
             else "V43H Wavefront Tile Lab"
         ),
         "scope": (
+            "one-command Metal island for five-size-class Philox sampling, "
+            "optical integration, phase and population accumulation; film "
+            "equations remain unchanged"
+            if wavefront_v010 is not None
+            else
             "exact in-place optical-buffer and class-accumulation contraction, "
             "including the v0.0.1 activation-to-DIR-marginal contraction"
             if wavefront_v002 is not None
@@ -246,7 +331,7 @@ def main() -> None:
             "full_width_row_tiles": bool(args.workset_pixels),
             "marginal_workset_pixels": (
                 (args.marginal_workset_pixels or 250_000)
-                if args.v002
+                if args.v002 or args.v010
                 else args.marginal_workset_pixels or None
             ),
             "lab_version": lab_version,
@@ -268,7 +353,9 @@ def main() -> None:
                 if wavefront_snapshot is None
                 else float(
                     (
-                        wavefront_snapshot["v001"]
+                        wavefront_snapshot["v002"]["v001"]
+                        if wavefront_v010 is not None
+                        else wavefront_snapshot["v001"]
                         if wavefront_v002 is not None
                         else wavefront_snapshot
                     )["maximum_scratch_bytes"]
@@ -282,14 +369,25 @@ def main() -> None:
         and all(row["identical"] for row in comparisons.values()),
         "metal_sampler_stats": dict(metal_binomial_bridge.STATS),
         "wavefront_v001_stats": (
-            wavefront_snapshot["v001"]
+            wavefront_snapshot["v002"]["v001"]
+            if wavefront_v010 is not None
+            else wavefront_snapshot["v001"]
             if wavefront_v002 is not None
             else wavefront_snapshot
         ),
         "wavefront_v002_stats": (
-            wavefront_snapshot if wavefront_v002 is not None else None
+            wavefront_snapshot["v002"]
+            if wavefront_v010 is not None
+            else wavefront_snapshot
+            if wavefront_v002 is not None
+            else None
+        ),
+        "wavefront_v010_stats": (
+            wavefront_snapshot if wavefront_v010 is not None else None
         ),
         "sampler_identity_audit": v35_accel.sampler_audit_snapshot(),
+        "stochastic_operator_profile": legacy.model._V27_STOCHASTIC_PROFILE,
+        "negative_stage_profile": negative_stage_profile,
     }
     (args.output / "report.json").write_text(
         json.dumps(report, indent=2) + "\n", encoding="utf-8"
