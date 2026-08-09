@@ -104,6 +104,8 @@ def apply_metal_binomial(
     residual_convolution: bool = False,
     single_gaussian_after_disk: bool = False,
     domain_salt: int = 0,
+    tile_workset_pixels: int | None = None,
+    tile_in_flight: int = 2,
 ) -> None:
     """Replace finite-site sampling with a validated inverse-CDF Metal RNG.
 
@@ -117,6 +119,10 @@ def apply_metal_binomial(
     if not 0 <= int(domain_salt) <= 0xFFFFFFFF:
         raise ValueError("Philox domain salt must fit uint32")
     domain_salt = int(domain_salt)
+    if tile_workset_pixels is not None and int(tile_workset_pixels) < 1:
+        raise ValueError("tile workset must be positive when enabled")
+    if tile_in_flight < 1:
+        raise ValueError("tile in-flight count must be positive")
     if residual_convolution and single_gaussian_after_disk:
         raise ValueError("choose only one convolution reassociation candidate")
 
@@ -129,6 +135,12 @@ def apply_metal_binomial(
                 "population*100 + size_class"
             ),
             "domain_salt_uint32": domain_salt,
+            "tile_workset_pixels": (
+                None
+                if tile_workset_pixels is None
+                else int(tile_workset_pixels)
+            ),
+            "tile_in_flight": int(tile_in_flight),
             "total_calls": 0,
             "duplicate_identity_count": 0,
             "frame_call_counts": {},
@@ -193,14 +205,29 @@ def apply_metal_binomial(
         ):
             if SAMPLER_AUDIT[key] is None or value > SAMPLER_AUDIT[key]:
                 SAMPLER_AUDIT[key] = value
-        probability = np.ascontiguousarray(
-            activation_probability, dtype=np.float32
-        )
+        if tile_workset_pixels is not None:
+            probability = metal_binomial_bridge.aligned_empty(
+                activation_probability.shape
+            )
+            np.copyto(probability, activation_probability)
+        else:
+            probability = np.ascontiguousarray(
+                activation_probability, dtype=np.float32
+            )
         effective_seed = (domain_salt << 32) | (int(sample_seed) & 0xFFFFFFFF)
         kernel = module.disk_kernel(radius)
         kernel /= float(kernel.sum())
         flight = None
-        if asynchronous:
+        if tile_workset_pixels is not None:
+            flight = metal_binomial_bridge.submit_tiled(
+                probability,
+                site_count,
+                effective_seed,
+                workset_pixels=int(tile_workset_pixels),
+                in_flight=int(tile_in_flight),
+                mode=mode,
+            )
+        elif asynchronous:
             flight = metal_binomial_bridge.submit(
                 probability, site_count, effective_seed, mode=mode
             )
