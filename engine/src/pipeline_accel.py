@@ -276,6 +276,70 @@ def signed_density_cube_trilinear(
 
 
 @njit(parallel=True, cache=True)
+def h61_density_cube_trilinear(
+    total_density: np.ndarray,
+    lut: np.ndarray,
+    dmin_rgb: np.ndarray,
+    net_minimum: float,
+    net_maximum: float,
+) -> np.ndarray:
+    """Exact fused sampler for the historical H-61 interpolation order.
+
+    The H-61 calibration predates ``sample_record_density_delta_lut`` and
+    interpolates red, then blue, then green. The two trilinear forms are
+    algebraically equivalent but not bit-equivalent in float32. Retaining that
+    association lets Production remove the allocation-heavy advanced indexing
+    without changing a single output sample.
+    """
+    height, width, _ = total_density.shape
+    size = lut.shape[0]
+    scale = np.float32((size - 1) / (net_maximum - net_minimum))
+    maximum_index = np.float32(size) - np.float32(1.00001)
+    minimum = np.float32(net_minimum)
+    zero = np.float32(0.0)
+    one = np.float32(1.0)
+    output = np.empty_like(total_density)
+    for y in prange(height):
+        for x in range(width):
+            sr = (total_density[y, x, 0] - dmin_rgb[0] - minimum) * scale
+            sg = (total_density[y, x, 1] - dmin_rgb[1] - minimum) * scale
+            sb = (total_density[y, x, 2] - dmin_rgb[2] - minimum) * scale
+            sr = min(max(sr, zero), maximum_index)
+            sg = min(max(sg, zero), maximum_index)
+            sb = min(max(sb, zero), maximum_index)
+            r0 = int(sr)
+            g0 = int(sg)
+            b0 = int(sb)
+            r1 = min(r0 + 1, size - 1)
+            g1 = min(g0 + 1, size - 1)
+            b1 = min(b0 + 1, size - 1)
+            fr = sr - np.float32(r0)
+            fg = sg - np.float32(g0)
+            fb = sb - np.float32(b0)
+            for channel in range(3):
+                c00 = (
+                    lut[r0, g0, b0, channel] * (one - fr)
+                    + lut[r1, g0, b0, channel] * fr
+                )
+                c01 = (
+                    lut[r0, g0, b1, channel] * (one - fr)
+                    + lut[r1, g0, b1, channel] * fr
+                )
+                c10 = (
+                    lut[r0, g1, b0, channel] * (one - fr)
+                    + lut[r1, g1, b0, channel] * fr
+                )
+                c11 = (
+                    lut[r0, g1, b1, channel] * (one - fr)
+                    + lut[r1, g1, b1, channel] * fr
+                )
+                c0b = c00 * (one - fb) + c01 * fb
+                c1b = c10 * (one - fb) + c11 * fb
+                output[y, x, channel] = c0b * (one - fg) + c1b * fg
+    return output
+
+
+@njit(parallel=True, cache=True)
 def factor_table_interp(luma: np.ndarray, axis: np.ndarray, table: np.ndarray) -> np.ndarray:
     """Parallel equivalent of three np.interp calls for a shared luma axis."""
     height, width = luma.shape
@@ -317,6 +381,48 @@ def factor_table_interp(luma: np.ndarray, axis: np.ndarray, table: np.ndarray) -
 
 
 @njit(parallel=True, cache=True)
+def factor_table_interp_float64(
+    luma: np.ndarray, axis: np.ndarray, table: np.ndarray
+) -> np.ndarray:
+    """Exact float64 factors for a reference path that multiplies before cast."""
+    height, width = luma.shape
+    last = axis.shape[0] - 1
+    output = np.empty((height, width, 3), dtype=np.float64)
+    for y in prange(height):
+        for x in range(width):
+            value = luma[y, x]
+            if value <= axis[0]:
+                lower = 0
+                upper = 0
+                fraction = 0.0
+            elif value >= axis[last]:
+                lower = last
+                upper = last
+                fraction = 0.0
+            else:
+                upper = np.searchsorted(axis, value)
+                lower = upper - 1
+                fraction = (
+                    np.float64(value) - np.float64(axis[lower])
+                ) / (
+                    np.float64(axis[upper]) - np.float64(axis[lower])
+                )
+            for channel in range(3):
+                if lower == upper:
+                    output[y, x, channel] = np.float64(table[lower, channel])
+                else:
+                    output[y, x, channel] = (
+                        np.float64(table[lower, channel])
+                        + fraction
+                        * (
+                            np.float64(table[upper, channel])
+                            - np.float64(table[lower, channel])
+                        )
+                    )
+    return output
+
+
+@njit(parallel=True, cache=True)
 def channel_table_interp(
     values: np.ndarray, axis: np.ndarray, channel_tables: np.ndarray
 ) -> np.ndarray:
@@ -349,6 +455,52 @@ def channel_table_interp(
                         )
                     )
                 output[y, x, channel] = np.float32(result)
+    return output
+
+
+@njit(parallel=True, cache=True)
+def preserve_luma_and_compress_gamut(
+    rgb: np.ndarray,
+    target_luma: np.ndarray,
+) -> np.ndarray:
+    """Fused exact V31 luma-preserving Rec.709 gamut boundary."""
+    height, width, _ = rgb.shape
+    output = np.empty_like(rgb)
+    w0 = np.float32(0.2126)
+    w1 = np.float32(0.7152)
+    w2 = np.float32(0.0722)
+    zero = np.float32(0.0)
+    one = np.float32(1.0)
+    epsilon = np.float32(1e-8)
+    infinity = np.float32(np.inf)
+    for y in prange(height):
+        for x in range(width):
+            current_luma = (
+                rgb[y, x, 0] * w0
+                + rgb[y, x, 1] * w1
+                + rgb[y, x, 2] * w2
+            )
+            target = target_luma[y, x]
+            shift = target - current_luma
+            d0 = rgb[y, x, 0] + shift - target
+            d1 = rgb[y, x, 1] + shift - target
+            d2 = rgb[y, x, 2] + shift - target
+            scale = one
+            for delta in (d0, d1, d2):
+                positive_limit = (
+                    (one - target) / max(delta, epsilon)
+                    if delta > epsilon
+                    else infinity
+                )
+                negative_limit = (
+                    target / max(-delta, epsilon)
+                    if delta < -epsilon
+                    else infinity
+                )
+                scale = min(scale, positive_limit, negative_limit)
+            output[y, x, 0] = min(max(target + d0 * scale, zero), one)
+            output[y, x, 1] = min(max(target + d1 * scale, zero), one)
+            output[y, x, 2] = min(max(target + d2 * scale, zero), one)
     return output
 
 

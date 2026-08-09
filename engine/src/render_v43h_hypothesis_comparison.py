@@ -220,9 +220,16 @@ def main() -> None:
                 )
                 for name, directory in directories.items()
             }
-            for offset, (absolute_frame, raw) in enumerate(decoder):
-                frame_started = time.perf_counter()
-                timings["decode_read"].append(frame_started - frame_started)
+            frame_iterator = iter(decoder)
+            for offset in range(frames):
+                mark = time.perf_counter()
+                try:
+                    absolute_frame, raw = next(frame_iterator)
+                except StopIteration as exc:
+                    raise RuntimeError(
+                        f"RAW decoder ended after {offset}/{frames} frames"
+                    ) from exc
+                timings["decode_read"].append(time.perf_counter() - mark)
 
                 mark = time.perf_counter()
                 negative = engine.form_negative(raw, absolute_frame)

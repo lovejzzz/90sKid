@@ -38,6 +38,7 @@ def warm(module) -> None:
         module._SPIRIT_NEUTRAL_SCALE_TABLE = module.build_spirit_neutral_scale_table()
     axis, table = module._SPIRIT_NEUTRAL_SCALE_TABLE
     accel.factor_table_interp(np.zeros((4, 4), np.float32), axis, table)
+    accel.factor_table_interp_float64(np.zeros((4, 4), np.float32), axis, table)
     accel.channel_table_interp(
         np.zeros((4, 4, 3), np.float32),
         module.GRANULARITY_LOG_EXPOSURE,
@@ -52,6 +53,17 @@ def warm(module) -> None:
         -0.16,
         module.NEGATIVE_5279_MAX_RECORD_DENSITY,
     )
+    accel.h61_density_cube_trilinear(
+        np.zeros((4, 4, 3), np.float32),
+        np.zeros((3, 3, 3, 3), np.float32),
+        module.SENSITO_DMIN_RGB,
+        -0.16,
+        module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+    )
+    accel.preserve_luma_and_compress_gamut(
+        np.zeros((4, 4, 3), np.float32),
+        np.zeros((4, 4), np.float32),
+    )
 
 
 def apply(
@@ -64,6 +76,7 @@ def apply(
 ) -> None:
     """Install fused kernels while retaining reference fallbacks for tiny arrays."""
     global _ARRAY_EXECUTOR
+    import apply_v31_normal_process_adapter as normal_adapter
     set_num_threads(numba_threads)
     array_workers = max(1, int(array_workers))
     if array_workers > 1 and _ARRAY_EXECUTOR is None:
@@ -160,6 +173,36 @@ def apply(
         module._V27_REFERENCE_SAMPLE_RECORD_DENSITY_DELTA_LUT = (
             module.sample_record_density_delta_lut
         )
+        module._V27_REFERENCE_APPLY_2383_H61_COLOUR_DELTA_LUT = (
+            module.apply_2383_h61_colour_delta_lut
+        )
+        module._V27_REFERENCE_APPLY_2383_PROJECTION_LUT = (
+            module.apply_2383_projection_lut
+        )
+        module._V27_REFERENCE_APPLY_5279_TO_2383_PRINTER_DENSITY_LUT = (
+            module.apply_5279_to_2383_printer_density_lut
+        )
+        module._V27_REFERENCE_RAW_PRINT_2383_DENSITY_FROM_NEGATIVE = (
+            module._raw_print_2383_density_from_negative
+        )
+        module._V27_REFERENCE_PRINT_2383_DENSITY_FROM_NEGATIVE = (
+            module.print_2383_density_from_negative
+        )
+        module._V27_REFERENCE_V31_PRESERVE_LUMA_AND_COMPRESS_GAMUT = (
+            normal_adapter.preserve_luma_and_compress_gamut
+        )
+        module._V27_REFERENCE_APPLY_2383_MONITOR_NEUTRAL_CURVE = (
+            module.apply_2383_monitor_neutral_curve
+        )
+        module._V27_REFERENCE_NEUTRALIZE_2383_PROJECTED_GRAY_SCALE = (
+            module.neutralize_2383_projected_gray_scale
+        )
+        module._V27_REFERENCE_REMOVE_TONAL_GRAIN_BIAS = (
+            module.remove_tonal_grain_bias
+        )
+        module._V27_REFERENCE_MATCH_2383_PROJECTION_TO_REC709_MONITOR = (
+            module.match_2383_projection_to_rec709_monitor
+        )
 
     reference_cube = module._V27_REFERENCE_APPLY_RGB_CUBE_LUT
     reference_record_density = (
@@ -189,6 +232,32 @@ def apply(
     reference_optical_scatter = module._V27_REFERENCE_ADD_5279_OPTICAL_SCATTER
     reference_print_output_cube = (
         module._V27_REFERENCE_SAMPLE_RECORD_DENSITY_DELTA_LUT
+    )
+    reference_h61_cube = (
+        module._V27_REFERENCE_APPLY_2383_H61_COLOUR_DELTA_LUT
+    )
+    reference_projection_cube = module._V27_REFERENCE_APPLY_2383_PROJECTION_LUT
+    reference_printer_density_cube = (
+        module._V27_REFERENCE_APPLY_5279_TO_2383_PRINTER_DENSITY_LUT
+    )
+    reference_raw_print_density = (
+        module._V27_REFERENCE_RAW_PRINT_2383_DENSITY_FROM_NEGATIVE
+    )
+    reference_print_density = (
+        module._V27_REFERENCE_PRINT_2383_DENSITY_FROM_NEGATIVE
+    )
+    reference_v31_gamut = (
+        module._V27_REFERENCE_V31_PRESERVE_LUMA_AND_COMPRESS_GAMUT
+    )
+    reference_monitor_neutral = (
+        module._V27_REFERENCE_APPLY_2383_MONITOR_NEUTRAL_CURVE
+    )
+    reference_projected_gray = (
+        module._V27_REFERENCE_NEUTRALIZE_2383_PROJECTED_GRAY_SCALE
+    )
+    reference_remove_grain_bias = module._V27_REFERENCE_REMOVE_TONAL_GRAIN_BIAS
+    reference_match_projection = (
+        module._V27_REFERENCE_MATCH_2383_PROJECTION_TO_REC709_MONITOR
     )
 
     def camera_cube(rgb: np.ndarray, lut: np.ndarray, rows_per_stripe: int = 96):
@@ -383,6 +452,275 @@ def apply(
             -0.16,
             module.NEGATIVE_5279_MAX_RECORD_DENSITY,
         )
+
+    def h61_colour_delta_cube(
+        total_density: np.ndarray,
+        include_reference_flare: bool,
+    ) -> np.ndarray:
+        source = np.asarray(total_density, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_h61_cube(source, include_reference_flare)
+        if include_reference_flare not in module._PRINT_2383_H61_COLOUR_DELTA_LUTS:
+            module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare] = (
+                module.build_2383_h61_colour_delta_lut(include_reference_flare)
+            )
+        return accel.h61_density_cube_trilinear(
+            source,
+            module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare],
+            module.SENSITO_DMIN_RGB,
+            -0.16,
+            module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+
+    def projection_density_cube(
+        print_density_rgb: np.ndarray,
+        rows_per_stripe: int = 96,
+    ) -> np.ndarray:
+        source = np.asarray(print_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_projection_cube(source, rows_per_stripe)
+        if module._PRINT_2383_PROJECTION_LUT is None:
+            module._PRINT_2383_PROJECTION_LUT = module.build_2383_projection_lut()
+        return accel.density_cube_trilinear(
+            source,
+            module._PRINT_2383_PROJECTION_LUT,
+            module.PRINT_2383_DMAX,
+        )
+
+    def printer_density_cube(net_record_density: np.ndarray) -> np.ndarray:
+        source = np.asarray(net_record_density, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_printer_density_cube(source)
+        if module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT is None:
+            module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = (
+                module.build_5279_to_2383_printer_density_lut()
+            )
+        return accel.density_cube_trilinear(
+            source,
+            module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT,
+            module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+
+    def raw_print_density_fast(negative_density_rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(negative_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_raw_print_density(source)
+        neutral_negative = module.negative_total_printer_density(
+            np.array([0.18, 0.18, 0.18], dtype=np.float32)
+        )
+        aim_log_exposure = np.array(
+            [
+                module._inverse_2383_density(
+                    channel,
+                    float(module.PRINT_2383_LAD_STATUS_A_AIM_RGB[channel]),
+                )
+                for channel in range(3)
+            ],
+            dtype=np.float32,
+        )
+        printer_log_light = neutral_negative + aim_log_exposure
+        captured_log_exposure = printer_log_light - source
+        print_log_exposure = (
+            aim_log_exposure
+            + np.einsum(
+                "...c,dc->...d",
+                captured_log_exposure - aim_log_exposure,
+                module.PRINT_2383_INTERIMAGE_MATRIX,
+            )
+        ).astype(np.float32)
+        return accel.channel_table_interp(
+            print_log_exposure,
+            module.PRINT_2383_LOG_EXPOSURE,
+            module.PRINT_2383_DENSITY_RGB,
+        )
+
+    def print_density_fast(negative_density_rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(negative_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_print_density(source)
+        if module._PRINT_2383_NEUTRAL_SHAPERS is None:
+            module._PRINT_2383_NEUTRAL_SHAPERS = (
+                module._build_2383_neutral_shapers()
+            )
+        raw = module._raw_print_2383_density_from_negative(source)
+        x_tables, y_tables = module._PRINT_2383_NEUTRAL_SHAPERS
+        calibrated = np.empty_like(raw)
+
+        def interpolate_channel(channel: int) -> None:
+            calibrated[..., channel] = np.interp(
+                raw[..., channel], x_tables[channel], y_tables[channel]
+            ).astype(np.float32)
+
+        if array_workers == 1:
+            for channel in range(3):
+                interpolate_channel(channel)
+        else:
+            assert _ARRAY_EXECUTOR is not None
+            list(_ARRAY_EXECUTOR.map(interpolate_channel, range(3)))
+        return calibrated
+
+    def v31_gamut_fast(rgb: np.ndarray, target_luma: np.ndarray) -> np.ndarray:
+        source = np.asarray(rgb, dtype=np.float32)
+        target = np.asarray(target_luma, dtype=np.float32)
+        if (
+            source.ndim != 3
+            or source.shape[-1] != 3
+            or target.shape != source.shape[:2]
+        ):
+            return reference_v31_gamut(source, target)
+        return accel.preserve_luma_and_compress_gamut(source, target)
+
+    def monitor_neutral_curve_fast(physical: np.ndarray) -> np.ndarray:
+        source = np.asarray(physical, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_monitor_neutral(source)
+        if module._PRINT_2383_MONITOR_NEUTRAL_CURVE is None:
+            module._PRINT_2383_MONITOR_NEUTRAL_CURVE = (
+                module.build_2383_monitor_neutral_curve()
+            )
+        axis, table = module._PRINT_2383_MONITOR_NEUTRAL_CURVE
+        return accel.channel_table_interp(
+            source, axis, np.repeat(table[None, :], 3, axis=0)
+        )
+
+    def projected_gray_fast(projected: np.ndarray) -> np.ndarray:
+        source = np.asarray(projected, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_projected_gray(source)
+        if module._PRINT_2383_VIEW_NEUTRAL_TABLE is None:
+            # Let the historical path construct its self-referential neutral
+            # table once. Every subsequent native stripe uses the fused tail.
+            return reference_projected_gray(source)
+        luma_axis, factor_table = module._PRINT_2383_VIEW_NEUTRAL_TABLE
+        luma = np.einsum(
+            "...c,c->...",
+            np.maximum(source, 0.0),
+            [0.2126, 0.7152, 0.0722],
+        )
+        factors = accel.factor_table_interp_float64(
+            luma, luma_axis, factor_table
+        )
+        return np.maximum(source * factors, 0.0).astype(np.float32)
+
+    def remove_grain_bias_parallel(
+        mean_display: np.ndarray,
+        grain_delta: np.ndarray,
+        bins: int = 96,
+    ) -> np.ndarray:
+        mean = np.asarray(mean_display)
+        delta = np.asarray(grain_delta)
+        if (
+            mean.ndim != 3
+            or mean.shape[-1] != 3
+            or delta.shape != mean.shape
+        ):
+            return reference_remove_grain_bias(mean, delta, bins)
+        corrected = np.asarray(delta, dtype=np.float32).copy()
+
+        def process_channel(channel: int) -> None:
+            level = np.clip(mean[..., channel], 0.0, 1.0)
+            index = np.minimum(
+                np.floor(np.sqrt(level) * bins).astype(np.int16), bins - 1
+            )
+            flat_index = index.ravel()
+            counts = np.bincount(
+                flat_index, minlength=bins
+            ).astype(np.float64)
+            sums = np.bincount(
+                flat_index,
+                weights=corrected[..., channel].ravel(),
+                minlength=bins,
+            )
+            valid = counts >= 256
+            if not np.any(valid):
+                return
+            table = np.zeros(bins, dtype=np.float64)
+            table[valid] = sums[valid] / counts[valid]
+            valid_x = np.flatnonzero(valid)
+            table = np.interp(np.arange(bins), valid_x, table[valid_x])
+            table = np.convolve(table, [0.25, 0.50, 0.25], mode="same")
+            table[0] = 0.75 * table[0] + 0.25 * table[1]
+            table[-1] = 0.75 * table[-1] + 0.25 * table[-2]
+            corrected[..., channel] -= table[index].astype(np.float32)
+
+        if array_workers == 1:
+            for channel in range(3):
+                process_channel(channel)
+        else:
+            assert _ARRAY_EXECUTOR is not None
+            list(_ARRAY_EXECUTOR.map(process_channel, range(3)))
+        return corrected
+
+    def match_projection_zero_physical_authority(
+        physical_projection: np.ndarray,
+        scan_reference: np.ndarray,
+    ) -> np.ndarray:
+        physical = np.asarray(physical_projection, dtype=np.float32)
+        scan = np.asarray(scan_reference, dtype=np.float32)
+        if (
+            physical.ndim != 3
+            or physical.shape[-1] != 3
+            or scan.shape != physical.shape
+            or module.PRINT_MONITOR_PHYSICAL_HUE_WEIGHT != 0.0
+            or module.PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT != 0.0
+        ):
+            return reference_match_projection(physical, scan)
+
+        # V31 withdrew unmeasured physical hue and saturation authority. The
+        # historical general expression still evaluated every physical OKLab,
+        # norm and smoothstep before multiplying those branches by exact zero.
+        # Preserve the surviving scan-reference arithmetic and its operation
+        # order without evaluating a colour contribution that cannot exist.
+        reference_luma = np.einsum(
+            "...c,c->...",
+            np.maximum(scan, 0.0),
+            [0.2126, 0.7152, 0.0722],
+        )
+        target_luma = np.interp(
+            reference_luma,
+            module.PRINT_MONITOR_SCAN_LUMA_ANCHORS,
+            module.PRINT_MONITOR_TARGET_LUMA_ANCHORS,
+        ).astype(np.float32)
+        scaled_reference = scan * (
+            target_luma / np.maximum(reference_luma, 1e-6)
+        )[..., None]
+        reference_lab = module.linear_rec709_to_oklab(
+            np.maximum(scaled_reference, 0.0)
+        )
+        lightness = reference_lab[..., 0]
+        reference_ab = reference_lab[..., 1:3]
+        reference_chroma = np.linalg.norm(reference_ab, axis=-1)
+        reference_direction = reference_ab / np.maximum(
+            reference_chroma[..., None], 1e-6
+        )
+        direction = reference_direction.copy()
+        direction /= np.maximum(
+            np.linalg.norm(direction, axis=-1)[..., None], 1e-6
+        )
+        reference_saturation = reference_chroma / np.maximum(
+            reference_lab[..., 0], 0.025
+        )
+        saturation = np.clip(
+            reference_saturation,
+            0.88 * reference_saturation,
+            1.18 * reference_saturation + 1e-5,
+        )
+        if module.PRINT_MONITOR_CHROMA_ADAPTATION == "absolute_chroma":
+            target_chroma = np.clip(
+                reference_chroma,
+                0.94 * reference_chroma,
+                1.12 * reference_chroma + 1e-5,
+            )
+        elif module.PRINT_MONITOR_CHROMA_ADAPTATION == "relative_saturation":
+            target_chroma = saturation * lightness
+        else:
+            return reference_match_projection(physical, scan)
+        matched_lab = reference_lab.copy()
+        matched_lab[..., 0] = lightness
+        matched_lab[..., 1:3] = direction * target_chroma[..., None]
+        return module.compress_oklab_chroma_to_rec709(
+            module.oklab_to_linear_rec709(matched_lab)
+        ).astype(np.float32)
 
     vgamut_to_rec709 = np.asarray(
         module.XYZ_D65_TO_REC709 @ module.VGAMUT_TO_XYZ_D65,
@@ -1279,6 +1617,18 @@ def apply(
     module.apply_rgb_cube_lut = camera_cube
     module.apply_5279_net_density_lut = density_cube
     module.sample_record_density_delta_lut = print_output_cube
+    module.apply_2383_h61_colour_delta_lut = h61_colour_delta_cube
+    module.apply_2383_projection_lut = projection_density_cube
+    module.apply_5279_to_2383_printer_density_lut = printer_density_cube
+    module._raw_print_2383_density_from_negative = raw_print_density_fast
+    module.print_2383_density_from_negative = print_density_fast
+    normal_adapter.preserve_luma_and_compress_gamut = v31_gamut_fast
+    module.apply_2383_monitor_neutral_curve = monitor_neutral_curve_fast
+    module.neutralize_2383_projected_gray_scale = projected_gray_fast
+    module.remove_tonal_grain_bias = remove_grain_bias_parallel
+    module.match_2383_projection_to_rec709_monitor = (
+        match_projection_zero_physical_authority
+    )
     module.compress_unit_gamut = compress_unit_gamut_inplace
     module.compress_oklab_chroma_to_rec709 = compress_oklab_parallel
     module.neutralize_spirit_finished_gray_scale = neutralize_spirit

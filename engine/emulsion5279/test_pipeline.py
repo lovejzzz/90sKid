@@ -130,6 +130,188 @@ class PipelineContractTests(unittest.TestCase):
         e.PRINT_2383_D60_RELATIVE_CHROMA_DELTA_PATH = original
         np.testing.assert_array_equal(actual, expected)
 
+    def test_deterministic_grain_mean_shortcut_is_bit_exact(self) -> None:
+        """The no-grain observer must retain the historical float32 result."""
+        e = legacy.model
+        rng = np.random.default_rng(43)
+        reference = rng.uniform(-0.04, 1.04, (72, 96, 3)).astype(np.float32)
+        historical = e.preserve_perceptual_grain_mean(
+            reference, reference.copy()
+        )
+        optimized = e.preserve_perceptual_grain_mean(reference, reference)
+        np.testing.assert_array_equal(optimized, historical)
+
+    def test_fused_h61_sampler_is_bit_exact(self) -> None:
+        """The Production sampler preserves H-61's original operation order."""
+        import pipeline_accel
+
+        e = legacy.model
+        legacy.profile.apply(e)
+        rng = np.random.default_rng(61)
+        density = (
+            e.SENSITO_DMIN_RGB
+            + rng.uniform(-0.12, 3.0, (72, 96, 3)).astype(np.float32)
+        )
+        expected = e.apply_2383_h61_colour_delta_lut(density, True)
+        lut = e._PRINT_2383_H61_COLOUR_DELTA_LUTS[True]
+        actual = pipeline_accel.h61_density_cube_trilinear(
+            density,
+            lut,
+            e.SENSITO_DMIN_RGB,
+            -0.16,
+            e.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_fused_2383_projection_sampler_is_bit_exact(self) -> None:
+        """Spectral 2383 LUT fusion cannot alter projected RGB samples."""
+        import pipeline_accel
+
+        e = legacy.model
+        legacy.profile.apply(e)
+        rng = np.random.default_rng(2383)
+        density = rng.uniform(
+            -0.10, e.PRINT_2383_DMAX + 0.10, (72, 96, 3)
+        ).astype(np.float32)
+        expected = e.apply_2383_projection_lut(density)
+        actual = pipeline_accel.density_cube_trilinear(
+            density,
+            e._PRINT_2383_PROJECTION_LUT,
+            e.PRINT_2383_DMAX,
+        )
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_fused_5279_printer_sampler_is_bit_exact(self) -> None:
+        """Fusing spectral negative-to-print sampling preserves every value."""
+        import pipeline_accel
+
+        e = legacy.model
+        legacy.profile.apply(e)
+        rng = np.random.default_rng(52792383)
+        density = rng.uniform(
+            -0.10,
+            e.NEGATIVE_5279_MAX_RECORD_DENSITY + 0.10,
+            (72, 96, 3),
+        ).astype(np.float32)
+        expected = e.apply_5279_to_2383_printer_density_lut(density)
+        actual = pipeline_accel.density_cube_trilinear(
+            density,
+            e._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT,
+            e.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_fused_channel_curve_interpolation_is_bit_exact(self) -> None:
+        """Parallel 2383 H-D interpolation retains NumPy's float32 result."""
+        import pipeline_accel
+
+        rng = np.random.default_rng(238361)
+        axis = np.linspace(-4.0, 1.0, 41, dtype=np.float32)
+        tables = np.stack(
+            [
+                np.linspace(0.03, 3.8, 41, dtype=np.float32),
+                np.linspace(0.04, 3.7, 41, dtype=np.float32) ** 1.01,
+                np.linspace(0.02, 3.6, 41, dtype=np.float32) ** 0.99,
+            ]
+        ).astype(np.float32)
+        values = rng.uniform(-4.5, 1.5, (72, 96, 3)).astype(np.float32)
+        expected = np.empty_like(values)
+        for channel in range(3):
+            expected[..., channel] = np.interp(
+                values[..., channel], axis, tables[channel]
+            ).astype(np.float32)
+        actual = pipeline_accel.channel_table_interp(values, axis, tables)
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_fused_v31_gamut_boundary_is_bit_exact(self) -> None:
+        """The faster normal-process boundary preserves every float32 sample."""
+        import apply_v31_normal_process_adapter as adapter
+        import pipeline_accel
+
+        rng = np.random.default_rng(31)
+        rgb = rng.uniform(-0.20, 1.20, (72, 96, 3)).astype(np.float32)
+        target = rng.uniform(0.0, 1.0, (72, 96)).astype(np.float32)
+        expected = adapter.preserve_luma_and_compress_gamut(rgb, target)
+        actual = pipeline_accel.preserve_luma_and_compress_gamut(rgb, target)
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_zero_retention_v31_shortcut_is_bit_exact(self) -> None:
+        """With withdrawn HF authority, the skipped projection blur is zero."""
+        import apply_v31_normal_process_adapter as adapter
+        import v31_profile
+
+        e = legacy.model
+        rng = np.random.default_rng(3100)
+        projection = rng.uniform(0.0, 1.0, (72, 96, 3)).astype(np.float32)
+        scan = rng.uniform(0.0, 1.0, projection.shape).astype(np.float32)
+        projection_lab = e.linear_rec709_to_oklab(projection)
+        scan_lab = e.linear_rec709_to_oklab(scan)
+        sigma = max(
+            float(
+                v31_profile.PROFILE[
+                    "projection_chroma_crossover_sigma_at_2k"
+                ]
+            )
+            * projection.shape[1]
+            / 2048.0,
+            0.05,
+        )
+        projection_low_ab = cv2.GaussianBlur(
+            projection_lab[..., 1:3],
+            (0, 0),
+            sigma,
+            borderType=cv2.BORDER_REFLECT,
+        )
+        scan_low_ab = cv2.GaussianBlur(
+            scan_lab[..., 1:3],
+            (0, 0),
+            sigma,
+            borderType=cv2.BORDER_REFLECT,
+        )
+        historical_lab = projection_lab.copy()
+        historical_lab[..., 1:3] = scan_low_ab + 0.0 * (
+            projection_lab[..., 1:3] - projection_low_ab
+        )
+        historical_rgb = e.oklab_to_linear_rec709(historical_lab)
+        projection_luma = np.einsum(
+            "...c,c->...", projection, [0.2126, 0.7152, 0.0722]
+        ).astype(np.float32)
+        expected = adapter.preserve_luma_and_compress_gamut(
+            historical_rgb, projection_luma
+        )
+        actual = adapter.adapt_frame_linear(projection, scan, 0.0)
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_common_density_scalar_debias_is_bit_exact(self) -> None:
+        """A common print event need not duplicate and discard two records."""
+        e = legacy.model
+        rng = np.random.default_rng(1383)
+        level = rng.uniform(0.0, 1.0, (257, 389)).astype(np.float32)
+        delta = rng.normal(0.0, 0.01, level.shape).astype(np.float32)
+        expected = e.remove_tonal_grain_bias(
+            np.repeat(level[..., None], 3, axis=-1),
+            np.repeat(delta[..., None], 3, axis=-1),
+        )[..., 0]
+        actual = e.remove_tonal_grain_bias_scalar(level, delta)
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_common_density_effective_delta_is_bit_exact(self) -> None:
+        """The scalar observer path preserves three-record float32 rounding."""
+        import v43h_profile
+
+        e = legacy.model
+        v43h_profile.apply(e)
+        rng = np.random.default_rng(138343)
+        density = rng.uniform(0.03, 3.8, (257, 389, 3)).astype(np.float32)
+        formed = e.form_2383_hypothesis_common_grain_density(
+            density, frame_index=12, grain_scale=1.0
+        )
+        expected = np.mean(formed - density, axis=-1).astype(np.float32)
+        actual = e.form_2383_hypothesis_effective_common_grain_delta(
+            density, frame_index=12, grain_scale=1.0
+        )
+        np.testing.assert_array_equal(actual, expected)
+
     def test_reference_mode_accepts_extended_linear_highlights(self) -> None:
         engine = Emulsion5279Engine(EngineConfig(mode=EngineMode.REFERENCE))
         raw = np.asarray([[[0.2, 1.4, 8.0]]], dtype=np.float32)

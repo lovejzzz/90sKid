@@ -49,6 +49,7 @@ Recovery, reference identity and V42 Production evidence are recorded in
 
 Pipeline engineering notes:
 
+- [V43H exact pipeline optimization and 12-master identity audit](V43H_EXACT_PIPELINE_OPTIMIZATION_2026-08-09.md)
 - [V28 ProRes RAW colour-input contract and green-cast correction](V28_COLOUR_INPUT_CONTRACT_2026-08-04.md)
 - [V29 evidence-gated full-motion validation](V29_VALIDATION_AND_EVIDENCE_BOUNDARY_2026-08-04.md)
 - [M4 Max V27 optimization report](PIPELINE_OPTIMIZATION_2026-08-04.md)

@@ -3962,12 +3962,51 @@ def remove_tonal_grain_bias(
     return corrected
 
 
+def remove_tonal_grain_bias_scalar(
+    mean_level: np.ndarray,
+    grain_delta: np.ndarray,
+    bins: int = 96,
+) -> np.ndarray:
+    """Single-record equivalent used by a spectrally common density event."""
+    level = np.clip(np.asarray(mean_level), 0.0, 1.0)
+    corrected = np.asarray(grain_delta, dtype=np.float32).copy()
+    index = np.minimum(
+        np.floor(np.sqrt(level) * bins).astype(np.int16), bins - 1
+    )
+    flat_index = index.ravel()
+    counts = np.bincount(flat_index, minlength=bins).astype(np.float64)
+    sums = np.bincount(
+        flat_index,
+        weights=corrected.ravel(),
+        minlength=bins,
+    )
+    valid = counts >= 256
+    if not np.any(valid):
+        return corrected
+    table = np.zeros(bins, dtype=np.float64)
+    table[valid] = sums[valid] / counts[valid]
+    valid_x = np.flatnonzero(valid)
+    table = np.interp(np.arange(bins), valid_x, table[valid_x])
+    table = np.convolve(table, [0.25, 0.50, 0.25], mode="same")
+    table[0] = 0.75 * table[0] + 0.25 * table[1]
+    table[-1] = 0.75 * table[-1] + 0.25 * table[-2]
+    corrected -= table[index].astype(np.float32)
+    return corrected
+
+
 def preserve_perceptual_grain_mean(
     reference_linear: np.ndarray,
     stochastic_linear: np.ndarray,
 ) -> np.ndarray:
     """Preserve the final perceptual colour curve after stochastic formation."""
     reference_code = srgb_encode(np.clip(reference_linear, 0.0, 1.0))
+    # A deterministic observer asks for the same array as both reference and
+    # realization. Its grain delta is identically zero, so both histogram
+    # de-bias passes below can only subtract zero. Keep the exact historical
+    # sRGB round-trip (and therefore its float32 rounding), but do not bin and
+    # scan the complete native frame twice for a correction that cannot exist.
+    if reference_linear is stochastic_linear:
+        return srgb_decode(reference_code).astype(np.float32)
     stochastic_code = srgb_encode(np.clip(stochastic_linear, 0.0, 1.0))
     for _ in range(2):
         code_delta = remove_tonal_grain_bias(
@@ -4040,12 +4079,12 @@ def form_2383_fine_grain_density(
     ).astype(np.float32)
 
 
-def form_2383_hypothesis_common_grain_density(
+def _form_2383_hypothesis_common_grain_delta(
     print_density: np.ndarray,
     frame_index: int,
     grain_scale: float,
 ) -> np.ndarray:
-    """V43H-only common-mode 2383 density hypothesis.
+    """Return V43H's pre-addition scalar common-density realization.
 
     V39's independent C/M/Y print populations created isolated primary-colour
     tails and were withdrawn.  The public 2383 record does not identify their
@@ -4076,17 +4115,55 @@ def form_2383_hypothesis_common_grain_density(
     common = (formed - probability).astype(np.float32)
     # Remove the finite-frame conditional bias without changing the common
     # stochastic field or its spatial spectrum.
-    repeated_level = np.repeat(probability[..., None], 3, axis=-1)
-    repeated_delta = np.repeat(common[..., None], 3, axis=-1)
-    common = remove_tonal_grain_bias(
-        repeated_level, repeated_delta
-    )[..., 0]
+    common = remove_tonal_grain_bias_scalar(probability, common)
     density_delta = (
         PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE
         * float(np.mean(span))
         * common
     )
+    return density_delta.astype(np.float32)
+
+
+def form_2383_hypothesis_common_grain_density(
+    print_density: np.ndarray,
+    frame_index: int,
+    grain_scale: float,
+) -> np.ndarray:
+    """Form V43H's common optical-density event in all three records."""
+    source = np.asarray(print_density, dtype=np.float32)
+    density_delta = _form_2383_hypothesis_common_grain_delta(
+        source, frame_index, grain_scale
+    )
     return (source + density_delta[..., None]).astype(np.float32)
+
+
+def form_2383_hypothesis_effective_common_grain_delta(
+    print_density: np.ndarray,
+    frame_index: int,
+    grain_scale: float,
+) -> np.ndarray:
+    """Return the observer's historical mean realized common-density delta.
+
+    The former dual renderer allocated a complete three-record formed print,
+    subtracted the source, then immediately averaged the equal common event.
+    Reproduce the same per-record float32 addition/subtraction and mean order
+    with one scalar accumulator instead of two unnecessary native RGB images.
+    """
+    source = np.asarray(print_density, dtype=np.float32)
+    density_delta = _form_2383_hypothesis_common_grain_delta(
+        source, frame_index, grain_scale
+    )
+    effective = (
+        (source[..., 0] + density_delta).astype(np.float32) - source[..., 0]
+    )
+    for channel in (1, 2):
+        realized = (
+            (source[..., channel] + density_delta).astype(np.float32)
+            - source[..., channel]
+        )
+        np.add(effective, realized, out=effective)
+    np.divide(effective, np.float32(3.0), out=effective)
+    return effective.astype(np.float32, copy=False)
 
 
 def apply_spirit_2k_scan_aperture_to_density(
@@ -4447,13 +4524,11 @@ def reconstruct_density_pair_to_dual_display_v39(
     print_mean_mtf = apply_2383_mtf_to_print_density(print_mean, grain_scale)
     print_hypothesis_density_delta = None
     if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
-        print_hypothesis_density = form_2383_hypothesis_common_grain_density(
-            print_mean_mtf, frame_index, grain_scale
+        print_hypothesis_density_delta = (
+            form_2383_hypothesis_effective_common_grain_delta(
+                print_mean_mtf, frame_index, grain_scale
+            )
         )
-        print_hypothesis_density_delta = np.mean(
-            print_hypothesis_density - print_mean_mtf,
-            axis=-1,
-        ).astype(np.float32)
     formed_projection = None
     if (
         not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
