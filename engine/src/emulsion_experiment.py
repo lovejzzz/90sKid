@@ -3668,7 +3668,18 @@ def form_5279_multilayer_record_density(
                     sample_seed=sample_seed,
                 )
                 class_accumulation_started = time.perf_counter()
-                population_deviation += class_weight * class_deviation
+                if globals().get(
+                    "_WAVEFRONT_INPLACE_CLASS_ACCUMULATION", False
+                ):
+                    import wavefront_tile_lab_v002
+
+                    wavefront_tile_lab_v002.weight_and_accumulate_class(
+                        population_deviation,
+                        class_deviation,
+                        class_weight,
+                    )
+                else:
+                    population_deviation += class_weight * class_deviation
                 record_operator(
                     "outer_class_deviation_accumulation",
                     class_accumulation_started,

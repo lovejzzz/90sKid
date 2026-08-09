@@ -148,6 +148,10 @@ baseline.
 
 ## Acceptance boundary and v0.0.2
 
+Update: v0.0.2 has now completed this optical-buffer contraction with exact
+T020, T032 and T007 results. See
+`WAVEFRONT_TILE_LAB_V0.0.2_2026-08-09.md` for the implementation and evidence.
+
 v0.0.1 proves that lifetime analysis can improve both memory and time without
 changing film. It does not yet create the full resident Metal island.
 

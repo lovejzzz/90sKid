@@ -103,6 +103,7 @@ def main() -> None:
     parser.add_argument("--in-flight", type=int, default=2)
     parser.add_argument("--negative-only", action="store_true")
     parser.add_argument("--marginal-workset-pixels", type=int, default=0)
+    parser.add_argument("--v002", action="store_true")
     args = parser.parse_args()
     if args.workset_pixels < 0:
         raise ValueError("workset pixels cannot be negative")
@@ -130,7 +131,15 @@ def main() -> None:
         )
         v35_accel.warm_metal_binomial("bernoulli")
     wavefront_v001 = None
-    if args.marginal_workset_pixels:
+    wavefront_v002 = None
+    if args.v002:
+        import wavefront_tile_lab_v002 as wavefront_v002
+
+        wavefront_v002.install(
+            legacy.model,
+            marginal_tile_pixels=args.marginal_workset_pixels or 250_000,
+        )
+    elif args.marginal_workset_pixels:
         import wavefront_tile_lab_v001 as wavefront_v001
 
         wavefront_v001.install(
@@ -199,17 +208,27 @@ def main() -> None:
         if not args.workset_pixels
         else plane_bytes
     )
-    wavefront_snapshot = (
-        wavefront_v001.snapshot() if wavefront_v001 is not None else None
+    wavefront_snapshot = None
+    if wavefront_v002 is not None:
+        wavefront_snapshot = wavefront_v002.snapshot()
+    elif wavefront_v001 is not None:
+        wavefront_snapshot = wavefront_v001.snapshot()
+    lab_version = (
+        "0.0.2"
+        if wavefront_v002 is not None
+        else "0.0.1" if wavefront_v001 is not None else None
     )
     report = {
         "experiment": (
-            "Wavefront Tile Lab v0.0.1"
-            if wavefront_v001 is not None
+            f"Wavefront Tile Lab v{lab_version}"
+            if lab_version is not None
             else "V43H Wavefront Tile Lab"
         ),
         "scope": (
-            "exact tiled activation-to-DIR-marginal lifetime contraction; "
+            "exact in-place optical-buffer and class-accumulation contraction, "
+            "including the v0.0.1 activation-to-DIR-marginal contraction"
+            if wavefront_v002 is not None
+            else "exact tiled activation-to-DIR-marginal lifetime contraction; "
             "finite-site sampling, optical filtering, DIR equations, "
             "projection and scan remain unchanged"
             if wavefront_v001 is not None
@@ -226,8 +245,11 @@ def main() -> None:
             "in_flight": args.in_flight if args.workset_pixels else 1,
             "full_width_row_tiles": bool(args.workset_pixels),
             "marginal_workset_pixels": (
-                args.marginal_workset_pixels or None
+                (args.marginal_workset_pixels or 250_000)
+                if args.v002
+                else args.marginal_workset_pixels or None
             ),
+            "lab_version": lab_version,
         },
         "timing_seconds": {
             "negative_formation": negative_seconds,
@@ -244,7 +266,13 @@ def main() -> None:
             "v001_marginal_scratch_mib": (
                 None
                 if wavefront_snapshot is None
-                else float(wavefront_snapshot["maximum_scratch_bytes"])
+                else float(
+                    (
+                        wavefront_snapshot["v001"]
+                        if wavefront_v002 is not None
+                        else wavefront_snapshot
+                    )["maximum_scratch_bytes"]
+                )
                 / 1024**2
             ),
         },
@@ -253,7 +281,14 @@ def main() -> None:
         "all_reference_arrays_identical": bool(comparisons)
         and all(row["identical"] for row in comparisons.values()),
         "metal_sampler_stats": dict(metal_binomial_bridge.STATS),
-        "wavefront_v001_stats": wavefront_snapshot,
+        "wavefront_v001_stats": (
+            wavefront_snapshot["v001"]
+            if wavefront_v002 is not None
+            else wavefront_snapshot
+        ),
+        "wavefront_v002_stats": (
+            wavefront_snapshot if wavefront_v002 is not None else None
+        ),
         "sampler_identity_audit": v35_accel.sampler_audit_snapshot(),
     }
     (args.output / "report.json").write_text(

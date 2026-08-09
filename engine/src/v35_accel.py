@@ -241,6 +241,20 @@ def apply_metal_binomial(
         if flight is not None:
             developed_fraction = flight.wait()
         developed_fraction /= float(site_count)
+        if (
+            getattr(module, "_WAVEFRONT_INPLACE_OPTICAL_BUFFERS", False)
+            and not residual_convolution
+            and not single_gaussian_after_disk
+        ):
+            import wavefront_tile_lab_v002
+
+            return wavefront_tile_lab_v002.optical_deviation_inplace(
+                developed_fraction,
+                expected,
+                kernel,
+                max(optical_sigma, 0.05),
+                subpixel_offset,
+            )
         if residual_convolution:
             # Both spatial operators are linear and use the same border rule:
             # L(sample) - L(expected) == L(sample - expected).  Reassociating
