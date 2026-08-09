@@ -15,6 +15,7 @@ import pipeline_accel as accel
 
 
 _ARRAY_EXECUTOR: concurrent.futures.ThreadPoolExecutor | None = None
+_NUMBA_KERNEL_LOCK = threading.Lock()
 
 
 def _row_ranges(height: int, workers: int) -> list[tuple[int, int]]:
@@ -93,6 +94,17 @@ def apply(
         threading.Lock() if stochastic_profile is not None else None
     )
     mean_profile_lock = threading.Lock() if mean_profile is not None else None
+
+    def run_numba_kernel(function, *arguments):
+        """Serialize Numba workqueue launches while other branch work overlaps.
+
+        Numba's macOS workqueue backend is internally parallel but does not
+        permit two outside Python threads to launch kernels concurrently. This
+        lock is the explicit CPU-kernel queue in the heterogeneous scheduler;
+        OpenCV, NumPy and Metal work on either observer remain free to overlap.
+        """
+        with _NUMBA_KERNEL_LOCK:
+            return function(*arguments)
 
     def profile_stochastic(name: str, started: float) -> None:
         if stochastic_profile is None:
@@ -264,13 +276,14 @@ def apply(
         source = np.asarray(rgb, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_cube(source, lut, rows_per_stripe)
-        return accel.camera_cube_trilinear(source, lut)
+        return run_numba_kernel(accel.camera_cube_trilinear, source, lut)
 
     def record_density(log_exposure: np.ndarray) -> np.ndarray:
         source = np.asarray(log_exposure, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_record_density(source)
-        return accel.record_density_mix_fused(
+        return run_numba_kernel(
+            accel.record_density_mix_fused,
             source,
             module.SENSITO_LOG_EXPOSURE,
             module.SENSITO_DENSITY_RGB,
@@ -410,7 +423,8 @@ def apply(
             / widths
         )
         marginal /= np.maximum(np.sum(marginal, axis=-1, keepdims=True), 1e-8)
-        return accel.mix_record_departure(
+        return run_numba_kernel(
+            accel.mix_record_departure,
             densities,
             neutral_density,
             marginal,
@@ -425,7 +439,8 @@ def apply(
             module._NEGATIVE_5279_NET_DENSITY_LUT = (
                 module.build_5279_net_density_lut()
             )
-        return accel.density_cube_trilinear(
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
             source,
             module._NEGATIVE_5279_NET_DENSITY_LUT,
             module.NEGATIVE_5279_MAX_RECORD_DENSITY,
@@ -445,7 +460,8 @@ def apply(
             or lattice.shape[-1] != 3
         ):
             return reference_print_output_cube(source, lattice, rows_per_stripe)
-        return accel.signed_density_cube_trilinear(
+        return run_numba_kernel(
+            accel.signed_density_cube_trilinear,
             source,
             lattice,
             module.SENSITO_DMIN_RGB,
@@ -464,7 +480,8 @@ def apply(
             module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare] = (
                 module.build_2383_h61_colour_delta_lut(include_reference_flare)
             )
-        return accel.h61_density_cube_trilinear(
+        return run_numba_kernel(
+            accel.h61_density_cube_trilinear,
             source,
             module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare],
             module.SENSITO_DMIN_RGB,
@@ -481,7 +498,8 @@ def apply(
             return reference_projection_cube(source, rows_per_stripe)
         if module._PRINT_2383_PROJECTION_LUT is None:
             module._PRINT_2383_PROJECTION_LUT = module.build_2383_projection_lut()
-        return accel.density_cube_trilinear(
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
             source,
             module._PRINT_2383_PROJECTION_LUT,
             module.PRINT_2383_DMAX,
@@ -495,7 +513,8 @@ def apply(
             module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = (
                 module.build_5279_to_2383_printer_density_lut()
             )
-        return accel.density_cube_trilinear(
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
             source,
             module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT,
             module.NEGATIVE_5279_MAX_RECORD_DENSITY,
@@ -528,7 +547,8 @@ def apply(
                 module.PRINT_2383_INTERIMAGE_MATRIX,
             )
         ).astype(np.float32)
-        return accel.channel_table_interp(
+        return run_numba_kernel(
+            accel.channel_table_interp,
             print_log_exposure,
             module.PRINT_2383_LOG_EXPOSURE,
             module.PRINT_2383_DENSITY_RGB,
@@ -568,7 +588,9 @@ def apply(
             or target.shape != source.shape[:2]
         ):
             return reference_v31_gamut(source, target)
-        return accel.preserve_luma_and_compress_gamut(source, target)
+        return run_numba_kernel(
+            accel.preserve_luma_and_compress_gamut, source, target
+        )
 
     def monitor_neutral_curve_fast(physical: np.ndarray) -> np.ndarray:
         source = np.asarray(physical, dtype=np.float32)
@@ -579,7 +601,8 @@ def apply(
                 module.build_2383_monitor_neutral_curve()
             )
         axis, table = module._PRINT_2383_MONITOR_NEUTRAL_CURVE
-        return accel.channel_table_interp(
+        return run_numba_kernel(
+            accel.channel_table_interp,
             source, axis, np.repeat(table[None, :], 3, axis=0)
         )
 
@@ -597,7 +620,8 @@ def apply(
             np.maximum(source, 0.0),
             [0.2126, 0.7152, 0.0722],
         )
-        factors = accel.factor_table_interp_float64(
+        factors = run_numba_kernel(
+            accel.factor_table_interp_float64,
             luma, luma_axis, factor_table
         )
         return np.maximum(source * factors, 0.0).astype(np.float32)
@@ -753,7 +777,9 @@ def apply(
             assert _ARRAY_EXECUTOR is not None
             list(_ARRAY_EXECUTOR.map(measure_source_luma, ranges))
         luma_axis, factor_table = module._SPIRIT_NEUTRAL_SCALE_TABLE
-        factors = accel.factor_table_interp(source_luma, luma_axis, factor_table)
+        factors = run_numba_kernel(
+            accel.factor_table_interp, source_luma, luma_axis, factor_table
+        )
         corrected = source * factors
         def correct_rows(bounds: tuple[int, int]) -> None:
             row0, row1 = bounds
@@ -1256,7 +1282,8 @@ def apply(
         source = np.asarray(log_exposure, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return module._V27_REFERENCE_PUBLISHED_5279_GRANULARITY_SIGMA(source)
-        return accel.channel_table_interp(
+        return run_numba_kernel(
+            accel.channel_table_interp,
             source,
             module.GRANULARITY_LOG_EXPOSURE,
             module.GRANULARITY_SIGMA_D_RGB,

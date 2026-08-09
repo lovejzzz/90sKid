@@ -4503,6 +4503,7 @@ def reconstruct_density_pair_to_dual_display_v39(
     grain_scale: float,
     output_encoding: str = "linear_rec709",
     return_mean_pair: bool = False,
+    branch_executor: concurrent.futures.Executor | None = None,
 ) -> tuple[np.ndarray, ...]:
     """Render V39 projection and scan while sharing physical intermediates.
 
@@ -4522,111 +4523,141 @@ def reconstruct_density_pair_to_dual_display_v39(
         - np.asarray(mean_density, dtype=np.float32)
     ).astype(np.float32)
     scanner_density = scanner_density_from_total_record_density(negative_formed)
-    formed_scan = render_cineon_scan_master_from_scanner_density(
-        apply_spirit_2k_scan_aperture_to_density(scanner_density)
-    )
-    formed_scan = finish_cineon_scan_for_bluray(formed_scan)
     if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
         mean_scanner_density = scanner_density_from_total_record_density(
             negative_mean
         )
-        mean_scan = render_cineon_scan_master_from_scanner_density(
-            apply_spirit_2k_scan_aperture_to_density(mean_scanner_density)
-        )
-        mean_scan = finish_cineon_scan_for_bluray(mean_scan)
-        scan = mean_scan + finish_bluray_grain_delta(
-            mean_scan, formed_scan - mean_scan
-        )
     else:
         mean_scanner_density = None
-        scan = formed_scan
-    scan = compress_oklab_chroma_to_rec709(scan)
-    if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
-        scan = neutralize_spirit_finished_gray_scale(scan)
 
-    negative_printer_mean = negative_total_printer_density_from_record_density(
-        negative_mean
-    )
-    print_mean = print_2383_density_from_negative(negative_printer_mean)
-    print_mean_mtf = apply_2383_mtf_to_print_density(print_mean, grain_scale)
-    print_hypothesis_density_delta = None
-    if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
-        print_hypothesis_density_delta = (
-            form_2383_hypothesis_effective_common_grain_delta(
-                print_mean_mtf, frame_index, grain_scale
-            )
+    def render_scan_branch() -> tuple[np.ndarray, np.ndarray | None]:
+        formed_scan = render_cineon_scan_master_from_scanner_density(
+            apply_spirit_2k_scan_aperture_to_density(scanner_density)
         )
-    formed_projection = None
-    if (
-        not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
-        or PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density"
-    ):
-        negative_printer_formed = (
-            negative_total_printer_density_from_record_density(negative_formed)
-        )
-        print_formed = print_2383_density_from_negative(negative_printer_formed)
-        print_formed_mtf = (
-            print_mean_mtf
-            + apply_2383_mtf_to_density_delta(
-                print_formed - print_mean, grain_scale
+        formed_scan = finish_cineon_scan_for_bluray(formed_scan)
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            assert mean_scanner_density is not None
+            mean_scan = render_cineon_scan_master_from_scanner_density(
+                apply_spirit_2k_scan_aperture_to_density(mean_scanner_density)
             )
-        ).astype(np.float32)
-        if PRINT_GRAIN_DOMAIN == "print_density":
-            print_formed_mtf = form_2383_fine_grain_density(
-                print_formed_mtf, frame_index, grain_scale
+            mean_scan = finish_cineon_scan_for_bluray(mean_scan)
+            scan = mean_scan + finish_bluray_grain_delta(
+                mean_scan, formed_scan - mean_scan
             )
-        formed_projection = render_2383_monitor_projection_from_print_density(
-            negative_formed,
-            print_formed_mtf,
-            scanner_density=scanner_density,
-        )
-    if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        mean_projection = render_2383_monitor_projection_from_print_density(
-            negative_mean,
-            print_mean_mtf,
-            scanner_density=mean_scanner_density,
-        )
-        if PROJECTION_GRAIN_DELTA_OBSERVER == "archive_pointwise":
-            legacy_mean = render_2383_monitor_projection_fast_from_record_density(
-                mean_density
-            )
-            legacy_formed = render_2383_monitor_projection_fast_from_record_density(
-                formed_density
-            )
-            visible_delta = apply_2383_mtf_to_density_delta(
-                legacy_formed - legacy_mean, grain_scale
-            )
-        elif PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density":
-            assert formed_projection is not None
-            visible_delta = formed_projection - mean_projection
         else:
-            raise ValueError(
-                "unknown projection grain-delta observer: "
-                f"{PROJECTION_GRAIN_DELTA_OBSERVER}"
-            )
-        projection = mean_projection + finish_projection_grain_delta(
-            visible_delta,
+            mean_scan = None
+            scan = formed_scan
+        scan = compress_oklab_chroma_to_rec709(scan)
+        if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
+            scan = neutralize_spirit_finished_gray_scale(scan)
+        return scan, mean_scan
+
+    def render_projection_branch() -> tuple[np.ndarray, np.ndarray | None]:
+        negative_printer_mean = (
+            negative_total_printer_density_from_record_density(negative_mean)
         )
-        if print_hypothesis_density_delta is not None:
-            # Use the same observer-side integration that protects the
-            # accepted 5279 branch from unmeasured high-frequency opponent
-            # tails.  V43H defines this unmeasured candidate as a spectrally
-            # neutral optical-density event, so its stated model is the scalar
-            # transmission 10^-delta.  An alternative equal-record spectral
-            # interpretation remains an ablation, not a claimed identity.
-            print_hypothesis_projection = mean_projection * np.power(
-                10.0, -print_hypothesis_density_delta[..., None]
+        print_mean = print_2383_density_from_negative(negative_printer_mean)
+        print_mean_mtf = apply_2383_mtf_to_print_density(
+            print_mean, grain_scale
+        )
+        print_hypothesis_density_delta = None
+        if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
+            print_hypothesis_density_delta = (
+                form_2383_hypothesis_effective_common_grain_delta(
+                    print_mean_mtf, frame_index, grain_scale
+                )
             )
-            projection += finish_projection_grain_delta(
-                print_hypothesis_projection - mean_projection
+        formed_projection = None
+        if (
+            not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
+            or PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density"
+        ):
+            negative_printer_formed = (
+                negative_total_printer_density_from_record_density(
+                    negative_formed
+                )
             )
+            print_formed = print_2383_density_from_negative(
+                negative_printer_formed
+            )
+            print_formed_mtf = (
+                print_mean_mtf
+                + apply_2383_mtf_to_density_delta(
+                    print_formed - print_mean, grain_scale
+                )
+            ).astype(np.float32)
+            if PRINT_GRAIN_DOMAIN == "print_density":
+                print_formed_mtf = form_2383_fine_grain_density(
+                    print_formed_mtf, frame_index, grain_scale
+                )
+            formed_projection = render_2383_monitor_projection_from_print_density(
+                negative_formed,
+                print_formed_mtf,
+                scanner_density=scanner_density,
+            )
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            mean_projection = render_2383_monitor_projection_from_print_density(
+                negative_mean,
+                print_mean_mtf,
+                scanner_density=mean_scanner_density,
+            )
+            if PROJECTION_GRAIN_DELTA_OBSERVER == "archive_pointwise":
+                legacy_mean = (
+                    render_2383_monitor_projection_fast_from_record_density(
+                        mean_density
+                    )
+                )
+                legacy_formed = (
+                    render_2383_monitor_projection_fast_from_record_density(
+                        formed_density
+                    )
+                )
+                visible_delta = apply_2383_mtf_to_density_delta(
+                    legacy_formed - legacy_mean, grain_scale
+                )
+            elif PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density":
+                assert formed_projection is not None
+                visible_delta = formed_projection - mean_projection
+            else:
+                raise ValueError(
+                    "unknown projection grain-delta observer: "
+                    f"{PROJECTION_GRAIN_DELTA_OBSERVER}"
+                )
+            projection = mean_projection + finish_projection_grain_delta(
+                visible_delta,
+            )
+            if print_hypothesis_density_delta is not None:
+                # V43H's unmeasured candidate is a spectrally neutral optical-
+                # density event, so its stated observer is 10^-delta.
+                print_hypothesis_projection = mean_projection * np.power(
+                    10.0, -print_hypothesis_density_delta[..., None]
+                )
+                projection += finish_projection_grain_delta(
+                    print_hypothesis_projection - mean_projection
+                )
+        else:
+            assert formed_projection is not None
+            mean_projection = None
+            projection = formed_projection
+        projection = compress_oklab_chroma_to_rec709(projection)
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            assert mean_projection is not None
+            mean_projection = compress_oklab_chroma_to_rec709(
+                mean_projection
+            )
+            projection = preserve_perceptual_grain_mean(
+                mean_projection, projection
+            )
+        return projection, mean_projection
+
+    if branch_executor is None:
+        scan, mean_scan = render_scan_branch()
+        projection, mean_projection = render_projection_branch()
     else:
-        assert formed_projection is not None
-        projection = formed_projection
-    projection = compress_oklab_chroma_to_rec709(projection)
-    if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        mean_projection = compress_oklab_chroma_to_rec709(mean_projection)
-        projection = preserve_perceptual_grain_mean(mean_projection, projection)
+        scan_future = branch_executor.submit(render_scan_branch)
+        projection_future = branch_executor.submit(render_projection_branch)
+        scan, mean_scan = scan_future.result()
+        projection, mean_projection = projection_future.result()
 
     def encode(image: np.ndarray) -> np.ndarray:
         if output_encoding == "legacy_bt709_oetf":
@@ -4644,6 +4675,8 @@ def reconstruct_density_pair_to_dual_display_v39(
         return result
     if not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
         raise ValueError("mean observer pair requires managed formed density")
+    assert mean_scan is not None
+    assert mean_projection is not None
     deterministic_scan = compress_oklab_chroma_to_rec709(mean_scan)
     if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
         deterministic_scan = neutralize_spirit_finished_gray_scale(

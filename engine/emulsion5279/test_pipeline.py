@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import concurrent.futures
 import json
 import subprocess
 import tempfile
@@ -17,7 +18,7 @@ from .contracts import (
     RenderedFrame,
 )
 from .conformance import research_conformance
-from .io import DualDeliveryWriter
+from .io import DualDeliveryWriter, PrefetchedIterator
 from .pipeline import Emulsion5279Engine
 from . import legacy
 
@@ -32,12 +33,24 @@ class PipelineContractTests(unittest.TestCase):
             EngineConfig(grain_scale=-1.0)
         with self.assertRaises(ValueError):
             EngineConfig(exposure_stops=0.0)
+        with self.assertRaises(ValueError):
+            EngineConfig(observer_branch_workers=3)
         experimental = EngineConfig(
             exposure_stops=0.0,
             research_baseline=False,
             mode=EngineMode.REFERENCE,
         )
         self.assertFalse(experimental.research_baseline)
+
+    def test_bounded_prefetch_preserves_order_and_stops_at_count(self) -> None:
+        values = [(index, index * index) for index in range(5)]
+        for enabled in (False, True):
+            with PrefetchedIterator(
+                iter(values), enabled=enabled, count=3
+            ) as prefetched:
+                self.assertEqual(list(prefetched), [(0, 0), (1, 1), (2, 4)])
+                self.assertGreaterEqual(prefetched.last_service_seconds, 0.0)
+                self.assertGreaterEqual(prefetched.last_wait_seconds, 0.0)
 
     def test_default_executes_the_latest_research_sampler_contract(self) -> None:
         config = EngineConfig()
@@ -143,6 +156,36 @@ class PipelineContractTests(unittest.TestCase):
             physical, scan, scan_metrics=metrics
         )
         np.testing.assert_array_equal(actual, expected)
+
+    def test_parallel_observers_are_bit_exact(self) -> None:
+        """Scheduling the two independent observers cannot alter their math."""
+        import v43h_profile
+
+        e = legacy.model
+        v43h_profile.apply(e)
+        rng = np.random.default_rng(4309)
+        mean = rng.uniform(0.1, 2.0, (36, 48, 3)).astype(np.float32)
+        formed = (mean + rng.normal(0.0, 0.02, mean.shape)).astype(np.float32)
+        sequential = e.reconstruct_density_pair_to_dual_display_v39(
+            mean,
+            formed,
+            17,
+            1.0,
+            "linear_rec709",
+            return_mean_pair=True,
+        )
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            parallel = e.reconstruct_density_pair_to_dual_display_v39(
+                mean,
+                formed,
+                17,
+                1.0,
+                "linear_rec709",
+                return_mean_pair=True,
+                branch_executor=executor,
+            )
+        for expected, actual in zip(sequential, parallel, strict=True):
+            np.testing.assert_array_equal(actual, expected)
 
     def test_zero_projection_hf_residual_shortcut_is_bit_exact(self) -> None:
         """V40+'s zero-retention branch preserves the historical equation."""
