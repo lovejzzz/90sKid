@@ -1,0 +1,26 @@
+{
+  "source": "V25 corrected 5760x4320 CPU reference; two observers share one emulsion",
+  "machine": {
+    "model": "MacBook Pro Mac16,5",
+    "chip": "Apple M4 Max",
+    "cpu_cores": 16,
+    "gpu_cores": 40,
+    "memory_gb": 48,
+    "metal": "Metal 4"
+  },
+  "t020_seconds_per_frame": {
+    "decode_read": 0.680,
+    "scene_and_mean_negative": 32.639,
+    "stochastic_emulsion": 16.048,
+    "two_observers_parallel_wall": 18.710,
+    "encode_write_both": 0.313
+  },
+  "t032_seconds_per_frame": {
+    "decode_read": 1.023,
+    "scene_and_mean_negative": 32.433,
+    "stochastic_emulsion": 17.326,
+    "two_observers_parallel_wall": 16.823,
+    "encode_write_both": 0.471
+  },
+  "conclusion": "CPU full-frame float passes dominate; codec and storage are not the bottleneck"
+}

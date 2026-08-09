@@ -1,0 +1,628 @@
+{
+  "release": "V43H Hypothesis Edition",
+  "release_class": "hypothesis_not_measurement",
+  "question": "If the most likely but still unmeasured parts of the existing 5279 research are completed with bounded central estimates, what might the stock look like?",
+  "dimensions": [
+    1280,
+    960
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "absolute_source_frame_contract": {
+    "t020": [
+      0,
+      23
+    ],
+    "t032": [
+      0,
+      23
+    ],
+    "t007": [
+      276,
+      299
+    ]
+  },
+  "pipelines": {
+    "projection": "V43H 5279 negative \u2192 2383 xenon projection observer",
+    "scan": "same V43H negative \u2192 bounded period Spirit/Cineon observer",
+    "fsd": "independent post-observer finite-site density control",
+    "camera": "Apple Standard ProRes RAW \u2192 Panasonic official V-709; no film pipeline"
+  },
+  "professional_master": "Rec.709 / BT.1886 gamma 2.4 / 12-bit ProRes 4444 XQ",
+  "quicktime_companion": "Rec.709 primaries / IEC sRGB transfer / 12-bit ProRes 4444 XQ",
+  "web": "decoded only from each encoded sRGB companion; hover frame zero and JPEG share source frame 12",
+  "proxy_encoding": "H.264 High / yuv420p / CRF 18 / tune grain / closed GOP 6",
+  "timing": {
+    "t020": {
+      "release": "V43H Hypothesis Edition",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "input": "NJARAW_S001_S001_T020.MOV",
+      "source_label": "T020",
+      "range": [
+        0,
+        23
+      ],
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 0.0,
+          "mean_seconds_per_frame": 0.0,
+          "p95_seconds_per_frame": 0.0
+        },
+        "negative_formation": {
+          "total_seconds": 333.42263412318425,
+          "mean_seconds_per_frame": 13.892609755132677,
+          "p95_seconds_per_frame": 15.350602766990777
+        },
+        "physical_dual_observer": {
+          "total_seconds": 1175.9399622110068,
+          "mean_seconds_per_frame": 48.997498425458616,
+          "p95_seconds_per_frame": 50.58427587331971
+        },
+        "deterministic_observer": {
+          "total_seconds": 1.2708886060863733e-05,
+          "mean_seconds_per_frame": 5.295369192026556e-07,
+          "p95_seconds_per_frame": 9.044044418260454e-07
+        },
+        "fsd_density": {
+          "total_seconds": 73.92347916704603,
+          "mean_seconds_per_frame": 3.0801449652935844,
+          "p95_seconds_per_frame": 3.188844825135311
+        },
+        "camera_witness": {
+          "total_seconds": 17.751880455121864,
+          "mean_seconds_per_frame": 0.7396616856300776,
+          "p95_seconds_per_frame": 0.8070206793752732
+        },
+        "encode_write_four": {
+          "total_seconds": 11.853768664877862,
+          "mean_seconds_per_frame": 0.49390702770324424,
+          "p95_seconds_per_frame": 0.531638715081499
+        }
+      },
+      "finalization_seconds": 83.8604903339874,
+      "total_wall_seconds": 1708.3025253330125,
+      "effective_seconds_per_frame": 71.17927190449943,
+      "command": [
+        "python3",
+        "engine/src/render_v43h_hypothesis_comparison.py",
+        "NJARAW_S001_S001_T020.MOV",
+        "outputs/native_5k_v43h_hypothesis_1s/T020",
+        "--decoder",
+        "work/prores_raw_float_decode",
+        "--source-label",
+        "T020"
+      ]
+    },
+    "t032": {
+      "release": "V43H Hypothesis Edition",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "input": "NJARAW_S001_S001_T032.MOV",
+      "source_label": "T032",
+      "range": [
+        0,
+        23
+      ],
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 0.0,
+          "mean_seconds_per_frame": 0.0,
+          "p95_seconds_per_frame": 0.0
+        },
+        "negative_formation": {
+          "total_seconds": 341.82465020910604,
+          "mean_seconds_per_frame": 14.242693758712752,
+          "p95_seconds_per_frame": 15.918810406309783
+        },
+        "physical_dual_observer": {
+          "total_seconds": 1177.8335853329627,
+          "mean_seconds_per_frame": 49.07639938887345,
+          "p95_seconds_per_frame": 51.17498548938602
+        },
+        "deterministic_observer": {
+          "total_seconds": 1.2417847756296396e-05,
+          "mean_seconds_per_frame": 5.174103231790165e-07,
+          "p95_seconds_per_frame": 8.856499334797259e-07
+        },
+        "fsd_density": {
+          "total_seconds": 74.9103575439658,
+          "mean_seconds_per_frame": 3.1212648976652417,
+          "p95_seconds_per_frame": 3.3271551249781623
+        },
+        "camera_witness": {
+          "total_seconds": 17.81163545831805,
+          "mean_seconds_per_frame": 0.7421514774299188,
+          "p95_seconds_per_frame": 0.7781429918977665
+        },
+        "encode_write_four": {
+          "total_seconds": 12.288881628075615,
+          "mean_seconds_per_frame": 0.5120367345031506,
+          "p95_seconds_per_frame": 0.6308269599103367
+        }
+      },
+      "finalization_seconds": 88.27684654196491,
+      "total_wall_seconds": 1725.6619550829637,
+      "effective_seconds_per_frame": 71.90258147741649,
+      "command": [
+        "python3",
+        "engine/src/render_v43h_hypothesis_comparison.py",
+        "NJARAW_S001_S001_T032.MOV",
+        "outputs/native_5k_v43h_hypothesis_1s/T032",
+        "--decoder",
+        "work/prores_raw_float_decode",
+        "--source-label",
+        "T032"
+      ]
+    },
+    "t007": {
+      "release": "V43H Hypothesis Edition",
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "input": "NJARAW_S001_S001_T007.MOV",
+      "source_label": "T007",
+      "range": [
+        276,
+        299
+      ],
+      "stage_summaries": {
+        "decode_read": {
+          "total_seconds": 0.0,
+          "mean_seconds_per_frame": 0.0,
+          "p95_seconds_per_frame": 0.0
+        },
+        "negative_formation": {
+          "total_seconds": 339.4154327909928,
+          "mean_seconds_per_frame": 14.142309699624699,
+          "p95_seconds_per_frame": 16.07710335633601
+        },
+        "physical_dual_observer": {
+          "total_seconds": 1154.542239461036,
+          "mean_seconds_per_frame": 48.10592664420983,
+          "p95_seconds_per_frame": 49.46770122055314
+        },
+        "deterministic_observer": {
+          "total_seconds": 1.2375065125524998e-05,
+          "mean_seconds_per_frame": 5.156277135635415e-07,
+          "p95_seconds_per_frame": 8.436327334493394e-07
+        },
+        "fsd_density": {
+          "total_seconds": 74.68305229092948,
+          "mean_seconds_per_frame": 3.111793845455395,
+          "p95_seconds_per_frame": 3.3998180330992906
+        },
+        "camera_witness": {
+          "total_seconds": 17.29203666507965,
+          "mean_seconds_per_frame": 0.7205015277116521,
+          "p95_seconds_per_frame": 0.777480962406844
+        },
+        "encode_write_four": {
+          "total_seconds": 13.656977038888726,
+          "mean_seconds_per_frame": 0.5690407099536969,
+          "p95_seconds_per_frame": 0.8087183892552274
+        }
+      },
+      "finalization_seconds": 83.03429295902606,
+      "total_wall_seconds": 1699.9055128330365,
+      "effective_seconds_per_frame": 70.82939638195967,
+      "command": [
+        "python3",
+        "engine/src/render_v43h_hypothesis_comparison.py",
+        "NJARAW_S001_S001_T007.MOV",
+        "outputs/native_5k_v43h_hypothesis_1s/T007",
+        "--decoder",
+        "work/prores_raw_float_decode",
+        "--source-label",
+        "T007"
+      ]
+    }
+  },
+  "verification": {
+    "v43h-t020-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T020/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "e5823762d90fa9f98e3d95c1421dc2b1e0ba6600a71385428341f1fdcdd90abb",
+      "companion_sha256": "d87623f89a3173299ca7804622658a2a665e34155b851ca8f3399a03f9acc4b3",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008127,
+        0.006632,
+        0.010457
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001137,
+        0.001153,
+        0.001699
+      ],
+      "first_frame_median_luma_delta": 0.001153
+    },
+    "v43h-t020-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T020/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "71b81d24462e6b2f5fa0815b616989c06ab2ff1f83e89603427e40f0e3674bb8",
+      "companion_sha256": "65456434d24654116bad5b8e0fa6b122cb04d6bf5839061702bec5a203151cc1",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00867,
+        0.006445,
+        0.011651
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002501,
+        0.003077,
+        0.002506
+      ],
+      "first_frame_median_luma_delta": 0.003077
+    },
+    "v43h-t020-fsd": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T020/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T020/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "f8d81d1fd4f58219ef58e3a5a2b56ed1e52de2a083414ad03ecc235180ba0f9f",
+      "companion_sha256": "c79138cad8b23f0602e448fb7b6b50f6494e7829eeff735a395f43d474c144f1",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007972,
+        0.006575,
+        0.009114
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001683,
+        0.0014,
+        0.000834
+      ],
+      "first_frame_median_luma_delta": 0.0014
+    },
+    "v43h-t020-camera": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T020/camera_baseline/05_camera_baseline_prores4444.mov",
+      "source_companion": "T020/camera_baseline/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "725e39e2d925d0aa13984da491e2d8eddb554d2cd2f7a11437b30f42bf4f872a",
+      "companion_sha256": "ee46cca92529635410e63938156fdd4fefef937eea010eee9a841e34fded9d13",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007361,
+        0.005282,
+        0.007499
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001631,
+        0.002517,
+        0.001451
+      ],
+      "first_frame_median_luma_delta": 0.002517
+    },
+    "v43h-t032-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T032/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "T032/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "998ee09398d55044a5160b42a6d6cff6dc9f75506b1e46ea3269c7066c2deebc",
+      "companion_sha256": "96e3c684ef5bd0144da5ac7ab4cc7d9c748f0d959763c6cb722b707dec66ee91",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009,
+        0.007054,
+        0.010777
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002238,
+        0.001738,
+        0.001667
+      ],
+      "first_frame_median_luma_delta": 0.001738
+    },
+    "v43h-t032-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T032/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "T032/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "7c7852994c8e47c17c040dfe111de7d62ad58419276350b7560b92b923bcc70b",
+      "companion_sha256": "fe4202f2f71e269ce7a494aea5949d38fc715a266a8c7b03a2308934d1903cc0",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.00907,
+        0.006457,
+        0.011669
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.003922,
+        0.001935,
+        0.001853
+      ],
+      "first_frame_median_luma_delta": 0.001935
+    },
+    "v43h-t032-fsd": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T032/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T032/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "4d6a093c631673ccfcfc8260c77090d018e3a5302e832b28dfed8722d34f3bf2",
+      "companion_sha256": "ccfd5a1f46f12103a4f74d7a8c0d833587a096ecc07ddfee82c14d0affad0793",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008932,
+        0.006965,
+        0.009417
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001384,
+        0.001618,
+        0.001646
+      ],
+      "first_frame_median_luma_delta": 0.001618
+    },
+    "v43h-t032-camera": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "picture_authority": "T032/camera_baseline/05_camera_baseline_prores4444.mov",
+      "source_companion": "T032/camera_baseline/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "956a4e7d37cd6fc82d20ccdd4ed29eee7d1155b9fc99f928a3d8f79800d7f86f",
+      "companion_sha256": "fcdc1befd08ce509a5490c2b08f60be36825365c29764f9ddd63f5203a070604",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008516,
+        0.005762,
+        0.008314
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000834,
+        0.003083,
+        0.002805
+      ],
+      "first_frame_median_luma_delta": 0.003083
+    },
+    "v43h-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/projection/05_emulsion_master_prores4444.mov",
+      "source_companion": "T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "fa2e990daf86e69c1815707fa7758bfd35dc8e8c638b6763b7ac6841364c7ee9",
+      "companion_sha256": "8d4e30f3fb21149dee815a2eeccacd8ac24ee8a79b1384b3d731794db4e8755a",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008728,
+        0.006816,
+        0.010923
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.00106,
+        0.002533,
+        0.002254
+      ],
+      "first_frame_median_luma_delta": 0.002533
+    },
+    "v43h-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/bluray_scan/05_emulsion_master_prores4444.mov",
+      "source_companion": "T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "34f62c6930c6ce57ba49c909098791e62e28aefd20152d75ba240cef86e1a0dd",
+      "companion_sha256": "15f26ca8d5521728df6721427f692fedcaa317ad55e6b70b818bf50d45263f58",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.009207,
+        0.006565,
+        0.012376
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002234,
+        0.00196,
+        0.00086
+      ],
+      "first_frame_median_luma_delta": 0.00196
+    },
+    "v43h-t007-fsd": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/fsd/05_emulsion_master_prores4444.mov",
+      "source_companion": "T007/fsd/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "8d780189b1115ae4c413c61fd71d68235e0059e9d00d902237c6b50a0a3287c6",
+      "companion_sha256": "818efbf149ce0c8764727dc35469d39b50b2a76eb0ac4a7dd807effe9bba7edc",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008503,
+        0.00663,
+        0.009315
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001106,
+        0.00249,
+        0.00205
+      ],
+      "first_frame_median_luma_delta": 0.00249
+    },
+    "v43h-t007-camera": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "picture_authority": "T007/camera_baseline/05_camera_baseline_prores4444.mov",
+      "source_companion": "T007/camera_baseline/06_quicktime_preview_srgb_prores4444.mov",
+      "master_sha256": "9384adc548b529fd0a9bdfe921c15b66961d95ac43cb653e13a6100fccdc22c7",
+      "companion_sha256": "950d24b26b13ba4b00580d4cc700dde4f612dbcc41b03d66dd993be77c4bc5db",
+      "release_class": "hypothesis_not_measurement",
+      "companion_metadata": {
+        "profile": "XQ",
+        "width": 5760,
+        "height": 4320,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.007774,
+        0.005385,
+        0.008044
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        2e-05,
+        0.00123,
+        0.001287
+      ],
+      "first_frame_median_luma_delta": 0.00123
+    }
+  }
+}

@@ -14,7 +14,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = ["V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
+  const sourceName = current.version === "V43H" ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
@@ -35,12 +35,12 @@ export default function Home() {
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>{text("当前基线", "CURRENT BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
+          <div className="section-intro"><span>{text("当前假想实验 · 正式基线仍为V42", "CURRENT HYPOTHESIS · V42 REMAINS THE BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
           <div className="current-visual-layout">
             <div className={`hero-comparison ${current.camera && !current.fsd ? "has-camera" : ""}`}>
               <figure><div className="image-title"><b>2383</b><span>sRGB / MAC VIEWING COMPANION</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察的本机sRGB观看链；专业母版为Rec.709/BT.1886", "Mac sRGB view of the 48-nit cinema observer; professional master is Rec.709/BT.1886")}</figcaption></figure>
               <figure><div className="image-title"><b>2K DI</b><span>sRGB / MAC VIEWING COMPANION</span></div><InteractiveImage src={current.bluray.src} previewSrc={current.bluray.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.bluray.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} Rec.709 Blu-ray reference`} gallery={currentGallery} initialIndex={1} /><figcaption>{text("时期2K扫描的本机sRGB观看链；与专业母版解码到同一观察光", "Mac sRGB view of the period 2K scan; decodes to the same observer light as the professional master")}</figcaption></figure>
-              {current.fsd && <figure><div className="image-title"><b>FSD</b><span>FINITE-SITE DENSITY CONTROL</span></div><InteractiveImage src={current.fsd.src} previewSrc={current.fsd.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.fsd.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} FSD finite-site density control`} gallery={currentGallery} initialIndex={2} /><figcaption>{text("共享V41颜色与2383观察器的独立有限密度路线", "Independent finite-density route sharing the V41 colour and 2383 observer")}</figcaption></figure>}
+              {current.fsd && <figure><div className="image-title"><b>FSD</b><span>FINITE-SITE DENSITY CONTROL</span></div><InteractiveImage src={current.fsd.src} previewSrc={current.fsd.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.fsd.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} FSD finite-site density control`} gallery={currentGallery} initialIndex={2} /><figcaption>{text("共享确定性观察均值的独立有限密度路线；不并入物理5279", "Independent finite-density route sharing the deterministic observer mean; not part of physical 5279")}</figcaption></figure>}
               {current.camera && <figure><div className="image-title"><b>V-709</b><span>PANASONIC OFFICIAL CAMERA BASELINE</span></div><InteractiveImage src={current.camera.src} previewSrc={current.camera.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.camera.videoSrc} sizes="(max-width: 680px) 100vw, 28vw" alt={`${current.version} ${sourceName} Panasonic V-709 camera baseline`} gallery={currentGallery} initialIndex={2 + (current.fsd ? 1 : 0)} /><figcaption>{text("同一RAW的官方V-709显示基线；不进入胶片管线", "Official V-709 view of the same RAW; no film pipeline")}</figcaption></figure>}
             </div>
             <ParameterPanel groups={current.parameters} version={current.version} status={current.status} changes={current.changes} />
@@ -54,14 +54,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · EVIDENCE-FIRST BASELINE</span><h2>{text("每一个物理效应，只能在成像链里拥有一个明确位置。", "Every physical effect gets one explicit place in the image-formation chain.")}</h2></div>
+          <div><span className="eyebrow">{current.version} · BOUNDED HYPOTHESIS</span><h2>{text("每一个未知量，都必须拥有明确边界和撤回路径。", "Every unknown needs an explicit boundary and a path to removal.")}</h2></div>
           <ol>
-            <li><b>{text("密度就是图像变量", "Density is the image variable")}</b><span>{text("V41让物理5279与FSD共享同一颜色入口，但保持不同的密度形成假设；显示RGB仍没有颗粒叠加。", "V41 gives physical 5279 and FSD one shared colour input while retaining distinct density-formation hypotheses; display RGB still has no grain overlay.")}</span></li>
+            <li><b>{text("密度就是图像变量", "Density is the image variable")}</b><span>{text("V43H的放映与扫描观察同一块实现的负片；FSD保持独立，显示RGB仍没有颗粒叠加。", "V43H projection and scan observe the same realized negative; FSD remains independent and display RGB still has no grain overlay.")}</span></li>
             <li><b>{text("颗粒更新，算子稳定", "Renew the grain; stabilize the operator")}</b><span>{text("V37每帧生成新的乳剂位点，但不再让整幅亚像素积分相位一起旋转。", "V37 forms new emulsion sites on every frame without rotating the whole-field subpixel integration phase.")}</span></li>
-            <li><b>{text("不可识别就不动", "Unknown means frozen")}</b><span>{text("没有5279 NPS或分色楔实测，就不重调颗粒形态、层间DIR或绿色中和。", "Without 5279 NPS or separation-wedge measurements, grain morphology, interimage DIR and green neutralization stay frozen.")}</span></li>
+            <li><b>{text("未知必须隔离", "Unknowns stay isolated")}</b><span>{text("35mm NPS、Spirit响应和2383颗粒只存在于V43H实验Profile；V42不被改写。", "35 mm NPS, Spirit response and 2383 texture exist only in the V43H experiment profile; V42 is not rewritten.")}</span></li>
             <li><b>{text("可审计随机性", "Auditable stochasticity")}</b><span>{text("每帧45个Philox-u32位点身份必须唯一；暗部彩色尖峰、跨记录尾部和静帧/视频分叉都会阻止发布。", "All 45 Philox-u32 site identities per frame must be unique; dark colour spikes, cross-record tails and still/motion divergence block release.")}</span></li>
           </ol>
-          <Link href="/research#v41-colour-transport" className="button">{text("阅读V41双色卡颜色审计", "Read the V41 two-chart colour audit")}</Link>
+          <Link href={language === "en" ? "/research#v43h-en" : "/research#v43h"} className="button">{text("阅读V43H证据边界", "Read the V43H evidence boundary")}</Link>
         </section>
 
         <section className="route-grid wrap">

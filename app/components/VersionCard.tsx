@@ -61,7 +61,7 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
     ]) ?? []),
   ];
   return (
-    <article className={`version-card ${item.status === "current" ? "is-current" : ""}`} id={item.version.toLowerCase()}>
+    <article className={`version-card ${item.status === "current" ? "is-current" : ""} ${item.status === "hypothesis" ? "is-hypothesis" : ""}`} id={item.version.toLowerCase()}>
       <div className="version-heading">
         <div><span className="version-number">{item.version}</span><span className="version-era">{year}</span></div>
         <div><h2>{title}</h2><p>{summary}</p></div>
