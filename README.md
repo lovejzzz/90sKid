@@ -8,13 +8,27 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 [lovejzzz.github.io/90sKid](https://lovejzzz.github.io/90sKid/)
 
-## Current baseline: V40
+## Current baseline: V41
 
+- Chart-bounded, neutral/luminance-preserving input colour residual from the T003/T005 controls
+- Record-positive signed colour transport without clipping a physically valid saturated separation
 - Matched physical 5279, FSD finite-site-density, and deterministic no-grain controls
 - Three one-second, 5760×4320 scene comparisons with 12-bit ProRes 4444 XQ masters
 - Native-frame release gates reject sparse chroma impulses and metadata mismatches
 - T003 DKC-Pro control documents what the outdoor chart does and does not identify
 - Public deployments stream optimized comparison media from the GitHub Pages archive; full masters remain local
+
+## Reconstruction engine
+
+The recovered research engine, V24–V41 profiles, measurement scripts and the
+new explicit-stage API live in [`engine/`](engine/). Full-resolution RAW and
+rendered video remain local and are excluded from Git. The new API keeps one
+shared stochastic negative and derives projection and scan observers plus two
+colour-explicit delivery encodings from it.
+
+See [`engine/RECOVERY_AND_V2_VALIDATION_2026-08-08.md`](engine/RECOVERY_AND_V2_VALIDATION_2026-08-08.md)
+for the recovery provenance, locked asset hashes and native-frame byte-identity
+test.
 
 ## Local development
 

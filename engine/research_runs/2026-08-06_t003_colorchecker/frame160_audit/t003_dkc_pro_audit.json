@@ -1,0 +1,851 @@
+{
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T003.MOV",
+  "frame": 160,
+  "dimensions": [
+    5760,
+    4320
+  ],
+  "source_recording_metadata": {
+    "camera_manufacturer": "Panasonic",
+    "camera_model": "DC-GH7",
+    "white_balance": "5500K",
+    "ISO": "500",
+    "intermediate_OETF": "VLog",
+    "intermediate_gamut": "VGamut",
+    "recorder": "Ninja RAW - 12.7.1  "
+  },
+  "target": "DGK Color Tools DKC-Pro 5 x 7",
+  "target_reference": "manufacturer guide, DKC-Pro Colorimetry Data",
+  "measurement_scope": "diagnostic input-boundary evidence only; no automatic WB, camera matrix, or creative correction is inferred from this single real-world illuminant",
+  "sampling_geometry": {
+    "rectified_grid": "6 columns x nominal 3-height coordinate system",
+    "x_interior_per_patch": [
+      0.35,
+      0.65
+    ],
+    "row_y_interiors": [
+      [
+        0.3,
+        0.68
+      ],
+      [
+        1.68,
+        1.94
+      ],
+      [
+        2.34,
+        2.66
+      ]
+    ],
+    "reason": "DKC-Pro rows are not equal height; row-specific interiors exclude the printed title strip above patches 7-12 and all dividers"
+  },
+  "sampling_quality": {
+    "median_channel_MAD_percent_of_patch_median": 2.600810408592224,
+    "maximum_channel_MAD_percent_of_patch_median": 5.214993000030518,
+    "all_patch_channels_MAD_below_6_percent": true
+  },
+  "patch_grid_corners_TL_TR_BR_BL": [
+    [
+      3500.0,
+      1635.0
+    ],
+    [
+      4330.0,
+      1565.0
+    ],
+    [
+      4390.0,
+      2188.0
+    ],
+    [
+      3510.0,
+      2230.0
+    ]
+  ],
+  "decoded_neutral_axis_patches_2_to_5": {
+    "mean_R_over_G": 1.1723949015140533,
+    "mean_B_over_G": 0.7482520192861557,
+    "mean_D65_delta_uv": 0.02734803068898365,
+    "max_D65_delta_uv": 0.028094008628060465
+  },
+  "manufacturer_recommended_RAW_WB_patches_2_to_4": {
+    "mean_R_over_G": 1.174674431482951,
+    "mean_B_over_G": 0.7449085911115011,
+    "R_over_G_span_percent_of_mean": 1.9087906121613645,
+    "B_over_G_span_percent_of_mean": 1.2020251422705412,
+    "diagnostic_gains_relative_to_green_not_applied": [
+      0.8512997075603019,
+      1.0,
+      1.3424465926857807
+    ]
+  },
+  "decoded_linearity_fit_patches_2_to_5": {
+    "log_measured_vs_log_reference_slope": 1.1434507804565672,
+    "log_exposure_intercept": 1.5725661139546463,
+    "note": "slope 1 is the scene-linear ideal; four neutral patches reduce colour-patch/illuminant metamerism"
+  },
+  "gray_scale_identifiability": {
+    "measured_Y_over_reference_Y_patches_2_to_5": [
+      4.2589502443065035,
+      4.059198902896042,
+      3.8768046139620487,
+      3.41672175221788
+    ],
+    "spatially_confounded_scale_span_stops": 0.31788511182505047,
+    "interpretation": "gray lightness is ordered left-to-right on the same row, so the measured scale change cannot distinguish sensor gamma from an illumination/reflection gradient across the angled outdoor chart"
+  },
+  "highlight_and_V40_input_boundary": {
+    "decoded_linear_white_patch_RGB": [
+      4.195468902587891,
+      3.5471136569976807,
+      2.5679445266723633
+    ],
+    "decoded_linear_white_exceeds_unit_range_all_channels": true,
+    "Panasonic_V709_patch_channels_at_1_count": 1,
+    "Panasonic_V709_patches_with_any_channel_at_1": [
+      1
+    ],
+    "balanced_film_basis_negative_channel_count_before_V40_clip": 1,
+    "balanced_film_basis_negative_patches": [
+      {
+        "patch": 10,
+        "name": "cyan",
+        "channel": "R",
+        "preclip_value": -0.015241591472354475,
+        "record_exposures_with_signed_basis": [
+          0.07428207021733367,
+          1.3814759719723653,
+          1.6832944461987946
+        ],
+        "record_exposures_after_V40_basis_clip": [
+          0.08860916616500808,
+          1.3820856356176323,
+          1.6834468621101115
+        ],
+        "record_exposure_delta_percent": [
+          19.287421454136044,
+          0.0441313245858721,
+          0.009054619746473591
+        ]
+      }
+    ],
+    "signed_basis_record_exposure_negative_count": 0,
+    "V40_record_exposure_negative_count_after_basis_clip": 0,
+    "interpretation": "RAW retains chart-white headroom. The saturated cyan patch creates one negative red component in the intermediate Rec.709-like film-light basis. V40 clips that component before record sensitivities, although the combined signed-basis record exposures would all remain positive; this is a real gamut-boundary model choice, not a RAW highlight clip. Only the official V-709 display witness reaches its endpoint."
+  },
+  "colour_residual_diagnostic": {
+    "assumption": "D50 reference plus Bradford neutral adaptation for diagnosis only; the DGK guide does not state measurement illuminant/observer",
+    "estimated_source_white_XYZ_Y1_from_patches_2_to_4": [
+      0.9882289589707498,
+      1.0,
+      0.7939848057457694
+    ],
+    "synthetic_primary_patches_7_to_12": {
+      "median_absolute_hue_error_degrees": 10.690378925735558,
+      "maximum_absolute_hue_error_degrees": 30.43025264351249,
+      "median_chroma_ratio": 0.6629926594634028
+    },
+    "natural_colour_patches_13_to_18": {
+      "median_absolute_hue_error_degrees": 7.751596350239581,
+      "maximum_absolute_hue_error_degrees": 19.993538192336985,
+      "median_chroma_ratio": 0.9228714693208055
+    },
+    "matrix_fit_naturals_test_primaries": {
+      "test_median_absolute_hue_error_degrees": 5.296515698086864,
+      "test_maximum_absolute_hue_error_degrees": 10.108234108817612,
+      "test_median_chroma_ratio": 0.7697293937853896
+    },
+    "matrix_fit_primaries_test_naturals": {
+      "test_median_absolute_hue_error_degrees": 6.693965780174111,
+      "test_maximum_absolute_hue_error_degrees": 10.411685579320647,
+      "test_median_chroma_ratio": 1.0651142858349916
+    },
+    "interpretation": "after excluding the DKC-Pro title strip, cross-group 3x3 fits generalize moderately in hue; an input-characterization residual is plausible but cannot be fitted from this outdoor chart because the reference illuminant/observer and scene SPD are not identified"
+  },
+  "patches": [
+    {
+      "patch": 1,
+      "name": "white",
+      "manufacturer_CIELAB_as_published": [
+        97,
+        0,
+        1
+      ],
+      "decoded_linear_bt2020_median": [
+        4.195468902587891,
+        3.5471136569976807,
+        2.5679445266723633
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        1.6263501644134521,
+        1.5591752529144287,
+        1.405836582183838
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        6.754278211738879,
+        6.626732554210604,
+        6.692559656996634
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.182783842086792,
+        0.7239532470703125
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.21611724289303993,
+        0.4916898496069874
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.029674452249644916,
+      "official_Panasonic_V709_encoded_median": [
+        1.0,
+        0.9901940226554871,
+        0.9566717147827148
+      ]
+    },
+    {
+      "patch": 2,
+      "name": "gray_73",
+      "manufacturer_CIELAB_as_published": [
+        73,
+        0,
+        0
+      ],
+      "decoded_linear_bt2020_median": [
+        2.1956002712249756,
+        1.8653885126113892,
+        1.382995367050171
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        1.850187063217163,
+        1.5776444673538208,
+        1.432748794555664
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        7.628700789389539,
+        7.242338052761076,
+        7.593553746847579
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.1770203113555908,
+        0.74139803647995
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.21542056481627062,
+        0.49022537291960233
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.028094008628060465,
+      "official_Panasonic_V709_encoded_median": [
+        0.9374487400054932,
+        0.8958289623260498,
+        0.8548319339752197
+      ]
+    },
+    {
+      "patch": 3,
+      "name": "gray_62",
+      "manufacturer_CIELAB_as_published": [
+        62,
+        0,
+        0
+      ],
+      "decoded_linear_bt2020_median": [
+        1.414361596107483,
+        1.1938437223434448,
+        0.8958030343055725
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        1.9310675859451294,
+        1.6811509132385254,
+        1.8812859058380127
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        9.14021589570589,
+        8.10027712298945,
+        8.761790557919008
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.184712529182434,
+        0.7503520250320435
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.21594049027788936,
+        0.4895458966191564
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.02790212391720189,
+      "official_Panasonic_V709_encoded_median": [
+        0.8646102547645569,
+        0.8114240765571594,
+        0.7695276141166687
+      ]
+    },
+    {
+      "patch": 4,
+      "name": "gray_50",
+      "manufacturer_CIELAB_as_published": [
+        50,
+        0,
+        0
+      ],
+      "decoded_linear_bt2020_median": [
+        0.8078120946884155,
+        0.695017397403717,
+        0.516381025314331
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.221055030822754,
+        2.2261478900909424,
+        2.1894893646240234
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        9.746879583449598,
+        9.465402599572206,
+        9.346134720681256
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.1622904539108276,
+        0.7429757118225098
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.2141815757356016,
+        0.490002245767307
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.02715683730249548,
+      "official_Panasonic_V709_encoded_median": [
+        0.754837155342102,
+        0.702842116355896,
+        0.6517501473426819
+      ]
+    },
+    {
+      "patch": 5,
+      "name": "gray_38",
+      "manufacturer_CIELAB_as_published": [
+        38,
+        0,
+        0
+      ],
+      "decoded_linear_bt2020_median": [
+        0.39036276936531067,
+        0.3349153995513916,
+        0.25396043062210083
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.461613416671753,
+        2.0893945693969727,
+        2.664602041244507
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        12.361663076279306,
+        10.072896207617509,
+        13.027656639712875
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.1655563116073608,
+        0.7582823038101196
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.21426358716827013,
+        0.4887755706324432
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.02623915290817677,
+      "official_Panasonic_V709_encoded_median": [
+        0.5960128903388977,
+        0.5402028560638428,
+        0.49257829785346985
+      ]
+    },
+    {
+      "patch": 6,
+      "name": "black",
+      "manufacturer_CIELAB_as_published": [
+        23,
+        0,
+        0
+      ],
+      "decoded_linear_bt2020_median": [
+        0.1370822787284851,
+        0.11999731510877609,
+        0.09027264267206192
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        4.196344375610352,
+        3.3440630435943604,
+        3.990058183670044
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        21.49411442179715,
+        19.282814658873406,
+        21.3832699374366
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.1423778533935547,
+        0.7522888779640198
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.2124077848668157,
+        0.4891094716748613
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.025391218175609107,
+      "official_Panasonic_V709_encoded_median": [
+        0.36864495277404785,
+        0.3239016532897949,
+        0.28394055366516113
+      ]
+    },
+    {
+      "patch": 7,
+      "name": "red",
+      "manufacturer_CIELAB_as_published": [
+        48,
+        59,
+        39
+      ],
+      "decoded_linear_bt2020_median": [
+        1.7158082723617554,
+        0.27539780735969543,
+        0.10324728488922119
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.1198906898498535,
+        2.039689779281616,
+        4.6135711669921875
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        10.11630387953569,
+        12.802238157080684,
+        25.144343731273832
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        6.230290412902832,
+        0.3749023377895355
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.4124008496254941,
+        0.5192173689060616
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.22052480434143856,
+      "official_Panasonic_V709_encoded_median": [
+        0.9634024500846863,
+        0.3992920517921448,
+        0.2612544000148773
+      ]
+    },
+    {
+      "patch": 8,
+      "name": "yellow",
+      "manufacturer_CIELAB_as_published": [
+        92,
+        1,
+        95
+      ],
+      "decoded_linear_bt2020_median": [
+        2.9011173248291016,
+        1.911820650100708,
+        0.5420783162117004
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        1.8962016105651855,
+        1.6302775144577026,
+        2.4747087955474854
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        8.019272909447006,
+        7.872879799200806,
+        12.428550458433136
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.5174630880355835,
+        0.28354036808013916
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.24996572632152986,
+        0.530585605663443
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.08121046449652193,
+      "official_Panasonic_V709_encoded_median": [
+        0.9849144220352173,
+        0.8760766386985779,
+        0.6741127967834473
+      ]
+    },
+    {
+      "patch": 9,
+      "name": "green",
+      "manufacturer_CIELAB_as_published": [
+        64,
+        -40,
+        54
+      ],
+      "decoded_linear_bt2020_median": [
+        0.8143008947372437,
+        1.176888346672058,
+        0.5471802353858948
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.1906347274780273,
+        2.0574114322662354,
+        2.6108038425445557
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        10.568421123517414,
+        10.025939849814442,
+        11.24041288600494
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        0.6919100880622864,
+        0.46493810415267944
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.1708984794586421,
+        0.5139675549387157
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.05300006500696236,
+      "official_Panasonic_V709_encoded_median": [
+        0.7373402118682861,
+        0.8336646556854248,
+        0.691329300403595
+      ]
+    },
+    {
+      "patch": 10,
+      "name": "cyan",
+      "manufacturer_CIELAB_as_published": [
+        57,
+        -41,
+        -42
+      ],
+      "decoded_linear_bt2020_median": [
+        0.39172542095184326,
+        0.9743425250053406,
+        1.2223608493804932
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        3.375044107437134,
+        2.415886163711548,
+        1.894526720046997
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        14.726793508643102,
+        10.006693071499509,
+        9.580146336430245
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        0.4020407795906067,
+        1.2545493841171265
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.13953644564482284,
+        0.439751910907221
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.06491744511745061,
+      "official_Panasonic_V709_encoded_median": [
+        0.5850226879119873,
+        0.854854941368103,
+        0.8710819482803345
+      ]
+    },
+    {
+      "patch": 11,
+      "name": "blue",
+      "manufacturer_CIELAB_as_published": [
+        18,
+        -3,
+        -25
+      ],
+      "decoded_linear_bt2020_median": [
+        0.15287791192531586,
+        0.17187713086605072,
+        0.19923128187656403
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        3.978726625442505,
+        3.2090396881103516,
+        2.947490930557251
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        21.348105646465104,
+        17.00719555690379,
+        15.753593536663852
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        0.8894604444503784,
+        1.159149408340454
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.18712345502996772,
+        0.45513753370473087
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.016982565529248966,
+      "official_Panasonic_V709_encoded_median": [
+        0.38693130016326904,
+        0.4243818521499634,
+        0.4474807381629944
+      ]
+    },
+    {
+      "patch": 12,
+      "name": "magenta",
+      "manufacturer_CIELAB_as_published": [
+        49,
+        60,
+        -3
+      ],
+      "decoded_linear_bt2020_median": [
+        1.4872981309890747,
+        0.3735024333000183,
+        0.3225656747817993
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.441441059112549,
+        2.372305393218994,
+        2.646544933319092
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        9.80370157612465,
+        11.26581248261542,
+        12.473503045408195
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        3.9820306301116943,
+        0.8636240363121033
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.3501902641643135,
+        0.49482693933640803
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.15464884794159406,
+      "official_Panasonic_V709_encoded_median": [
+        0.9193208813667297,
+        0.5007765293121338,
+        0.49747100472450256
+      ]
+    },
+    {
+      "patch": 13,
+      "name": "CIE_TSC_01",
+      "manufacturer_CIELAB_as_published": [
+        41,
+        51,
+        26
+      ],
+      "decoded_linear_bt2020_median": [
+        0.8987681269645691,
+        0.13547101616859436,
+        0.06482671201229095
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        3.1256344318389893,
+        3.7714052200317383,
+        5.214993000030518
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        40.412776139682485,
+        25.8537222264876,
+        26.662838324429615
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        6.63439416885376,
+        0.47852829098701477
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.4160339857628268,
+        0.515060401398401
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.22315385296814316,
+      "official_Panasonic_V709_encoded_median": [
+        0.8463823199272156,
+        0.2418603003025055,
+        0.16454924643039703
+      ]
+    },
+    {
+      "patch": 14,
+      "name": "CIE_TSC_02",
+      "manufacturer_CIELAB_as_published": [
+        61,
+        29,
+        57
+      ],
+      "decoded_linear_bt2020_median": [
+        1.3292970657348633,
+        0.5761672854423523,
+        0.1531255543231964
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.7739245891571045,
+        3.2132058143615723,
+        4.000503063201904
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        13.373545146638612,
+        13.57060266903692,
+        21.64398454586096
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        2.3071372509002686,
+        0.2657657861709595
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.30045925792575534,
+        0.5296634389476241
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.11956496702221148,
+      "official_Panasonic_V709_encoded_median": [
+        0.8804687857627869,
+        0.6032006144523621,
+        0.37851160764694214
+      ]
+    },
+    {
+      "patch": 15,
+      "name": "CIE_TSC_06",
+      "manufacturer_CIELAB_as_published": [
+        52,
+        -24,
+        -24
+      ],
+      "decoded_linear_bt2020_median": [
+        0.27678537368774414,
+        0.5412461757659912,
+        0.6234244108200073
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        4.143818378448486,
+        3.1721677780151367,
+        2.5908169746398926
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        16.79284439436928,
+        14.301064114237336,
+        21.00970750887773
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        0.5113853812217712,
+        1.1518315076828003
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.1508926744615746,
+        0.44969124093135493
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.05049894681430626,
+      "official_Panasonic_V709_encoded_median": [
+        0.5040608644485474,
+        0.7138733267784119,
+        0.7243478298187256
+      ]
+    },
+    {
+      "patch": 16,
+      "name": "CIE_TSC_08",
+      "manufacturer_CIELAB_as_published": [
+        52,
+        47,
+        -14
+      ],
+      "decoded_linear_bt2020_median": [
+        1.028290867805481,
+        0.31839877367019653,
+        0.3417024314403534
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.836094617843628,
+        3.0066018104553223,
+        3.031172037124634
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        11.68060159085474,
+        13.411031207382468,
+        13.675177580719286
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        3.22956919670105,
+        1.0731902122497559
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.32057209706836537,
+        0.48128483347849593
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.1234249075247986,
+      "official_Panasonic_V709_encoded_median": [
+        0.8439915776252747,
+        0.4783519506454468,
+        0.5140818953514099
+      ]
+    },
+    {
+      "patch": 17,
+      "name": "CIE_TSC_09",
+      "manufacturer_CIELAB_as_published": [
+        69,
+        14,
+        17
+      ],
+      "decoded_linear_bt2020_median": [
+        1.3176729679107666,
+        0.8266344666481018,
+        0.496277391910553
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.4415833950042725,
+        2.727768659591675,
+        2.8126072883605957
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        12.034108470465574,
+        12.31862134854752,
+        12.900296211227447
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.5940213203430176,
+        0.6003589630126953
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.2492537281257888,
+        0.5034726771179009
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.062290530533486224,
+      "official_Panasonic_V709_encoded_median": [
+        0.8629592657089233,
+        0.7157648801803589,
+        0.6327559351921082
+      ]
+    },
+    {
+      "patch": 18,
+      "name": "CIE_TSC_10",
+      "manufacturer_CIELAB_as_published": [
+        64,
+        12,
+        17
+      ],
+      "decoded_linear_bt2020_median": [
+        1.0329571962356567,
+        0.6585626006126404,
+        0.3924233317375183
+      ],
+      "decoded_linear_bt2020_MAD_percent_of_median": [
+        2.7474899291992188,
+        2.7189443111419678,
+        3.238827705383301
+      ],
+      "decoded_linear_bt2020_p05_to_p95_percent_of_median": [
+        13.51691439875925,
+        14.255730032283012,
+        15.88889710775178
+      ],
+      "decoded_linear_channel_ratios_R_over_G_B_over_G": [
+        1.56850266456604,
+        0.595878541469574
+      ],
+      "decoded_linear_u_prime_v_prime": [
+        0.24755314206436826,
+        0.5037538568601763
+      ],
+      "distance_from_D65_u_prime_v_prime": 0.061056930527583965,
+      "official_Panasonic_V709_encoded_median": [
+        0.8153724074363708,
+        0.6677546501159668,
+        0.5808828473091125
+      ]
+    }
+  ]
+}

@@ -43,3 +43,21 @@ next-env.d.ts
 /work/
 __pycache__/
 *.pyc
+
+# The engine keeps generated caches and local camera media out of Git. Their
+# builders, checksums, measurement reports and lightweight review assets stay
+# versioned; full-resolution ProRes/RAW/DPX/EXR/TIFF media does not.
+/engine/cache/
+/engine/outputs/
+/engine/work/
+/engine/input_proxy/
+/engine/references/*.cube
+/engine/references/**/*.cube
+/engine/research_runs/2026-08-03_vendor_2383_targets/real_frame12_vendor_ab/*.npz
+/engine/**/*.mov
+/engine/**/*.mp4
+/engine/**/*.mxf
+/engine/**/*.dpx
+/engine/**/*.exr
+/engine/**/*.tif
+/engine/**/*.tiff

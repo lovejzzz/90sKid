@@ -1,0 +1,98 @@
+"""Typed stage and colour contracts for the 5279 reconstruction graph."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from enum import Enum
+from types import MappingProxyType
+from typing import Mapping
+
+import numpy as np
+
+
+class InputColourContract(str, Enum):
+    """The colour interpretation of a decoded source frame."""
+
+    AVFOUNDATION_EXTENDED_LINEAR_BT2020 = "avfoundation_extended_linear_bt2020_d65"
+
+
+class DeliveryEncoding(str, Enum):
+    """Two explicit encodings of the same display-linear observer light."""
+
+    REFERENCE_BT1886 = "rec709_primaries_bt1886_gamma24"
+    QUICKTIME_SRGB = "rec709_primaries_srgb_transfer"
+
+
+class EngineMode(str, Enum):
+    """Execution choices; neither changes the selected film model."""
+
+    REFERENCE = "reference_numpy"
+    ARCHIVE_EXACT_CPU = "archive_exact_cpu"
+
+
+@dataclass(frozen=True, slots=True)
+class EngineConfig:
+    """Immutable controls that may legitimately vary between renders.
+
+    Film parameters do not live here.  V41 is an evidence baseline, not a
+    creative preset: sensitometry, DIR, MTF, grain statistics, black and the
+    two observers are owned by the versioned profile.
+    """
+
+    profile: str = "v41"
+    input_colour: InputColourContract = (
+        InputColourContract.AVFOUNDATION_EXTENDED_LINEAR_BT2020
+    )
+    exposure_stops: float = 0.45
+    grain_scale: float = 1.0
+    oversample: int = 1
+    mode: EngineMode = EngineMode.ARCHIVE_EXACT_CPU
+    opencv_threads: int = 8
+    binomial_workers: int = 8
+    numba_threads: int = 8
+    array_workers: int = 8
+
+    def __post_init__(self) -> None:
+        if self.profile != "v41":
+            raise ValueError("the second-generation baseline currently supports V41 only")
+        if self.oversample < 1:
+            raise ValueError("oversample must be positive")
+        if self.grain_scale < 0.0:
+            raise ValueError("grain_scale cannot be negative")
+        for name in (
+            "opencv_threads",
+            "binomial_workers",
+            "numba_threads",
+            "array_workers",
+        ):
+            if getattr(self, name) < 1:
+                raise ValueError(f"{name} must be positive")
+
+
+@dataclass(slots=True)
+class ObserverPair:
+    """The two accepted observers before an output transfer is applied."""
+
+    projection_linear_rec709: np.ndarray
+    scan_linear_rec709: np.ndarray
+
+
+@dataclass(slots=True)
+class EncodedObserverPair:
+    projection: np.ndarray
+    scan: np.ndarray
+    encoding: DeliveryEncoding
+
+
+@dataclass(slots=True)
+class RenderedFrame:
+    """One shared stochastic negative viewed through both observer branches."""
+
+    absolute_frame: int
+    observers: ObserverPair
+    reference_master: EncodedObserverPair
+    quicktime_companion: EncodedObserverPair
+    stage_seconds: Mapping[str, float] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        self.stage_seconds = MappingProxyType(dict(self.stage_seconds))
