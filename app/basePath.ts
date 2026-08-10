@@ -6,6 +6,9 @@ export function withBasePath(path: string) {
   // Pages release mirror. Keeping one canonical byte copy prevents Sites
   // deployment bundles from duplicating hundreds of megabytes of lossless
   // stills and grain-tuned hover videos; no proxy is recompressed here.
+  if (path.startsWith("/versions/v44-")) {
+    return siteBasePath ? `${siteBasePath}${path}` : path;
+  }
   if (path.startsWith("/versions/")) return `${archiveMediaOrigin}${path}`;
   if (!path.startsWith("/") || !siteBasePath) return path;
   return `${siteBasePath}${path}`;
