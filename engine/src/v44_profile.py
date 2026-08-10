@@ -62,3 +62,4 @@ def apply(module) -> None:
     # interpreter cannot retain the hypothesis-only print event.
     module.PRINT_GRAIN_DOMAIN = "none"
     module.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE = 0.0
+    module.PRINT_2383_CMF_MODE = "analytic_20nm"

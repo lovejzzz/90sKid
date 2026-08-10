@@ -115,6 +115,34 @@ class PipelineContractTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(published, expected)
 
+    def test_v45_changes_only_the_official_cie_observer_boundary(self) -> None:
+        import v45_profile
+        import v44_profile
+
+        e = legacy.model
+        v44_profile.apply(e)
+        old_lut = e.build_2383_projection_lut()
+        config = EngineConfig(profile="v45", mode=EngineMode.REFERENCE)
+        v45_profile.apply(e)
+        report = research_conformance(e, v45_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(e.PRINT_2383_CMF_MODE, "cie_1931_2deg_official_1nm")
+        self.assertEqual(e.PRINT_GRAIN_DOMAIN, "none")
+        self.assertEqual(e.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE, 0.0)
+        wavelength, cmf = e._cie_1931_xyz_official_1nm()
+        self.assertEqual(wavelength.shape, (401,))
+        self.assertEqual(cmf.shape, (401, 3))
+        self.assertTrue(np.all(np.isfinite(cmf)))
+        new_lut = e.build_2383_projection_lut()
+        delta = new_lut.astype(np.float64) - old_lut.astype(np.float64)
+        self.assertAlmostEqual(
+            float(np.sqrt(np.mean(delta * delta))), 0.004569167554265219
+        )
+        self.assertLess(float(np.max(np.abs(delta[0, 0, 0]))), 4e-7)
+        import v42_profile
+        v42_profile.apply(e)
+        self.assertEqual(e.PRINT_2383_CMF_MODE, "analytic_20nm")
+
     def test_v43h_common_print_density_has_no_record_separation(self) -> None:
         import v43h_profile
 

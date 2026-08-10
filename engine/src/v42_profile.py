@@ -49,3 +49,4 @@ def apply(module) -> None:
     module._NEGATIVE_5279_NET_DENSITY_LUT = None
     module._SPIRIT_NEUTRAL_SCALE_TABLE = None
     module.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE = 0.0
+    module.PRINT_2383_CMF_MODE = "analytic_20nm"

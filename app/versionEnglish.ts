@@ -1044,6 +1044,37 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "V44 first validates T020 at native 5.7K for one second. FSD and the official Panasonic V-709 camera witness remain independent controls, not V44 film-formation terms.",
   },
+  V45: {
+    year: "OFFICIAL OBSERVER",
+    title: "Let 2383 be seen through a standard observer—not guessed through an approximation",
+    summary:
+      "V45 is a single-variable spectral measurement revision. Earlier versions sampled an analytical CIE 1931 approximation directly on the Kodak 2383 graph's 20 nm nodes. V45 uses the official CIE 1931 2-degree 1 nm table, linearly interpolates the same 2383 dye-density and xenon graph samples, and integrates them from 380 to 780 nm with explicit trapezoidal endpoint weights. The 5279 negative, H-D curves, three speed layers, DIR, MTF, grain, black, contrast, gamma, scanner and delivery are frozen. White changes by less than 4×10⁻⁷, so this is not a global white-balance move; only specific dye combinations are observed more accurately.",
+    changes: [
+      "Add and integrity-check the official CIE 1931 2-degree 1 nm observer table",
+      "Linearly interpolate Kodak's plotted 2383 dye density and xenon relative SPD from 20 nm to the 1 nm axis",
+      "Replace the analytical 20 nm approximation with trapezoidal integration over 380–780 nm",
+      "Rebuild and hash-lock a separate V45 193³ monitor lattice so an old runtime cache cannot be reused silently",
+      "Freeze V44 5279 formation, DIR, MTF, grain, scan, black, contrast, gamma and delivery",
+      "Validate T020, T032 and T007 for 24 native-resolution frames each; decode each web still from its final movie",
+      "Add a same-negative observer ablation, six-movie motion-colour gates and a two-transfer delivery-light consistency audit",
+    ],
+    errors: [
+      "V44 and earlier used an analytical CIE approximation rather than the CIE's published one-nanometre standard-observer table",
+      "Changing build_2383_projection_lut while still loading V30's 193³ cache would create a completely unchanged false upgrade; V45 binds profile and lattice hash",
+      "One-nanometre integration cannot invent unpublished Kodak measurements: the source 2383 dye and xenon graphs remain 20 nm plots",
+      "V45 still lacks a closed loop of same-batch 5279, 2383, measured illuminant and characterized scanner, so it is not an absolute reproduction claim",
+    ],
+    discoveries: [
+      "The official one-nanometre observer leaves the dye-free white almost unchanged while producing measurable changes for specific dye mixtures",
+      "Across the complete 25³ spectral cube, linear-RGB RMS versus the old observer is 0.00456917 and maximum absolute node change is 0.0398455",
+      "After LAD, neutral-scale and normal-process monitor boundaries, the complete 193³ output-lattice RMS is 0.000215819 with mean RGB shift near 10⁻⁶ and a localized maximum of 0.03810",
+      "On one already-formed T020 negative, the scan remains bit-identical and projection linear-RGB RMS is only 0.000037904, confirming an observer correction rather than a grade",
+      "Peak-normalizing a single 2383 dye does not automatically increase accuracy; Status-A inversion cancels much arbitrary scale, making spectral shape more important than peak height",
+      "Spectral sampling, runtime lattice and delivered image must be one versioned evidence object",
+    ],
+    trialNote:
+      "T020 tests mixed foliage and dark bark; T032 tests rainy cyan-green low contrast; T007 tests water, green detail and local saturation. Each case includes projection, frozen scan, independent FSD and the Panasonic V-709 camera witness.",
+  },
 };
 
 export function translateBranchLabel(label: string) {

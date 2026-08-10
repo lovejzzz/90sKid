@@ -10,7 +10,7 @@ import time
 import cv2
 import numpy as np
 
-from .assets import PRINT_2383_OUTPUT_LATTICE, verify_v41_runtime_assets
+from .assets import CIE_1931_2DEG_1NM, projection_lattice_for_profile
 from .contracts import (
     DeliveryEncoding,
     EncodedObserverPair,
@@ -48,6 +48,7 @@ class Emulsion5279Engine:
     @property
     def provenance(self) -> dict[str, object]:
         self.configure()
+        print_lattice = projection_lattice_for_profile(self.config.profile)
         sampler_audit: dict[str, object] | None = None
         if self.config.mode is EngineMode.PRODUCTION_METAL:
             import v35_accel
@@ -61,7 +62,12 @@ class Emulsion5279Engine:
                 DeliveryEncoding.REFERENCE_BT1886.value,
                 DeliveryEncoding.QUICKTIME_SRGB.value,
             ],
-            "print_lattice_sha256": PRINT_2383_OUTPUT_LATTICE.sha256,
+            "print_lattice_sha256": print_lattice.sha256,
+            "cie_observer_sha256": (
+                CIE_1931_2DEG_1NM.sha256
+                if self.config.profile == "v45"
+                else None
+            ),
             "research_conformance": assert_research_conformance(
                 legacy.model, self.profile, self.config
             ),
@@ -110,13 +116,13 @@ class Emulsion5279Engine:
                     "the recovered V41 backend owns process-global caches; use one "
                     "EngineConfig per process until the remaining kernels are lifted"
                 )
-            verify_v41_runtime_assets()
+            print_lattice = projection_lattice_for_profile(self.config.profile)
             e = legacy.model
             self.profile.apply(e)
             cv2.setNumThreads(self.config.opencv_threads)
             e.BINOMIAL_PARALLEL_WORKERS = self.config.binomial_workers
             e._PRINT_2383_MONITOR_OUTPUT_LUT = np.load(
-                PRINT_2383_OUTPUT_LATTICE.path, allow_pickle=False
+                print_lattice.path, allow_pickle=False
             )
             if self.config.mode in (
                 EngineMode.ARCHIVE_EXACT_CPU,

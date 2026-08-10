@@ -22,7 +22,8 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
     """Report code-level ownership of the latest accepted research boundaries."""
 
     hypothesis = config.profile == "v43h"
-    observer_integrity = config.profile == "v44"
+    observer_integrity = config.profile in {"v44", "v45"}
+    official_observer = config.profile == "v45"
 
     checks = {
         # V37: independent sites, stable numerical integration operator.
@@ -110,7 +111,11 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
             {
                 "v44_is_an_evidence_boundary_revision": (
                     expected.get("release_class")
-                    == "evidence_boundary_revision"
+                    == (
+                        "measured_observer_revision"
+                        if official_observer
+                        else "evidence_boundary_revision"
+                    )
                 ),
                 "v44_retains_accepted_normal_process_colour_boundary": (
                     expected.get("projection_colour_policy")
@@ -142,6 +147,19 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                 ),
             }
         )
+    if official_observer:
+        checks.update(
+            {
+                "v45_is_measured_observer_revision": (
+                    profile.PROFILE.get("release_class")
+                    == "measured_observer_revision"
+                ),
+                "v45_uses_official_cie_1931_1nm_observer": (
+                    model.PRINT_2383_CMF_MODE
+                    == "cie_1931_2deg_official_1nm"
+                ),
+            }
+        )
     image_model_conformant = all(checks.values())
     production_execution = config.mode is EngineMode.PRODUCTION_METAL
     return {
@@ -149,7 +167,11 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
             "accepted-v37-through-v42-plus-isolated-v43h-hypotheses"
             if hypothesis
             else (
-                "accepted-v37-through-v42-plus-v44-observer-integrity"
+                (
+                    "accepted-v37-through-v44-plus-v45-official-cie-observer"
+                    if official_observer
+                    else "accepted-v37-through-v42-plus-v44-observer-integrity"
+                )
                 if observer_integrity
                 else "accepted-v37-through-v42"
             )

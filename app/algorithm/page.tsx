@@ -124,6 +124,16 @@ review_light = pixel_area_integrate(master_light, width=1920)
 review       = prores_xq(srgb_encode(review_light))
 still        = decode_frame(review, middle_frame)`;
 
+const v45Code = `# 只替换2383的标准观察者；其余V44/V42参数冻结
+lambda_nm, xyz_bar = load_cie_1931_2deg_official_1nm()
+dye_1nm   = linear_interp(kodak_2383_dye_graph_20nm, lambda_nm)
+xenon_1nm = linear_interp(kodak_xenon_graph_20nm, lambda_nm)
+T = 10 ** (-(dye_amount_cmy @ dye_1nm.T))
+XYZ = trapz(T * xenon_1nm * xyz_bar, dx=1nm)
+
+# profile、标准表和193³运行晶格共同接受SHA-256门禁
+assert lattice == build_from(profile="v45", observer=xyz_bar)`;
+
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
     rng = Generator(SeedSequence([frame_record_layer_class_seed, stripe.index]))
@@ -158,7 +168,9 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · V44 OBSERVER INTEGRITY / V42 IMAGE BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V44撤回V43H尚未测量的候选，保留通过门禁的正常工艺颜色边界，并在不改变V42原生母版的前提下定义显示审看。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V45 OFFICIAL CIE OBSERVER / V42 IMAGE BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V45只把2383的光谱观察升级到CIE官方1931 2°、1 nm表；V44/V42乳剂、扫描、颗粒、黑位、对比与交付保持不变。</p></header>
+
+        <section className="method-section"><div className="method-index">V45</div><div className="method-copy"><span className="section-tag">OFFICIAL CIE 1931 2° · 1 NM</span><h2>提升标准观察者，不借机改变胶片</h2><p>V45把同一组Kodak 2383染料与氙灯20 nm图表线性插值到1 nm，并通过CIE官方逐纳米综合色函数执行380–780 nm梯形积分。Status-A逆解、LAD、2383 H-D、V31正常工艺颜色边界和完整V42负片形成都被冻结。无染料白点变化低于4×10⁻⁷，证明它不是隐藏白平衡。</p><pre><code>{v45Code}</code></pre><div className="equation"><span>单变量版本</span><b>V45 = V44 + official CIE 1 nm observer</b><small>20 nm Kodak图表仍是材料信息上限；插值不会被描述成新的1 nm胶片测量。</small></div></div></section>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
 

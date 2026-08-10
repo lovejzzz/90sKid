@@ -36,6 +36,22 @@ PRINT_2383_OUTPUT_LATTICE = Asset(
     authority="generated from the analytical Kodak 2383 observer",
 )
 
+PRINT_2383_OUTPUT_LATTICE_V45 = Asset(
+    name="V45 official-CIE 5279-density to 2383 monitor lattice",
+    path=ENGINE_ROOT / "cache/print_2383_monitor_output_lut_193_v45.npy",
+    sha256="28ac498942c7ddc923fa3b988b8dd6663266026893f96a744b59c8090bfd3cf7",
+    required_by_v41_runtime=False,
+    authority="generated from Kodak 2383 graphs and official CIE 1931 2-degree 1 nm data",
+)
+
+CIE_1931_2DEG_1NM = Asset(
+    name="CIE 1931 2-degree standard observer, 1 nm",
+    path=ENGINE_ROOT / "references/cie/CIE_xyz_1931_2deg.csv",
+    sha256="bd7973e895a97e543815614b19c51ceff552ae9910a424724ae04ed89bd863a3",
+    required_by_v41_runtime=False,
+    authority="CIE official table; values unchanged, repository line endings normalized",
+)
+
 PANASONIC_V709 = Asset(
     name="Panasonic V-Log to V-709 diagnostic LUT",
     path=ENGINE_ROOT / "references/panasonic_v709/VLog_to_V709_forV35_ver100.cube",
@@ -58,6 +74,21 @@ def verify_v41_runtime_assets() -> None:
         asset.verify()
 
 
+def projection_lattice_for_profile(profile: str) -> Asset:
+    if profile == "v45":
+        CIE_1931_2DEG_1NM.verify()
+        PRINT_2383_OUTPUT_LATTICE_V45.verify()
+        return PRINT_2383_OUTPUT_LATTICE_V45
+    PRINT_2383_OUTPUT_LATTICE.verify()
+    return PRINT_2383_OUTPUT_LATTICE
+
+
 def verify_research_assets() -> None:
-    for asset in (PRINT_2383_OUTPUT_LATTICE, PANASONIC_V709, PANASONIC_RAW_GAMUT):
+    for asset in (
+        PRINT_2383_OUTPUT_LATTICE,
+        PRINT_2383_OUTPUT_LATTICE_V45,
+        CIE_1931_2DEG_1NM,
+        PANASONIC_V709,
+        PANASONIC_RAW_GAMUT,
+    ):
         asset.verify()

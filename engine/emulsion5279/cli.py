@@ -1,4 +1,4 @@
-"""Command-line renderer for explicit V42/V43H/V44 engine profiles."""
+"""Command-line renderer for explicit V42/V43H/V44/V45 engine profiles."""
 
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--grain-domain-salt", type=int, default=0)
     parser.add_argument(
-        "--profile", choices=("v42", "v43h", "v44"), default="v42"
+        "--profile", choices=("v42", "v43h", "v44", "v45"), default="v42"
     )
     parser.add_argument(
         "--review-width",
@@ -131,7 +131,7 @@ def main() -> None:
     finalization_started = time.perf_counter()
     review_sampling: dict[str, object] | None = None
     additional_srgb_movies: tuple[str, ...] = ()
-    if args.profile == "v44":
+    if args.profile in ("v44", "v45"):
         review_name = "07_scale_integrated_review_srgb_prores4444.mov"
         review_sampling = {}
         for directory in ("projection", "bluray_scan"):

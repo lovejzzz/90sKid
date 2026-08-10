@@ -2241,6 +2241,80 @@ versions.push({
   parameters: v44Parameters,
 });
 
+const v45Parameters: ParameterGroup[] = [
+  {
+    title: "唯一图像变化", titleEn: "ONLY IMAGE CHANGE", items: [
+      { label: "观察者", labelEn: "Observer", value: "官方CIE 1931 2° · 1 nm", valueEn: "Official CIE 1931 2° · 1 nm" },
+      { label: "积分范围", labelEn: "Integration support", value: "380–780 nm · 梯形积分", valueEn: "380–780 nm · trapezoidal integration" },
+      { label: "2383染料与氙灯", labelEn: "2383 dyes and xenon", value: "Kodak图表20 nm → 线性插值1 nm", valueEn: "Kodak graph 20 nm → linear interpolation at 1 nm" },
+      { label: "晶格", labelEn: "Observer lattice", value: "193³ · SHA-256锁定", valueEn: "193³ · SHA-256 locked", note: "防止公式更新但运行时仍读取旧晶格", noteEn: "Prevents updated equations from silently loading an old runtime lattice" },
+    ],
+  },
+  {
+    title: "冻结项", titleEn: "FROZEN BOUNDARIES", items: [
+      { label: "5279负片", labelEn: "5279 negative", value: "V44/V42完全不变", valueEn: "Bit-identical V44/V42 formation" },
+      { label: "颗粒 / DIR / MTF", labelEn: "Grain / DIR / MTF", value: "不变 · 无新增2383颗粒", valueEn: "Unchanged · no intrinsic 2383 grain" },
+      { label: "扫描分支", labelEn: "Scan branch", value: "不变 · Period 2K / Cineon", valueEn: "Unchanged · period 2K / Cineon" },
+      { label: "黑位 / 对比度 / Gamma", labelEn: "Black / contrast / gamma", value: "不变 · 12-bit BT.1886母版", valueEn: "Unchanged · 12-bit BT.1886 master" },
+      { label: "正常工艺颜色边界", labelEn: "Normal-process colour boundary", value: "保留V31低频扫描参照色度", valueEn: "V31 low-frequency scan-referenced chroma retained" },
+    ],
+  },
+  {
+    title: "数值验证", titleEn: "NUMERICAL VALIDATION", items: [
+      { label: "白点最大变化", labelEn: "Maximum white change", value: "< 4×10⁻⁷", valueEn: "< 4×10⁻⁷" },
+      { label: "25³节点RMS", labelEn: "25³ node RMS delta", value: "0.00456917", valueEn: "0.00456917" },
+      { label: "完整193³输出RMS", labelEn: "Complete 193³ output RMS", value: "0.000215819", valueEn: "0.000215819", note: "平均RGB移动约10⁻⁶；局部综合色最大0.03810", noteEn: "Mean RGB shift ≈10⁻⁶; local maximum 0.03810" },
+      { label: "最大节点变化", labelEn: "Maximum node delta", value: "0.0398455", valueEn: "0.0398455" },
+      { label: "测试素材", labelEn: "Validation sources", value: "T020 · T032 · T007，各24帧", valueEn: "T020 · T032 · T007, 24 frames each" },
+      { label: "同一负片真实帧", labelEn: "Same-negative real frame", value: "放映RMS 0.000037904 · 扫描逐位相同", valueEn: "Projection RMS 0.000037904 · scan bit-identical", note: "T020第0帧只替换V44/V45观察者；负片不重新形成", noteEn: "T020 frame 0; only the V44/V45 observer changes and the negative is not re-formed" },
+      { label: "六个成片审计", labelEn: "Six-movie release audit", value: "全部通过", valueEn: "All gates passed", note: "5.7K/24帧/12-bit、黑白位、暗部综合色、孤立彩色脉冲", noteEn: "5.7K/24-frame/12-bit metadata, black/white, dark opponent tails and isolated colour impulses" },
+      { label: "交付光一致性", labelEn: "Delivery-light consistency", value: "六路全部通过", valueEn: "All six branches passed", note: "BT.1886母版与sRGB伴随版反解到同一线性光", noteEn: "BT.1886 master and sRGB companion decode to the same linear light" },
+      { label: "T020 / T032 / T007墙钟", labelEn: "T020 / T032 / T007 wall time", value: "1013.35 / 933.91 / 967.06秒", valueEn: "1,013.35 / 933.91 / 967.06 s", note: "Archive Exact CPU；分别39.25 / 35.99 / 37.14算法秒/帧", noteEn: "Archive Exact CPU; 39.25 / 35.99 / 37.14 algorithm seconds per frame" },
+    ],
+  },
+];
+
+const v45Branch = (scene: string, branch: string, label: string): BranchImage => ({
+  src: `/versions/v45-${scene}-${branch}.jpg`,
+  videoSrc: `/versions/v45-${scene}-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V45",
+  year: "官方观察者",
+  title: "让2383通过标准观察者被看见，而不是通过近似公式被猜测",
+  status: "current",
+  projection: v45Branch("t020", "projection", "T020 · V45官方CIE 1 nm · 5279 → 2383放映"),
+  bluray: v45Branch("t020", "bluray", "T020 · V45冻结扫描分支 · Period 2K / Cineon"),
+  fsd: { ...v43hBranch("t020", "fsd", "T020 · 独立FSD有限密度对照 · 不并入V45"), inherited: true },
+  camera: { ...v43hBranch("t020", "camera", "T020 · Panasonic官方V-709原始观察 · 无胶片管线"), inherited: true },
+  summary: "V45是一次单变量光谱测量升级。旧版把解析CIE 1931观察者直接采样到Kodak 2383图表的20 nm节点；新版使用CIE官方1 nm数据，在380–780 nm上对同一批2383染料密度与氙灯图表做线性插值和梯形积分。5279负片、H-D、三速层、DIR、MTF、颗粒、黑位、对比、Gamma、扫描器与显示交付全部冻结。白点变化低于4×10⁻⁷，因而这不是一次全局白平衡；差异只来自特定染料组合被更准确的标准观察者积分。",
+  changes: ["加入CIE官方1931 2°、1 nm标准观察者表并做完整性校验", "把Kodak 2383染料密度与氙灯相对光谱从20 nm线性插值到1 nm轴", "在380–780 nm采用明确端点权重的梯形积分，替代20 nm解析近似", "重建并锁定V45独立193³监看晶格，杜绝旧缓存静默复用", "冻结V44的5279、DIR、MTF、颗粒、扫描、黑位、对比度、Gamma与交付", "T020、T032、T007各用原分辨率24帧验证；网页静帧仍从最终视频中间帧反解", "增加同一负片观察者消融、六成片运动彩噪门槛与双传递函数光一致性审计"],
+  errors: ["V44及更早版本使用解析CIE近似，不是CIE发布的逐纳米标准观察者表", "只修改build_2383_projection_lut而继续加载V30的193³缓存会产生完全不变的假升级；V45把profile与晶格哈希绑定", "1 nm积分不能创造Kodak未发布的信息：2383染料和氙灯原始图表仍只有20 nm精度", "V45仍没有同批5279负片、2383正片、测量光源与扫描器组成的闭环，因此不是绝对色彩复刻"],
+  discoveries: ["官方1 nm观察者几乎不改变无染料白点，却会让特定综合色节点产生可测变化", "底层25³光谱节点RMS为0.00456917；通过完整监看边界后193³输出RMS为0.000215819，平均RGB移动约10⁻⁶", "在同一个已形成的T020负片上，扫描输出逐位相同；放映线性RGB RMS仅0.000037904，确认V45是小幅观察者修正而非调色", "峰值归一化2383单染料并不会自动提高准确度；Status-A逆解会抵消大部分任意尺度，曲线形状比峰值更关键", "V45证明光谱采样、运行时晶格与成片必须属于同一个版本化证据对象"],
+  refs: ["R1", "R4", "R21", "R25", "R27", "R48", "R68", "R69"],
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T032 · Frame 0–23",
+      note: "雨天青绿、暗柱与低反差纹理：检查官方观察者是否修正特定染料组合而不移动黑位与扫描分支。",
+      projection: v45Branch("t032", "projection", "T032 · V45官方CIE 1 nm · 2383放映"),
+      bluray: v45Branch("t032", "bluray", "T032 · 冻结Period 2K / Cineon扫描"),
+      fsd: { ...v43hBranch("t032", "fsd", "T032 · FSD有限密度"), inherited: true },
+      camera: { ...v43hBranch("t032", "camera", "T032 · Panasonic官方V-709原图"), inherited: true },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面、绿色细节与局部饱和：检查综合色极值、颗粒/锐度关系和1 nm光谱积分的稳定性。",
+      projection: v45Branch("t007", "projection", "T007 · V45官方CIE 1 nm · 2383放映"),
+      bluray: v45Branch("t007", "bluray", "T007 · 冻结Period 2K / Cineon扫描"),
+      fsd: { ...v43hBranch("t007", "fsd", "T007 · FSD有限密度"), inherited: true },
+      camera: { ...v43hBranch("t007", "camera", "T007 · Panasonic官方V-709原图"), inherited: true },
+    },
+  ],
+  parameters: v45Parameters,
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -2344,6 +2418,8 @@ export const references = [
   { id: "R65", title: "DxO — The science of film: calibrated grain matrices by tone region", type: "DxO官方胶片测量方法", url: "https://www.dxo.com/en/technology/science-of-film" },
   { id: "R66", title: "Complete Guide to Using the DKC-Pro Color Chart — colourimetry data", type: "DGK Color Tools官方色卡说明与CIELAB参考值", url: "https://dgkcolor.tools/wp-content/uploads/2019/09/Complete-Guide-to-the-DKC-Pro-Color-Chart_Final.pdf" },
   { id: "R67", title: "How Hollywood Fakes the 90s Film Look Today — Walter Volpatto interview", type: "调色师实践证词（观察器边界，不是5279测量）", url: "https://www.youtube.com/watch?v=rSKAV2AQ4I4" },
+  { id: "R68", title: "CIE 1931 colour-matching functions, 2 degree observer — 1 nm data table", type: "CIE官方标准观察者数据", url: "https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer" },
+  { id: "R69", title: "KODAK VISION Color Print Film 2383 / 3383 Technical Data, 2005", type: "Kodak同期2383历史数据表", url: "https://125px.com/docs/motionpicture/kodak/lab/lab_h12383t.pdf" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

@@ -1,6 +1,6 @@
 # Virtual-emulsion reconstruction experiment
 
-## Current entry point: V42 research-conformant engine
+## Current entry point: V45 official-observer spectral integration
 
 The validated historical implementation and research record were recovered in
 full on 2026-08-08. New work starts through `engine.emulsion5279`. V42 makes
@@ -8,7 +8,7 @@ the RAW, 5279 negative, two-observer and single-picture-authority delivery
 boundaries explicit. It freezes V41 image formation while enforcing the latest
 accepted research in executable code.
 
-Bootstrap the generated 2383 observer cache:
+Bootstrap both the historical and V45 generated 2383 observer caches:
 
 ```bash
 python3 engine/bootstrap.py

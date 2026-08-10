@@ -19,6 +19,7 @@ from emulsion5279.assets import (  # noqa: E402
     PANASONIC_RAW_GAMUT,
     PANASONIC_V709,
     PRINT_2383_OUTPUT_LATTICE,
+    PRINT_2383_OUTPUT_LATTICE_V45,
 )
 
 
@@ -50,6 +51,16 @@ def build_runtime() -> None:
         env={**dict(__import__("os").environ), "PYTHONPATH": str(SRC)},
     )
     PRINT_2383_OUTPUT_LATTICE.verify()
+    subprocess.run(
+        [
+            sys.executable,
+            str(SRC / "build_v45_print_lut.py"),
+            str(PRINT_2383_OUTPUT_LATTICE_V45.path),
+        ],
+        check=True,
+        env={**dict(__import__("os").environ), "PYTHONPATH": str(SRC)},
+    )
+    PRINT_2383_OUTPUT_LATTICE_V45.verify()
 
 
 def fetch_research() -> None:

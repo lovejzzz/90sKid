@@ -8,9 +8,11 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 [lovejzzz.github.io/90sKid](https://lovejzzz.github.io/90sKid/)
 
-## Current release: V44 observer integrity · V42 image baseline
+## Current release: V45 official CIE observer · V42 image baseline
 
-- V44 withdraws V43H's unmeasured negative-NPS, Spirit and stochastic-2383 candidates
+- V45 replaces the analytical 20 nm observer approximation with the official CIE 1931 2° 1 nm table
+- Kodak 2383 dye and xenon graph samples are integrated at 1 nm without inventing new material measurements
+- V44's withdrawal of V43H's unmeasured negative-NPS, Spirit and stochastic-2383 candidates remains active
 - V41's chart-bounded image model remains frozen through the V42 engine-conformance baseline
 - Runtime gates enforce the accepted V37–V41 grain, density, colour and observer boundaries
 - The validated Philox-u32 Bernoulli Metal graph is the Production default; Archive CPU remains reproducible
@@ -34,6 +36,8 @@ See [`engine/V42_ENGINE_RECOVERY_AND_CONFORMANCE_2026-08-09.md`](engine/V42_ENGI
 for the recovery provenance and research-to-code matrix, and
 [`engine/V44_OBSERVER_INTEGRITY_AND_SCALE_HONEST_REVIEW_2026-08-10.md`](engine/V44_OBSERVER_INTEGRITY_AND_SCALE_HONEST_REVIEW_2026-08-10.md)
 for the observer ablations, display-sampling equation and current limits.
+V45's single-variable spectral revision and cache-integrity boundary are recorded
+in [`engine/V45_OFFICIAL_CIE_1NM_OBSERVER_2026-08-10.md`](engine/V45_OFFICIAL_CIE_1NM_OBSERVER_2026-08-10.md).
 
 ## Local development
 
