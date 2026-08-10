@@ -6,6 +6,101 @@ import numpy as np
 from numba import njit, prange
 
 
+@njit(parallel=True, cache=True)
+def linear_rec709_to_oklab_fused(
+    rgb: np.ndarray,
+    rgb_to_lms: np.ndarray,
+    lms_to_lab: np.ndarray,
+) -> np.ndarray:
+    """Fuse the two OKLab matrix passes without changing float32 order."""
+    height, width, _ = rgb.shape
+    output = np.empty_like(rgb)
+    zero = np.float32(0.0)
+    for y in prange(height):
+        for x in range(width):
+            red = max(rgb[y, x, 0], zero)
+            green = max(rgb[y, x, 1], zero)
+            blue = max(rgb[y, x, 2], zero)
+            l_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[0, 0]
+                    + green * rgb_to_lms[0, 1]
+                    + blue * rgb_to_lms[0, 2],
+                    zero,
+                )
+            )
+            m_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[1, 0]
+                    + green * rgb_to_lms[1, 1]
+                    + blue * rgb_to_lms[1, 2],
+                    zero,
+                )
+            )
+            s_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[2, 0]
+                    + green * rgb_to_lms[2, 1]
+                    + blue * rgb_to_lms[2, 2],
+                    zero,
+                )
+            )
+            for channel in range(3):
+                output[y, x, channel] = (
+                    l_root * lms_to_lab[channel, 0]
+                    + m_root * lms_to_lab[channel, 1]
+                    + s_root * lms_to_lab[channel, 2]
+                )
+    return output
+
+
+@njit(parallel=True, cache=True)
+def linear_rec709_to_oklab_lightness_fused(
+    rgb: np.ndarray,
+    rgb_to_lms: np.ndarray,
+    lightness_row: np.ndarray,
+) -> np.ndarray:
+    """Evaluate the same fused transform when only OKLab L survives."""
+    height, width, _ = rgb.shape
+    output = np.empty((height, width), dtype=np.float32)
+    zero = np.float32(0.0)
+    for y in prange(height):
+        for x in range(width):
+            red = max(rgb[y, x, 0], zero)
+            green = max(rgb[y, x, 1], zero)
+            blue = max(rgb[y, x, 2], zero)
+            l_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[0, 0]
+                    + green * rgb_to_lms[0, 1]
+                    + blue * rgb_to_lms[0, 2],
+                    zero,
+                )
+            )
+            m_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[1, 0]
+                    + green * rgb_to_lms[1, 1]
+                    + blue * rgb_to_lms[1, 2],
+                    zero,
+                )
+            )
+            s_root = np.cbrt(
+                max(
+                    red * rgb_to_lms[2, 0]
+                    + green * rgb_to_lms[2, 1]
+                    + blue * rgb_to_lms[2, 2],
+                    zero,
+                )
+            )
+            output[y, x] = (
+                l_root * lightness_row[0]
+                + m_root * lightness_row[1]
+                + s_root * lightness_row[2]
+            )
+    return output
+
+
 @njit(cache=True, inline="always")
 def _interp_scalar(value: np.float32, axis: np.ndarray, table: np.ndarray) -> np.float32:
     if value <= axis[0]:

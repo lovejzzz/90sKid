@@ -15,6 +15,7 @@ import pipeline_accel as accel
 
 
 _ARRAY_EXECUTOR: concurrent.futures.ThreadPoolExecutor | None = None
+_DIR_EXECUTOR: concurrent.futures.ThreadPoolExecutor | None = None
 _NUMBA_KERNEL_LOCK = threading.Lock()
 
 
@@ -65,6 +66,28 @@ def warm(module) -> None:
         np.zeros((4, 4, 3), np.float32),
         np.zeros((4, 4), np.float32),
     )
+    rgb_to_lms = np.array(
+        [
+            [0.4122214708, 0.5363325363, 0.0514459929],
+            [0.2119034982, 0.6806995451, 0.1073969566],
+            [0.0883024619, 0.2817188376, 0.6299787005],
+        ],
+        dtype=np.float32,
+    )
+    lms_to_lab = np.array(
+        [
+            [0.2104542553, 0.7936177850, -0.0040720468],
+            [1.9779984951, -2.4285922050, 0.4505937099],
+            [0.0259040371, 0.7827717662, -0.8086757660],
+        ],
+        dtype=np.float32,
+    )
+    accel.linear_rec709_to_oklab_fused(
+        np.zeros((4, 4, 3), np.float32), rgb_to_lms, lms_to_lab
+    )
+    accel.linear_rec709_to_oklab_lightness_fused(
+        np.zeros((4, 4, 3), np.float32), rgb_to_lms, lms_to_lab[0]
+    )
 
 
 def apply(
@@ -76,7 +99,7 @@ def apply(
     enable_matrix: bool = True,
 ) -> None:
     """Install fused kernels while retaining reference fallbacks for tiny arrays."""
-    global _ARRAY_EXECUTOR
+    global _ARRAY_EXECUTOR, _DIR_EXECUTOR
     import apply_v31_normal_process_adapter as normal_adapter
     set_num_threads(numba_threads)
     array_workers = max(1, int(array_workers))
@@ -84,6 +107,15 @@ def apply(
         _ARRAY_EXECUTOR = concurrent.futures.ThreadPoolExecutor(
             max_workers=array_workers,
             thread_name_prefix="v27-array",
+        )
+    if array_workers > 1 and _DIR_EXECUTOR is None:
+        # Six independent receiver updates per source plane saturate unified
+        # memory bandwidth before they saturate this machine's CPU cores. Four
+        # workers measured faster than six/eight while leaving the general
+        # array pool at eight for compute-heavy kernels.
+        _DIR_EXECUTOR = concurrent.futures.ThreadPoolExecutor(
+            max_workers=min(array_workers, 4),
+            thread_name_prefix="v27-dir",
         )
     stochastic_profile = getattr(module, "_V27_STOCHASTIC_PROFILE", None)
     mean_profile = getattr(module, "_V27_MEAN_PROFILE", None)
@@ -215,6 +247,12 @@ def apply(
         module._V27_REFERENCE_MATCH_2383_PROJECTION_TO_REC709_MONITOR = (
             module.match_2383_projection_to_rec709_monitor
         )
+        module._V27_REFERENCE_LINEAR_REC709_TO_OKLAB = (
+            module.linear_rec709_to_oklab
+        )
+        module._V27_REFERENCE_LINEAR_REC709_TO_OKLAB_LIGHTNESS = (
+            module.linear_rec709_to_oklab_lightness
+        )
 
     reference_cube = module._V27_REFERENCE_APPLY_RGB_CUBE_LUT
     reference_record_density = (
@@ -242,6 +280,10 @@ def apply(
         module._V27_REFERENCE_FINISH_BLURAY_GRAIN_DELTA
     )
     reference_optical_scatter = module._V27_REFERENCE_ADD_5279_OPTICAL_SCATTER
+    reference_linear_to_oklab = module._V27_REFERENCE_LINEAR_REC709_TO_OKLAB
+    reference_linear_to_oklab_lightness = (
+        module._V27_REFERENCE_LINEAR_REC709_TO_OKLAB_LIGHTNESS
+    )
     reference_print_output_cube = (
         module._V27_REFERENCE_SAMPLE_RECORD_DENSITY_DELTA_LUT
     )
@@ -738,6 +780,52 @@ def apply(
         dtype=np.float32,
     )
     record_matrix = np.asarray(module.FILM_RECORD_SENSITIVITY_RGB, dtype=np.float32)
+    rgb_to_lms = np.array(
+        [
+            [0.4122214708, 0.5363325363, 0.0514459929],
+            [0.2119034982, 0.6806995451, 0.1073969566],
+            [0.0883024619, 0.2817188376, 0.6299787005],
+        ],
+        dtype=np.float32,
+    )
+    lms_to_lab = np.array(
+        [
+            [0.2104542553, 0.7936177850, -0.0040720468],
+            [1.9779984951, -2.4285922050, 0.4505937099],
+            [0.0259040371, 0.7827717662, -0.8086757660],
+        ],
+        dtype=np.float32,
+    )
+
+    def linear_to_oklab_fused(rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(rgb)
+        if (
+            source.ndim != 3
+            or source.shape[-1] != 3
+            or source.dtype != np.float32
+        ):
+            return reference_linear_to_oklab(source)
+        return run_numba_kernel(
+            accel.linear_rec709_to_oklab_fused,
+            source,
+            rgb_to_lms,
+            lms_to_lab,
+        )
+
+    def linear_to_oklab_lightness_fused(rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(rgb)
+        if (
+            source.ndim != 3
+            or source.shape[-1] != 3
+            or source.dtype != np.float32
+        ):
+            return reference_linear_to_oklab_lightness(source)
+        return run_numba_kernel(
+            accel.linear_rec709_to_oklab_lightness_fused,
+            source,
+            rgb_to_lms,
+            lms_to_lab[0],
+        )
 
     def vgamut_to_film(vgamut: np.ndarray) -> np.ndarray:
         source = np.asarray(vgamut, dtype=np.float32)
@@ -1289,7 +1377,10 @@ def apply(
             module.GRANULARITY_SIGMA_D_RGB,
         )
 
-    def develop_density_memory_reuse(log_exposure: np.ndarray) -> np.ndarray:
+    def develop_density_memory_reuse(
+        log_exposure: np.ndarray,
+        precomputed_activations: np.ndarray | None = None,
+    ) -> np.ndarray:
         source = np.asarray(log_exposure, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return module._V27_REFERENCE_DEVELOP_5279_FROM_LOG_EXPOSURE(source)
@@ -1303,7 +1394,13 @@ def apply(
         np.maximum(net_density, 0.0, out=net_density)
         profile_mean("net_density_clamp", net_clamp_started)
         activation_started = time.perf_counter()
-        activations = module.subemulsion_activation_probabilities(source)
+        activations = (
+            module.subemulsion_activation_probabilities(source)
+            if precomputed_activations is None
+            else np.asarray(precomputed_activations, dtype=np.float32)
+        )
+        if activations.shape != source.shape + (3,):
+            raise ValueError("precomputed activations must match log exposure")
         profile_mean("activation_probabilities", activation_started)
         layer_distribution_started = time.perf_counter()
         layer_density = distribute_layer_density_exact(
@@ -1456,8 +1553,8 @@ def apply(
 
                     if array_workers > 1 and len(updates) > 1:
                         interlayer_started = time.perf_counter()
-                        assert _ARRAY_EXECUTOR is not None
-                        list(_ARRAY_EXECUTOR.map(apply_update, updates))
+                        assert _DIR_EXECUTOR is not None
+                        list(_DIR_EXECUTOR.map(apply_update, updates))
                         profile_mean("dir_interlayer_updates", interlayer_started)
                     else:
                         interlayer_started = time.perf_counter()
@@ -1566,8 +1663,8 @@ def apply(
 
                 if array_workers > 1 and len(updates) > 1:
                     interlayer_started = time.perf_counter()
-                    assert _ARRAY_EXECUTOR is not None
-                    list(_ARRAY_EXECUTOR.map(apply_update, updates))
+                    assert _DIR_EXECUTOR is not None
+                    list(_DIR_EXECUTOR.map(apply_update, updates))
                     profile_stochastic(
                         "coupling_interlayer_updates", interlayer_started
                     )
@@ -1691,6 +1788,10 @@ def apply(
     )
     module.couple_5279_population_deviations = couple_population_deviations_parallel
     module.binomial_dye_cloud_deviation = binomial_deviation_single_copy
+    module.linear_rec709_to_oklab = linear_to_oklab_fused
+    module.linear_rec709_to_oklab_lightness = (
+        linear_to_oklab_lightness_fused
+    )
     if not exact_only and enable_record_density:
         module.record_densities_from_log_exposure = (
             record_density_semifused

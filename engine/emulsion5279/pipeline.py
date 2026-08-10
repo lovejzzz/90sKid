@@ -180,13 +180,24 @@ class Emulsion5279Engine:
             sensor_noise_treatment="photochemical",
         )
         records = e.film_records_from_rgb(film_rgb)
-        mean = e.develop_5279_record_density(records)
+        log_exposure = np.log10(np.maximum(records, 1e-8)) - 1.0
+        activations = e.subemulsion_activation_probabilities(log_exposure)
+        mean = e.develop_5279_record_density_from_log_exposure(
+            log_exposure,
+            precomputed_activations=activations,
+        )
         formed = e.form_5279_multilayer_record_density(
             records,
             int(absolute_frame),
             self.config.grain_scale,
             self.config.oversample,
             precomputed_mean_density=(mean if self.config.oversample == 1 else None),
+            precomputed_log_exposure=(
+                log_exposure if self.config.oversample == 1 else None
+            ),
+            precomputed_activations=(
+                activations if self.config.oversample == 1 else None
+            ),
         )
         return FormedNegative(mean, formed)
 

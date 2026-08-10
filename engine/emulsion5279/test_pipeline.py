@@ -188,6 +188,53 @@ class PipelineContractTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(actual, expected)
 
+    def test_shared_negative_exposure_fields_are_bit_exact(self) -> None:
+        """Mean and stochastic formation may reuse one exposure/activation field."""
+        e = legacy.model
+        legacy.profile.apply(e)
+        rng = np.random.default_rng(527944)
+        records = rng.uniform(0.01, 4.0, (36, 48, 3)).astype(np.float32)
+        log_exposure = np.log10(np.maximum(records, 1e-8)) - 1.0
+        activations = e.subemulsion_activation_probabilities(log_exposure)
+        expected_mean = e.develop_5279_record_density(records)
+        shared_mean = e.develop_5279_record_density_from_log_exposure(
+            log_exposure,
+            precomputed_activations=activations,
+        )
+        np.testing.assert_array_equal(shared_mean, expected_mean)
+        expected_formed = e.form_5279_multilayer_record_density(
+            records,
+            44,
+            1.0,
+            1,
+            precomputed_mean_density=expected_mean,
+        )
+        shared_formed = e.form_5279_multilayer_record_density(
+            records,
+            44,
+            1.0,
+            1,
+            precomputed_mean_density=shared_mean,
+            precomputed_log_exposure=log_exposure,
+            precomputed_activations=activations,
+        )
+        np.testing.assert_array_equal(shared_formed, expected_formed)
+
+    def test_neutral_multilayer_development_stays_on_published_hd(self) -> None:
+        """Layer decomposition must not create a second neutral H-D curve."""
+        e = legacy.model
+        legacy.profile.apply(e)
+        for log_exposure in np.linspace(-4.0, 1.0, 21, dtype=np.float32):
+            field = np.full((12, 16, 3), log_exposure, dtype=np.float32)
+            published = e.record_densities_from_log_exposure(field)
+            developed = e.develop_5279_record_density_from_log_exposure(field)
+            np.testing.assert_allclose(
+                developed,
+                published,
+                rtol=0.0,
+                atol=3.0e-7,
+            )
+
     def test_zero_physical_colour_authority_skips_unreachable_calibration(self) -> None:
         """V31+'s zero colour weights cannot consume calibrated physical RGB."""
         e = legacy.model
@@ -435,6 +482,40 @@ class PipelineContractTests(unittest.TestCase):
         expected = e.linear_rec709_to_oklab(rgb)[..., 0]
         actual = e.linear_rec709_to_oklab_lightness(rgb)
         np.testing.assert_array_equal(actual, expected)
+
+    def test_fused_oklab_forward_transform_is_bit_exact(self) -> None:
+        """The production 2383 observer may fuse only an exact OKLab direction."""
+        import pipeline_accel
+
+        e = legacy.model
+        rng = np.random.default_rng(238344)
+        rgb = rng.uniform(-0.1, 1.1, (72, 96, 3)).astype(np.float32)
+        rgb_to_lms = np.array(
+            [
+                [0.4122214708, 0.5363325363, 0.0514459929],
+                [0.2119034982, 0.6806995451, 0.1073969566],
+                [0.0883024619, 0.2817188376, 0.6299787005],
+            ],
+            dtype=np.float32,
+        )
+        lms_to_lab = np.array(
+            [
+                [0.2104542553, 0.7936177850, -0.0040720468],
+                [1.9779984951, -2.4285922050, 0.4505937099],
+                [0.0259040371, 0.7827717662, -0.8086757660],
+            ],
+            dtype=np.float32,
+        )
+        expected = e.linear_rec709_to_oklab(rgb)
+        actual = pipeline_accel.linear_rec709_to_oklab_fused(
+            rgb, rgb_to_lms, lms_to_lab
+        )
+        np.testing.assert_array_equal(actual, expected)
+        expected_l = e.linear_rec709_to_oklab_lightness(rgb)
+        actual_l = pipeline_accel.linear_rec709_to_oklab_lightness_fused(
+            rgb, rgb_to_lms, lms_to_lab[0]
+        )
+        np.testing.assert_array_equal(actual_l, expected_l)
 
     def test_common_density_scalar_debias_is_bit_exact(self) -> None:
         """A common print event need not duplicate and discard two records."""

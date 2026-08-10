@@ -3332,6 +3332,7 @@ def _as_spatial_record_array(values: np.ndarray) -> tuple[np.ndarray, tuple[int,
 
 def develop_5279_record_density_from_log_exposure(
     log_exposure: np.ndarray,
+    precomputed_activations: np.ndarray | None = None,
 ) -> np.ndarray:
     """Develop fast/medium/slow layers with local DIR before summation.
 
@@ -3344,7 +3345,13 @@ def develop_5279_record_density_from_log_exposure(
     work_log_exposure, source_shape = _as_spatial_record_array(log_exposure)
     base_density = record_densities_from_log_exposure(work_log_exposure)
     net_density = np.maximum(base_density - SENSITO_DMIN_RGB, 0.0)
-    activations = subemulsion_activation_probabilities(work_log_exposure)
+    activations = (
+        subemulsion_activation_probabilities(work_log_exposure)
+        if precomputed_activations is None
+        else np.asarray(precomputed_activations, dtype=np.float32)
+    )
+    if activations.shape != work_log_exposure.shape + (3,):
+        raise ValueError("precomputed activations must match log exposure")
     layer_weight = activations * SUBEMULSION_CAPACITY_FRACTIONS[None, None, None, :]
     layer_weight /= np.maximum(np.sum(layer_weight, axis=-1, keepdims=True), 1e-8)
     layer_density = net_density[..., None] * layer_weight
@@ -3524,6 +3531,8 @@ def form_5279_multilayer_record_density(
     grain_scale: float,
     oversample: int,
     precomputed_mean_density: np.ndarray | None = None,
+    precomputed_log_exposure: np.ndarray | None = None,
+    precomputed_activations: np.ndarray | None = None,
 ) -> np.ndarray:
     """Form 5279 density from finite fast/medium/slow emulsion populations.
 
@@ -3554,9 +3563,15 @@ def form_5279_multilayer_record_density(
     work_h = source_h * oversample
     native_scale = source_w / 5760.0
 
-    log_exposure = np.log10(np.maximum(records, 1e-8)) - 1.0
+    log_exposure = (
+        np.log10(np.maximum(records, 1e-8)) - 1.0
+        if precomputed_log_exposure is None
+        else np.asarray(precomputed_log_exposure, dtype=np.float32)
+    )
+    if log_exposure.shape != records.shape:
+        raise ValueError("precomputed log exposure must match film records")
     if oversample == 1:
-        work_log_exposure = log_exposure.astype(np.float32)
+        work_log_exposure = log_exposure.astype(np.float32, copy=False)
     else:
         work_log_exposure = np.stack(
             [
@@ -3582,7 +3597,13 @@ def form_5279_multilayer_record_density(
             work_log_exposure
         )
     activation_started = time.perf_counter()
-    activations = subemulsion_activation_probabilities(work_log_exposure)
+    activations = (
+        subemulsion_activation_probabilities(work_log_exposure)
+        if precomputed_activations is None
+        else np.asarray(precomputed_activations, dtype=np.float32)
+    )
+    if activations.shape != work_log_exposure.shape + (3,):
+        raise ValueError("precomputed activations must match working exposure")
     record_operator("outer_activation_probabilities", activation_started)
     sigma_started = time.perf_counter()
     target_sigma = published_5279_granularity_sigma(work_log_exposure)
