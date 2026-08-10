@@ -719,7 +719,7 @@ const v26Parameters = (v25.parameters ?? []).map((group) => ({
 // them on the archival GitHub commit prevents two production hosts from
 // packaging another 127 MiB while retaining the original pixels and URLs.
 const archivedHover = (filename: string) =>
-  `https://raw.githubusercontent.com/lovejzzz/90sKid/fa7152aed9552286220a798d602eb04d5797b824/public/versions/${filename}`;
+  `/versions/${filename}`;
 
 versions.push({
   version: "V26",
