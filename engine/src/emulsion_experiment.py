@@ -829,6 +829,28 @@ def linear_rec709_to_oklab(rgb: np.ndarray) -> np.ndarray:
     ).astype(np.float32)
 
 
+def linear_rec709_to_oklab_lightness(rgb: np.ndarray) -> np.ndarray:
+    """Return only OKLab L while preserving the full converter's float32 math."""
+    rgb_to_lms = np.array(
+        [
+            [0.4122214708, 0.5363325363, 0.0514459929],
+            [0.2119034982, 0.6806995451, 0.1073969566],
+            [0.0883024619, 0.2817188376, 0.6299787005],
+        ],
+        dtype=np.float32,
+    )
+    lightness_row = np.array(
+        [0.2104542553, 0.7936177850, -0.0040720468],
+        dtype=np.float32,
+    )
+    lms = np.einsum(
+        "...c,dc->...d", np.maximum(rgb, 0.0), rgb_to_lms
+    )
+    return np.einsum(
+        "...c,c->...", np.cbrt(np.maximum(lms, 0.0)), lightness_row
+    ).astype(np.float32)
+
+
 def oklab_to_linear_rec709(lab: np.ndarray) -> np.ndarray:
     """Convert OKLab to linear Rec.709 RGB."""
     lab_to_lms_root = np.array(
@@ -2333,9 +2355,6 @@ def _render_2383_monitor_projection_base_from_record_density(
         # Reuse the spectral projection just evaluated above.  The former code
         # repeated the complete 2383 transmission lookup solely to apply the
         # H-61/flare boundary, doubling the expensive full-frame work.
-        calibrated_physical = _calibrate_2383_projected_view(
-            stripe, uncalibrated, include_reference_flare=True
-        )
         stripe_scan_reference = (
             finish_cineon_scan_for_bluray(
                 render_cineon_scan_master_from_record_density(stripe)
@@ -2344,8 +2363,23 @@ def _render_2383_monitor_projection_base_from_record_density(
             else scan_source[row0:row1]
         )
         scan_metrics = projection_monitor_scan_metrics(stripe_scan_reference)
+        if (
+            PRINT_MONITOR_PHYSICAL_HUE_WEIGHT == 0.0
+            and PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT == 0.0
+        ):
+            # V31 and later withdraw physical 2383 hue/saturation authority.
+            # The calibrated physical RGB argument is consequently multiplied
+            # by exact zero inside the monitor match, while the independently
+            # computed spectral ``physical_view`` below still owns projection
+            # lightness and contrast.  Avoid the unreachable H-61/flare/gamut
+            # branch without changing the surviving observer equations.
+            calibrated_match_source = physical_view
+        else:
+            calibrated_match_source = _calibrate_2383_projected_view(
+                stripe, uncalibrated, include_reference_flare=True
+            )
         calibrated_view = match_2383_projection_to_rec709_monitor(
-            calibrated_physical,
+            calibrated_match_source,
             stripe_scan_reference,
             scan_metrics=scan_metrics,
         )

@@ -51,6 +51,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--binomial-workers", type=int, default=8)
     parser.add_argument("--numba-threads", type=int, default=8)
     parser.add_argument("--array-workers", type=int, default=8)
+    parser.add_argument(
+        "--observer-branch-workers",
+        type=int,
+        choices=(1, 2),
+        default=1,
+        help=(
+            "schedule projection and scan sequentially (1) or concurrently "
+            "(2); pixels are identical, but native-frame memory and speed "
+            "depend on the machine"
+        ),
+    )
     parser.add_argument("--grain-domain-salt", type=int, default=0)
     parser.add_argument(
         "--profile", choices=("v42", "v43h", "v44"), default="v42"
@@ -85,6 +96,7 @@ def main() -> None:
         binomial_workers=args.binomial_workers,
         numba_threads=args.numba_threads,
         array_workers=args.array_workers,
+        observer_branch_workers=args.observer_branch_workers,
         grain_domain_salt=args.grain_domain_salt,
         research_baseline=not args.experimental_overrides,
     )
@@ -163,6 +175,7 @@ def main() -> None:
             "binomial_workers": config.binomial_workers,
             "numba_threads": config.numba_threads,
             "array_workers": config.array_workers,
+            "observer_branch_workers": config.observer_branch_workers,
             "grain_domain_salt": config.grain_domain_salt,
             "research_baseline": config.research_baseline,
         },
