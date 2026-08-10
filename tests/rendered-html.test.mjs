@@ -17,18 +17,18 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V44 observer revision over the V42 image baseline", async () => {
+test("server-renders the bilingual V45 spectral-observer revision over the V42 image baseline", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT OBSERVER &amp; DELIVERY REVISION[\s\S]{0,120}V44/);
+  assert.match(currentSection, /CURRENT SPECTRAL OBSERVER REVISION[\s\S]{0,120}V45/);
   assert.match(currentSection, /V42 IMAGE BASELINE/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v44-t020-projection/);
-  assert.match(html, /v44-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /v45-t020-projection/);
+  assert.match(html, /v45-t020-projection-live-srgb\.mp4/);
   assert.match(html, /v43h-t020-fsd-live-srgb\.mp4/);
   assert.match(html, /v43h-t020-camera-live-srgb\.mp4/);
   assert.match(html, /中文/);
@@ -38,7 +38,7 @@ test("server-renders the bilingual V44 observer revision over the V42 image base
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V44 archive, research and algorithm routes", async () => {
+test("server-renders the V45 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -46,7 +46,8 @@ test("server-renders the V44 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V44/);
+  assert.match(versions, /V4—[\s\S]{0,30}V45/);
+  assert.match(versions, /OFFICIAL OBSERVER/);
   assert.match(versions, /OBSERVER INTEGRITY/);
   assert.match(versions, /HYPOTHESIS EDITION/);
   assert.match(versions, /NJARAW_S001_S001_T020/);
@@ -101,6 +102,7 @@ test("server-renders the V44 archive, research and algorithm routes", async () =
   assert.match(research, /V42 · DATA-LOSS INCIDENT \/ PREVENTION/);
   assert.match(research, /V43H · HYPOTHESIS EDITION/);
   assert.match(research, /V44 · OBSERVER INTEGRITY \/ SCALE-HONEST REVIEW/);
+  assert.match(research, /V45 · OFFICIAL CIE OBSERVER \/ 1 NM SPECTRAL INTEGRATION/);
   assert.match(research, /214 authored files|214个作者文件/);
   assert.match(research, /deletion trigger|删除触发器/);
   assert.match(research, /12\.5% retained/);
@@ -115,7 +117,8 @@ test("server-renders the V44 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /V44 OBSERVER INTEGRITY \/ V42 IMAGE BASELINE/);
+  assert.match(algorithm, /V45 OFFICIAL CIE OBSERVER \/ V42 IMAGE BASELINE/);
+  assert.match(algorithm, /OFFICIAL CIE 1931 2° · 1 NM/);
   assert.match(algorithm, /GATED OBSERVERS · SCALE-DECLARED REVIEW/);
   assert.match(algorithm, /HYPOTHESIS EDITION · ISOLATED \/ REVERSIBLE/);
   assert.match(algorithm, /RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY/);
@@ -703,6 +706,46 @@ test("V44 publishes a gated scale-integrated review from encoded 12-bit authorit
   assert.match(manifest.projection_colour, /V31 normal-process monitor boundary/);
   assert.equal(manifest.native_release_audit.all_gates_pass, true);
   assert.equal(Object.keys(manifest.verification).length, 2);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.review_metadata.width, 1920);
+    assert.equal(result.review_metadata.height, 1440);
+    assert.equal(result.review_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.review_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.review_metadata.nb_frames, "24");
+    assert.equal(result.review_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.review_metadata.profile, "XQ");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V45 publishes three official-observer trials from encoded review authorities", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v45-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.release_class, "measured_observer_revision");
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.dimensions, [1280, 960]);
+  assert.match(manifest.only_image_change, /official CIE table/);
+  assert.match(manifest.frozen, /black, contrast, gamma/);
+  assert.equal(Object.keys(manifest.verification).length, 6);
+  assert.deepEqual(Object.keys(manifest.timing).sort(), ["T007", "T020", "T032"]);
+  assert.equal(manifest.same_negative_ablation.scan_is_bit_exact, true);
+  assert.ok(manifest.same_negative_ablation.projection_delta.rms < 0.00004);
+  assert.equal(manifest.native_release_audit.all_gates_pass, true);
+  assert.equal(manifest.delivery_audit.pass, true);
+  for (const scene of Object.values(manifest.native_release_audit.branch_pass)) {
+    assert.equal(scene.projection, true);
+    assert.equal(scene.scan, true);
+  }
   assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
   for (const result of Object.values(manifest.verification)) {
     assert.equal(result.review_metadata.width, 1920);

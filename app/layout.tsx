@@ -9,22 +9,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("og-v44.png", siteUrl).toString();
+  const socialImageUrl = new URL("og-v45.png", siteUrl).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V44 separates emulsion formation, projection/scan observers and display sampling. The accepted V42 image model remains the research baseline.",
+    description: "V45 integrates Kodak 2383 through the official CIE 1931 2-degree 1 nm observer while freezing the accepted V42 image model.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "An evidence-bounded 5279 reconstruction with scale-honest review and native 12-bit delivery.",
+      description: "An evidence-bounded 5279 reconstruction with official 1 nm spectral observation, scale-honest review and native 12-bit delivery.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V44 observer integrity · V42 image baseline" }],
+      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V45 official CIE observer · V42 image baseline" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V44 separates film formation, observer and display sampling; V42 remains the image baseline.",
+      description: "V45 replaces the analytical observer approximation with official CIE 1 nm data; V42 remains the image baseline.",
       images: [socialImageUrl],
     },
   };

@@ -57,8 +57,10 @@ class EngineConfig:
     research_baseline: bool = True
 
     def __post_init__(self) -> None:
-        if self.profile not in {"v42", "v43h", "v44"}:
-            raise ValueError("the emulsion engine supports V42, V43H and V44 profiles")
+        if self.profile not in {"v42", "v43h", "v44", "v45"}:
+            raise ValueError(
+                "the emulsion engine supports V42, V43H, V44 and V45 profiles"
+            )
         if self.oversample < 1:
             raise ValueError("oversample must be positive")
         if self.grain_scale < 0.0:

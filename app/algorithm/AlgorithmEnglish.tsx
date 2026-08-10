@@ -102,10 +102,22 @@ review_light = pixel_area_integrate(master_light, width=1920)
 review       = prores_xq(srgb_encode(review_light))
 still        = decode_frame(review, middle_frame)`;
 
+const v45Code = `# Replace only the 2383 standard observer; freeze V44/V42
+lambda_nm, xyz_bar = load_cie_1931_2deg_official_1nm()
+dye_1nm   = linear_interp(kodak_2383_dye_graph_20nm, lambda_nm)
+xenon_1nm = linear_interp(kodak_xenon_graph_20nm, lambda_nm)
+T = 10 ** (-(dye_amount_cmy @ dye_1nm.T))
+XYZ = trapz(T * xenon_1nm * xyz_bar, dx=1nm)
+
+# Profile, standard table and 193³ runtime lattice share SHA-256 gates
+assert lattice == build_from(profile="v45", observer=xyz_bar)`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · V44 OBSERVER INTEGRITY / V42 IMAGE BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V44 withdraws the unmeasured V43H candidates, retains the gated normal-process colour boundary, and defines display review without altering the native V42 image-formation master.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · V45 OFFICIAL CIE OBSERVER / V42 IMAGE BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V45 changes only 2383 spectral observation to the official CIE 1931 2° one-nanometre table. V44/V42 emulsion, scan, grain, black, contrast and delivery remain frozen.</p></header>
+
+      <section className="method-section"><div className="method-index">V45</div><div className="method-copy"><span className="section-tag">OFFICIAL CIE 1931 2° · 1 NM</span><h2>Improve the standard observer without taking the opportunity to alter film</h2><p>V45 linearly interpolates the same Kodak 2383 dye and xenon 20 nm graph samples to one nanometre, then integrates from 380 to 780 nm through the CIE&apos;s official colour-matching table. Status-A inversion, LAD, 2383 H-D, the V31 normal-process colour boundary and complete V42 negative formation are frozen. Dye-free white changes by less than 4×10⁻⁷, demonstrating that this is not hidden white balance.</p><pre><code>{v45Code}</code></pre><div className="equation"><span>SINGLE-VARIABLE RELEASE</span><b>V45 = V44 + official CIE 1 nm observer</b><small>The 20 nm Kodak graphs remain the material-information limit; interpolation is not described as a new 1 nm film measurement.</small></div></div></section>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>Display delivery</b><small>BT.1886 master / sRGB companion</small></span></div></section>
 

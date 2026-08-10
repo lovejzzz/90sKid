@@ -585,6 +585,14 @@ NEGATIVE_5279_BASE_DENSITY_RGB = SENSITO_DMIN_RGB.copy()
 # 2383 peak-normalized spectral dye densities, sampled by eye from the Kodak
 # xenon-arc graph. Columns are cyan, magenta and yellow dye absorptions.
 PRINT_DYE_WAVELENGTHS_NM = np.arange(380.0, 781.0, 20.0, dtype=np.float32)
+# V44 and earlier used a closed-form CMF approximation sampled on the 20 nm
+# Kodak graph. A profile may opt into the official CIE table without changing
+# the published dye graph or any negative/print sensitometry.
+PRINT_2383_CMF_MODE = "analytic_20nm"
+CIE_1931_2DEG_1NM_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "references/cie/CIE_xyz_1931_2deg.csv"
+)
 PRINT_DYE_CMY_SPECTRAL_DENSITY = np.array(
     [
         [0.23, 0.18, 0.25, 0.29, 0.24, 0.12, 0.04, 0.01, 0.00, 0.01, 0.05, 0.15, 0.35, 0.58, 0.78, 0.96, 1.09, 1.16, 1.20, 1.17, 1.05],
@@ -1591,6 +1599,23 @@ def _cie_1931_xyz_approx(wavelength_nm: np.ndarray) -> np.ndarray:
     return np.stack([x_bar, y_bar, z_bar], axis=1).astype(np.float32)
 
 
+@functools.lru_cache(maxsize=1)
+def _cie_1931_xyz_official_1nm() -> tuple[np.ndarray, np.ndarray]:
+    """Load the official CIE 018:2019 2-degree observer data table.
+
+    The authority file is the CIE-hosted 360--830 nm, 1 nm CSV. V45 uses only
+    380--780 nm because that is the support of Kodak's published 2383 dye graph.
+    """
+    table = np.loadtxt(CIE_1931_2DEG_1NM_PATH, delimiter=",", dtype=np.float64)
+    if table.shape != (471, 4):
+        raise ValueError(f"invalid official CIE 1931 table shape: {table.shape}")
+    wavelength = table[:, 0]
+    if not np.array_equal(wavelength, np.arange(360.0, 831.0, 1.0)):
+        raise ValueError("official CIE 1931 table has an unexpected wavelength axis")
+    selection = (wavelength >= 380.0) & (wavelength <= 780.0)
+    return wavelength[selection], table[selection, 1:4]
+
+
 def _blackbody_spd(wavelength_nm: np.ndarray, temperature_k: float) -> np.ndarray:
     """Relative Planck spectrum for a xenon-projection white approximation."""
     wavelength_m = wavelength_nm.astype(np.float64) * 1e-9
@@ -1660,9 +1685,34 @@ def build_2383_projection_lut(size: int = 25) -> np.ndarray:
     )
     cmy = np.stack([cyan, magenta, yellow], axis=-1).reshape(-1, 3)
 
-    cmf = _cie_1931_xyz_approx(PRINT_DYE_WAVELENGTHS_NM)
-    illuminant = KODAK_XENON_PROJECTOR_RELATIVE_SPD
-    weighted_cmf = illuminant[:, None] * cmf
+    if PRINT_2383_CMF_MODE == "cie_1931_2deg_official_1nm":
+        integration_wavelengths, cmf = _cie_1931_xyz_official_1nm()
+        dye_spectra = np.stack(
+            [
+                np.interp(
+                    integration_wavelengths,
+                    PRINT_DYE_WAVELENGTHS_NM,
+                    PRINT_DYE_CMY_SPECTRAL_DENSITY[:, channel],
+                )
+                for channel in range(3)
+            ],
+            axis=1,
+        )
+        illuminant = np.interp(
+            integration_wavelengths,
+            PRINT_DYE_WAVELENGTHS_NM,
+            KODAK_XENON_PROJECTOR_RELATIVE_SPD,
+        )
+        integration_weights = np.ones(integration_wavelengths.size, dtype=np.float64)
+        integration_weights[[0, -1]] = 0.5
+        weighted_cmf = illuminant[:, None] * cmf * integration_weights[:, None]
+    elif PRINT_2383_CMF_MODE == "analytic_20nm":
+        dye_spectra = PRINT_DYE_CMY_SPECTRAL_DENSITY
+        cmf = _cie_1931_xyz_approx(PRINT_DYE_WAVELENGTHS_NM)
+        illuminant = KODAK_XENON_PROJECTOR_RELATIVE_SPD
+        weighted_cmf = illuminant[:, None] * cmf
+    else:
+        raise ValueError(f"unknown 2383 CMF integration mode: {PRINT_2383_CMF_MODE}")
     white_xyz = np.sum(weighted_cmf, axis=0)
     d65_xyz = np.array([0.95047, 1.0, 1.08883], dtype=np.float32)
     source_white = white_xyz / white_xyz[1]
@@ -1691,7 +1741,7 @@ def build_2383_projection_lut(size: int = 25) -> np.ndarray:
     # for these finite float32 matrices; the values are explicitly bounded.
     with np.errstate(all="ignore"):
         spectral_density = np.clip(
-            cmy @ PRINT_DYE_CMY_SPECTRAL_DENSITY.T, 0.0, 16.0
+            cmy @ dye_spectra.T, 0.0, 16.0
         )
         transmission = np.power(10.0, -spectral_density)
         xyz = transmission @ weighted_cmf
@@ -3332,6 +3382,7 @@ def _as_spatial_record_array(values: np.ndarray) -> tuple[np.ndarray, tuple[int,
 
 def develop_5279_record_density_from_log_exposure(
     log_exposure: np.ndarray,
+    precomputed_activations: np.ndarray | None = None,
 ) -> np.ndarray:
     """Develop fast/medium/slow layers with local DIR before summation.
 
@@ -3344,7 +3395,13 @@ def develop_5279_record_density_from_log_exposure(
     work_log_exposure, source_shape = _as_spatial_record_array(log_exposure)
     base_density = record_densities_from_log_exposure(work_log_exposure)
     net_density = np.maximum(base_density - SENSITO_DMIN_RGB, 0.0)
-    activations = subemulsion_activation_probabilities(work_log_exposure)
+    activations = (
+        subemulsion_activation_probabilities(work_log_exposure)
+        if precomputed_activations is None
+        else np.asarray(precomputed_activations, dtype=np.float32)
+    )
+    if activations.shape != work_log_exposure.shape + (3,):
+        raise ValueError("precomputed activations must match log exposure")
     layer_weight = activations * SUBEMULSION_CAPACITY_FRACTIONS[None, None, None, :]
     layer_weight /= np.maximum(np.sum(layer_weight, axis=-1, keepdims=True), 1e-8)
     layer_density = net_density[..., None] * layer_weight
@@ -3524,6 +3581,8 @@ def form_5279_multilayer_record_density(
     grain_scale: float,
     oversample: int,
     precomputed_mean_density: np.ndarray | None = None,
+    precomputed_log_exposure: np.ndarray | None = None,
+    precomputed_activations: np.ndarray | None = None,
 ) -> np.ndarray:
     """Form 5279 density from finite fast/medium/slow emulsion populations.
 
@@ -3554,9 +3613,15 @@ def form_5279_multilayer_record_density(
     work_h = source_h * oversample
     native_scale = source_w / 5760.0
 
-    log_exposure = np.log10(np.maximum(records, 1e-8)) - 1.0
+    log_exposure = (
+        np.log10(np.maximum(records, 1e-8)) - 1.0
+        if precomputed_log_exposure is None
+        else np.asarray(precomputed_log_exposure, dtype=np.float32)
+    )
+    if log_exposure.shape != records.shape:
+        raise ValueError("precomputed log exposure must match film records")
     if oversample == 1:
-        work_log_exposure = log_exposure.astype(np.float32)
+        work_log_exposure = log_exposure.astype(np.float32, copy=False)
     else:
         work_log_exposure = np.stack(
             [
@@ -3582,7 +3647,13 @@ def form_5279_multilayer_record_density(
             work_log_exposure
         )
     activation_started = time.perf_counter()
-    activations = subemulsion_activation_probabilities(work_log_exposure)
+    activations = (
+        subemulsion_activation_probabilities(work_log_exposure)
+        if precomputed_activations is None
+        else np.asarray(precomputed_activations, dtype=np.float32)
+    )
+    if activations.shape != work_log_exposure.shape + (3,):
+        raise ValueError("precomputed activations must match working exposure")
     record_operator("outer_activation_probabilities", activation_started)
     sigma_started = time.perf_counter()
     target_sigma = published_5279_granularity_sigma(work_log_exposure)
