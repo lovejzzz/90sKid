@@ -59,6 +59,18 @@ test("server-renders the V44 archive, research and algorithm routes", async () =
   assert.match(versions, /DETERMINISTIC NO-GRAIN/);
   assert.match(versions, /v41-t031-fsd-live-srgb\.mp4/);
   assert.match(versions, /v41-t031-deterministic-live-srgb\.mp4/);
+  assert.match(
+    versions,
+    /16d14d8909d8e48ad11499f309844dda1ab3954c\/public\/versions\/v26-t020-projection-live-srgb\.mp4/,
+  );
+  assert.match(
+    versions,
+    /a23540fbf1ad47060cf8b9677c85d148b1b7ad48\/public\/versions\/v27-t020-projection-live-srgb\.mp4/,
+  );
+  assert.match(
+    versions,
+    /e85c07cf32ff732bffd97495b308a46120ee1c8b\/public\/versions\/v28-t020-projection-live-srgb\.mp4/,
+  );
   assert.match(research, /V24 · 35 MM SPECTRAL SEPARATION/);
   assert.match(research, /Print Grain Index/);
   assert.match(research, /V25 · OUTPUT STANDARD/);

@@ -74,7 +74,6 @@ def adapt_frame_linear(
     """
     projection = np.asarray(projection, dtype=np.float32)
     scan = np.asarray(scan, dtype=np.float32)
-    projection_lab = e.linear_rec709_to_oklab(projection)
     scan_lab = e.linear_rec709_to_oklab(scan)
     sigma = max(
         float(v31_profile.PROFILE["projection_chroma_crossover_sigma_at_2k"])
@@ -86,14 +85,18 @@ def adapt_frame_linear(
         scan_lab[..., 1:3], (0, 0), sigma,
         borderType=cv2.BORDER_REFLECT,
     )
-    target_lab = projection_lab.copy()
     retention = float(opponent_high_frequency_retention)
     if retention == 0.0:
         # V40 and later explicitly withdraw this unmeasured opponent-frequency
         # authority. The former general path still blurred the complete
-        # projection a/b image and multiplied its residual by exact zero.
+        # projection a/b image and multiplied its residual by exact zero. Only
+        # its OKLab L survives, so do not allocate the discarded a/b result.
+        target_lab = scan_lab.copy()
+        target_lab[..., 0] = e.linear_rec709_to_oklab_lightness(projection)
         target_lab[..., 1:3] = scan_low_ab
     else:
+        projection_lab = e.linear_rec709_to_oklab(projection)
+        target_lab = projection_lab.copy()
         projection_low_ab = cv2.GaussianBlur(
             projection_lab[..., 1:3], (0, 0), sigma,
             borderType=cv2.BORDER_REFLECT,

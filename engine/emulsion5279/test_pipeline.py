@@ -188,6 +188,32 @@ class PipelineContractTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(actual, expected)
 
+    def test_zero_physical_colour_authority_skips_unreachable_calibration(self) -> None:
+        """V31+'s zero colour weights cannot consume calibrated physical RGB."""
+        e = legacy.model
+        legacy.profile.apply(e)
+        self.assertEqual(e.PRINT_MONITOR_PHYSICAL_HUE_WEIGHT, 0.0)
+        self.assertEqual(e.PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT, 0.0)
+        rng = np.random.default_rng(238331)
+        density = rng.uniform(0.08, 2.4, (10, 12, 3)).astype(np.float32)
+        print_density = rng.uniform(0.05, 3.6, density.shape).astype(np.float32)
+
+        original = e._calibrate_2383_projected_view
+
+        def unreachable(*_args, **_kwargs):
+            raise AssertionError("withdrawn physical colour branch was evaluated")
+
+        e._calibrate_2383_projected_view = unreachable
+        try:
+            result = e._render_2383_monitor_projection_base_from_record_density(
+                density,
+                print_density=print_density,
+            )
+        finally:
+            e._calibrate_2383_projected_view = original
+        self.assertEqual(result.shape, density.shape)
+        self.assertTrue(np.all(np.isfinite(result)))
+
     def test_parallel_observers_are_bit_exact(self) -> None:
         """Scheduling the two independent observers cannot alter their math."""
         import v43h_profile
@@ -399,6 +425,15 @@ class PipelineContractTests(unittest.TestCase):
             historical_rgb, projection_luma
         )
         actual = adapter.adapt_frame_linear(projection, scan, 0.0)
+        np.testing.assert_array_equal(actual, expected)
+
+    def test_oklab_lightness_only_is_bit_exact(self) -> None:
+        """The zero-retention adapter may omit unused OKLab opponent channels."""
+        e = legacy.model
+        rng = np.random.default_rng(4400)
+        rgb = rng.uniform(-0.1, 1.1, (72, 96, 3)).astype(np.float32)
+        expected = e.linear_rec709_to_oklab(rgb)[..., 0]
+        actual = e.linear_rec709_to_oklab_lightness(rgb)
         np.testing.assert_array_equal(actual, expected)
 
     def test_common_density_scalar_debias_is_bit_exact(self) -> None:
