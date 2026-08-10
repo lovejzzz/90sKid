@@ -15,6 +15,7 @@ import pipeline_accel as accel
 
 
 _ARRAY_EXECUTOR: concurrent.futures.ThreadPoolExecutor | None = None
+_NUMBA_KERNEL_LOCK = threading.Lock()
 
 
 def _row_ranges(height: int, workers: int) -> list[tuple[int, int]]:
@@ -38,6 +39,7 @@ def warm(module) -> None:
         module._SPIRIT_NEUTRAL_SCALE_TABLE = module.build_spirit_neutral_scale_table()
     axis, table = module._SPIRIT_NEUTRAL_SCALE_TABLE
     accel.factor_table_interp(np.zeros((4, 4), np.float32), axis, table)
+    accel.factor_table_interp_float64(np.zeros((4, 4), np.float32), axis, table)
     accel.channel_table_interp(
         np.zeros((4, 4, 3), np.float32),
         module.GRANULARITY_LOG_EXPOSURE,
@@ -52,6 +54,17 @@ def warm(module) -> None:
         -0.16,
         module.NEGATIVE_5279_MAX_RECORD_DENSITY,
     )
+    accel.h61_density_cube_trilinear(
+        np.zeros((4, 4, 3), np.float32),
+        np.zeros((3, 3, 3, 3), np.float32),
+        module.SENSITO_DMIN_RGB,
+        -0.16,
+        module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+    )
+    accel.preserve_luma_and_compress_gamut(
+        np.zeros((4, 4, 3), np.float32),
+        np.zeros((4, 4), np.float32),
+    )
 
 
 def apply(
@@ -64,6 +77,7 @@ def apply(
 ) -> None:
     """Install fused kernels while retaining reference fallbacks for tiny arrays."""
     global _ARRAY_EXECUTOR
+    import apply_v31_normal_process_adapter as normal_adapter
     set_num_threads(numba_threads)
     array_workers = max(1, int(array_workers))
     if array_workers > 1 and _ARRAY_EXECUTOR is None:
@@ -80,6 +94,17 @@ def apply(
         threading.Lock() if stochastic_profile is not None else None
     )
     mean_profile_lock = threading.Lock() if mean_profile is not None else None
+
+    def run_numba_kernel(function, *arguments):
+        """Serialize Numba workqueue launches while other branch work overlaps.
+
+        Numba's macOS workqueue backend is internally parallel but does not
+        permit two outside Python threads to launch kernels concurrently. This
+        lock is the explicit CPU-kernel queue in the heterogeneous scheduler;
+        OpenCV, NumPy and Metal work on either observer remain free to overlap.
+        """
+        with _NUMBA_KERNEL_LOCK:
+            return function(*arguments)
 
     def profile_stochastic(name: str, started: float) -> None:
         if stochastic_profile is None:
@@ -160,6 +185,36 @@ def apply(
         module._V27_REFERENCE_SAMPLE_RECORD_DENSITY_DELTA_LUT = (
             module.sample_record_density_delta_lut
         )
+        module._V27_REFERENCE_APPLY_2383_H61_COLOUR_DELTA_LUT = (
+            module.apply_2383_h61_colour_delta_lut
+        )
+        module._V27_REFERENCE_APPLY_2383_PROJECTION_LUT = (
+            module.apply_2383_projection_lut
+        )
+        module._V27_REFERENCE_APPLY_5279_TO_2383_PRINTER_DENSITY_LUT = (
+            module.apply_5279_to_2383_printer_density_lut
+        )
+        module._V27_REFERENCE_RAW_PRINT_2383_DENSITY_FROM_NEGATIVE = (
+            module._raw_print_2383_density_from_negative
+        )
+        module._V27_REFERENCE_PRINT_2383_DENSITY_FROM_NEGATIVE = (
+            module.print_2383_density_from_negative
+        )
+        module._V27_REFERENCE_V31_PRESERVE_LUMA_AND_COMPRESS_GAMUT = (
+            normal_adapter.preserve_luma_and_compress_gamut
+        )
+        module._V27_REFERENCE_APPLY_2383_MONITOR_NEUTRAL_CURVE = (
+            module.apply_2383_monitor_neutral_curve
+        )
+        module._V27_REFERENCE_NEUTRALIZE_2383_PROJECTED_GRAY_SCALE = (
+            module.neutralize_2383_projected_gray_scale
+        )
+        module._V27_REFERENCE_REMOVE_TONAL_GRAIN_BIAS = (
+            module.remove_tonal_grain_bias
+        )
+        module._V27_REFERENCE_MATCH_2383_PROJECTION_TO_REC709_MONITOR = (
+            module.match_2383_projection_to_rec709_monitor
+        )
 
     reference_cube = module._V27_REFERENCE_APPLY_RGB_CUBE_LUT
     reference_record_density = (
@@ -190,18 +245,45 @@ def apply(
     reference_print_output_cube = (
         module._V27_REFERENCE_SAMPLE_RECORD_DENSITY_DELTA_LUT
     )
+    reference_h61_cube = (
+        module._V27_REFERENCE_APPLY_2383_H61_COLOUR_DELTA_LUT
+    )
+    reference_projection_cube = module._V27_REFERENCE_APPLY_2383_PROJECTION_LUT
+    reference_printer_density_cube = (
+        module._V27_REFERENCE_APPLY_5279_TO_2383_PRINTER_DENSITY_LUT
+    )
+    reference_raw_print_density = (
+        module._V27_REFERENCE_RAW_PRINT_2383_DENSITY_FROM_NEGATIVE
+    )
+    reference_print_density = (
+        module._V27_REFERENCE_PRINT_2383_DENSITY_FROM_NEGATIVE
+    )
+    reference_v31_gamut = (
+        module._V27_REFERENCE_V31_PRESERVE_LUMA_AND_COMPRESS_GAMUT
+    )
+    reference_monitor_neutral = (
+        module._V27_REFERENCE_APPLY_2383_MONITOR_NEUTRAL_CURVE
+    )
+    reference_projected_gray = (
+        module._V27_REFERENCE_NEUTRALIZE_2383_PROJECTED_GRAY_SCALE
+    )
+    reference_remove_grain_bias = module._V27_REFERENCE_REMOVE_TONAL_GRAIN_BIAS
+    reference_match_projection = (
+        module._V27_REFERENCE_MATCH_2383_PROJECTION_TO_REC709_MONITOR
+    )
 
     def camera_cube(rgb: np.ndarray, lut: np.ndarray, rows_per_stripe: int = 96):
         source = np.asarray(rgb, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_cube(source, lut, rows_per_stripe)
-        return accel.camera_cube_trilinear(source, lut)
+        return run_numba_kernel(accel.camera_cube_trilinear, source, lut)
 
     def record_density(log_exposure: np.ndarray) -> np.ndarray:
         source = np.asarray(log_exposure, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_record_density(source)
-        return accel.record_density_mix_fused(
+        return run_numba_kernel(
+            accel.record_density_mix_fused,
             source,
             module.SENSITO_LOG_EXPOSURE,
             module.SENSITO_DENSITY_RGB,
@@ -341,7 +423,8 @@ def apply(
             / widths
         )
         marginal /= np.maximum(np.sum(marginal, axis=-1, keepdims=True), 1e-8)
-        return accel.mix_record_departure(
+        return run_numba_kernel(
+            accel.mix_record_departure,
             densities,
             neutral_density,
             marginal,
@@ -356,7 +439,8 @@ def apply(
             module._NEGATIVE_5279_NET_DENSITY_LUT = (
                 module.build_5279_net_density_lut()
             )
-        return accel.density_cube_trilinear(
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
             source,
             module._NEGATIVE_5279_NET_DENSITY_LUT,
             module.NEGATIVE_5279_MAX_RECORD_DENSITY,
@@ -376,13 +460,278 @@ def apply(
             or lattice.shape[-1] != 3
         ):
             return reference_print_output_cube(source, lattice, rows_per_stripe)
-        return accel.signed_density_cube_trilinear(
+        return run_numba_kernel(
+            accel.signed_density_cube_trilinear,
             source,
             lattice,
             module.SENSITO_DMIN_RGB,
             -0.16,
             module.NEGATIVE_5279_MAX_RECORD_DENSITY,
         )
+
+    def h61_colour_delta_cube(
+        total_density: np.ndarray,
+        include_reference_flare: bool,
+    ) -> np.ndarray:
+        source = np.asarray(total_density, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_h61_cube(source, include_reference_flare)
+        if include_reference_flare not in module._PRINT_2383_H61_COLOUR_DELTA_LUTS:
+            module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare] = (
+                module.build_2383_h61_colour_delta_lut(include_reference_flare)
+            )
+        return run_numba_kernel(
+            accel.h61_density_cube_trilinear,
+            source,
+            module._PRINT_2383_H61_COLOUR_DELTA_LUTS[include_reference_flare],
+            module.SENSITO_DMIN_RGB,
+            -0.16,
+            module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+
+    def projection_density_cube(
+        print_density_rgb: np.ndarray,
+        rows_per_stripe: int = 96,
+    ) -> np.ndarray:
+        source = np.asarray(print_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_projection_cube(source, rows_per_stripe)
+        if module._PRINT_2383_PROJECTION_LUT is None:
+            module._PRINT_2383_PROJECTION_LUT = module.build_2383_projection_lut()
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
+            source,
+            module._PRINT_2383_PROJECTION_LUT,
+            module.PRINT_2383_DMAX,
+        )
+
+    def printer_density_cube(net_record_density: np.ndarray) -> np.ndarray:
+        source = np.asarray(net_record_density, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_printer_density_cube(source)
+        if module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT is None:
+            module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = (
+                module.build_5279_to_2383_printer_density_lut()
+            )
+        return run_numba_kernel(
+            accel.density_cube_trilinear,
+            source,
+            module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT,
+            module.NEGATIVE_5279_MAX_RECORD_DENSITY,
+        )
+
+    def raw_print_density_fast(negative_density_rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(negative_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_raw_print_density(source)
+        neutral_negative = module.negative_total_printer_density(
+            np.array([0.18, 0.18, 0.18], dtype=np.float32)
+        )
+        aim_log_exposure = np.array(
+            [
+                module._inverse_2383_density(
+                    channel,
+                    float(module.PRINT_2383_LAD_STATUS_A_AIM_RGB[channel]),
+                )
+                for channel in range(3)
+            ],
+            dtype=np.float32,
+        )
+        printer_log_light = neutral_negative + aim_log_exposure
+        captured_log_exposure = printer_log_light - source
+        print_log_exposure = (
+            aim_log_exposure
+            + np.einsum(
+                "...c,dc->...d",
+                captured_log_exposure - aim_log_exposure,
+                module.PRINT_2383_INTERIMAGE_MATRIX,
+            )
+        ).astype(np.float32)
+        return run_numba_kernel(
+            accel.channel_table_interp,
+            print_log_exposure,
+            module.PRINT_2383_LOG_EXPOSURE,
+            module.PRINT_2383_DENSITY_RGB,
+        )
+
+    def print_density_fast(negative_density_rgb: np.ndarray) -> np.ndarray:
+        source = np.asarray(negative_density_rgb, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_print_density(source)
+        if module._PRINT_2383_NEUTRAL_SHAPERS is None:
+            module._PRINT_2383_NEUTRAL_SHAPERS = (
+                module._build_2383_neutral_shapers()
+            )
+        raw = module._raw_print_2383_density_from_negative(source)
+        x_tables, y_tables = module._PRINT_2383_NEUTRAL_SHAPERS
+        calibrated = np.empty_like(raw)
+
+        def interpolate_channel(channel: int) -> None:
+            calibrated[..., channel] = np.interp(
+                raw[..., channel], x_tables[channel], y_tables[channel]
+            ).astype(np.float32)
+
+        if array_workers == 1:
+            for channel in range(3):
+                interpolate_channel(channel)
+        else:
+            assert _ARRAY_EXECUTOR is not None
+            list(_ARRAY_EXECUTOR.map(interpolate_channel, range(3)))
+        return calibrated
+
+    def v31_gamut_fast(rgb: np.ndarray, target_luma: np.ndarray) -> np.ndarray:
+        source = np.asarray(rgb, dtype=np.float32)
+        target = np.asarray(target_luma, dtype=np.float32)
+        if (
+            source.ndim != 3
+            or source.shape[-1] != 3
+            or target.shape != source.shape[:2]
+        ):
+            return reference_v31_gamut(source, target)
+        return run_numba_kernel(
+            accel.preserve_luma_and_compress_gamut, source, target
+        )
+
+    def monitor_neutral_curve_fast(physical: np.ndarray) -> np.ndarray:
+        source = np.asarray(physical, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_monitor_neutral(source)
+        if module._PRINT_2383_MONITOR_NEUTRAL_CURVE is None:
+            module._PRINT_2383_MONITOR_NEUTRAL_CURVE = (
+                module.build_2383_monitor_neutral_curve()
+            )
+        axis, table = module._PRINT_2383_MONITOR_NEUTRAL_CURVE
+        return run_numba_kernel(
+            accel.channel_table_interp,
+            source, axis, np.repeat(table[None, :], 3, axis=0)
+        )
+
+    def projected_gray_fast(projected: np.ndarray) -> np.ndarray:
+        source = np.asarray(projected, dtype=np.float32)
+        if source.ndim != 3 or source.shape[-1] != 3:
+            return reference_projected_gray(source)
+        if module._PRINT_2383_VIEW_NEUTRAL_TABLE is None:
+            # Let the historical path construct its self-referential neutral
+            # table once. Every subsequent native stripe uses the fused tail.
+            return reference_projected_gray(source)
+        luma_axis, factor_table = module._PRINT_2383_VIEW_NEUTRAL_TABLE
+        luma = np.einsum(
+            "...c,c->...",
+            np.maximum(source, 0.0),
+            [0.2126, 0.7152, 0.0722],
+        )
+        factors = run_numba_kernel(
+            accel.factor_table_interp_float64,
+            luma, luma_axis, factor_table
+        )
+        return np.maximum(source * factors, 0.0).astype(np.float32)
+
+    def remove_grain_bias_parallel(
+        mean_display: np.ndarray,
+        grain_delta: np.ndarray,
+        bins: int = 96,
+    ) -> np.ndarray:
+        mean = np.asarray(mean_display)
+        delta = np.asarray(grain_delta)
+        if (
+            mean.ndim != 3
+            or mean.shape[-1] != 3
+            or delta.shape != mean.shape
+        ):
+            return reference_remove_grain_bias(mean, delta, bins)
+        corrected = np.asarray(delta, dtype=np.float32).copy()
+
+        def process_channel(channel: int) -> None:
+            level = np.clip(mean[..., channel], 0.0, 1.0)
+            index = np.minimum(
+                np.floor(np.sqrt(level) * bins).astype(np.int16), bins - 1
+            )
+            flat_index = index.ravel()
+            counts = np.bincount(
+                flat_index, minlength=bins
+            ).astype(np.float64)
+            sums = np.bincount(
+                flat_index,
+                weights=corrected[..., channel].ravel(),
+                minlength=bins,
+            )
+            valid = counts >= 256
+            if not np.any(valid):
+                return
+            table = np.zeros(bins, dtype=np.float64)
+            table[valid] = sums[valid] / counts[valid]
+            valid_x = np.flatnonzero(valid)
+            table = np.interp(np.arange(bins), valid_x, table[valid_x])
+            table = np.convolve(table, [0.25, 0.50, 0.25], mode="same")
+            table[0] = 0.75 * table[0] + 0.25 * table[1]
+            table[-1] = 0.75 * table[-1] + 0.25 * table[-2]
+            corrected[..., channel] -= table[index].astype(np.float32)
+
+        if array_workers == 1:
+            for channel in range(3):
+                process_channel(channel)
+        else:
+            assert _ARRAY_EXECUTOR is not None
+            list(_ARRAY_EXECUTOR.map(process_channel, range(3)))
+        return corrected
+
+    def match_projection_zero_physical_authority(
+        physical_projection: np.ndarray,
+        scan_reference: np.ndarray,
+        scan_metrics: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+    ) -> np.ndarray:
+        physical = np.asarray(physical_projection, dtype=np.float32)
+        scan = np.asarray(scan_reference, dtype=np.float32)
+        if (
+            physical.ndim != 3
+            or physical.shape[-1] != 3
+            or scan.shape != physical.shape
+            or module.PRINT_MONITOR_PHYSICAL_HUE_WEIGHT != 0.0
+            or module.PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT != 0.0
+        ):
+            return reference_match_projection(
+                physical, scan, scan_metrics=scan_metrics
+            )
+
+        # V31 withdrew unmeasured physical hue and saturation authority. The
+        # historical general expression still evaluated every physical OKLab,
+        # norm and smoothstep before multiplying those branches by exact zero.
+        # Preserve the surviving scan-reference arithmetic and its operation
+        # order without evaluating a colour contribution that cannot exist.
+        if scan_metrics is None:
+            reference_lab, _target_luma, _scan_relative_chroma = (
+                module.projection_monitor_scan_metrics(scan)
+            )
+        else:
+            reference_lab, _target_luma, _scan_relative_chroma = scan_metrics
+        lightness = reference_lab[..., 0]
+        reference_ab = reference_lab[..., 1:3]
+        reference_chroma = np.linalg.norm(reference_ab, axis=-1)
+        reference_direction = reference_ab / np.maximum(
+            reference_chroma[..., None], 1e-6
+        )
+        direction = reference_direction.copy()
+        direction /= np.maximum(
+            np.linalg.norm(direction, axis=-1)[..., None], 1e-6
+        )
+        reference_saturation = reference_chroma / np.maximum(
+            reference_lab[..., 0], 0.025
+        )
+        # The lower bound is <= the non-negative reference value and the upper
+        # bound is >= it, so this historical self-clip is exactly an identity.
+        saturation = reference_saturation
+        if module.PRINT_MONITOR_CHROMA_ADAPTATION == "absolute_chroma":
+            target_chroma = reference_chroma
+        elif module.PRINT_MONITOR_CHROMA_ADAPTATION == "relative_saturation":
+            target_chroma = saturation * lightness
+        else:
+            return reference_match_projection(physical, scan)
+        matched_lab = reference_lab.copy()
+        matched_lab[..., 0] = lightness
+        matched_lab[..., 1:3] = direction * target_chroma[..., None]
+        return module.compress_oklab_chroma_to_rec709(
+            module.oklab_to_linear_rec709(matched_lab)
+        ).astype(np.float32)
 
     vgamut_to_rec709 = np.asarray(
         module.XYZ_D65_TO_REC709 @ module.VGAMUT_TO_XYZ_D65,
@@ -428,7 +777,9 @@ def apply(
             assert _ARRAY_EXECUTOR is not None
             list(_ARRAY_EXECUTOR.map(measure_source_luma, ranges))
         luma_axis, factor_table = module._SPIRIT_NEUTRAL_SCALE_TABLE
-        factors = accel.factor_table_interp(source_luma, luma_axis, factor_table)
+        factors = run_numba_kernel(
+            accel.factor_table_interp, source_luma, luma_axis, factor_table
+        )
         corrected = source * factors
         def correct_rows(bounds: tuple[int, int]) -> None:
             row0, row1 = bounds
@@ -707,7 +1058,8 @@ def apply(
                 + module.BLURAY_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
                 * (opponent[row0:row1] - opponent_low[row0:row1])
             )
-            opponent_rows *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
+            if module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH != 1.0:
+                opponent_rows *= module.BLURAY_CHROMA_GRAIN_OPPONENT_STRENGTH
             mean_luma = np.einsum(
                 "...c,c->...",
                 np.maximum(mean_source[row0:row1], 0.0),
@@ -930,7 +1282,8 @@ def apply(
         source = np.asarray(log_exposure, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return module._V27_REFERENCE_PUBLISHED_5279_GRANULARITY_SIGMA(source)
-        return accel.channel_table_interp(
+        return run_numba_kernel(
+            accel.channel_table_interp,
             source,
             module.GRANULARITY_LOG_EXPOSURE,
             module.GRANULARITY_SIGMA_D_RGB,
@@ -999,107 +1352,118 @@ def apply(
         release_departure = neutral_release
         profile_mean("dir_setup", dir_setup_started)
 
-        for source_record in range(3):
-            for source_population in range(3):
-                sigma = max(
-                    float(
-                        module.DIR_POPULATION_LATERAL_SIGMA_PX_5760[
-                            source_population
+        mean_dir_batch = getattr(module, "_WAVEFRONT_MEAN_DIR_BATCH", None)
+        if mean_dir_batch is not None:
+            mean_dir_started = time.perf_counter()
+            correction = mean_dir_batch(
+                release_departure,
+                receiver_marginal,
+                layer_capacity,
+                native_scale,
+            )
+            profile_mean("dir_wavefront_batch", mean_dir_started)
+        else:
+            for source_record in range(3):
+                for source_population in range(3):
+                    sigma = max(
+                        float(
+                            module.DIR_POPULATION_LATERAL_SIGMA_PX_5760[
+                                source_population
+                            ]
+                        )
+                        * native_scale,
+                        0.20,
+                    )
+                    deterministic_intralayer = float(
+                        module.DIR_DETERMINISTIC_INTRALAYER_STRENGTH_RGB[
+                            source_record
                         ]
                     )
-                    * native_scale,
-                    0.20,
-                )
-                deterministic_intralayer = float(
-                    module.DIR_DETERMINISTIC_INTRALAYER_STRENGTH_RGB[
-                        source_record
-                    ]
-                )
-                if deterministic_intralayer != 0.0:
-                    source_release = release[
-                        ..., source_record, source_population
-                    ]
-                    release_gaussian_started = time.perf_counter()
-                    diffused_release = cv2.GaussianBlur(
-                        source_release,
+                    if deterministic_intralayer != 0.0:
+                        source_release = release[
+                            ..., source_record, source_population
+                        ]
+                        release_gaussian_started = time.perf_counter()
+                        diffused_release = cv2.GaussianBlur(
+                            source_release,
+                            (0, 0),
+                            sigma,
+                            borderType=cv2.BORDER_REFLECT,
+                        )
+                        profile_mean(
+                            "dir_release_gaussian", release_gaussian_started
+                        )
+                        intralayer_started = time.perf_counter()
+                        correction[..., source_record, source_population] += (
+                            deterministic_intralayer
+                            * layer_capacity[source_record, source_population]
+                            * (source_release - diffused_release)
+                            * receiver_marginal[
+                                ..., source_record, source_population
+                            ]
+                        )
+                        profile_mean("dir_intralayer_update", intralayer_started)
+
+                    departure_gaussian_started = time.perf_counter()
+                    diffused_departure = cv2.GaussianBlur(
+                        release_departure[..., source_record, source_population],
                         (0, 0),
                         sigma,
                         borderType=cv2.BORDER_REFLECT,
                     )
-                    profile_mean(
-                        "dir_release_gaussian", release_gaussian_started
-                    )
-                    intralayer_started = time.perf_counter()
-                    correction[..., source_record, source_population] += (
-                        deterministic_intralayer
-                        * layer_capacity[source_record, source_population]
-                        * (source_release - diffused_release)
-                        * receiver_marginal[
-                            ..., source_record, source_population
+                    profile_mean("dir_departure_gaussian", departure_gaussian_started)
+                    updates: list[tuple[int, int, float]] = []
+                    for destination_record in range(3):
+                        record_transport = module.DIR_INTERIMAGE_RECEIVER_CAUSER[
+                            destination_record, source_record
                         ]
-                    )
-                    profile_mean("dir_intralayer_update", intralayer_started)
-
-                departure_gaussian_started = time.perf_counter()
-                diffused_departure = cv2.GaussianBlur(
-                    release_departure[..., source_record, source_population],
-                    (0, 0),
-                    sigma,
-                    borderType=cv2.BORDER_REFLECT,
-                )
-                profile_mean("dir_departure_gaussian", departure_gaussian_started)
-                updates: list[tuple[int, int, float]] = []
-                for destination_record in range(3):
-                    record_transport = module.DIR_INTERIMAGE_RECEIVER_CAUSER[
-                        destination_record, source_record
-                    ]
-                    if record_transport <= 0.0:
-                        continue
-                    for destination_population in range(3):
-                        transport = (
-                            module.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH
-                            * record_transport
-                            * module.DIR_POPULATION_TRANSPORT[
-                                destination_population, source_population
-                            ]
-                            * module.DIR_POPULATION_RELEASE_GAIN[source_population]
-                            * module.DIR_POPULATION_RECEIVER_GAIN[
-                                destination_population
-                            ]
-                        )
-                        updates.append(
-                            (
-                                destination_record,
-                                destination_population,
-                                transport
-                                * layer_capacity[
-                                    destination_record, destination_population
-                                ],
+                        if record_transport <= 0.0:
+                            continue
+                        for destination_population in range(3):
+                            transport = (
+                                module.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH
+                                * record_transport
+                                * module.DIR_POPULATION_TRANSPORT[
+                                    destination_population, source_population
+                                ]
+                                * module.DIR_POPULATION_RELEASE_GAIN[source_population]
+                                * module.DIR_POPULATION_RECEIVER_GAIN[
+                                    destination_population
+                                ]
                             )
+                            updates.append(
+                                (
+                                    destination_record,
+                                    destination_population,
+                                    transport
+                                    * layer_capacity[
+                                        destination_record, destination_population
+                                    ],
+                                )
+                            )
+
+                    def apply_update(update: tuple[int, int, float]) -> None:
+                        destination_record, destination_population, scale = update
+                        correction[
+                            ..., destination_record, destination_population
+                        ] -= (
+                            scale
+                            * receiver_marginal[
+                                ..., destination_record, destination_population
+                            ]
+                            * diffused_departure
                         )
 
-                def apply_update(update: tuple[int, int, float]) -> None:
-                    destination_record, destination_population, scale = update
-                    correction[
-                        ..., destination_record, destination_population
-                    ] -= (
-                        scale
-                        * receiver_marginal[
-                            ..., destination_record, destination_population
-                        ]
-                        * diffused_departure
-                    )
-
-                if array_workers > 1 and len(updates) > 1:
-                    interlayer_started = time.perf_counter()
-                    assert _ARRAY_EXECUTOR is not None
-                    list(_ARRAY_EXECUTOR.map(apply_update, updates))
-                    profile_mean("dir_interlayer_updates", interlayer_started)
-                else:
-                    interlayer_started = time.perf_counter()
-                    for update in updates:
-                        apply_update(update)
-                    profile_mean("dir_interlayer_updates", interlayer_started)
+                    if array_workers > 1 and len(updates) > 1:
+                        interlayer_started = time.perf_counter()
+                        assert _ARRAY_EXECUTOR is not None
+                        list(_ARRAY_EXECUTOR.map(apply_update, updates))
+                        profile_mean("dir_interlayer_updates", interlayer_started)
+                    else:
+                        interlayer_started = time.perf_counter()
+                        for update in updates:
+                            apply_update(update)
+                        profile_mean("dir_interlayer_updates", interlayer_started)
 
         finalize_started = time.perf_counter()
         developed = finalize_layer_density_exact(
@@ -1115,12 +1479,32 @@ def apply(
         work_scale: float,
     ) -> np.ndarray:
         coupling_started = time.perf_counter()
-        copy_started = time.perf_counter()
-        coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
-        profile_stochastic("coupling_initial_copy", copy_started)
-        marginal_started = time.perf_counter()
-        marginal = np.clip(4.0 * activations * (1.0 - activations), 0.0, 1.0)
-        profile_stochastic("coupling_marginal", marginal_started)
+        marginal_tile_pixels = getattr(
+            module, "_WAVEFRONT_INPLACE_MARGINAL_TILE_PIXELS", None
+        )
+        if marginal_tile_pixels is None:
+            copy_started = time.perf_counter()
+            coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
+            profile_stochastic("coupling_initial_copy", copy_started)
+            marginal_started = time.perf_counter()
+            marginal = np.clip(
+                4.0 * activations * (1.0 - activations), 0.0, 1.0
+            )
+            profile_stochastic("coupling_marginal", marginal_started)
+        else:
+            import wavefront_tile_lab_v001
+
+            marginal_started = time.perf_counter()
+            marginal = wavefront_tile_lab_v001.activation_marginal_inplace(
+                activations,
+                tile_pixels=int(marginal_tile_pixels),
+            )
+            profile_stochastic("coupling_marginal", marginal_started)
+            # Contract the activation lifetime before allocating the coupled
+            # output; the accepted default retains its historical order above.
+            copy_started = time.perf_counter()
+            coupled = np.asarray(layer_deviation, dtype=np.float32).copy()
+            profile_stochastic("coupling_initial_copy", copy_started)
         for source_record in range(3):
             for source_population in range(3):
                 source = layer_deviation[..., source_record, source_population]
@@ -1279,6 +1663,18 @@ def apply(
     module.apply_rgb_cube_lut = camera_cube
     module.apply_5279_net_density_lut = density_cube
     module.sample_record_density_delta_lut = print_output_cube
+    module.apply_2383_h61_colour_delta_lut = h61_colour_delta_cube
+    module.apply_2383_projection_lut = projection_density_cube
+    module.apply_5279_to_2383_printer_density_lut = printer_density_cube
+    module._raw_print_2383_density_from_negative = raw_print_density_fast
+    module.print_2383_density_from_negative = print_density_fast
+    normal_adapter.preserve_luma_and_compress_gamut = v31_gamut_fast
+    module.apply_2383_monitor_neutral_curve = monitor_neutral_curve_fast
+    module.neutralize_2383_projected_gray_scale = projected_gray_fast
+    module.remove_tonal_grain_bias = remove_grain_bias_parallel
+    module.match_2383_projection_to_rec709_monitor = (
+        match_projection_zero_physical_authority
+    )
     module.compress_unit_gamut = compress_unit_gamut_inplace
     module.compress_oklab_chroma_to_rec709 = compress_oklab_parallel
     module.neutralize_spirit_finished_gray_scale = neutralize_spirit

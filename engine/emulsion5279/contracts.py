@@ -52,6 +52,7 @@ class EngineConfig:
     binomial_workers: int = 8
     numba_threads: int = 8
     array_workers: int = 8
+    observer_branch_workers: int = 1
     grain_domain_salt: int = 0
     research_baseline: bool = True
 
@@ -90,6 +91,8 @@ class EngineConfig:
         ):
             if getattr(self, name) < 1:
                 raise ValueError(f"{name} must be positive")
+        if self.observer_branch_workers not in (1, 2):
+            raise ValueError("observer_branch_workers must be 1 or 2")
 
 
 @dataclass(slots=True)

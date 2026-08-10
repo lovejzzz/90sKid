@@ -38,7 +38,15 @@ def protected_paths() -> list[Path]:
             continue
         if any(part in {"cache", "outputs", "work", "__pycache__"} for part in path.parts):
             continue
-        if path.suffix.lower() not in {".py", ".swift", ".metal", ".md", ".json", ".npz"}:
+        if path.suffix.lower() not in {
+            ".py",
+            ".swift",
+            ".metal",
+            ".mm",
+            ".md",
+            ".json",
+            ".npz",
+        }:
             continue
         paths.append(path)
     return sorted(set(paths))

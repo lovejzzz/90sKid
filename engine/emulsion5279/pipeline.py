@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import concurrent.futures
 from dataclasses import dataclass
 import threading
 import time
@@ -42,6 +43,7 @@ class Emulsion5279Engine:
         self.config = config or EngineConfig()
         self.profile = legacy.profile_for(self.config.profile)
         self._configured = False
+        self._observer_executor: concurrent.futures.ThreadPoolExecutor | None = None
 
     @property
     def provenance(self) -> dict[str, object]:
@@ -64,6 +66,14 @@ class Emulsion5279Engine:
                 legacy.model, self.profile, self.config
             ),
             "production_sampler_audit": sampler_audit,
+            "execution": {
+                "observer_branch_workers": self.config.observer_branch_workers,
+                "observer_schedule": (
+                    "parallel_projection_and_scan"
+                    if self.config.observer_branch_workers == 2
+                    else "sequential_projection_and_scan"
+                ),
+            },
             **legacy.source_fingerprints(self.profile),
         }
 
@@ -134,8 +144,19 @@ class Emulsion5279Engine:
                 )
                 v35_accel.warm_metal_binomial("bernoulli")
             assert_research_conformance(e, self.profile, self.config)
+            if self.config.observer_branch_workers == 2:
+                self._observer_executor = concurrent.futures.ThreadPoolExecutor(
+                    max_workers=2,
+                    thread_name_prefix="emulsion-observer",
+                )
             _ACTIVE_CONFIG = self.config
             self._configured = True
+
+    def close(self) -> None:
+        """Release persistent execution resources owned by this engine."""
+        if self._observer_executor is not None:
+            self._observer_executor.shutdown(wait=True, cancel_futures=False)
+            self._observer_executor = None
 
     @staticmethod
     def _validate_raw_frame(raw: np.ndarray) -> np.ndarray:
@@ -177,6 +198,7 @@ class Emulsion5279Engine:
             int(absolute_frame),
             self.config.grain_scale,
             "linear_rec709",
+            branch_executor=self._observer_executor,
         )
         from apply_v31_normal_process_adapter import adapt_frame_linear
 
@@ -202,6 +224,7 @@ class Emulsion5279Engine:
                 self.config.grain_scale,
                 "linear_rec709",
                 return_mean_pair=True,
+                branch_executor=self._observer_executor,
             )
         )
         from apply_v31_normal_process_adapter import adapt_frame_linear

@@ -82,20 +82,26 @@ def adapt_frame_linear(
         / 2048.0,
         0.05,
     )
-    projection_low_ab = cv2.GaussianBlur(
-        projection_lab[..., 1:3], (0, 0), sigma,
-        borderType=cv2.BORDER_REFLECT,
-    )
     scan_low_ab = cv2.GaussianBlur(
         scan_lab[..., 1:3], (0, 0), sigma,
         borderType=cv2.BORDER_REFLECT,
     )
     target_lab = projection_lab.copy()
-    target_lab[..., 1:3] = (
-        scan_low_ab
-        + float(opponent_high_frequency_retention)
-        * (projection_lab[..., 1:3] - projection_low_ab)
-    )
+    retention = float(opponent_high_frequency_retention)
+    if retention == 0.0:
+        # V40 and later explicitly withdraw this unmeasured opponent-frequency
+        # authority. The former general path still blurred the complete
+        # projection a/b image and multiplied its residual by exact zero.
+        target_lab[..., 1:3] = scan_low_ab
+    else:
+        projection_low_ab = cv2.GaussianBlur(
+            projection_lab[..., 1:3], (0, 0), sigma,
+            borderType=cv2.BORDER_REFLECT,
+        )
+        target_lab[..., 1:3] = (
+            scan_low_ab
+            + retention * (projection_lab[..., 1:3] - projection_low_ab)
+        )
     target_rgb = e.oklab_to_linear_rec709(target_lab)
     projection_luma = np.einsum(
         "...c,c->...", projection, [0.2126, 0.7152, 0.0722]

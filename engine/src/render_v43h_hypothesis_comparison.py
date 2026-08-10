@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import json
 import platform
 import subprocess
@@ -17,6 +18,7 @@ import numpy as np
 from engine.emulsion5279 import legacy
 from engine.emulsion5279.contracts import EngineConfig, EngineMode
 from engine.emulsion5279.io import (
+    PrefetchedIterator,
     ProResRawDecoder,
     _read_exact,
     rebuild_srgb_companion_from_master,
@@ -167,6 +169,23 @@ def main() -> None:
     parser.add_argument("--site-count", type=int, default=176)
     parser.add_argument("--correlation-sigma", type=float, default=0.597)
     parser.add_argument("--density-strength", type=float, default=1.0)
+    parser.add_argument(
+        "--execution",
+        choices=(
+            "sequential",
+            "quality-xpu",
+            "prefetch",
+            "parallel-observers",
+            "async-writers",
+            "balanced-xpu",
+            "xpu",
+        ),
+        default="quality-xpu",
+        help=(
+            "quality-xpu is the exact validated schedule; the other overlap "
+            "modes remain available for evidence-gated benchmarking"
+        ),
+    )
     args = parser.parse_args()
 
     default_start, default_frames = FRAME_WINDOWS[args.source_label]
@@ -175,7 +194,19 @@ def main() -> None:
     if frames < 1:
         raise ValueError("frames must be positive")
 
-    config = EngineConfig(profile="v43h", mode=EngineMode.PRODUCTION_METAL)
+    prefetch_raw = args.execution in ("prefetch", "balanced-xpu", "xpu")
+    parallel_observers = args.execution in (
+        "quality-xpu",
+        "parallel-observers",
+        "balanced-xpu",
+        "xpu",
+    )
+    async_writers = args.execution in ("async-writers", "xpu")
+    config = EngineConfig(
+        profile="v43h",
+        mode=EngineMode.PRODUCTION_METAL,
+        observer_branch_workers=2 if parallel_observers else 1,
+    )
     engine = Emulsion5279Engine(config)
     engine.configure()
     e = legacy.model
@@ -197,18 +228,46 @@ def main() -> None:
 
     timings: dict[str, list[float]] = {
         "decode_read": [],
+        "decode_wait": [],
         "negative_formation": [],
         "physical_dual_observer": [],
         "deterministic_observer": [],
         "fsd_density": [],
         "camera_witness": [],
         "encode_write_four": [],
+        "encode_wait": [],
     }
     fsd_stats: list[dict[str, float | int | str]] = []
     started = time.perf_counter()
     writers: dict[str, MasterWriter] = {}
     width = height = 0
     fps = ""
+    write_executor = (
+        concurrent.futures.ThreadPoolExecutor(
+            max_workers=4, thread_name_prefix="master-writer"
+        )
+        if async_writers
+        else None
+    )
+    pending_write_batch: tuple[
+        float, list[concurrent.futures.Future[float]]
+    ] | None = None
+
+    def timed_write(writer: MasterWriter, image: np.ndarray) -> float:
+        writer.write(image)
+        return time.perf_counter()
+
+    def drain_pending_writes() -> None:
+        nonlocal pending_write_batch
+        if pending_write_batch is None:
+            return
+        submitted_at, futures = pending_write_batch
+        waited_at = time.perf_counter()
+        completed_at = max(future.result() for future in futures)
+        timings["encode_wait"].append(time.perf_counter() - waited_at)
+        timings["encode_write_four"].append(completed_at - submitted_at)
+        pending_write_batch = None
+
     try:
         with ProResRawDecoder(
             args.decoder, args.input, start_frame, frames
@@ -220,73 +279,127 @@ def main() -> None:
                 )
                 for name, directory in directories.items()
             }
-            for offset, (absolute_frame, raw) in enumerate(decoder):
-                frame_started = time.perf_counter()
-                timings["decode_read"].append(frame_started - frame_started)
+            with PrefetchedIterator(
+                iter(decoder), enabled=prefetch_raw, count=frames
+            ) as frame_iterator:
+                for offset in range(frames):
+                    try:
+                        absolute_frame, raw = next(frame_iterator)
+                    except StopIteration as exc:
+                        raise RuntimeError(
+                            f"RAW decoder ended after {offset}/{frames} frames"
+                        ) from exc
+                    timings["decode_read"].append(
+                        frame_iterator.last_service_seconds
+                    )
+                    timings["decode_wait"].append(
+                        frame_iterator.last_wait_seconds
+                    )
 
-                mark = time.perf_counter()
-                negative = engine.form_negative(raw, absolute_frame)
-                timings["negative_formation"].append(time.perf_counter() - mark)
+                    mark = time.perf_counter()
+                    negative = engine.form_negative(raw, absolute_frame)
+                    timings["negative_formation"].append(time.perf_counter() - mark)
 
-                mark = time.perf_counter()
-                observers, deterministic_observers = engine.observe_with_mean(
-                    negative, absolute_frame
-                )
-                reference = engine.encode_reference(observers)
-                timings["physical_dual_observer"].append(time.perf_counter() - mark)
+                    mark = time.perf_counter()
+                    observers, deterministic_observers = engine.observe_with_mean(
+                        negative, absolute_frame
+                    )
+                    reference = engine.encode_reference(observers)
+                    timings["physical_dual_observer"].append(time.perf_counter() - mark)
 
-                mark = time.perf_counter()
-                deterministic = deterministic_observers.projection_linear_rec709
-                timings["deterministic_observer"].append(time.perf_counter() - mark)
+                    mark = time.perf_counter()
+                    deterministic = deterministic_observers.projection_linear_rec709
+                    timings["deterministic_observer"].append(time.perf_counter() - mark)
 
-                mark = time.perf_counter()
-                fsd, stats = apply_fsd(
-                    deterministic,
-                    absolute_frame,
-                    site_count=args.site_count,
-                    correlation_sigma=args.correlation_sigma,
-                    density_strength=args.density_strength,
-                )
-                stats["absolute_frame"] = absolute_frame
-                fsd_stats.append(stats)
-                fsd_master = e.bt1886_reference_encode(fsd).astype(np.float32)
-                timings["fsd_density"].append(time.perf_counter() - mark)
+                    mark = time.perf_counter()
+                    fsd, stats = apply_fsd(
+                        deterministic,
+                        absolute_frame,
+                        site_count=args.site_count,
+                        correlation_sigma=args.correlation_sigma,
+                        density_strength=args.density_strength,
+                    )
+                    stats["absolute_frame"] = absolute_frame
+                    fsd_stats.append(stats)
+                    fsd_master = e.bt1886_reference_encode(fsd).astype(np.float32)
+                    timings["fsd_density"].append(time.perf_counter() - mark)
 
-                mark = time.perf_counter()
-                vgamut = e.bt2020_to_panasonic_vgamut(raw)
-                vlog = e.vlog_encode(vgamut)
-                legal_v709 = e.apply_rgb_cube_lut(vlog, lut)
-                camera = np.clip(
-                    (legal_v709 - V709_LEGAL_BLACK)
-                    / (V709_LEGAL_WHITE - V709_LEGAL_BLACK),
-                    0.0,
-                    1.0,
-                ).astype(np.float32)
-                timings["camera_witness"].append(time.perf_counter() - mark)
+                    mark = time.perf_counter()
+                    vgamut = e.bt2020_to_panasonic_vgamut(raw)
+                    vlog = e.vlog_encode(vgamut)
+                    legal_v709 = e.apply_rgb_cube_lut(vlog, lut)
+                    camera = np.clip(
+                        (legal_v709 - V709_LEGAL_BLACK)
+                        / (V709_LEGAL_WHITE - V709_LEGAL_BLACK),
+                        0.0,
+                        1.0,
+                    ).astype(np.float32)
+                    timings["camera_witness"].append(time.perf_counter() - mark)
 
-                mark = time.perf_counter()
-                writers["projection"].write(reference.projection)
-                writers["bluray_scan"].write(reference.scan)
-                writers["fsd"].write(fsd_master)
-                writers["camera"].write(camera)
-                timings["encode_write_four"].append(time.perf_counter() - mark)
+                    if write_executor is None:
+                        mark = time.perf_counter()
+                        writers["projection"].write(reference.projection)
+                        writers["bluray_scan"].write(reference.scan)
+                        writers["fsd"].write(fsd_master)
+                        writers["camera"].write(camera)
+                        elapsed_write = time.perf_counter() - mark
+                        timings["encode_write_four"].append(elapsed_write)
+                        timings["encode_wait"].append(elapsed_write)
+                    else:
+                        # One ordered batch may remain in flight while the next
+                        # frame is decoded and reconstructed. Drain it only
+                        # before submitting another frame to the same writers.
+                        drain_pending_writes()
+                        submitted_at = time.perf_counter()
+                        pending_write_batch = (
+                            submitted_at,
+                            [
+                                write_executor.submit(
+                                    timed_write,
+                                    writers["projection"],
+                                    reference.projection,
+                                ),
+                                write_executor.submit(
+                                    timed_write,
+                                    writers["bluray_scan"],
+                                    reference.scan,
+                                ),
+                                write_executor.submit(
+                                    timed_write, writers["fsd"], fsd_master
+                                ),
+                                write_executor.submit(
+                                    timed_write, writers["camera"], camera
+                                ),
+                            ],
+                        )
 
-                elapsed = time.perf_counter() - started
-                eta = elapsed / (offset + 1) * (frames - offset - 1)
-                print(
-                    f"V43H {args.source_label} frame {offset + 1}/{frames} · "
-                    f"elapsed {elapsed:.1f}s · ETA {eta:.1f}s",
-                    flush=True,
-                )
-                del raw, negative, observers, deterministic_observers, reference
-                del deterministic, fsd, fsd_master
-                del vgamut, vlog, legal_v709, camera
+                    elapsed = time.perf_counter() - started
+                    eta = elapsed / (offset + 1) * (frames - offset - 1)
+                    print(
+                        f"V43H {args.source_label} frame {offset + 1}/{frames} · "
+                        f"elapsed {elapsed:.1f}s · ETA {eta:.1f}s",
+                        flush=True,
+                    )
+                    del raw, negative, observers, deterministic_observers, reference
+                    del deterministic, fsd, fsd_master
+                    del vgamut, vlog, legal_v709, camera
+            drain_pending_writes()
         for writer in writers.values():
             writer.close()
     except Exception:
+        if pending_write_batch is not None:
+            for future in pending_write_batch[1]:
+                future.cancel()
+        if write_executor is not None:
+            write_executor.shutdown(wait=True, cancel_futures=True)
+            write_executor = None
         for writer in writers.values():
             writer.abort()
         raise
+    finally:
+        if write_executor is not None:
+            write_executor.shutdown(wait=True, cancel_futures=True)
+        engine.close()
 
     sampler = engine.validate_rendered_frames(frames)
     finalization_started = time.perf_counter()
@@ -395,6 +508,7 @@ def main() -> None:
         "effective_seconds_per_frame": (
             (time.perf_counter() - started) / frames
         ),
+        "execution": args.execution,
         "command": [sys.executable, *sys.argv],
     }
     (args.output / "timing.json").write_text(

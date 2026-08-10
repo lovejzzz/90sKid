@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import collections
 import ctypes
+import math
 import subprocess
+import threading
 import time
 from pathlib import Path
 
@@ -15,7 +18,15 @@ LIBRARY = Path("/tmp/libv35_metal_binomial.dylib")
 _FUNCTIONS = None
 _ASYNC_SUBMIT = None
 _ASYNC_WAIT = None
-STATS = {"calls": 0, "bridge_seconds": 0.0, "wall_seconds": 0.0}
+STATS = {
+    "calls": 0,
+    "bridge_seconds": 0.0,
+    "wall_seconds": 0.0,
+    "tiled_calls": 0,
+    "tile_dispatches": 0,
+    "maximum_tile_pixels": 0,
+    "tile_assembly_seconds": 0.0,
+}
 
 
 def load_bridge():
@@ -119,6 +130,135 @@ class AsyncBinomialFlight:
                 pass
 
 
+class AsyncTiledBinomialFlight:
+    """Bounded row-wavefront submission with full-frame Philox coordinates.
+
+    Only the point-sampling working set is tiled. The returned plane is still
+    full frame so all downstream optical filters retain their established
+    whole-frame border and floating-point contracts.
+    """
+
+    def __init__(
+        self,
+        probability: np.ndarray,
+        trials: int,
+        seed: int,
+        workset_pixels: int,
+        in_flight: int,
+        mode: str,
+    ) -> None:
+        source = np.asarray(probability, dtype=np.float32)
+        if source.ndim != 2:
+            raise ValueError("Metal binomial input must be a scalar 2D plane")
+        if workset_pixels < source.shape[1]:
+            raise ValueError(
+                "wavefront workset must hold at least one complete image row"
+            )
+        if in_flight < 1:
+            raise ValueError("wavefront in-flight count must be positive")
+        if source.flags.c_contiguous and source.ctypes.data % 16_384 == 0:
+            self.source = source
+        else:
+            self.source = aligned_empty(source.shape)
+            np.copyto(self.source, source)
+        self.output = aligned_empty(source.shape)
+        self.trials = int(trials)
+        self.seed = int(seed)
+        self.mode = mode
+        self.in_flight = int(in_flight)
+        requested_rows = max(1, int(workset_pixels) // source.shape[1])
+        row_bytes = source.shape[1] * source.dtype.itemsize
+        alignment_rows = 16_384 // math.gcd(16_384, row_bytes)
+        self.rows_per_tile = (
+            max(
+                alignment_rows,
+                requested_rows // alignment_rows * alignment_rows,
+            )
+            if requested_rows >= alignment_rows
+            else requested_rows
+        )
+        self._next_row = 0
+        self._failure: BaseException | None = None
+        self._pending: collections.deque[
+            tuple[int, int, AsyncBinomialFlight]
+        ] = collections.deque()
+        for _ in range(self.in_flight):
+            if not self._submit_next():
+                break
+        self._feeder = threading.Thread(
+            target=self._drain,
+            name="v43h-metal-wavefront",
+            daemon=True,
+        )
+        self._feeder.start()
+
+    def _submit_next(self) -> bool:
+        height, width = self.source.shape
+        if self._next_row >= height:
+            return False
+        row0 = self._next_row
+        row1 = min(row0 + self.rows_per_tile, height)
+        flight = submit(
+            self.source[row0:row1],
+            self.trials,
+            self.seed,
+            origin=(0, row0),
+            full_width=width,
+            mode=self.mode,
+            copy_source=False,
+            output=self.output[row0:row1],
+        )
+        self._pending.append((row0, row1, flight))
+        self._next_row = row1
+        STATS["tile_dispatches"] += 1
+        STATS["maximum_tile_pixels"] = max(
+            int(STATS["maximum_tile_pixels"]), (row1 - row0) * width
+        )
+        return True
+
+    def _drain(self) -> None:
+        assembly_started = time.perf_counter()
+        try:
+            while self._pending:
+                _row0, _row1, flight = self._pending.popleft()
+                flight.wait()
+                self._submit_next()
+        except BaseException as error:
+            self._failure = error
+        finally:
+            STATS["tiled_calls"] += 1
+            STATS["tile_assembly_seconds"] += (
+                time.perf_counter() - assembly_started
+            )
+
+    def wait(self) -> np.ndarray:
+        self._feeder.join()
+        if self._failure is not None:
+            raise self._failure
+        return self.output
+
+
+def submit_tiled(
+    probability: np.ndarray,
+    trials: int,
+    seed: int,
+    *,
+    workset_pixels: int,
+    in_flight: int = 2,
+    mode: str = "bernoulli",
+) -> AsyncTiledBinomialFlight:
+    """Submit a bounded full-row wavefront without changing random identity."""
+
+    return AsyncTiledBinomialFlight(
+        probability,
+        trials,
+        seed,
+        int(workset_pixels),
+        int(in_flight),
+        mode,
+    )
+
+
 def submit(
     probability: np.ndarray,
     trials: int,
@@ -127,13 +267,34 @@ def submit(
     origin: tuple[int, int] = (0, 0),
     full_width: int | None = None,
     mode: str = "inverse",
+    copy_source: bool = True,
+    output: np.ndarray | None = None,
 ) -> AsyncBinomialFlight:
-    source_view = np.asarray(probability, dtype=np.float32)
+    source_input = np.asarray(probability)
+    if not copy_source and source_input.dtype != np.float32:
+        raise ValueError("zero-copy Metal binomial input must be float32")
+    source_view = np.asarray(source_input, dtype=np.float32)
     if source_view.ndim != 2:
         raise ValueError("Metal binomial input must be a scalar 2D plane")
-    source = aligned_empty(source_view.shape)
-    np.copyto(source, source_view)
-    output = aligned_empty(source.shape)
+    if copy_source:
+        source = aligned_empty(source_view.shape)
+        np.copyto(source, source_view)
+    else:
+        if not source_view.flags.c_contiguous:
+            raise ValueError("zero-copy Metal binomial input must be contiguous")
+        source = source_view
+    if output is None:
+        output = aligned_empty(source.shape)
+    else:
+        output = np.asarray(output)
+        if (
+            output.dtype != np.float32
+            or output.shape != source.shape
+            or not output.flags.c_contiguous
+        ):
+            raise ValueError(
+                "Metal binomial output must be matching contiguous float32"
+            )
     origin_x, origin_y = origin
     global_width = source.shape[1] if full_width is None else int(full_width)
     if mode not in ("inverse", "bernoulli"):

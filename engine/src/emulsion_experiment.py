@@ -886,7 +886,11 @@ def compress_oklab_chroma_to_rec709(
         high = np.where(fits, high, scale)
     lab[:, 1:3] *= low[:, None]
     result[out] = oklab_to_linear_rec709(lab)
-    return np.clip(result, lower_bound, 1.0).astype(np.float32)
+    # ``result`` is already an owned float32 buffer.  Clipping it in place
+    # preserves every code value while avoiding two complete image copies
+    # (one from ``clip`` and another from ``astype``) at this frequent boundary.
+    np.clip(result, lower_bound, 1.0, out=result)
+    return result
 
 
 def smoothstep(edge0: float, edge1: float, value: np.ndarray) -> np.ndarray:
@@ -2034,9 +2038,40 @@ def apply_2383_h61_colour_delta_lut(
     return result.reshape(source.shape).astype(np.float32)
 
 
+def projection_monitor_scan_metrics(
+    scan_reference: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Build the shared scan-side quantities for the 2383 monitor observer.
+
+    The colour match and the neutral-highlight guard consume the same scan
+    luminance target.  Keeping that target in one immutable tuple avoids a
+    second full-frame max/min, luminance sum and interpolation without changing
+    either observer equation.
+    """
+    scan = np.asarray(scan_reference)
+    reference_luma = np.einsum(
+        "...c,c->...", np.maximum(scan, 0.0), [0.2126, 0.7152, 0.0722]
+    )
+    target_luma = np.interp(
+        reference_luma,
+        PRINT_MONITOR_SCAN_LUMA_ANCHORS,
+        PRINT_MONITOR_TARGET_LUMA_ANCHORS,
+    ).astype(np.float32)
+    scaled_reference = scan * (
+        target_luma / np.maximum(reference_luma, 1e-6)
+    )[..., None]
+    reference_lab = linear_rec709_to_oklab(np.maximum(scaled_reference, 0.0))
+    scan_max = np.max(scan, axis=-1)
+    scan_relative_chroma = (
+        scan_max - np.min(scan, axis=-1)
+    ) / np.maximum(scan_max, 1e-6)
+    return reference_lab, target_luma, scan_relative_chroma
+
+
 def match_2383_projection_to_rec709_monitor(
     physical_projection: np.ndarray,
     scan_reference: np.ndarray,
+    scan_metrics: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
 ) -> np.ndarray:
     """Translate a physical 2383/xenon view into a Rec.709 monitor view.
 
@@ -2054,18 +2089,12 @@ def match_2383_projection_to_rec709_monitor(
     # 2383's steeper toe/midtone/shoulder relationship. The former per-colour
     # lightness blend darkened green/yellow regions more than blue and created
     # an apparent whole-frame cool shift even when neutral patches were correct.
-    reference_luma = np.einsum(
-        "...c,c->...", np.maximum(scan_reference, 0.0), [0.2126, 0.7152, 0.0722]
-    )
-    target_luma = np.interp(
-        reference_luma,
-        PRINT_MONITOR_SCAN_LUMA_ANCHORS,
-        PRINT_MONITOR_TARGET_LUMA_ANCHORS,
-    ).astype(np.float32)
-    scaled_reference = scan_reference * (
-        target_luma / np.maximum(reference_luma, 1e-6)
-    )[..., None]
-    reference_lab = linear_rec709_to_oklab(np.maximum(scaled_reference, 0.0))
+    if scan_metrics is None:
+        reference_lab, _target_luma, _scan_relative_chroma = (
+            projection_monitor_scan_metrics(scan_reference)
+        )
+    else:
+        reference_lab, _target_luma, _scan_relative_chroma = scan_metrics
     lightness = reference_lab[..., 0]
 
     physical_ab = physical_lab[..., 1:3]
@@ -2314,8 +2343,11 @@ def _render_2383_monitor_projection_base_from_record_density(
             if scan_source is None
             else scan_source[row0:row1]
         )
+        scan_metrics = projection_monitor_scan_metrics(stripe_scan_reference)
         calibrated_view = match_2383_projection_to_rec709_monitor(
-            calibrated_physical, stripe_scan_reference
+            calibrated_physical,
+            stripe_scan_reference,
+            scan_metrics=scan_metrics,
         )
 
         physical_max = np.max(physical_view, axis=-1)
@@ -2345,20 +2377,7 @@ def _render_2383_monitor_projection_base_from_record_density(
             oklab_to_linear_rec709(hybrid_lab)
         )
 
-        scan_max = np.max(stripe_scan_reference, axis=-1)
-        scan_relative_chroma = (
-            scan_max - np.min(stripe_scan_reference, axis=-1)
-        ) / np.maximum(scan_max, 1e-6)
-        scan_luma = np.einsum(
-            "...c,c->...",
-            np.maximum(stripe_scan_reference, 0.0),
-            [0.2126, 0.7152, 0.0722],
-        )
-        target_neutral = np.interp(
-            scan_luma,
-            PRINT_MONITOR_SCAN_LUMA_ANCHORS,
-            PRINT_MONITOR_TARGET_LUMA_ANCHORS,
-        ).astype(np.float32)
+        _reference_lab, target_neutral, scan_relative_chroma = scan_metrics
         neutral_highlight_weight = (
             smoothstep(0.82, 0.94, target_neutral)
             * (1.0 - smoothstep(0.010, 0.060, scan_relative_chroma))
@@ -2367,7 +2386,8 @@ def _render_2383_monitor_projection_base_from_record_density(
             hybrid * (1.0 - neutral_highlight_weight[..., None])
             + target_neutral[..., None] * neutral_highlight_weight[..., None]
         )
-    return np.clip(result, 0.0, 1.0).astype(np.float32)
+    np.clip(result, 0.0, 1.0, out=result)
+    return result.astype(np.float32, copy=False)
 
 
 def continuous_cineon_code_from_record_density(
@@ -2484,11 +2504,11 @@ def apply_2383_d60_relative_chroma_calibration(
         cineon_chroma = np.max(cineon, axis=-1) - np.min(cineon, axis=-1)
         neutral_guard = smoothstep(0.008, 0.040, cineon_chroma)
         lab += delta * neutral_guard[..., None] * strength
-    return np.clip(
-        compress_oklab_chroma_to_rec709(oklab_to_linear_rec709(lab)),
-        0.0,
-        1.0,
-    ).astype(np.float32)
+    # The gamut compressor already owns the [0, 1] float32 boundary.  A second
+    # clip/astype here only copied the native frame twice.
+    return compress_oklab_chroma_to_rec709(
+        oklab_to_linear_rec709(lab)
+    ).astype(np.float32, copy=False)
 
 
 def render_2383_monitor_projection_from_record_density(
@@ -2802,12 +2822,19 @@ def finish_projection_grain_delta(grain_delta: np.ndarray) -> np.ndarray:
     opponent_low = cv2.GaussianBlur(
         opponent, (0, 0), sigma, borderType=cv2.BORDER_REFLECT
     )
-    opponent = (
-        opponent_low
-        + PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
-        * (opponent - opponent_low)
-    )
-    opponent *= PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH
+    if PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION == 0.0:
+        # V40 and later explicitly withdraw this unidentified high-frequency
+        # opponent remainder.  Avoid forming and multiplying a full-frame
+        # residual whose coefficient is exactly zero.
+        opponent = opponent_low
+    else:
+        opponent = (
+            opponent_low
+            + PROJECTION_CHROMA_GRAIN_HIGH_FREQUENCY_RETENTION
+            * (opponent - opponent_low)
+        )
+    if PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH != 1.0:
+        opponent *= PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH
     return (common + opponent).astype(np.float32)
 
 
@@ -3585,13 +3612,9 @@ def form_5279_multilayer_record_density(
                 removable = np.where(class_counts > 1, class_counts, 0)
                 class_counts[int(np.argmax(removable))] -= 1
 
-            population_allocation_started = time.perf_counter()
-            population_deviation = np.zeros_like(probability, dtype=np.float32)
-            record_operator(
-                "outer_population_allocation", population_allocation_started
-            )
             population_kernel_power = 0.0
             sampled_phase = float(rng.uniform(0.0, 2.0 * math.pi))
+            class_specs = []
             for size_class, class_sites in enumerate(class_counts):
                 class_weight = float(class_sites) / float(total_sites)
                 if GRAIN_SUBPIXEL_PHASE_MODE == "frame_random":
@@ -3631,20 +3654,15 @@ def form_5279_multilayer_record_density(
                     + population * 100
                     + size_class
                 )
-                class_deviation = binomial_dye_cloud_deviation(
-                    probability,
-                    rng,
-                    class_radius,
-                    class_sigma,
-                    int(class_sites),
-                    subpixel_offset,
-                    sample_seed=sample_seed,
-                )
-                class_accumulation_started = time.perf_counter()
-                population_deviation += class_weight * class_deviation
-                record_operator(
-                    "outer_class_deviation_accumulation",
-                    class_accumulation_started,
+                class_specs.append(
+                    (
+                        class_weight,
+                        class_radius,
+                        class_sigma,
+                        int(class_sites),
+                        subpixel_offset,
+                        sample_seed,
+                    )
                 )
                 kernel_power_started = time.perf_counter()
                 population_kernel_power += (
@@ -3661,6 +3679,58 @@ def form_5279_multilayer_record_density(
                 record_operator(
                     "outer_filtered_kernel_power", kernel_power_started
                 )
+
+            population_batch = globals().get(
+                "_WAVEFRONT_POPULATION_OPTICAL_BATCH"
+            )
+            if population_batch is not None:
+                population_deviation = population_batch(
+                    probability,
+                    rng,
+                    class_specs,
+                )
+            else:
+                population_allocation_started = time.perf_counter()
+                population_deviation = np.zeros_like(
+                    probability, dtype=np.float32
+                )
+                record_operator(
+                    "outer_population_allocation", population_allocation_started
+                )
+                for (
+                    class_weight,
+                    class_radius,
+                    class_sigma,
+                    class_sites,
+                    subpixel_offset,
+                    sample_seed,
+                ) in class_specs:
+                    class_deviation = binomial_dye_cloud_deviation(
+                        probability,
+                        rng,
+                        class_radius,
+                        class_sigma,
+                        int(class_sites),
+                        subpixel_offset,
+                        sample_seed=sample_seed,
+                    )
+                    class_accumulation_started = time.perf_counter()
+                    if globals().get(
+                        "_WAVEFRONT_INPLACE_CLASS_ACCUMULATION", False
+                    ):
+                        import wavefront_tile_lab_v002
+
+                        wavefront_tile_lab_v002.weight_and_accumulate_class(
+                            population_deviation,
+                            class_deviation,
+                            class_weight,
+                        )
+                    else:
+                        population_deviation += class_weight * class_deviation
+                    record_operator(
+                        "outer_class_deviation_accumulation",
+                        class_accumulation_started,
+                    )
 
             variance_started = time.perf_counter()
             layer_deviation[..., channel, population] = population_deviation
@@ -3962,12 +4032,51 @@ def remove_tonal_grain_bias(
     return corrected
 
 
+def remove_tonal_grain_bias_scalar(
+    mean_level: np.ndarray,
+    grain_delta: np.ndarray,
+    bins: int = 96,
+) -> np.ndarray:
+    """Single-record equivalent used by a spectrally common density event."""
+    level = np.clip(np.asarray(mean_level), 0.0, 1.0)
+    corrected = np.asarray(grain_delta, dtype=np.float32).copy()
+    index = np.minimum(
+        np.floor(np.sqrt(level) * bins).astype(np.int16), bins - 1
+    )
+    flat_index = index.ravel()
+    counts = np.bincount(flat_index, minlength=bins).astype(np.float64)
+    sums = np.bincount(
+        flat_index,
+        weights=corrected.ravel(),
+        minlength=bins,
+    )
+    valid = counts >= 256
+    if not np.any(valid):
+        return corrected
+    table = np.zeros(bins, dtype=np.float64)
+    table[valid] = sums[valid] / counts[valid]
+    valid_x = np.flatnonzero(valid)
+    table = np.interp(np.arange(bins), valid_x, table[valid_x])
+    table = np.convolve(table, [0.25, 0.50, 0.25], mode="same")
+    table[0] = 0.75 * table[0] + 0.25 * table[1]
+    table[-1] = 0.75 * table[-1] + 0.25 * table[-2]
+    corrected -= table[index].astype(np.float32)
+    return corrected
+
+
 def preserve_perceptual_grain_mean(
     reference_linear: np.ndarray,
     stochastic_linear: np.ndarray,
 ) -> np.ndarray:
     """Preserve the final perceptual colour curve after stochastic formation."""
     reference_code = srgb_encode(np.clip(reference_linear, 0.0, 1.0))
+    # A deterministic observer asks for the same array as both reference and
+    # realization. Its grain delta is identically zero, so both histogram
+    # de-bias passes below can only subtract zero. Keep the exact historical
+    # sRGB round-trip (and therefore its float32 rounding), but do not bin and
+    # scan the complete native frame twice for a correction that cannot exist.
+    if reference_linear is stochastic_linear:
+        return srgb_decode(reference_code).astype(np.float32)
     stochastic_code = srgb_encode(np.clip(stochastic_linear, 0.0, 1.0))
     for _ in range(2):
         code_delta = remove_tonal_grain_bias(
@@ -4040,12 +4149,12 @@ def form_2383_fine_grain_density(
     ).astype(np.float32)
 
 
-def form_2383_hypothesis_common_grain_density(
+def _form_2383_hypothesis_common_grain_delta(
     print_density: np.ndarray,
     frame_index: int,
     grain_scale: float,
 ) -> np.ndarray:
-    """V43H-only common-mode 2383 density hypothesis.
+    """Return V43H's pre-addition scalar common-density realization.
 
     V39's independent C/M/Y print populations created isolated primary-colour
     tails and were withdrawn.  The public 2383 record does not identify their
@@ -4076,17 +4185,55 @@ def form_2383_hypothesis_common_grain_density(
     common = (formed - probability).astype(np.float32)
     # Remove the finite-frame conditional bias without changing the common
     # stochastic field or its spatial spectrum.
-    repeated_level = np.repeat(probability[..., None], 3, axis=-1)
-    repeated_delta = np.repeat(common[..., None], 3, axis=-1)
-    common = remove_tonal_grain_bias(
-        repeated_level, repeated_delta
-    )[..., 0]
+    common = remove_tonal_grain_bias_scalar(probability, common)
     density_delta = (
         PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE
         * float(np.mean(span))
         * common
     )
+    return density_delta.astype(np.float32)
+
+
+def form_2383_hypothesis_common_grain_density(
+    print_density: np.ndarray,
+    frame_index: int,
+    grain_scale: float,
+) -> np.ndarray:
+    """Form V43H's common optical-density event in all three records."""
+    source = np.asarray(print_density, dtype=np.float32)
+    density_delta = _form_2383_hypothesis_common_grain_delta(
+        source, frame_index, grain_scale
+    )
     return (source + density_delta[..., None]).astype(np.float32)
+
+
+def form_2383_hypothesis_effective_common_grain_delta(
+    print_density: np.ndarray,
+    frame_index: int,
+    grain_scale: float,
+) -> np.ndarray:
+    """Return the observer's historical mean realized common-density delta.
+
+    The former dual renderer allocated a complete three-record formed print,
+    subtracted the source, then immediately averaged the equal common event.
+    Reproduce the same per-record float32 addition/subtraction and mean order
+    with one scalar accumulator instead of two unnecessary native RGB images.
+    """
+    source = np.asarray(print_density, dtype=np.float32)
+    density_delta = _form_2383_hypothesis_common_grain_delta(
+        source, frame_index, grain_scale
+    )
+    effective = (
+        (source[..., 0] + density_delta).astype(np.float32) - source[..., 0]
+    )
+    for channel in (1, 2):
+        realized = (
+            (source[..., channel] + density_delta).astype(np.float32)
+            - source[..., channel]
+        )
+        np.add(effective, realized, out=effective)
+    np.divide(effective, np.float32(3.0), out=effective)
+    return effective.astype(np.float32, copy=False)
 
 
 def apply_spirit_2k_scan_aperture_to_density(
@@ -4399,6 +4546,7 @@ def reconstruct_density_pair_to_dual_display_v39(
     grain_scale: float,
     output_encoding: str = "linear_rec709",
     return_mean_pair: bool = False,
+    branch_executor: concurrent.futures.Executor | None = None,
 ) -> tuple[np.ndarray, ...]:
     """Render V39 projection and scan while sharing physical intermediates.
 
@@ -4418,113 +4566,141 @@ def reconstruct_density_pair_to_dual_display_v39(
         - np.asarray(mean_density, dtype=np.float32)
     ).astype(np.float32)
     scanner_density = scanner_density_from_total_record_density(negative_formed)
-    formed_scan = render_cineon_scan_master_from_scanner_density(
-        apply_spirit_2k_scan_aperture_to_density(scanner_density)
-    )
-    formed_scan = finish_cineon_scan_for_bluray(formed_scan)
     if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
         mean_scanner_density = scanner_density_from_total_record_density(
             negative_mean
         )
-        mean_scan = render_cineon_scan_master_from_scanner_density(
-            apply_spirit_2k_scan_aperture_to_density(mean_scanner_density)
-        )
-        mean_scan = finish_cineon_scan_for_bluray(mean_scan)
-        scan = mean_scan + finish_bluray_grain_delta(
-            mean_scan, formed_scan - mean_scan
-        )
     else:
         mean_scanner_density = None
-        scan = formed_scan
-    scan = compress_oklab_chroma_to_rec709(scan)
-    if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
-        scan = neutralize_spirit_finished_gray_scale(scan)
 
-    negative_printer_mean = negative_total_printer_density_from_record_density(
-        negative_mean
-    )
-    print_mean = print_2383_density_from_negative(negative_printer_mean)
-    print_mean_mtf = apply_2383_mtf_to_print_density(print_mean, grain_scale)
-    print_hypothesis_density_delta = None
-    if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
-        print_hypothesis_density = form_2383_hypothesis_common_grain_density(
-            print_mean_mtf, frame_index, grain_scale
+    def render_scan_branch() -> tuple[np.ndarray, np.ndarray | None]:
+        formed_scan = render_cineon_scan_master_from_scanner_density(
+            apply_spirit_2k_scan_aperture_to_density(scanner_density)
         )
-        print_hypothesis_density_delta = np.mean(
-            print_hypothesis_density - print_mean_mtf,
-            axis=-1,
-        ).astype(np.float32)
-    formed_projection = None
-    if (
-        not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
-        or PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density"
-    ):
-        negative_printer_formed = (
-            negative_total_printer_density_from_record_density(negative_formed)
-        )
-        print_formed = print_2383_density_from_negative(negative_printer_formed)
-        print_formed_mtf = (
-            print_mean_mtf
-            + apply_2383_mtf_to_density_delta(
-                print_formed - print_mean, grain_scale
+        formed_scan = finish_cineon_scan_for_bluray(formed_scan)
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            assert mean_scanner_density is not None
+            mean_scan = render_cineon_scan_master_from_scanner_density(
+                apply_spirit_2k_scan_aperture_to_density(mean_scanner_density)
             )
-        ).astype(np.float32)
-        if PRINT_GRAIN_DOMAIN == "print_density":
-            print_formed_mtf = form_2383_fine_grain_density(
-                print_formed_mtf, frame_index, grain_scale
+            mean_scan = finish_cineon_scan_for_bluray(mean_scan)
+            scan = mean_scan + finish_bluray_grain_delta(
+                mean_scan, formed_scan - mean_scan
             )
-        formed_projection = render_2383_monitor_projection_from_print_density(
-            negative_formed,
-            print_formed_mtf,
-            scanner_density=scanner_density,
-        )
-    if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        mean_projection = render_2383_monitor_projection_from_print_density(
-            negative_mean,
-            print_mean_mtf,
-            scanner_density=mean_scanner_density,
-        )
-        if PROJECTION_GRAIN_DELTA_OBSERVER == "archive_pointwise":
-            legacy_mean = render_2383_monitor_projection_fast_from_record_density(
-                mean_density
-            )
-            legacy_formed = render_2383_monitor_projection_fast_from_record_density(
-                formed_density
-            )
-            visible_delta = apply_2383_mtf_to_density_delta(
-                legacy_formed - legacy_mean, grain_scale
-            )
-        elif PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density":
-            assert formed_projection is not None
-            visible_delta = formed_projection - mean_projection
         else:
-            raise ValueError(
-                "unknown projection grain-delta observer: "
-                f"{PROJECTION_GRAIN_DELTA_OBSERVER}"
-            )
-        projection = mean_projection + finish_projection_grain_delta(
-            visible_delta,
+            mean_scan = None
+            scan = formed_scan
+        scan = compress_oklab_chroma_to_rec709(scan)
+        if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
+            scan = neutralize_spirit_finished_gray_scale(scan)
+        return scan, mean_scan
+
+    def render_projection_branch() -> tuple[np.ndarray, np.ndarray | None]:
+        negative_printer_mean = (
+            negative_total_printer_density_from_record_density(negative_mean)
         )
-        if print_hypothesis_density_delta is not None:
-            # Use the same observer-side integration that protects the
-            # accepted 5279 branch from unmeasured high-frequency opponent
-            # tails.  V43H defines this unmeasured candidate as a spectrally
-            # neutral optical-density event, so its stated model is the scalar
-            # transmission 10^-delta.  An alternative equal-record spectral
-            # interpretation remains an ablation, not a claimed identity.
-            print_hypothesis_projection = mean_projection * np.power(
-                10.0, -print_hypothesis_density_delta[..., None]
+        print_mean = print_2383_density_from_negative(negative_printer_mean)
+        print_mean_mtf = apply_2383_mtf_to_print_density(
+            print_mean, grain_scale
+        )
+        print_hypothesis_density_delta = None
+        if PRINT_GRAIN_DOMAIN == "hypothesis_common_density":
+            print_hypothesis_density_delta = (
+                form_2383_hypothesis_effective_common_grain_delta(
+                    print_mean_mtf, frame_index, grain_scale
+                )
             )
-            projection += finish_projection_grain_delta(
-                print_hypothesis_projection - mean_projection
+        formed_projection = None
+        if (
+            not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
+            or PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density"
+        ):
+            negative_printer_formed = (
+                negative_total_printer_density_from_record_density(
+                    negative_formed
+                )
             )
+            print_formed = print_2383_density_from_negative(
+                negative_printer_formed
+            )
+            print_formed_mtf = (
+                print_mean_mtf
+                + apply_2383_mtf_to_density_delta(
+                    print_formed - print_mean, grain_scale
+                )
+            ).astype(np.float32)
+            if PRINT_GRAIN_DOMAIN == "print_density":
+                print_formed_mtf = form_2383_fine_grain_density(
+                    print_formed_mtf, frame_index, grain_scale
+                )
+            formed_projection = render_2383_monitor_projection_from_print_density(
+                negative_formed,
+                print_formed_mtf,
+                scanner_density=scanner_density,
+            )
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            mean_projection = render_2383_monitor_projection_from_print_density(
+                negative_mean,
+                print_mean_mtf,
+                scanner_density=mean_scanner_density,
+            )
+            if PROJECTION_GRAIN_DELTA_OBSERVER == "archive_pointwise":
+                legacy_mean = (
+                    render_2383_monitor_projection_fast_from_record_density(
+                        mean_density
+                    )
+                )
+                legacy_formed = (
+                    render_2383_monitor_projection_fast_from_record_density(
+                        formed_density
+                    )
+                )
+                visible_delta = apply_2383_mtf_to_density_delta(
+                    legacy_formed - legacy_mean, grain_scale
+                )
+            elif PROJECTION_GRAIN_DELTA_OBSERVER == "formed_density":
+                assert formed_projection is not None
+                visible_delta = formed_projection - mean_projection
+            else:
+                raise ValueError(
+                    "unknown projection grain-delta observer: "
+                    f"{PROJECTION_GRAIN_DELTA_OBSERVER}"
+                )
+            projection = mean_projection + finish_projection_grain_delta(
+                visible_delta,
+            )
+            if print_hypothesis_density_delta is not None:
+                # V43H's unmeasured candidate is a spectrally neutral optical-
+                # density event, so its stated observer is 10^-delta.
+                print_hypothesis_projection = mean_projection * np.power(
+                    10.0, -print_hypothesis_density_delta[..., None]
+                )
+                projection += finish_projection_grain_delta(
+                    print_hypothesis_projection - mean_projection
+                )
+        else:
+            assert formed_projection is not None
+            mean_projection = None
+            projection = formed_projection
+        projection = compress_oklab_chroma_to_rec709(projection)
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            assert mean_projection is not None
+            mean_projection = compress_oklab_chroma_to_rec709(
+                mean_projection
+            )
+            projection = preserve_perceptual_grain_mean(
+                mean_projection, projection
+            )
+        return projection, mean_projection
+
+    if branch_executor is None:
+        scan, mean_scan = render_scan_branch()
+        projection, mean_projection = render_projection_branch()
     else:
-        assert formed_projection is not None
-        projection = formed_projection
-    projection = compress_oklab_chroma_to_rec709(projection)
-    if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        mean_projection = compress_oklab_chroma_to_rec709(mean_projection)
-        projection = preserve_perceptual_grain_mean(mean_projection, projection)
+        scan_future = branch_executor.submit(render_scan_branch)
+        projection_future = branch_executor.submit(render_projection_branch)
+        scan, mean_scan = scan_future.result()
+        projection, mean_projection = projection_future.result()
 
     def encode(image: np.ndarray) -> np.ndarray:
         if output_encoding == "legacy_bt709_oetf":
@@ -4542,6 +4718,8 @@ def reconstruct_density_pair_to_dual_display_v39(
         return result
     if not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
         raise ValueError("mean observer pair requires managed formed density")
+    assert mean_scan is not None
+    assert mean_projection is not None
     deterministic_scan = compress_oklab_chroma_to_rec709(mean_scan)
     if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
         deterministic_scan = neutralize_spirit_finished_gray_scale(

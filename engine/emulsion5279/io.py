@@ -2,16 +2,88 @@
 
 from __future__ import annotations
 
+import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
 import subprocess
-from typing import Iterator
+import time
+from typing import Generic, Iterator, TypeVar
 
 import cv2
 import numpy as np
 
 from .contracts import DeliveryEncoding, RenderedFrame
 from . import legacy
+
+
+_FrameT = TypeVar("_FrameT")
+
+
+class PrefetchedIterator(Generic[_FrameT]):
+    """Bounded one-item read-ahead for overlapping decode with computation."""
+
+    def __init__(
+        self,
+        source: Iterator[_FrameT],
+        *,
+        enabled: bool,
+        count: int | None = None,
+    ) -> None:
+        self._source = source
+        self._count = None if count is None else max(0, int(count))
+        self._delivered = 0
+        self._executor = (
+            concurrent.futures.ThreadPoolExecutor(
+                max_workers=1, thread_name_prefix="raw-prefetch"
+            )
+            if enabled
+            else None
+        )
+        self._future: concurrent.futures.Future | None = None
+        self.last_service_seconds = 0.0
+        self.last_wait_seconds = 0.0
+        if self._executor is not None and self._count != 0:
+            self._future = self._executor.submit(self._read_one)
+
+    def _read_one(self) -> tuple[_FrameT, float]:
+        started = time.perf_counter()
+        value = next(self._source)
+        return value, time.perf_counter() - started
+
+    def __iter__(self) -> "PrefetchedIterator[_FrameT]":
+        return self
+
+    def __next__(self) -> _FrameT:
+        if self._count is not None and self._delivered >= self._count:
+            raise StopIteration
+        waited_at = time.perf_counter()
+        if self._executor is None:
+            value, service = self._read_one()
+        else:
+            if self._future is None:
+                raise StopIteration
+            value, service = self._future.result()
+        self._delivered += 1
+        if self._executor is not None:
+            if self._count is None or self._delivered < self._count:
+                self._future = self._executor.submit(self._read_one)
+            else:
+                self._future = None
+        self.last_wait_seconds = time.perf_counter() - waited_at
+        self.last_service_seconds = service
+        return value
+
+    def close(self) -> None:
+        if self._executor is not None:
+            self._executor.shutdown(wait=True, cancel_futures=True)
+            self._executor = None
+            self._future = None
+
+    def __enter__(self) -> "PrefetchedIterator[_FrameT]":
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> None:
+        self.close()
 
 
 class ProResRawDecoder:

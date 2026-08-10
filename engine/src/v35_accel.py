@@ -104,6 +104,8 @@ def apply_metal_binomial(
     residual_convolution: bool = False,
     single_gaussian_after_disk: bool = False,
     domain_salt: int = 0,
+    tile_workset_pixels: int | None = None,
+    tile_in_flight: int = 2,
 ) -> None:
     """Replace finite-site sampling with a validated inverse-CDF Metal RNG.
 
@@ -117,6 +119,10 @@ def apply_metal_binomial(
     if not 0 <= int(domain_salt) <= 0xFFFFFFFF:
         raise ValueError("Philox domain salt must fit uint32")
     domain_salt = int(domain_salt)
+    if tile_workset_pixels is not None and int(tile_workset_pixels) < 1:
+        raise ValueError("tile workset must be positive when enabled")
+    if tile_in_flight < 1:
+        raise ValueError("tile in-flight count must be positive")
     if residual_convolution and single_gaussian_after_disk:
         raise ValueError("choose only one convolution reassociation candidate")
 
@@ -129,6 +135,12 @@ def apply_metal_binomial(
                 "population*100 + size_class"
             ),
             "domain_salt_uint32": domain_salt,
+            "tile_workset_pixels": (
+                None
+                if tile_workset_pixels is None
+                else int(tile_workset_pixels)
+            ),
+            "tile_in_flight": int(tile_in_flight),
             "total_calls": 0,
             "duplicate_identity_count": 0,
             "frame_call_counts": {},
@@ -141,16 +153,7 @@ def apply_metal_binomial(
         }
     )
 
-    def metal_binomial_deviation(
-        activation_probability: np.ndarray,
-        rng: np.random.Generator,
-        radius: float,
-        optical_sigma: float,
-        site_count: int,
-        subpixel_offset: tuple[float, float] = (0.0, 0.0),
-        sample_seed: int | None = None,
-    ) -> np.ndarray:
-        del rng
+    def record_sampler_call(site_count: int, sample_seed: int) -> None:
         if sample_seed is None:
             raise ValueError("V35 Metal sampler requires an explicit seed")
         relative_seed = int(sample_seed) - 30_000_000
@@ -193,14 +196,37 @@ def apply_metal_binomial(
         ):
             if SAMPLER_AUDIT[key] is None or value > SAMPLER_AUDIT[key]:
                 SAMPLER_AUDIT[key] = value
-        probability = np.ascontiguousarray(
-            activation_probability, dtype=np.float32
-        )
+
+    def submit_metal_sample(
+        activation_probability: np.ndarray,
+        site_count: int,
+        sample_seed: int,
+    ) -> tuple[np.ndarray, object | None, np.ndarray | None]:
+        """Submit one audited finite-site realization without optical filtering."""
+
+        record_sampler_call(site_count, sample_seed)
+        if tile_workset_pixels is not None:
+            probability = metal_binomial_bridge.aligned_empty(
+                activation_probability.shape
+            )
+            np.copyto(probability, activation_probability)
+        else:
+            probability = np.ascontiguousarray(
+                activation_probability, dtype=np.float32
+            )
         effective_seed = (domain_salt << 32) | (int(sample_seed) & 0xFFFFFFFF)
-        kernel = module.disk_kernel(radius)
-        kernel /= float(kernel.sum())
         flight = None
-        if asynchronous:
+        developed_fraction = None
+        if tile_workset_pixels is not None:
+            flight = metal_binomial_bridge.submit_tiled(
+                probability,
+                site_count,
+                effective_seed,
+                workset_pixels=int(tile_workset_pixels),
+                in_flight=int(tile_in_flight),
+                mode=mode,
+            )
+        elif asynchronous:
             flight = metal_binomial_bridge.submit(
                 probability, site_count, effective_seed, mode=mode
             )
@@ -208,12 +234,47 @@ def apply_metal_binomial(
             developed_fraction = metal_binomial_bridge.sample(
                 probability, site_count, effective_seed, mode=mode
             )
+        return probability, flight, developed_fraction
+
+    def metal_binomial_deviation(
+        activation_probability: np.ndarray,
+        rng: np.random.Generator,
+        radius: float,
+        optical_sigma: float,
+        site_count: int,
+        subpixel_offset: tuple[float, float] = (0.0, 0.0),
+        sample_seed: int | None = None,
+    ) -> np.ndarray:
+        del rng
+        if sample_seed is None:
+            raise ValueError("V35 Metal sampler requires an explicit seed")
+        probability, flight, developed_fraction = submit_metal_sample(
+            activation_probability,
+            site_count,
+            sample_seed,
+        )
+        kernel = module.disk_kernel(radius)
+        kernel /= float(kernel.sum())
         expected = cv2.filter2D(
             probability, -1, kernel, borderType=cv2.BORDER_REFLECT
         )
         if flight is not None:
             developed_fraction = flight.wait()
         developed_fraction /= float(site_count)
+        if (
+            getattr(module, "_WAVEFRONT_INPLACE_OPTICAL_BUFFERS", False)
+            and not residual_convolution
+            and not single_gaussian_after_disk
+        ):
+            import wavefront_tile_lab_v002
+
+            return wavefront_tile_lab_v002.optical_deviation_inplace(
+                developed_fraction,
+                expected,
+                kernel,
+                max(optical_sigma, 0.05),
+                subpixel_offset,
+            )
         if residual_convolution:
             # Both spatial operators are linear and use the same border rule:
             # L(sample) - L(expected) == L(sample - expected).  Reassociating
@@ -291,6 +352,9 @@ def apply_metal_binomial(
         return deviation
 
     module.binomial_dye_cloud_deviation = metal_binomial_deviation
+    module._V35_METAL_BINOMIAL_SUBMIT = submit_metal_sample
+    module._V35_RECORD_BINOMIAL_CALL = record_sampler_call
+    module._V35_METAL_DOMAIN_SALT = domain_salt
 
 
 def sampler_audit_snapshot(expected_calls_per_frame: int = 45) -> dict[str, object]:
