@@ -18,7 +18,11 @@ from .contracts import (
     RenderedFrame,
 )
 from .conformance import research_conformance
-from .io import DualDeliveryWriter, PrefetchedIterator
+from .io import (
+    DualDeliveryWriter,
+    PrefetchedIterator,
+    rebuild_scale_integrated_srgb_review_from_master,
+)
 from .pipeline import Emulsion5279Engine
 from . import legacy
 
@@ -83,6 +87,33 @@ class PipelineContractTests(unittest.TestCase):
             e.SPIRIT_PERIOD_OBSERVER_CENTRES_NM,
             np.array([620.0, 540.0, 470.0], dtype=np.float32),
         )
+
+    def test_v44_withholds_hypotheses_and_retains_accepted_colour_boundary(self) -> None:
+        import v44_profile
+        from apply_v31_normal_process_adapter import adapt_frame_linear
+
+        e = legacy.model
+        config = EngineConfig(profile="v44", mode=EngineMode.REFERENCE)
+        v44_profile.apply(e)
+        report = research_conformance(e, v44_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(e.PRINT_GRAIN_DOMAIN, "none")
+        self.assertEqual(e.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE, 0.0)
+
+        engine = Emulsion5279Engine(config)
+        engine.profile = v44_profile
+        rng = np.random.default_rng(44)
+        projection = rng.uniform(0.02, 0.8, (16, 20, 3)).astype(np.float32)
+        scan = rng.uniform(0.02, 0.8, (16, 20, 3)).astype(np.float32)
+        published = engine._publish_projection_colour(projection, scan)
+        expected = adapt_frame_linear(
+            projection,
+            scan,
+            v44_profile.PROFILE[
+                "final_adapter_opponent_high_frequency_retention"
+            ],
+        )
+        np.testing.assert_array_equal(published, expected)
 
     def test_v43h_common_print_density_has_no_record_separation(self) -> None:
         import v43h_profile
@@ -512,6 +543,29 @@ class PipelineContractTests(unittest.TestCase):
                     float(np.mean(np.abs(still_rgb - companion_code[frames // 2]))),
                     0.02,
                 )
+            review = root / "projection" / "07_scale_integrated_review.mov"
+            report = rebuild_scale_integrated_srgb_review_from_master(
+                root / "projection" / "05_emulsion_master_prores4444.mov",
+                review,
+                frames,
+                32,
+            )
+            self.assertEqual(report["source_dimensions"], [width, height])
+            self.assertEqual(report["review_dimensions"], [32, 24])
+            review_probe = json.loads(
+                subprocess.check_output(
+                    [
+                        "ffprobe", "-v", "error", "-select_streams", "v:0",
+                        "-show_entries", "stream=width,height,pix_fmt,color_transfer",
+                        "-of", "json", str(review),
+                    ],
+                    text=True,
+                )
+            )["streams"][0]
+            self.assertEqual(review_probe["width"], 32)
+            self.assertEqual(review_probe["height"], 24)
+            self.assertEqual(review_probe["pix_fmt"], "yuv444p12le")
+            self.assertEqual(review_probe["color_transfer"], "iec61966-2-1")
 
 
 if __name__ == "__main__":

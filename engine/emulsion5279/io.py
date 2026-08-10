@@ -161,6 +161,60 @@ def _read_exact(stream, size: int) -> bytes:
     return b"".join(parts)
 
 
+def _write_encoded_movie_still(
+    movie: Path,
+    still: Path,
+    frame_index: int,
+) -> None:
+    """Decode the final encoded picture authority into its review still.
+
+    Taking the still from the pre-encode float buffer can make a web still and
+    its hover movie look subtly different after RGB/YUV conversion and ProRes
+    quantisation.  Decode the selected frame from the finished movie instead,
+    so both presentations contain the same encoded picture.
+    """
+
+    width, height, _ = legacy.model.probe_video(movie)
+    payload = subprocess.check_output(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-i",
+            str(movie),
+            "-map",
+            "0:v:0",
+            "-vf",
+            (
+                f"select=eq(n\\,{int(frame_index)}),"
+                "setparams=color_primaries=bt709:color_trc=bt709:"
+                "colorspace=bt709"
+            ),
+            "-frames:v",
+            "1",
+            "-pix_fmt",
+            "rgb48le",
+            "-f",
+            "rawvideo",
+            "-",
+        ]
+    )
+    expected = width * height * 3 * 2
+    if len(payload) != expected:
+        raise RuntimeError(
+            f"short encoded still frame: {len(payload)} != {expected}"
+        )
+    encoded = np.frombuffer(payload, "<u2").reshape(height, width, 3)
+    pixels = np.rint(encoded.astype(np.float32) / 257.0).astype(np.uint8)
+    still.parent.mkdir(parents=True, exist_ok=True)
+    if not cv2.imwrite(
+        str(still),
+        cv2.cvtColor(pixels, cv2.COLOR_RGB2BGR),
+        [cv2.IMWRITE_JPEG_QUALITY, 96],
+    ):
+        raise RuntimeError(f"failed to write encoded movie still: {still}")
+
+
 def rebuild_srgb_companion_from_master(
     master: Path,
     companion: Path,
@@ -251,14 +305,132 @@ def rebuild_srgb_companion_from_master(
     )
 
 
+def rebuild_scale_integrated_srgb_review_from_master(
+    master: Path,
+    review: Path,
+    frames: int,
+    review_width: int,
+) -> dict[str, object]:
+    """Derive a display-scale review by integrating master light over pixels.
+
+    A native 5.7K density master can carry stochastic energy above the Nyquist
+    limit of a 2K/3K review display.  Asking a player to perform an unspecified
+    sharp resize can alias that energy into coarse false texture.  This helper
+    decodes the encoded picture authority, reconstructs linear observer light,
+    performs exact pixel-area integration, and only then applies sRGB.  It does
+    not alter or replace the native master.
+    """
+
+    width, height, fps = legacy.model.probe_video(master)
+    target_width = int(review_width)
+    if target_width < 2 or target_width > width:
+        raise ValueError("review width must be between 2 and the master width")
+    target_height = max(2, round(height * target_width / width))
+    if target_height % 2:
+        target_height -= 1
+    decoder = subprocess.Popen(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-i",
+            str(master),
+            "-map",
+            "0:v:0",
+            "-vf",
+            (
+                "setparams=color_primaries=bt709:color_trc=bt709:"
+                "colorspace=bt709"
+            ),
+            "-frames:v",
+            str(frames),
+            "-pix_fmt",
+            "rgb48le",
+            "-f",
+            "rawvideo",
+            "-",
+        ],
+        stdout=subprocess.PIPE,
+    )
+    temporary = review.with_name(review.stem + ".rebuilt.mov")
+    temporary.unlink(missing_ok=True)
+    review.parent.mkdir(parents=True, exist_ok=True)
+    encoder = subprocess.Popen(
+        _xq_command(temporary, target_width, target_height, fps),
+        stdin=subprocess.PIPE,
+    )
+    if decoder.stdout is None or encoder.stdin is None:
+        raise RuntimeError("failed to open scale-integrated review pipes")
+    frame_bytes = width * height * 3 * 2
+    representative: np.ndarray | None = None
+    completed = 0
+    try:
+        for frame_index in range(frames):
+            payload = _read_exact(decoder.stdout, frame_bytes)
+            if len(payload) != frame_bytes:
+                break
+            master_code = (
+                np.frombuffer(payload, "<u2")
+                .reshape(height, width, 3)
+                .astype(np.float32)
+                / 65535.0
+            )
+            master_light = legacy.model.bt1886_reference_decode(master_code)
+            review_light = cv2.resize(
+                master_light,
+                (target_width, target_height),
+                interpolation=cv2.INTER_AREA,
+            ).astype(np.float32)
+            srgb = legacy.model.srgb_encode(review_light).astype(np.float32)
+            encoder.stdin.write(
+                np.rint(np.clip(srgb, 0.0, 1.0) * 65535.0)
+                .astype("<u2")
+                .tobytes()
+            )
+            if frame_index == frames // 2:
+                representative = srgb.copy()
+            completed += 1
+    finally:
+        decoder.stdout.close()
+        encoder.stdin.close()
+    decoder_status = decoder.wait()
+    encoder_status = encoder.wait()
+    if decoder_status or encoder_status or completed != frames:
+        temporary.unlink(missing_ok=True)
+        raise RuntimeError(
+            "scale-integrated review rebuild failed: "
+            f"decoder={decoder_status}, encoder={encoder_status}, "
+            f"frames={completed}/{frames}"
+        )
+    legacy.model.finalize_prores_srgb_metadata(temporary)
+    temporary.replace(review)
+    if representative is None:
+        raise RuntimeError("no scale-integrated representative frame captured")
+    still = review.with_name(review.stem + "_still.jpg")
+    _write_encoded_movie_still(review, still, frames // 2)
+    return {
+        "source_master": str(master),
+        "review": str(review),
+        "still": str(still),
+        "source_dimensions": [width, height],
+        "review_dimensions": [target_width, target_height],
+        "sampling": "linear_light_pixel_area_integration",
+        "transfer": "sRGB",
+        "frames": completed,
+    }
+
+
 def retain_source_audio_and_timecode(
     output: Path,
     source: Path,
     start_frame: int,
     frames: int,
     fps: str,
+    *,
+    version_label: str = "V42",
+    additional_srgb_movies: tuple[str, ...] = (),
 ) -> dict[str, object]:
-    """Apply the accepted V29 source-stream contract to every V42 movie."""
+    """Apply the accepted V29 source-stream contract to release movies."""
 
     from render_v29_full_release import (
         probe_source,
@@ -270,16 +442,18 @@ def retain_source_audio_and_timecode(
     outputs: list[str] = []
     for directory in ("projection", "bluray_scan"):
         root = Path(output) / directory
-        for filename, transfer in (
+        movies = [
             ("05_emulsion_master_prores4444.mov", "rec709"),
             ("06_quicktime_preview_srgb_prores4444.mov", "srgb"),
-        ):
+            *((filename, "srgb") for filename in additional_srgb_movies),
+        ]
+        for filename, transfer in movies:
             movie = root / filename
             remux_source_audio_and_timecode(
                 movie,
                 source,
                 movie,
-                "V42",
+                version_label,
                 start_frame=int(start_frame),
                 frames=int(frames),
                 fps=fps,

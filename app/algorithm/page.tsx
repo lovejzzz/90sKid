@@ -111,6 +111,19 @@ print_light = mean_print_light * 10 ** (-delta_print[..., None])
 projection, scan, deterministic = observe_once(realized_negative)
 fsd = independent_fsd(deterministic, N=176, sigma=0.597)`;
 
+const v44Code = `# V44回到已接受的V42成像Profile
+negative = form_v42_5279(raw)
+projection_light = observe_2383_xenon(negative)
+scan             = observe_period_2k(negative)
+projection = normal_process_monitor(projection_light,
+                                    low_frequency_chroma=scan)
+
+# 原生5.7K母版保持画面权威
+master_light = bt1886_decode(decode(prores_xq_master))
+review_light = pixel_area_integrate(master_light, width=1920)
+review       = prores_xq(srgb_encode(review_light))
+still        = decode_frame(review, middle_frame)`;
+
 const parallelCode = `# 固定8条带和固定SeedSequence；worker数只改变调度，不改变样本
 for stripe in fixed_row_stripes(8):
     rng = Generator(SeedSequence([frame_record_layer_class_seed, stripe.index]))
@@ -145,9 +158,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · V43H HYPOTHESIS / V42 BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V42仍是研究基线；V43H只把尚未测量的候选项放入隔离、可撤回的实验Profile。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V44 OBSERVER INTEGRITY / V42 IMAGE BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V44撤回V43H尚未测量的候选，保留通过门禁的正常工艺颜色边界，并在不改变V42原生母版的前提下定义显示审看。</p></header>
 
         <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>扩展线性RGB</small></span><i>→</i><span>02<b>虚拟曝光</b><small>V-Gamut / 光谱记录</small></span><i>→</i><span>03<b>5279显影</b><small>位点 · 染料 · DIR</small></span><i>→</i><span>04<b>观察分支</b><small>2383 或 2K DI</small></span><i>→</i><span>05<b>显示交付</b><small>BT.1886母版 / sRGB观看版</small></span></div></section>
+
+        <section className="method-section"><div className="method-index">V44</div><div className="method-copy"><span className="section-tag">GATED OBSERVERS · SCALE-DECLARED REVIEW</span><h2>不能为了补偿播放器未知的缩放方式，反过来修改乳剂</h2><p>公开48µm RMS不能识别V43H猜测的NPS，公开资料也不支持它的Spirit与2383颗粒候选，因此V44恢复V42成像。完全直接的解析放映颜色没有通过暗部综合色门禁，所以保留V31正常工艺监看边界：2383拥有亮度和纹理，时期扫描只提供低频染料色度。原生5.7K、12-bit母版保持完整，审看版明确对1920像素栅格中的线性观察光做面积积分。</p><pre><code>{v44Code}</code></pre><div className="equation"><span>显示采样边界</span><b>L<sub>review</sub>=A<sub>pixel</sub>[EOTF<sub>BT.1886</sub>(V<sub>master</sub>)]</b><small>面积积分在线性观察光中完成，之后才编码sRGB；静帧从最终视频反解。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V43H</div><div className="method-copy"><span className="section-tag">HYPOTHESIS EDITION · ISOLATED / REVERSIBLE</span><h2>补全未知，不等于把猜测写成测量</h2><p>V43H冻结V42的RAW解释、颜色、H-D、DIR、MTF、48µm RMS、黑位与Gamma，只测试三个有资料方向但没有直接数值测量的中心候选：更细密的35mm空间频谱、向时期Spirit合成观察器移动25%，以及弱小、光谱中性的2383共模密度纹理。放映和扫描共享同一份实现负片；FSD只读取同次光谱积分返回的确定性均值，仍是一条独立对照。</p><pre><code>{v43hCode}</code></pre><div className="equation"><span>版本边界</span><b>V43H = V42 + isolated hypotheses</b><small>每个新自由度都能单独关闭；V42不会被实验Profile改写。</small></div></div></section>
 

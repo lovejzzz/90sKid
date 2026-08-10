@@ -18,11 +18,13 @@ if str(LEGACY_SRC) not in sys.path:
 import emulsion_experiment as model  # noqa: E402
 import v42_profile as profile  # noqa: E402
 import v43h_profile  # noqa: E402
+import v44_profile  # noqa: E402
 
 
 PROFILES = {
     "v42": profile,
     "v43h": v43h_profile,
+    "v44": v44_profile,
 }
 
 

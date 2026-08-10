@@ -89,12 +89,27 @@ print_light = mean_print_light * 10 ** (-delta_print[..., None])
 projection, scan, deterministic = observe_once(realized_negative)
 fsd = independent_fsd(deterministic, N=176, sigma=0.597)`;
 
+const v44Code = `# V44 returns to the accepted V42 image-formation profile
+negative = form_v42_5279(raw)
+projection_light = observe_2383_xenon(negative)
+scan             = observe_period_2k(negative)
+projection = normal_process_monitor(projection_light,
+                                    low_frequency_chroma=scan)
+
+# native 5.7K master remains authoritative
+master_light = bt1886_decode(decode(prores_xq_master))
+review_light = pixel_area_integrate(master_light, width=1920)
+review       = prores_xq(srgb_encode(review_light))
+still        = decode_frame(review, middle_frame)`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · V43H HYPOTHESIS / V42 BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V42 remains the accepted research baseline. V43H places only unmeasured candidates inside an isolated, removable experiment profile.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · V44 OBSERVER INTEGRITY / V42 IMAGE BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V44 withdraws the unmeasured V43H candidates, retains the gated normal-process colour boundary, and defines display review without altering the native V42 image-formation master.</p></header>
 
       <section className="pipeline"><div className="pipeline-line"><span>01<b>GH7 RAW</b><small>extended-linear RGB</small></span><i>→</i><span>02<b>Virtual exposure</b><small>V-Gamut / film records</small></span><i>→</i><span>03<b>5279 development</b><small>sites · dyes · DIR</small></span><i>→</i><span>04<b>Observer</b><small>2383 or 2K DI</small></span><i>→</i><span>05<b>Display delivery</b><small>BT.1886 master / sRGB companion</small></span></div></section>
+
+      <section className="method-section"><div className="method-index">V44</div><div className="method-copy"><span className="section-tag">GATED OBSERVERS · SCALE-DECLARED REVIEW</span><h2>Do not change the emulsion to compensate for an unspecified player resize</h2><p>V44 restores V42 image formation because public 48 µm RMS cannot identify V43H’s guessed NPS, and no public measurement supports its Spirit or 2383-grain candidates. Fully direct analytical projection colour failed the native dark opponent-tail gate, so the accepted V31 normal-process monitor boundary remains: 2383 owns lightness and texture while period scan supplies only low-frequency dye chroma. The native 5.7K 12-bit master stays intact; review explicitly measures observer light over a 1920-pixel raster.</p><pre><code>{v44Code}</code></pre><div className="equation"><span>DISPLAY-SAMPLING BOUNDARY</span><b>L<sub>review</sub>=A<sub>pixel</sub>[EOTF<sub>BT.1886</sub>(V<sub>master</sub>)]</b><small>Area integration occurs in linear observer light before sRGB. The still is decoded from the final movie.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V43H</div><div className="method-copy"><span className="section-tag">HYPOTHESIS EDITION · ISOLATED / REVERSIBLE</span><h2>Completing an unknown does not turn a prediction into a measurement</h2><p>V43H freezes V42 RAW interpretation, colour, H-D, DIR, MTF, 48 µm RMS, black and gamma. It tests only three central candidates that have documentary direction but no direct numerical measurement: a finer 35 mm spatial spectrum, a 25% move toward a synthetic period Spirit observer, and weak spectrally neutral common-density 2383 texture. Projection and scan share one realized negative; FSD reads the deterministic mean returned by that same spectral integration and remains an independent control.</p><pre><code>{v43hCode}</code></pre><div className="equation"><span>VERSION BOUNDARY</span><b>V43H = V42 + isolated hypotheses</b><small>Every new degree of freedom can be removed independently; the experiment profile cannot rewrite V42.</small></div></div></section>
 

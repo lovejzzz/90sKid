@@ -190,6 +190,34 @@ class Emulsion5279Engine:
         )
         return FormedNegative(mean, formed)
 
+    def _publish_projection_colour(
+        self, projection: np.ndarray, scan: np.ndarray
+    ) -> np.ndarray:
+        """Apply only the selected observer-publication boundary.
+
+        V42/V43H retain their historical V31 scan-referenced monitor result for
+        reproducibility. V44 also retains that accepted normal-process colour
+        boundary after the direct analytical colour failed the native opponent-
+        tail gate; its revision concerns unsupported hypotheses and declared
+        display-scale sampling, not an invented projection colour difference.
+        """
+        policy = self.profile.PROFILE.get(
+            "projection_colour_policy", "scan_referenced_v31"
+        )
+        if policy == "direct_observer":
+            return np.asarray(projection, dtype=np.float32)
+        if policy != "scan_referenced_v31":
+            raise ValueError(f"unknown projection colour policy: {policy}")
+        from apply_v31_normal_process_adapter import adapt_frame_linear
+
+        return adapt_frame_linear(
+            projection,
+            scan,
+            self.profile.PROFILE.get(
+                "final_adapter_opponent_high_frequency_retention", 1.0
+            ),
+        )
+
     def observe(self, negative: FormedNegative, absolute_frame: int) -> ObserverPair:
         self.configure()
         projection, scan = legacy.model.reconstruct_density_pair_to_dual_display_v39(
@@ -200,15 +228,7 @@ class Emulsion5279Engine:
             "linear_rec709",
             branch_executor=self._observer_executor,
         )
-        from apply_v31_normal_process_adapter import adapt_frame_linear
-
-        projection = adapt_frame_linear(
-            projection,
-            scan,
-            self.profile.PROFILE.get(
-                "final_adapter_opponent_high_frequency_retention", 1.0
-            ),
-        )
+        projection = self._publish_projection_colour(projection, scan)
         return ObserverPair(projection, scan)
 
     def observe_with_mean(
@@ -227,18 +247,13 @@ class Emulsion5279Engine:
                 branch_executor=self._observer_executor,
             )
         )
-        from apply_v31_normal_process_adapter import adapt_frame_linear
-
-        retention = self.profile.PROFILE.get(
-            "final_adapter_opponent_high_frequency_retention", 1.0
-        )
         return (
             ObserverPair(
-                adapt_frame_linear(projection, scan, retention),
+                self._publish_projection_colour(projection, scan),
                 scan,
             ),
             ObserverPair(
-                adapt_frame_linear(mean_projection, mean_scan, retention),
+                self._publish_projection_colour(mean_projection, mean_scan),
                 mean_scan,
             ),
         )

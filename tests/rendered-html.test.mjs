@@ -17,18 +17,18 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the bilingual V43H hypothesis over the V42 baseline", async () => {
+test("server-renders the bilingual V44 observer revision over the V42 image baseline", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT HYPOTHESIS[\s\S]{0,80}V43H/);
-  assert.match(currentSection, /V42 REMAINS THE BASELINE/);
+  assert.match(currentSection, /CURRENT OBSERVER &amp; DELIVERY REVISION[\s\S]{0,120}V44/);
+  assert.match(currentSection, /V42 IMAGE BASELINE/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v43h-t020-projection/);
-  assert.match(html, /v43h-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /v44-t020-projection/);
+  assert.match(html, /v44-t020-projection-live-srgb\.mp4/);
   assert.match(html, /v43h-t020-fsd-live-srgb\.mp4/);
   assert.match(html, /v43h-t020-camera-live-srgb\.mp4/);
   assert.match(html, /中文/);
@@ -38,7 +38,7 @@ test("server-renders the bilingual V43H hypothesis over the V42 baseline", async
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V43H archive, research and algorithm routes", async () => {
+test("server-renders the V44 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -46,7 +46,8 @@ test("server-renders the V43H archive, research and algorithm routes", async () 
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V43H/);
+  assert.match(versions, /V4—[\s\S]{0,30}V44/);
+  assert.match(versions, /OBSERVER INTEGRITY/);
   assert.match(versions, /HYPOTHESIS EDITION/);
   assert.match(versions, /NJARAW_S001_S001_T020/);
   assert.match(versions, /NJARAW_S001_S001_T032/);
@@ -87,6 +88,7 @@ test("server-renders the V43H archive, research and algorithm routes", async () 
   assert.match(research, /V42 · RESEARCH-CONFORMANT ENGINE/);
   assert.match(research, /V42 · DATA-LOSS INCIDENT \/ PREVENTION/);
   assert.match(research, /V43H · HYPOTHESIS EDITION/);
+  assert.match(research, /V44 · OBSERVER INTEGRITY \/ SCALE-HONEST REVIEW/);
   assert.match(research, /214 authored files|214个作者文件/);
   assert.match(research, /deletion trigger|删除触发器/);
   assert.match(research, /12\.5% retained/);
@@ -101,7 +103,8 @@ test("server-renders the V43H archive, research and algorithm routes", async () 
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /V43H HYPOTHESIS \/ V42 BASELINE/);
+  assert.match(algorithm, /V44 OBSERVER INTEGRITY \/ V42 IMAGE BASELINE/);
+  assert.match(algorithm, /GATED OBSERVERS · SCALE-DECLARED REVIEW/);
   assert.match(algorithm, /HYPOTHESIS EDITION · ISOLATED \/ REVERSIBLE/);
   assert.match(algorithm, /RESEARCH-CONFORMANT ENGINE · ONE PICTURE AUTHORITY/);
   assert.match(algorithm, /T003 FIT · T005 HOLDOUT · LUMINANCE PRESERVED/);
@@ -665,6 +668,38 @@ test("V43H publishes three four-view hypothesis trials from native 12-bit author
     assert.equal(result.companion_metadata.nb_frames, "24");
     assert.equal(result.companion_metadata.color_transfer, "iec61966-2-1");
     assert.equal(result.companion_metadata.profile, "XQ");
+    assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
+    assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
+  }
+});
+
+test("V44 publishes a gated scale-integrated review from encoded 12-bit authorities", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v44-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(manifest.release_class, "evidence_boundary_revision");
+  assert.equal(manifest.frames, 24);
+  assert.equal(manifest.representative_frame, 12);
+  assert.deepEqual(manifest.dimensions, [1280, 960]);
+  assert.match(manifest.display_review, /pixel-area integration/);
+  assert.match(manifest.projection_colour, /V31 normal-process monitor boundary/);
+  assert.equal(manifest.native_release_audit.all_gates_pass, true);
+  assert.equal(Object.keys(manifest.verification).length, 2);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.review_metadata.width, 1920);
+    assert.equal(result.review_metadata.height, 1440);
+    assert.equal(result.review_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.review_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.review_metadata.nb_frames, "24");
+    assert.equal(result.review_metadata.color_transfer, "iec61966-2-1");
+    assert.equal(result.review_metadata.profile, "XQ");
     assert.ok(Math.max(...result.first_frame_channel_mae_rgb) <= 0.018);
     assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
   }

@@ -14,7 +14,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = current.version === "V43H" ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
+  const sourceName = ["V44", "V43H"].includes(current.version) ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} Rec.709 Blu-ray reference` },
@@ -35,7 +35,7 @@ export default function Home() {
         </section>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>{text("当前假想实验 · 正式基线仍为V42", "CURRENT HYPOTHESIS · V42 REMAINS THE BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
+          <div className="section-intro"><span>{text("当前观察器与交付修订 · 成像基线为V42", "CURRENT OBSERVER & DELIVERY REVISION · V42 IMAGE BASELINE")} · {current.version}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}</p></div>
           <div className="current-visual-layout">
             <div className={`hero-comparison ${current.camera && !current.fsd ? "has-camera" : ""}`}>
               <figure><div className="image-title"><b>2383</b><span>sRGB / MAC VIEWING COMPANION</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察的本机sRGB观看链；专业母版为Rec.709/BT.1886", "Mac sRGB view of the 48-nit cinema observer; professional master is Rec.709/BT.1886")}</figcaption></figure>
@@ -54,14 +54,14 @@ export default function Home() {
         </section>
 
         <section className="v21-panel wrap">
-          <div><span className="eyebrow">{current.version} · BOUNDED HYPOTHESIS</span><h2>{text("每一个未知量，都必须拥有明确边界和撤回路径。", "Every unknown needs an explicit boundary and a path to removal.")}</h2></div>
+          <div><span className="eyebrow">{current.version} · OBSERVER INTEGRITY</span><h2>{text("母版不该为播放器的缩放错误负责。", "The master should not compensate for a player’s scaling error.")}</h2></div>
           <ol>
-            <li><b>{text("密度就是图像变量", "Density is the image variable")}</b><span>{text("V43H的放映与扫描观察同一块实现的负片；FSD保持独立，显示RGB仍没有颗粒叠加。", "V43H projection and scan observe the same realized negative; FSD remains independent and display RGB still has no grain overlay.")}</span></li>
-            <li><b>{text("颗粒更新，算子稳定", "Renew the grain; stabilize the operator")}</b><span>{text("V37每帧生成新的乳剂位点，但不再让整幅亚像素积分相位一起旋转。", "V37 forms new emulsion sites on every frame without rotating the whole-field subpixel integration phase.")}</span></li>
-            <li><b>{text("未知必须隔离", "Unknowns stay isolated")}</b><span>{text("35mm NPS、Spirit响应和2383颗粒只存在于V43H实验Profile；V42不被改写。", "35 mm NPS, Spirit response and 2383 texture exist only in the V43H experiment profile; V42 is not rewritten.")}</span></li>
-            <li><b>{text("可审计随机性", "Auditable stochasticity")}</b><span>{text("每帧45个Philox-u32位点身份必须唯一；暗部彩色尖峰、跨记录尾部和静帧/视频分叉都会阻止发布。", "All 45 Philox-u32 site identities per frame must be unique; dark colour spikes, cross-record tails and still/motion divergence block release.")}</span></li>
+            <li><b>{text("证据诚实的观察器", "Evidence-honest observers")}</b><span>{text("放映保留2383亮度与纹理，但低频颜色继续使用已验证的正常工艺扫描参照；不凭空制造投影色差。", "Projection retains 2383 lightness and texture while low-frequency colour keeps the validated normal-process scan reference; no projection colour difference is invented.")}</span></li>
+            <li><b>{text("母版保持原生", "Keep the master native")}</b><span>{text("5760×4320、12-bit母版不因网页或播放器的显示尺度而被软化。", "The 5760×4320 12-bit master is never softened for a web page or player scale.")}</span></li>
+            <li><b>{text("审看必须声明尺度", "Review declares its scale")}</b><span>{text("审看版在线性观察光中按显示像素面积积分，防止锐利缩放把超Nyquist颗粒折回成粗纹理。", "Review integrates linear observer light over display pixels so sharp resize cannot fold above-Nyquist grain into coarse texture.")}</span></li>
+            <li><b>{text("一幅画面权威", "One picture authority")}</b><span>{text("视频先完成编码；静帧再从最终视频同一帧生成。", "The movie is encoded first; the still is then decoded from the same final movie frame.")}</span></li>
           </ol>
-          <Link href={language === "en" ? "/research#v43h-en" : "/research#v43h"} className="button">{text("阅读V43H证据边界", "Read the V43H evidence boundary")}</Link>
+          <Link href={language === "en" ? "/research#v44-en" : "/research#v44"} className="button">{text("阅读V44观察器审计", "Read the V44 observer audit")}</Link>
         </section>
 
         <section className="route-grid wrap">

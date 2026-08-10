@@ -719,7 +719,7 @@ const v26Parameters = (v25.parameters ?? []).map((group) => ({
 // them on the archival GitHub commit prevents two production hosts from
 // packaging another 127 MiB while retaining the original pixels and URLs.
 const archivedHover = (filename: string) =>
-  `https://raw.githubusercontent.com/lovejzzz/90sKid/fa7152aed9552286220a798d602eb04d5797b824/public/versions/${filename}`;
+  `/versions/${filename}`;
 
 versions.push({
   version: "V26",
@@ -2190,6 +2190,57 @@ versions.push({
   parameters: v43hParameters,
 });
 
+const v44Parameters: ParameterGroup[] = [
+  {
+    title: "证据边界", titleEn: "EVIDENCE BOUNDARY", items: [
+      { label: "版本类别", labelEn: "Release class", value: "观察器与交付修订 · 不是新调色", valueEn: "Observer and delivery revision · not a new grade" },
+      { label: "成像基线", labelEn: "Image-formation baseline", value: "回到V42已接受的5279负片模型", valueEn: "Accepted V42 5279 negative model" },
+      { label: "撤回项", labelEn: "Withdrawn hypotheses", value: "V43H负片NPS、Spirit候选、2383随机颗粒", valueEn: "V43H negative NPS, Spirit candidate and stochastic 2383 grain" },
+      { label: "保留约束", labelEn: "Retained constraints", value: "H-D · DIR · MTF · 48µm RMS · V41颜色边界", valueEn: "H-D · DIR · MTF · 48 µm RMS · V41 colour boundary" },
+    ],
+  },
+  {
+    title: "两种观察器", titleEn: "TWO OBSERVERS", items: [
+      { label: "放映", labelEn: "Projection", value: "5279 → 2383亮度/纹理 → 48 nit监看", valueEn: "5279 → 2383 lightness/texture → 48 nit monitor" },
+      { label: "扫描", labelEn: "Scan", value: "5279 → 已接受的时期2K / Cineon观察器", valueEn: "5279 → accepted period 2K / Cineon observer" },
+      { label: "正常工艺颜色边界", labelEn: "Normal-process colour boundary", value: "保留V31 · 仅低频扫描参照色度", valueEn: "V31 retained · low-frequency scan-referenced chroma only", note: "直接解析放映颜色未通过暗部综合色门禁", noteEn: "Direct analytical projection colour failed the dark opponent-tail gate" },
+      { label: "2383内生颗粒", labelEn: "Intrinsic 2383 grain", value: "0 · 等待实测NPS/协方差", valueEn: "0 · withheld pending measured NPS/covariance" },
+    ],
+  },
+  {
+    title: "尺度诚实的审看", titleEn: "SCALE-HONEST REVIEW", items: [
+      { label: "专业母版", labelEn: "Professional master", value: "5760×4320 · 12-bit ProRes 4444 XQ · BT.1886", valueEn: "5760×4320 · 12-bit ProRes 4444 XQ · BT.1886" },
+      { label: "审看版", labelEn: "Review file", value: "1920×1440 · 12-bit XQ · sRGB", valueEn: "1920×1440 · 12-bit XQ · sRGB" },
+      { label: "采样顺序", labelEn: "Sampling order", value: "BT.1886反解 → 线性光面积积分 → sRGB", valueEn: "BT.1886 decode → linear-light area integration → sRGB" },
+      { label: "锐利缩放伪高频", labelEn: "Sharp-resize false HF", value: "放映1.71× · 扫描1.21×", valueEn: "projection 1.71× · scan 1.21×", note: "相对面积积分审看的一帧T020测量", noteEn: "T020 one-frame measurement relative to area-integrated review" },
+      { label: "静帧来源", labelEn: "Still authority", value: "最终编码视频的同一中间帧", valueEn: "Same middle frame decoded from final encoded movie" },
+    ],
+  },
+];
+
+const v44Branch = (branch: string, label: string): BranchImage => ({
+  src: `/versions/v44-t020-${branch}.jpg`,
+  videoSrc: `/versions/v44-t020-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V44",
+  year: "观察器完整性",
+  title: "让负片、观察器与显示尺度各自只承担自己的物理事实",
+  status: "current",
+  projection: v44Branch("projection", "T020 · V42负片模型 → 2383亮度/纹理 · 正常工艺监看颜色边界"),
+  bluray: v44Branch("bluray", "T020 · V42负片模型 → Period 2K / Cineon扫描"),
+  fsd: { ...v43hBranch("t020", "fsd", "T020 · 独立FSD有限密度对照 · 不并入V44"), inherited: true },
+  camera: { ...v43hBranch("t020", "camera", "T020 · Panasonic官方V-709相机见证 · 无胶片管线"), inherited: true },
+  summary: "V44不是另一组假想颗粒参数。它回应V43H在本机播放时出现的廉价粗粒感：撤回没有5279专属测量支持的NPS、Spirit与2383颗粒候选，回到V42已接受的负片模型；5.7K母版保持完整，同时新增从母版反解到线性观察光、按显示像素面积积分、再编码sRGB的审看版。一次失败实验也被正式记录：完全发布解析2383颜色会产生暗部高频彩色尾部，因此V44保留已验证的V31正常工艺颜色边界，不为了让两版更不一样而制造未经测量的投影颜色。网页静帧从最终视频同一帧反解。",
+  changes: ["撤回V43H三个未测量候选，恢复V42负片形态和已接受的时期扫描器", "保留已验证的V31正常工艺监看边界：2383亮度/纹理加低频扫描参照染料色度", "没有2383三记录NPS/协方差前，2383随机颗粒保持为零", "保留5760×4320 12-bit XQ母版，不以模糊母版解决播放器缩放问题", "新增BT.1886反解、线性光像素面积积分、sRGB编码的1920审看链", "静帧改为从最终编码视频的同一帧生成，消除编码前后双重画面权威", "把电影胶片拷贝、telecine/蓝光转移与网页显示明确分成三个证据边界"],
+  errors: ["V43H用官方48µm RMS约束一个猜测NPS，但一个孔径积分不能唯一识别空间频谱", "V43H加入了没有公开三记录统计支持的2383共模颗粒；消融证明它只解释约0.33%的高频能量", "第一份V44候选完全关闭V31颜色边界；24帧门禁发现放映暗部综合色p99.99为0.04882，且每百万暗像素约127个>0.06的孤立脉冲，因此整版拒绝发布", "5.7K随机结构若由播放器采用锐利缩放，会把超出显示Nyquist的能量折回成粗糙假纹理", "V44仍不是5279实拍/同批2383/已知扫描器的测量闭环，不能声称绝对复刻"],
+  discoveries: ["用户看到的粗颗粒主要不是Wavefront加速误差，也不是新增2383颗粒，而是成像结构与播放器缩放共同作用", "同一帧中Lanczos审看相对线性光面积积分把放映高频抬到1.71倍、扫描抬到1.21倍", "正确的解决方案是保持原生母版并提供尺度明确的审看派生，不是任意模糊胶片模型", "真正的胶片放映、telecine/蓝光扫描和现代参考截图拥有不同光源、白点、分辨率与完成决策，不能互相充当颜色真值", "当前证据只能支持scan-referenced正常工艺投影监看；两版颜色相近是已声明的限制，比猜测一个更戏剧化的投影颜色准确", "投影机闪烁、显影条纹等可见特征应留作未来可测模块，不能因为它们听起来像胶片就加入客观baseline"],
+  refs: ["R1", "R4", "R7", "R8", "R25", "R27", "R29", "R60", "R67"],
+  parameters: v44Parameters,
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -2292,6 +2343,7 @@ export const references = [
   { id: "R64", title: "Nik Color Efex User Guide — Grain engine and calibrated branded films", type: "DxO官方颗粒引擎说明", url: "https://userguides.dxo.com/nikcollection/en/color-efex/" },
   { id: "R65", title: "DxO — The science of film: calibrated grain matrices by tone region", type: "DxO官方胶片测量方法", url: "https://www.dxo.com/en/technology/science-of-film" },
   { id: "R66", title: "Complete Guide to Using the DKC-Pro Color Chart — colourimetry data", type: "DGK Color Tools官方色卡说明与CIELAB参考值", url: "https://dgkcolor.tools/wp-content/uploads/2019/09/Complete-Guide-to-the-DKC-Pro-Color-Chart_Final.pdf" },
+  { id: "R67", title: "How Hollywood Fakes the 90s Film Look Today — Walter Volpatto interview", type: "调色师实践证词（观察器边界，不是5279测量）", url: "https://www.youtube.com/watch?v=rSKAV2AQ4I4" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

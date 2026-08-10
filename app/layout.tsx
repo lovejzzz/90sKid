@@ -9,22 +9,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("og-v43h.png", siteUrl).toString();
+  const socialImageUrl = new URL("og-v44.png", siteUrl).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "V43H is a bounded Hypothesis Edition: two observers of one predicted 5279 negative, compared with independent FSD and an unfilmed camera witness. V42 remains the accepted baseline.",
+    description: "V44 separates emulsion formation, projection/scan observers and display sampling. The accepted V42 image model remains the research baseline.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "A bounded 5279 Hypothesis Edition with projection, period scan, independent FSD and native 12-bit delivery.",
+      description: "An evidence-bounded 5279 reconstruction with scale-honest review and native 12-bit delivery.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V43H Hypothesis Edition · V42 remains the research baseline" }],
+      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V44 observer integrity · V42 image baseline" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V43H isolates unmeasured 5279 candidates as a reversible prediction; V42 remains the research baseline.",
+      description: "V44 separates film formation, observer and display sampling; V42 remains the image baseline.",
       images: [socialImageUrl],
     },
   };

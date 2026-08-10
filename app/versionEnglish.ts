@@ -1012,6 +1012,38 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T032 tests a rainy cyan-green scene, dark columns and low contrast; T007 tests water, green fine detail, local saturation and the sharpness/grain relationship. Every example includes projection, period scan, independent FSD and the unfilmed Panasonic V-709 witness.",
   },
+  V44: {
+    year: "OBSERVER INTEGRITY",
+    title: "Let the negative, observer and display scale carry only their own physical facts",
+    summary:
+      "V44 is not another guessed grain profile. It answers the cheap coarse texture seen during native 5.7K playback. The unmeasured V43H NPS, Spirit and 2383-grain candidates are withdrawn; the accepted V42 negative returns. A rejected V44 candidate also proves that fully direct analytical projection colour produces unsafe dark opponent tails, so the validated V31 normal-process colour boundary remains instead of inventing a stronger projection difference. Native 5.7K masters remain untouched, while review derives display light from the encoded master, integrates it over actual review pixels and only then applies sRGB. The still decodes the final movie's same frame.",
+    changes: [
+      "Withdraw all three unmeasured V43H candidates and restore V42 negative morphology and the accepted period scanner",
+      "Retain the validated V31 normal-process monitor boundary: 2383 lightness/texture with low-frequency scan-referenced dye chroma",
+      "Keep stochastic 2383 grain at zero until a measured three-record NPS/covariance exists",
+      "Preserve the native 5760×4320 12-bit XQ master instead of blurring it to solve playback scaling",
+      "Add a 1920 review path: BT.1886 decode, linear-light pixel-area integration, then sRGB encoding",
+      "Derive the still from the same frame of the final encoded movie, removing the pre/post-encode split authority",
+      "Separate theatrical-print evidence, telecine/Blu-ray transfer and web display as three explicit evidence boundaries",
+    ],
+    errors: [
+      "V43H constrained a guessed NPS with official 48 µm RMS, but one aperture integral cannot identify a spatial spectrum",
+      "V43H added common-mode 2383 texture without public three-record statistics; ablation shows it explains only about 0.33% of projection high-frequency energy",
+      "The first V44 candidate disabled V31 completely; across 24 frames its projection dark opponent p99.99 reached 0.04882 with about 127 isolated >0.06 impulses per million dark pixels, so the candidate was rejected",
+      "A player using sharp resize on native 5.7K stochastic structure can fold energy above display Nyquist into coarse false texture",
+      "V44 is still not a measured closed loop of 5279 capture, same-batch 2383 and a characterized scanner; it cannot claim absolute reproduction",
+    ],
+    discoveries: [
+      "The coarse result was mainly neither Wavefront error nor the new print grain; image structure and playback scaling acted together",
+      "On the matched frame, Lanczos review raises projection high-frequency energy to 1.71× and scan to 1.21× relative to linear-light area integration",
+      "The defensible fix is to retain the native master and provide a scale-defined review derivative—not arbitrarily soften the film model",
+      "A theatrical print, telecine/Blu-ray transfer and modern reference still have different light sources, white points, resolutions and finishing decisions; none is the other's colour truth",
+      "Current evidence supports a scan-referenced normal-process projection monitor; similar branch colour is a declared limitation and is more accurate than an invented theatrical colour difference",
+      "Projector flicker and development streakiness remain future measurable modules, not baseline effects added merely because they read as filmic",
+    ],
+    trialNote:
+      "V44 first validates T020 at native 5.7K for one second. FSD and the official Panasonic V-709 camera witness remain independent controls, not V44 film-formation terms.",
+  },
 };
 
 export function translateBranchLabel(label: string) {

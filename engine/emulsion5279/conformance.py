@@ -22,6 +22,7 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
     """Report code-level ownership of the latest accepted research boundaries."""
 
     hypothesis = config.profile == "v43h"
+    observer_integrity = config.profile == "v44"
 
     checks = {
         # V37: independent sites, stable numerical integration operator.
@@ -103,13 +104,55 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                 ),
             }
         )
+    if observer_integrity:
+        expected = profile.PROFILE
+        checks.update(
+            {
+                "v44_is_an_evidence_boundary_revision": (
+                    expected.get("release_class")
+                    == "evidence_boundary_revision"
+                ),
+                "v44_retains_accepted_normal_process_colour_boundary": (
+                    expected.get("projection_colour_policy")
+                    == "scan_referenced_v31"
+                ),
+                "v44_review_integration_is_explicit": (
+                    expected.get("review_sampling_policy")
+                    == "linear_light_pixel_area_integration"
+                ),
+                "v44_withholds_unmeasured_2383_grain": (
+                    model.PRINT_GRAIN_DOMAIN == "none"
+                    and _close(
+                        model.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE,
+                        0.0,
+                    )
+                ),
+                "v44_retains_v42_negative_morphology": _close(
+                    model.NEGATIVE_GRAIN_CORRELATION_SCALE, 0.76
+                ),
+                "v44_retains_v42_spirit_observer": (
+                    np.array_equal(
+                        np.asarray(model.SPIRIT_PERIOD_OBSERVER_CENTRES_NM),
+                        np.asarray([620.0, 540.0, 470.0], dtype=np.float32),
+                    )
+                    and np.array_equal(
+                        np.asarray(model.SPIRIT_PERIOD_OBSERVER_SIGMAS_NM),
+                        np.asarray([52.0, 44.0, 38.0], dtype=np.float32),
+                    )
+                ),
+            }
+        )
     image_model_conformant = all(checks.values())
     production_execution = config.mode is EngineMode.PRODUCTION_METAL
     return {
         "contract": (
             "accepted-v37-through-v42-plus-isolated-v43h-hypotheses"
             if hypothesis
-            else "accepted-v37-through-v42"
+            else (
+                "accepted-v37-through-v42-plus-v44-observer-integrity"
+                if observer_integrity
+                else "accepted-v37-through-v42"
+            )
         ),
         "checks": checks,
         "image_model_conformant": image_model_conformant,
