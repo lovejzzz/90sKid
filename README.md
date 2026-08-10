@@ -8,13 +8,16 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 [lovejzzz.github.io/90sKid](https://lovejzzz.github.io/90sKid/)
 
-## Current baseline: V42
+## Current release: V44 observer integrity · V42 image baseline
 
-- V41's chart-bounded image model is frozen; V42 is an engine-conformance release, not a new grade
+- V44 withdraws V43H's unmeasured negative-NPS, Spirit and stochastic-2383 candidates
+- V41's chart-bounded image model remains frozen through the V42 engine-conformance baseline
 - Runtime gates enforce the accepted V37–V41 grain, density, colour and observer boundaries
 - The validated Philox-u32 Bernoulli Metal graph is the Production default; Archive CPU remains reproducible
-- One encoded 12-bit BT.1886 master is picture authority; sRGB and stills derive from that file
-- Three one-second, 5760×4320 scene comparisons with 12-bit ProRes 4444 XQ masters
+- Projection retains 2383 lightness/texture and the gated V31 normal-process low-frequency scan-chroma boundary
+- One native 5760×4320 12-bit BT.1886 master is picture authority
+- Display review decodes the master to linear light, performs pixel-area integration, then applies sRGB
+- Review stills decode the same frame from the final encoded review movie
 - Native-frame release gates reject sparse chroma impulses and metadata mismatches
 - T003 DKC-Pro control documents what the outdoor chart does and does not identify
 - Public deployments stream optimized comparison media from the GitHub Pages archive; full masters remain local
@@ -23,12 +26,14 @@ A bilingual, evidence-led reconstruction of Kodak VISION 500T 5279 image formati
 
 The recovered research engine, V24–V42 profiles, measurement scripts and the
 new explicit-stage API live in [`engine/`](engine/). Full-resolution RAW and
-rendered video remain local and are excluded from Git. The new API keeps one
+rendered video remain local and are excluded from Git. The explicit API keeps one
 shared stochastic negative and derives projection and scan observers plus two
 colour-explicit delivery encodings from one encoded picture authority.
 
 See [`engine/V42_ENGINE_RECOVERY_AND_CONFORMANCE_2026-08-09.md`](engine/V42_ENGINE_RECOVERY_AND_CONFORMANCE_2026-08-09.md)
-for the recovery provenance, research-to-code matrix and native-frame tests.
+for the recovery provenance and research-to-code matrix, and
+[`engine/V44_OBSERVER_INTEGRITY_AND_SCALE_HONEST_REVIEW_2026-08-10.md`](engine/V44_OBSERVER_INTEGRITY_AND_SCALE_HONEST_REVIEW_2026-08-10.md)
+for the observer ablations, display-sampling equation and current limits.
 
 ## Local development
 

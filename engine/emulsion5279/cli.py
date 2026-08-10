@@ -1,4 +1,4 @@
-"""Command-line renderer for explicit V42/V43H engine profiles."""
+"""Command-line renderer for explicit V42/V43H/V44 engine profiles."""
 
 from __future__ import annotations
 
@@ -11,7 +11,12 @@ import time
 import numpy as np
 
 from .contracts import EngineConfig, EngineMode
-from .io import DualDeliveryWriter, ProResRawDecoder, retain_source_audio_and_timecode
+from .io import (
+    DualDeliveryWriter,
+    ProResRawDecoder,
+    rebuild_scale_integrated_srgb_review_from_master,
+    retain_source_audio_and_timecode,
+)
 from .pipeline import Emulsion5279Engine
 
 
@@ -48,7 +53,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--array-workers", type=int, default=8)
     parser.add_argument("--grain-domain-salt", type=int, default=0)
     parser.add_argument(
-        "--profile", choices=("v42", "v43h"), default="v42"
+        "--profile", choices=("v42", "v43h", "v44"), default="v42"
+    )
+    parser.add_argument(
+        "--review-width",
+        type=int,
+        default=1920,
+        help=(
+            "V44 display-review width; native masters remain at source resolution"
+        ),
     )
     parser.add_argument(
         "--experimental-overrides",
@@ -104,12 +117,30 @@ def main() -> None:
 
     engine.validate_rendered_frames(args.frames)
     finalization_started = time.perf_counter()
+    review_sampling: dict[str, object] | None = None
+    additional_srgb_movies: tuple[str, ...] = ()
+    if args.profile == "v44":
+        review_name = "07_scale_integrated_review_srgb_prores4444.mov"
+        review_sampling = {}
+        for directory in ("projection", "bluray_scan"):
+            root = args.output / directory
+            review_sampling[directory] = (
+                rebuild_scale_integrated_srgb_review_from_master(
+                    root / "05_emulsion_master_prores4444.mov",
+                    root / review_name,
+                    args.frames,
+                    args.review_width,
+                )
+            )
+        additional_srgb_movies = (review_name,)
     source_delivery = retain_source_audio_and_timecode(
         args.output,
         args.input,
         args.start_frame,
         args.frames,
         decoder.fps,
+        version_label=args.profile.upper(),
+        additional_srgb_movies=additional_srgb_movies,
     )
     source_delivery["seconds"] = time.perf_counter() - finalization_started
 
@@ -137,6 +168,7 @@ def main() -> None:
         },
         "stage_summaries": _summarize(timings),
         "source_delivery": source_delivery,
+        "review_sampling": review_sampling,
         "total_wall_seconds": time.perf_counter() - started,
     }
     (args.output / "timing.json").write_text(
