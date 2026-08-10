@@ -1352,107 +1352,118 @@ def apply(
         release_departure = neutral_release
         profile_mean("dir_setup", dir_setup_started)
 
-        for source_record in range(3):
-            for source_population in range(3):
-                sigma = max(
-                    float(
-                        module.DIR_POPULATION_LATERAL_SIGMA_PX_5760[
-                            source_population
+        mean_dir_batch = getattr(module, "_WAVEFRONT_MEAN_DIR_BATCH", None)
+        if mean_dir_batch is not None:
+            mean_dir_started = time.perf_counter()
+            correction = mean_dir_batch(
+                release_departure,
+                receiver_marginal,
+                layer_capacity,
+                native_scale,
+            )
+            profile_mean("dir_wavefront_batch", mean_dir_started)
+        else:
+            for source_record in range(3):
+                for source_population in range(3):
+                    sigma = max(
+                        float(
+                            module.DIR_POPULATION_LATERAL_SIGMA_PX_5760[
+                                source_population
+                            ]
+                        )
+                        * native_scale,
+                        0.20,
+                    )
+                    deterministic_intralayer = float(
+                        module.DIR_DETERMINISTIC_INTRALAYER_STRENGTH_RGB[
+                            source_record
                         ]
                     )
-                    * native_scale,
-                    0.20,
-                )
-                deterministic_intralayer = float(
-                    module.DIR_DETERMINISTIC_INTRALAYER_STRENGTH_RGB[
-                        source_record
-                    ]
-                )
-                if deterministic_intralayer != 0.0:
-                    source_release = release[
-                        ..., source_record, source_population
-                    ]
-                    release_gaussian_started = time.perf_counter()
-                    diffused_release = cv2.GaussianBlur(
-                        source_release,
+                    if deterministic_intralayer != 0.0:
+                        source_release = release[
+                            ..., source_record, source_population
+                        ]
+                        release_gaussian_started = time.perf_counter()
+                        diffused_release = cv2.GaussianBlur(
+                            source_release,
+                            (0, 0),
+                            sigma,
+                            borderType=cv2.BORDER_REFLECT,
+                        )
+                        profile_mean(
+                            "dir_release_gaussian", release_gaussian_started
+                        )
+                        intralayer_started = time.perf_counter()
+                        correction[..., source_record, source_population] += (
+                            deterministic_intralayer
+                            * layer_capacity[source_record, source_population]
+                            * (source_release - diffused_release)
+                            * receiver_marginal[
+                                ..., source_record, source_population
+                            ]
+                        )
+                        profile_mean("dir_intralayer_update", intralayer_started)
+
+                    departure_gaussian_started = time.perf_counter()
+                    diffused_departure = cv2.GaussianBlur(
+                        release_departure[..., source_record, source_population],
                         (0, 0),
                         sigma,
                         borderType=cv2.BORDER_REFLECT,
                     )
-                    profile_mean(
-                        "dir_release_gaussian", release_gaussian_started
-                    )
-                    intralayer_started = time.perf_counter()
-                    correction[..., source_record, source_population] += (
-                        deterministic_intralayer
-                        * layer_capacity[source_record, source_population]
-                        * (source_release - diffused_release)
-                        * receiver_marginal[
-                            ..., source_record, source_population
+                    profile_mean("dir_departure_gaussian", departure_gaussian_started)
+                    updates: list[tuple[int, int, float]] = []
+                    for destination_record in range(3):
+                        record_transport = module.DIR_INTERIMAGE_RECEIVER_CAUSER[
+                            destination_record, source_record
                         ]
-                    )
-                    profile_mean("dir_intralayer_update", intralayer_started)
-
-                departure_gaussian_started = time.perf_counter()
-                diffused_departure = cv2.GaussianBlur(
-                    release_departure[..., source_record, source_population],
-                    (0, 0),
-                    sigma,
-                    borderType=cv2.BORDER_REFLECT,
-                )
-                profile_mean("dir_departure_gaussian", departure_gaussian_started)
-                updates: list[tuple[int, int, float]] = []
-                for destination_record in range(3):
-                    record_transport = module.DIR_INTERIMAGE_RECEIVER_CAUSER[
-                        destination_record, source_record
-                    ]
-                    if record_transport <= 0.0:
-                        continue
-                    for destination_population in range(3):
-                        transport = (
-                            module.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH
-                            * record_transport
-                            * module.DIR_POPULATION_TRANSPORT[
-                                destination_population, source_population
-                            ]
-                            * module.DIR_POPULATION_RELEASE_GAIN[source_population]
-                            * module.DIR_POPULATION_RECEIVER_GAIN[
-                                destination_population
-                            ]
-                        )
-                        updates.append(
-                            (
-                                destination_record,
-                                destination_population,
-                                transport
-                                * layer_capacity[
-                                    destination_record, destination_population
-                                ],
+                        if record_transport <= 0.0:
+                            continue
+                        for destination_population in range(3):
+                            transport = (
+                                module.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH
+                                * record_transport
+                                * module.DIR_POPULATION_TRANSPORT[
+                                    destination_population, source_population
+                                ]
+                                * module.DIR_POPULATION_RELEASE_GAIN[source_population]
+                                * module.DIR_POPULATION_RECEIVER_GAIN[
+                                    destination_population
+                                ]
                             )
+                            updates.append(
+                                (
+                                    destination_record,
+                                    destination_population,
+                                    transport
+                                    * layer_capacity[
+                                        destination_record, destination_population
+                                    ],
+                                )
+                            )
+
+                    def apply_update(update: tuple[int, int, float]) -> None:
+                        destination_record, destination_population, scale = update
+                        correction[
+                            ..., destination_record, destination_population
+                        ] -= (
+                            scale
+                            * receiver_marginal[
+                                ..., destination_record, destination_population
+                            ]
+                            * diffused_departure
                         )
 
-                def apply_update(update: tuple[int, int, float]) -> None:
-                    destination_record, destination_population, scale = update
-                    correction[
-                        ..., destination_record, destination_population
-                    ] -= (
-                        scale
-                        * receiver_marginal[
-                            ..., destination_record, destination_population
-                        ]
-                        * diffused_departure
-                    )
-
-                if array_workers > 1 and len(updates) > 1:
-                    interlayer_started = time.perf_counter()
-                    assert _ARRAY_EXECUTOR is not None
-                    list(_ARRAY_EXECUTOR.map(apply_update, updates))
-                    profile_mean("dir_interlayer_updates", interlayer_started)
-                else:
-                    interlayer_started = time.perf_counter()
-                    for update in updates:
-                        apply_update(update)
-                    profile_mean("dir_interlayer_updates", interlayer_started)
+                    if array_workers > 1 and len(updates) > 1:
+                        interlayer_started = time.perf_counter()
+                        assert _ARRAY_EXECUTOR is not None
+                        list(_ARRAY_EXECUTOR.map(apply_update, updates))
+                        profile_mean("dir_interlayer_updates", interlayer_started)
+                    else:
+                        interlayer_started = time.perf_counter()
+                        for update in updates:
+                            apply_update(update)
+                        profile_mean("dir_interlayer_updates", interlayer_started)
 
         finalize_started = time.perf_counter()
         developed = finalize_layer_density_exact(

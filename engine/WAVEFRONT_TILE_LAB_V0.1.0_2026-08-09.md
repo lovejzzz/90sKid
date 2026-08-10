@@ -1,7 +1,8 @@
 # Wavefront Tile Lab v0.1.0 — resident Metal emulsion island
 
 Date: 2026-08-09  
-Status: implemented and measured; **lab-only, not promoted to V43H**
+Status: statistically validated Production candidate; **lab-only, not promoted
+to V43H and not Archive bit-exact**
 
 ## Decision
 
@@ -123,6 +124,22 @@ less than one 16-bit code.  The large isolated maxima are consistent with a
 stochastic threshold flip, but that interpretation still requires visual,
 temporal and NPS confirmation.  Therefore v0.1.0 is **not** described as
 quality-equivalent yet and is not the default renderer.
+
+### Completed spatial/temporal audit
+
+The subsequent three-frame T020 audit isolated formed-minus-mean record density
+in five 512×512 regions.  Against exact v0.0.2, the maximum spatial RMS ratio
+error was `1.35e-7`, temporal-difference RMS ratio error `2.92e-7`, normalized
+radial NPS-band delta `1.49e-8`, lag-1 temporal-correlation delta `4.41e-9`, and
+density-tail ratio error `4.63e-7`.  Maximum crop density error was
+`1.19e-6`.  All preregistered gates passed by large margins.
+
+Two complete T020 frames were then carried through both observers. Projection
+and scan spatial RMS, temporal RMS, normalized NPS, lag-1 correlation and tail
+statistics remained within roughly `1.6e-6` of the exact reference. v0.1.0 is
+therefore a **statistically equivalent Production candidate**. It is still not
+an Archive path because Metal/OpenCV accumulation order is not bit-identical.
+The default renderer remains unchanged.
 
 ## Reproduction
 

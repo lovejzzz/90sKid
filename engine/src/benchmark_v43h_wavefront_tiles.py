@@ -146,6 +146,7 @@ def main() -> None:
     parser.add_argument("--marginal-workset-pixels", type=int, default=0)
     parser.add_argument("--v002", action="store_true")
     parser.add_argument("--v010", action="store_true")
+    parser.add_argument("--v020", action="store_true")
     args = parser.parse_args()
     if args.workset_pixels < 0:
         raise ValueError("workset pixels cannot be negative")
@@ -156,6 +157,10 @@ def main() -> None:
         mode=EngineMode.PRODUCTION_METAL,
         observer_branch_workers=2,
     )
+    # v27_accel captures these dictionaries while the engine is configured.
+    # Install them first so operator-level timings are not silently omitted.
+    legacy.model._V27_MEAN_PROFILE = {}
+    legacy.model._V27_STOCHASTIC_PROFILE = {}
     engine = Emulsion5279Engine(config)
     engine.configure()
 
@@ -175,7 +180,15 @@ def main() -> None:
     wavefront_v001 = None
     wavefront_v002 = None
     wavefront_v010 = None
-    if args.v010:
+    wavefront_v020 = None
+    if args.v020:
+        import wavefront_tile_lab_v020 as wavefront_v020
+
+        wavefront_v020.install(
+            legacy.model,
+            marginal_tile_pixels=args.marginal_workset_pixels or 250_000,
+        )
+    elif args.v010:
         import wavefront_tile_lab_v010 as wavefront_v010
 
         wavefront_v010.install(
@@ -197,7 +210,6 @@ def main() -> None:
         )
     for key in metal_binomial_bridge.STATS:
         metal_binomial_bridge.STATS[key] = 0
-    legacy.model._V27_STOCHASTIC_PROFILE = {}
     negative_stage_profile: dict[str, dict[str, float | int]] = {}
     for function_name in (
         "scene_to_5279_film_rgb",
@@ -287,12 +299,16 @@ def main() -> None:
     wavefront_snapshot = None
     if wavefront_v010 is not None:
         wavefront_snapshot = wavefront_v010.snapshot()
+    elif wavefront_v020 is not None:
+        wavefront_snapshot = wavefront_v020.snapshot()
     elif wavefront_v002 is not None:
         wavefront_snapshot = wavefront_v002.snapshot()
     elif wavefront_v001 is not None:
         wavefront_snapshot = wavefront_v001.snapshot()
     lab_version = (
-        "0.1.0"
+        "0.2.0"
+        if wavefront_v020 is not None
+        else "0.1.0"
         if wavefront_v010 is not None
         else "0.0.2"
         if wavefront_v002 is not None
@@ -305,6 +321,11 @@ def main() -> None:
             else "V43H Wavefront Tile Lab"
         ),
         "scope": (
+            "v0.1.0 resident Metal emulsion plus algebraically collapsed V41 "
+            "input residual and separable deterministic mean-DIR batch; film "
+            "equations and observer equations remain unchanged"
+            if wavefront_v020 is not None
+            else
             "one-command Metal island for five-size-class Philox sampling, "
             "optical integration, phase and population accumulation; film "
             "equations remain unchanged"
@@ -331,7 +352,7 @@ def main() -> None:
             "full_width_row_tiles": bool(args.workset_pixels),
             "marginal_workset_pixels": (
                 (args.marginal_workset_pixels or 250_000)
-                if args.v002 or args.v010
+                if args.v002 or args.v010 or args.v020
                 else args.marginal_workset_pixels or None
             ),
             "lab_version": lab_version,
@@ -353,7 +374,9 @@ def main() -> None:
                 if wavefront_snapshot is None
                 else float(
                     (
-                        wavefront_snapshot["v002"]["v001"]
+                        wavefront_snapshot["v010"]["v002"]["v001"]
+                        if wavefront_v020 is not None
+                        else wavefront_snapshot["v002"]["v001"]
                         if wavefront_v010 is not None
                         else wavefront_snapshot["v001"]
                         if wavefront_v002 is not None
@@ -369,23 +392,33 @@ def main() -> None:
         and all(row["identical"] for row in comparisons.values()),
         "metal_sampler_stats": dict(metal_binomial_bridge.STATS),
         "wavefront_v001_stats": (
-            wavefront_snapshot["v002"]["v001"]
+            wavefront_snapshot["v010"]["v002"]["v001"]
+            if wavefront_v020 is not None
+            else wavefront_snapshot["v002"]["v001"]
             if wavefront_v010 is not None
             else wavefront_snapshot["v001"]
             if wavefront_v002 is not None
             else wavefront_snapshot
         ),
         "wavefront_v002_stats": (
-            wavefront_snapshot["v002"]
+            wavefront_snapshot["v010"]["v002"]
+            if wavefront_v020 is not None
+            else wavefront_snapshot["v002"]
             if wavefront_v010 is not None
             else wavefront_snapshot
             if wavefront_v002 is not None
             else None
         ),
         "wavefront_v010_stats": (
-            wavefront_snapshot if wavefront_v010 is not None else None
+            wavefront_snapshot["v010"]
+            if wavefront_v020 is not None
+            else wavefront_snapshot if wavefront_v010 is not None else None
+        ),
+        "wavefront_v020_stats": (
+            wavefront_snapshot if wavefront_v020 is not None else None
         ),
         "sampler_identity_audit": v35_accel.sampler_audit_snapshot(),
+        "mean_operator_profile": legacy.model._V27_MEAN_PROFILE,
         "stochastic_operator_profile": legacy.model._V27_STOCHASTIC_PROFILE,
         "negative_stage_profile": negative_stage_profile,
     }
