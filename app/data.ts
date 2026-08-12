@@ -2386,6 +2386,62 @@ versions.push({
   parameters: v46Parameters,
 });
 
+const v47Parameters: ParameterGroup[] = [
+  {
+    title: "SHM银盐组织", titleEn: "SHM SILVER-HALIDE MORPHOLOGY", items: [
+      { label: "模型边界", labelEn: "Model boundary", value: "Silver Efex同类独立对照 · 不冒充5279实测", valueEn: "Independent Silver-Efex same-class control · not measured 5279" },
+      { label: "有限位点", labelEn: "Finite sites", value: "N=1250 · 512²逆二项CDF", valueEn: "N=1250 · 512² inverse-binomial CDF" },
+      { label: "多尺度群体", labelEn: "Multiscale populations", value: "σ 0.45 / 0.90 / 1.80原生像素", valueEn: "σ 0.45 / 0.90 / 1.80 native pixels" },
+      { label: "群体权重", labelEn: "Population weights", value: "0.50 / 0.27 / 0.23", valueEn: "0.50 / 0.27 / 0.23" },
+      { label: "局部非均质", labelEn: "Local heterogeneity", value: "慢变化占有场重排细／粗群体；不改变局部均值", valueEn: "Slow occupancy field redistributes fine/coarse populations without moving local mean" },
+      { label: "团簇／空洞", labelEn: "Clusters / voids", value: "二阶Hermite耦合0.08", valueEn: "second-Hermite coupling 0.08" },
+      { label: "厚尾组织", labelEn: "Thick-tail organization", value: "三阶Hermite耦合0.020", valueEn: "third-Hermite coupling 0.020", note: "旧候选虽匹配RMS与lag，但峰度近零，已在渲染中止并撤回", noteEn: "The old candidate matched RMS and lag but had near-zero kurtosis; its render was stopped and withdrawn" },
+    ],
+  },
+  {
+    title: "受控Silver Efex验证", titleEn: "CONTROLLED SILVER EFEX VALIDATION", items: [
+      { label: "黑箱样本", labelEn: "Black-box sample", value: "Nik 8 · Kodak Tri-X 400 · 16-bit TIFF", valueEn: "Nik 8 · Kodak Tri-X 400 · 16-bit TIFF" },
+      { label: "控制", labelEn: "Controls", value: "Intensity 100 · Grain Size 1 · 2048²", valueEn: "Intensity 100 · Grain Size 1 · 2048²" },
+      { label: "中调RMS", labelEn: "Midtone RMS", value: "SHM 0.014315 · 实测0.014309", valueEn: "SHM 0.014315 · measured 0.014309" },
+      { label: "lag-1", labelEn: "Lag-1", value: "阴影0.3795 · 中调0.3860 · 高光0.3914", valueEn: "shadow 0.3795 · mid 0.3860 · highlight 0.3914" },
+      { label: "偏度", labelEn: "Skew", value: "0.1261 / 0.1334 / 0.1373", valueEn: "0.1261 / 0.1334 / 0.1373" },
+      { label: "超额峰度", labelEn: "Excess kurtosis", value: "0.3034 / 0.2809 / 0.2610", valueEn: "0.3034 / 0.2809 / 0.2610", note: "显式门槛阻止普通相关Gaussian噪声通过", noteEn: "Explicit gate prevents ordinary correlated Gaussian noise from passing" },
+    ],
+  },
+  {
+    title: "颜色、时间与交付", titleEn: "COLOUR, TIME AND DELIVERY", items: [
+      { label: "亮度轴", labelEn: "Luma axis", value: "Silver Efex确认的Rec.601：0.299 / 0.587 / 0.114", valueEn: "Silver Efex-confirmed Rec.601: 0.299 / 0.587 / 0.114" },
+      { label: "综合色", labelEn: "Opponent colour", value: "确定性保持 · 随机量只形成一个密度轴", valueEn: "Held deterministic · randomness forms one density axis only" },
+      { label: "时间", labelEn: "Temporal law", value: "逐格独立更新 · 无平移贴图／相位循环", valueEn: "Fresh framewise realization · no translated plate or phase loop" },
+      { label: "交付", labelEn: "Delivery", value: "T020 24帧 · 5760×4320 · 12-bit ProRes 4444 XQ", valueEn: "T020 24 frames · 5760×4320 · 12-bit ProRes 4444 XQ" },
+    ],
+  },
+];
+
+const v47Branch = (branch: string, label: string): BranchImage => ({
+  src: `/versions/v47-t020-${branch}.jpg`,
+  videoSrc: `/versions/v47-t020-${branch}-live-srgb.mp4`,
+  label,
+});
+
+const v46 = versions.find((item) => item.version === "V46");
+if (v46) v46.status = "calibration";
+
+versions.push({
+  version: "V47",
+  year: "银盐组织校准",
+  title: "不只匹配颗粒强度：重建复杂、非均质的银盐组织",
+  status: "current",
+  projection: v47Branch("projection", "T020 · V46确定性2383观察 → V47 SHM有限银盐组织"),
+  bluray: v47Branch("bluray", "T020 · V46确定性Scan/DI观察 → V47 SHM有限银盐组织"),
+  summary: "V47把Silver Efex旁证从概念推进到受控测量。我们在本机Nik 8中用2048²、16-bit平场探针导出Kodak Tri-X 400，分别测量16个明度区域的RMS、空间相关、偏度与超额峰度。首个候选虽匹配强度和相关长度，却因峰度近零而在24帧渲染中被中止；最终SHM以多尺度群体、慢变化占有场、团簇／空洞和厚尾Hermite项重建非均质有限位点密度。它是一条独立同类对照，不替代V46三记录5279，也不把黑白静态产品冒充彩色电影负片测量。",
+  changes: ["通过本机Nik 8受控导出获取Tri-X 400在16个明度平场上的RMS、lag-1、偏度与峰度", "把FSD的单相关Gaussian copula升级为三种独立尺度的银盐群体", "加入慢变化占有场，使相邻区域拥有不同的细／粗群体比例但不产生低频亮度云", "以二阶Hermite形成不对称团簇与空洞，以三阶Hermite形成Silver Efex实测厚尾", "以N=1250重拟合颗粒强度，撤回约强两倍、接近16mm的N=176候选", "在每个明度上用逆二项CDF形成密度，不在完成后的RGB上加彩色噪点", "固定确定性综合色场；色域边界只限制标量密度位移，禁止坏电视式RGB尖点", "逐格重新实现组织，不平移或循环一张颗粒贴图"],
+  errors: ["最初的SHM候选只检查潜变量是否落入宽泛片种范围；实际形成密度的峰度略低于零，仍然太像规整相关噪声", "N=176原型在真实帧上约0.0286 RMS，接近受控Tri-X结果的两倍，视觉尺度会滑向8mm/16mm", "Silver Efex是黑白静态成像产品，无法提供5279三记录协方差、DIR之前的分层随机性或电影时间规律", "受控结果只覆盖2048²、Grain Size 1；Silver Efex的自动分辨率／画幅缩放仍需多分辨率测量", "SHM发生在V46确定性观察结果之后，因此是形态实验，不是物理5279负片分支的替代"],
+  discoveries: ["RMS和颗粒半径相同仍不足以产生银盐感；正偏度、正超额峰度与局部谱变化决定稀有团簇和空洞是否存在", "Silver Efex Tri-X在阴影、中调和高光的lag-1相近，主要变化是参与幅度而不是夸张的颗粒尺寸呼吸", "同一局部均值下改变晶体群体比例，可以制造非均质组织而不制造覆盖层式斑驳", "旧FSD确实是不同路线：它验证有限密度方程；SHM进一步验证片种拥有自己的复杂空间组织", "用户此前感到N=176像16mm不是主观误判；受控黑箱把这一区别定量化", "现阶段最诚实的边界是保留V46物理5279，并把SHM作为同一确定性观察器上的独立可拆卸比较器"],
+  refs: ["R1", "R25", "R58", "R63", "R64", "R65", "R72"],
+  parameters: v47Parameters,
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

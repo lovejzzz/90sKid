@@ -1108,10 +1108,45 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T020 tests mixed foliage and bark; T032 tests rainy cyan-green shadows and low contrast; T007 tests water, fine green detail and local saturation. Projection and scan are newly rendered from the same V46 negative, while FSD and Panasonic V-709 remain independent controls.",
   },
+  V47: {
+    year: "SILVER-HALIDE MORPHOLOGY",
+    title: "Beyond grain strength: reconstruct complex, heterogeneous silver-halide organization",
+    summary:
+      "V47 advances the Silver Efex evidence from an architectural clue to a controlled measurement. A 2048-square 16-bit flat-field probe was exported through the locally installed Nik 8 Kodak Tri-X 400 model, measuring RMS, spatial correlation, skew and excess kurtosis across sixteen tones. The first candidate matched strength and correlation length but was stopped mid-render because its near-zero kurtosis was still too orderly. The accepted SHM comparator uses multiscale populations, a slow occupancy field, asymmetric clusters/voids and a thick-tail Hermite population. It remains an independent same-class comparator: it does not replace V46's three-record 5279 or claim that a monochrome still product measures colour motion-picture film.",
+    changes: [
+      "Measure Tri-X 400 RMS, lag-1, skew and kurtosis across sixteen tones through a controlled local Nik 8 export",
+      "Replace FSD's single correlated Gaussian copula with three independently seeded spatial populations",
+      "Add a slow occupancy field that varies fine/coarse population balance without creating a low-frequency brightness cloud",
+      "Use a second Hermite population for asymmetric clusters and voids and a third Hermite population for measured thick tails",
+      "Refit finite-site strength to N=1250 and reject the N=176 candidate that was about twice too strong and read closer to 16 mm",
+      "Form density through an inverse-binomial CDF at every tone instead of adding coloured noise to finished RGB",
+      "Hold the deterministic opponent field fixed and constrain only scalar-density travel at gamut boundaries",
+      "Renew organization per frame without translating or looping a grain plate",
+    ],
+    errors: [
+      "The first SHM candidate audited only the latent field against a broad stock envelope; formed-density kurtosis was slightly negative and still resembled orderly correlated noise",
+      "The N=176 prototype measured about 0.0286 RMS on the real frame—roughly twice the controlled Tri-X result and liable to read as 8/16 mm",
+      "Silver Efex is a monochrome still-image product and cannot identify 5279 cross-record covariance, pre-DIR layer randomness or motion-picture temporal law",
+      "The controlled export covers only 2048 square at Grain Size 1; automatic resolution/format scaling remains unmeasured",
+      "SHM operates after V46's deterministic observer, so it is a morphology experiment rather than a replacement physical-negative branch",
+    ],
+    discoveries: [
+      "Equal RMS and grain radius do not guarantee silver-halide character; positive skew, positive excess kurtosis and local spectral variation govern rare clusters and voids",
+      "Controlled Tri-X lag-1 stays similar from shadows to highlights; tone mainly changes participation amplitude rather than manufacturing dramatic grain-size breathing",
+      "Varying population balance at constant local mean creates heterogeneous organization without an overlay-like mottle",
+      "The older FSD is genuinely a different route: it tests finite-density formation, while SHM additionally tests stock-owned complex spatial morphology",
+      "The earlier impression that N=176 read as 16 mm was not merely subjective; the controlled black-box test quantifies it",
+      "The honest current boundary is to retain physical V46 and keep SHM as a removable comparator on the same deterministic observers",
+    ],
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/V46确定性2383观察 → V47 SHM有限银盐组织/g, "V46 deterministic 2383 observer → V47 SHM finite silver-halide organization")
+    .replace(/V46确定性Scan\/DI观察 → V47 SHM有限银盐组织/g, "V46 deterministic scan/DI observer → V47 SHM finite silver-halide organization")
+    .replace(/旧FSD单Gaussian-copula有限密度对照/g, "legacy FSD single-Gaussian-copula finite-density control")
+    .replace(/Panasonic官方V-709相机见证 · 无胶片管线/g, "official Panasonic V-709 camera witness · no film pipeline")
     .replace(/V46端点稳定5279/g, "V46 endpoint-stable 5279")
     .replace(/V46同一负片/g, "V46 same negative")
     .replace(/同一V46负片/g, "same V46 negative")

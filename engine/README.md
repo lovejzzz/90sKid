@@ -308,9 +308,17 @@ Run the compact regression suite:
 python3 -m unittest -v engine.emulsion5279.test_pipeline
 PYTHONPATH=engine/src python3 -m unittest -v \
   engine.src.test_fsd_density \
+  engine.src.test_shm_density \
   engine.src.test_v32_kernels \
   engine.src.test_v41_colour_transport
 ```
+
+The V47 SHM comparator is the independent Silver-Efex-informed branch. Its
+controlled Tri-X black-box measurements, nonstationary spatial model, rejected
+coarse prototype, and evidence boundary are recorded in
+[`V47_SHM_SILVER_HALIDE_MORPHOLOGY_2026-08-11.md`](V47_SHM_SILVER_HALIDE_MORPHOLOGY_2026-08-11.md).
+It does not replace the physical 5279 branch or claim unpublished 5279
+morphology.
 
 V46's large 129³ adaptive observer cache is deliberately excluded from Git.
 It is reproducible from the versioned exact solver and real-footage cell-demand

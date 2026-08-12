@@ -1,0 +1,116 @@
+{
+  "audit": "Silver-Halide Morphology statistical validation",
+  "status": "independent same-class morphology; not a pixel-identical DxO/Nik replica and not a measured 5279 model",
+  "profile": {
+    "site_count": 1250,
+    "scales": [
+      0.45,
+      0.9,
+      1.8
+    ],
+    "weights": [
+      0.5,
+      0.27,
+      0.23
+    ],
+    "cluster_coupling": 0.08,
+    "tail_coupling": 0.02,
+    "shadow_coarse_bias": -0.005,
+    "highlight_coarse_bias": 0.005,
+    "population_heterogeneity": 0.055,
+    "density_strength": 1.0
+  },
+  "measured_patch_envelope": {
+    "lag1": [
+      0.2421,
+      0.4157
+    ],
+    "skew": [
+      -0.3998,
+      0.163
+    ],
+    "excess_kurtosis": [
+      -0.219,
+      0.5673
+    ],
+    "source": "read-only measurements of five locally installed Silver Efex B&W stock resources; bounds are validation references, not copied assets"
+  },
+  "controlled_trix_targets": {
+    "shadow": {
+      "tone": 0.08833448,
+      "lag1": 0.38101635,
+      "skew": 0.13084918,
+      "excess_kurtosis": 0.36073144
+    },
+    "mid": {
+      "tone": 0.5316701,
+      "lag1": 0.38462828,
+      "skew": 0.12873554,
+      "excess_kurtosis": 0.36940639
+    },
+    "highlight": {
+      "tone": 0.91166552,
+      "lag1": 0.38775263,
+      "skew": 0.12319859,
+      "excess_kurtosis": 0.32429689
+    }
+  },
+  "tone_fields": {
+    "shadow": {
+      "mean": -4.093992578395785e-20,
+      "standard_deviation": 0.001671431085627402,
+      "lag1_x": 0.3792074840632047,
+      "lag1_y": 0.3798415047868341,
+      "lag1_mean": 0.3795244944250194,
+      "lag1_anisotropy": 0.0006340207236293915,
+      "skew": 0.12605028510723054,
+      "excess_kurtosis": 0.3033801392757258,
+      "local_spectral_ratio_cv": 0.0766635063217421,
+      "controlled_tone": 0.08833448,
+      "target_lag1": 0.38101635,
+      "target_skew": 0.13084918,
+      "target_excess_kurtosis": 0.36073144
+    },
+    "mid": {
+      "mean": 3.4144839251540016e-19,
+      "standard_deviation": 0.014315002562208223,
+      "lag1_x": 0.3856358809627874,
+      "lag1_y": 0.3862696057752323,
+      "lag1_mean": 0.38595274336900987,
+      "lag1_anisotropy": 0.0006337248124448913,
+      "skew": 0.13340913298829046,
+      "excess_kurtosis": 0.28093214467128336,
+      "local_spectral_ratio_cv": 0.07714015331429931,
+      "controlled_tone": 0.5316701,
+      "target_lag1": 0.38462828,
+      "target_skew": 0.12873554,
+      "target_excess_kurtosis": 0.36940639
+    },
+    "highlight": {
+      "mean": -3.2488419265798274e-19,
+      "standard_deviation": 0.007328323848127622,
+      "lag1_x": 0.3911038262567794,
+      "lag1_y": 0.39173511692200585,
+      "lag1_mean": 0.3914194715893926,
+      "lag1_anisotropy": 0.0006312906652264361,
+      "skew": 0.1373433627099499,
+      "excess_kurtosis": 0.2610104525562278,
+      "local_spectral_ratio_cv": 0.07729456911722556,
+      "controlled_tone": 0.91166552,
+      "target_lag1": 0.38775263,
+      "target_skew": 0.12319859,
+      "target_excess_kurtosis": 0.32429689
+    }
+  },
+  "gates": {
+    "isotropic": true,
+    "no_false_tone_scale_breathing": true,
+    "inside_measured_lag_envelope": true,
+    "controlled_trix_lag_fit": true,
+    "controlled_trix_skew_fit": true,
+    "controlled_trix_kurtosis_fit": true,
+    "non_gaussian_thick_tail_organization": true,
+    "locally_nonstationary_spectrum": true
+  },
+  "all_gates_pass": true
+}

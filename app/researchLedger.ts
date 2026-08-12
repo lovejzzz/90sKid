@@ -111,7 +111,7 @@ export const researchChapters: ResearchChapter[] = [
   },
 ];
 
-export const currentVisualRelease = "V46";
+export const currentVisualRelease = "V47";
 export const nextVisualRelease = "measurement-dependent";
-export const currentResearchCycle = "05";
-export const currentEngineCandidate = "V46 certified spectral inverse";
+export const currentResearchCycle = "06";
+export const currentEngineCandidate = "V46 physical negative + V47 SHM comparator";

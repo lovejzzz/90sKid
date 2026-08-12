@@ -16,7 +16,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = ["V46", "V45", "V44", "V43H"].includes(current.version) ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
+  const sourceName = ["V47", "V46", "V45", "V44", "V43H"].includes(current.version) ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} scan / DI observer master` },
@@ -39,7 +39,7 @@ export default function Home() {
         <div className="wrap home-research-status"><ResearchStatus language={language} /></div>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>{text("当前视觉发布", "CURRENT VISUAL RELEASE")} · {currentVisualRelease}<br />{text("下一视觉发布", "NEXT VISUAL RELEASE")} · {nextVisualRelease}<br />{text("研究周期", "RESEARCH CYCLE")} · {currentResearchCycle}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}<br /><br />{text("这组媒体证明V46交付；内部V46—V86标签仍作为不可变实验ID保留，不被冒充成过去不存在的视觉发布。", "These media witness V46. Legacy internal V46–V86 labels remain immutable experiment IDs and are not presented as visual releases that never existed.")}</p></div>
+          <div className="section-intro"><span>{text("当前视觉发布", "CURRENT VISUAL RELEASE")} · {currentVisualRelease}<br />{text("下一视觉发布", "NEXT VISUAL RELEASE")} · {nextVisualRelease}<br />{text("研究周期", "RESEARCH CYCLE")} · {currentResearchCycle}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}<br /><br />{text("V47是同一V46确定性观察器上的银盐组织对照；V46仍是物理5279分支。旧内部V47—V86标签继续作为不可变实验ID保留。", "V47 is a silver-halide morphology comparator on the same V46 deterministic observers; V46 remains the physical 5279 branch. Legacy internal V47–V86 labels remain immutable experiment IDs.")}</p></div>
           <div className="current-visual-layout">
             <div className={`hero-comparison ${current.camera && !current.fsd ? "has-camera" : ""}`}>
               <figure><div className="image-title"><b>2383</b><span>sRGB / MAC VIEWING COMPANION</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察的本机sRGB观看链；专业母版为Rec.709/BT.1886", "Mac sRGB view of the 48-nit cinema observer; professional master is Rec.709/BT.1886")}</figcaption></figure>
@@ -65,14 +65,14 @@ export default function Home() {
             <li><b>{text("审看必须声明尺度", "Review declares its scale")}</b><span>{text("审看版在线性观察光中按显示像素面积积分，防止锐利缩放把超Nyquist颗粒折回成粗纹理。", "Review integrates linear observer light over display pixels so sharp resize cannot fold above-Nyquist grain into coarse texture.")}</span></li>
             <li><b>{text("一幅画面权威", "One picture authority")}</b><span>{text("视频先完成编码；静帧再从最终视频同一帧生成。", "The movie is encoded first; the still is then decoded from the same final movie frame.")}</span></li>
           </ol>
-          <Link href="/research#release-v46" className="button">{text("阅读V46认证说明", "Read the V46 certification")}</Link>
+          <Link href="/research#silver-efex-internals" className="button">{text("阅读V47银盐组织研究", "Read the V47 morphology study")}</Link>
         </section>
 
         <div className="wrap"><ResearchLedger language={language} compact /></div>
 
         <section className="route-grid wrap">
           <Link href="/versions"><span>VISUAL ARCHIVE</span><h3>{text("视觉版本档案", "Visual version archive")}</h3><p>{text(`从V4到${current.version}保留真实媒体对照；研究版本不伪造截图。`, `Real media comparisons are retained from V4 to ${current.version}; research-only revisions do not fabricate imagery.`)}</p><b>{text("进入 →", "OPEN →")}</b></Link>
-          <Link href="/research"><span>RESEARCH CYCLE · 05</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("材料测量、多层随机性、2383放映与扫描／交付四条研究主线；小实验保留在可追溯附录。", "Four research threads—material measurement, multilayer randomness, 2383 projection, and scan/delivery—with small experiments retained in a traceable appendix.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
+          <Link href="/research"><span>RESEARCH CYCLE · {currentResearchCycle}</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("材料测量、多层随机性、2383放映与扫描／交付四条研究主线；小实验保留在可追溯附录。", "Four research threads—material measurement, multilayer randomness, 2383 projection, and scan/delivery—with small experiments retained in a traceable appendix.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
           <Link href="/algorithm"><span>METHOD</span><h3>{text("算法说明", "Method")}</h3><p>{text("从RAW到负片、2383与Cineon的公式、流程和关键代码。", "Equations, flow and key code from RAW through the negative, 2383 and Cineon.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
         </section>
       </main>

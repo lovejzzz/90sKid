@@ -17,21 +17,19 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders one visual release and thematic research without fabricating a new image release", async () => {
+test("server-renders the measured V47 morphology release and thematic research", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT VISUAL RELEASE[\s\S]{0,80}V46/);
+  assert.match(currentSection, /CURRENT VISUAL RELEASE[\s\S]{0,80}V47/);
   assert.match(currentSection, /NEXT VISUAL RELEASE[\s\S]{0,80}measurement-dependent/);
-  assert.match(currentSection, /RESEARCH CYCLE[\s\S]{0,80}05/);
+  assert.match(currentSection, /RESEARCH CYCLE[\s\S]{0,80}06/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v46-t020-projection/);
-  assert.match(html, /v46-t020-projection-live-srgb\.mp4/);
-  assert.match(html, /v43h-t020-fsd-live-srgb\.mp4/);
-  assert.match(html, /v43h-t020-camera-live-srgb\.mp4/);
+  assert.match(html, /v47-t020-projection/);
+  assert.match(html, /v47-t020-projection-live-srgb\.mp4/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -41,7 +39,7 @@ test("server-renders one visual release and thematic research without fabricatin
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V46 archive, research and algorithm routes", async () => {
+test("server-renders the V47 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -49,7 +47,8 @@ test("server-renders the V46 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V46/);
+  assert.match(versions, /V4—[\s\S]{0,30}V47/);
+  assert.match(versions, /SILVER-HALIDE MORPHOLOGY/);
   assert.match(versions, /CERTIFIED SPECTRAL INVERSE/);
   assert.match(versions, /OFFICIAL OBSERVER/);
   assert.match(versions, /OBSERVER INTEGRITY/);
@@ -107,8 +106,8 @@ test("server-renders the V46 archive, research and algorithm routes", async () =
   assert.match(research, /V43H · HYPOTHESIS EDITION/);
   assert.match(research, /V44 · OBSERVER INTEGRITY \/ SCALE-HONEST REVIEW/);
   assert.match(research, /V45 · OFFICIAL CIE OBSERVER \/ 1 NM SPECTRAL INTEGRATION/);
-  assert.match(research, /Legacy V46–V86 labels remain immutable experiment IDs/);
-  assert.match(research, /RESEARCH CYCLE 05 · FOUR THEMATIC THREADS/);
+  assert.match(research, /Legacy internal V47–V86 labels remain immutable experiment IDs/);
+  assert.match(research, /RESEARCH CYCLE 06 · FOUR THEMATIC THREADS/);
   assert.match(research, /V72[\s\S]{0,160}IMAGE RELEASE/);
   assert.match(research, /V79[\s\S]{0,160}Projection grain-policy ownership/);
   assert.match(research, /V80[\s\S]{0,160}Cross-record covariance bounds/);
@@ -137,7 +136,8 @@ test("server-renders the V46 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /V46 VISUAL RELEASE \/ RESEARCH CYCLE 05/);
+  assert.match(algorithm, /V47 VISUAL RELEASE \/ RESEARCH CYCLE 06/);
+  assert.match(algorithm, /CONTROLLED SHM · MULTISCALE · THICK-TAIL/);
   assert.match(algorithm, /0\.013987 D/);
   assert.match(algorithm, /PAIRED REAL RAW · TWO OBSERVERS · SCALE-INTEGRATED ENERGY/);
   assert.match(algorithm, /EXACT CROSS-SPECTRUM · STOCHASTIC DIR · DIRECT FINITE-SITE CHECK/);
@@ -831,4 +831,35 @@ test("V46 English branch labels preserve token spacing", async () => {
   assert.match(source, /2383 xenon projection/);
   assert.match(source, /independent FSD finite-density control · not part of V46/);
   assert.match(source, /original camera witness · no film pipeline/);
+});
+
+test("V47 SHM publishes controlled thick-tail morphology witnesses", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL(
+        "../public/versions/v47-shm-live-preview-manifest.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.equal(
+    manifest.release_class,
+    "controlled_silver_efex_same_class_morphology",
+  );
+  assert.equal(manifest.frames, 24);
+  assert.deepEqual(manifest.dimensions, [1920, 1440]);
+  assert.equal(manifest.morphology_audit.all_gates_pass, true);
+  assert.equal(manifest.temporal_audit.all_gates_pass, true);
+  assert.equal(manifest.delivery_audit.all_gates_pass, true);
+  assert.equal(Object.keys(manifest.verification).length, 2);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const result of Object.values(manifest.verification)) {
+    assert.equal(result.review_metadata.width, 1920);
+    assert.equal(result.review_metadata.height, 1440);
+    assert.equal(result.review_metadata.pix_fmt, "yuv444p12le");
+    assert.equal(result.review_metadata.bits_per_raw_sample, "12");
+    assert.equal(result.review_metadata.nb_frames, "24");
+    assert.equal(result.review_metadata.color_transfer, "iec61966-2-1");
+  }
 });
