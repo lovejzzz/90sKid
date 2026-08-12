@@ -1,0 +1,42 @@
+{
+  "audit": "V49 paired crop A/B",
+  "crop_xywh": [
+    2496,
+    1776,
+    768,
+    768
+  ],
+  "v48_projection_grain": {
+    "luma_rms": 0.0013194415182966079,
+    "opponent_rms": 0.0013133689267854256,
+    "opponent_over_luma": 0.9953976046478953,
+    "opponent_p999": 0.007643557112368828,
+    "opponent_maximum": 0.020808047272840115
+  },
+  "v49_projection_grain": {
+    "luma_rms": 0.001264328573698465,
+    "opponent_rms": 0.0004891821197850527,
+    "opponent_over_luma": 0.3869105942564261,
+    "opponent_p999": 0.0021817800888639456,
+    "opponent_maximum": 0.005392212254925646
+  },
+  "v49_scan_grain": {
+    "luma_rms": 0.0018019211424573872,
+    "opponent_rms": 0.0007266512636306773,
+    "opponent_over_luma": 0.40326474145239216,
+    "opponent_p999": 0.0031770219103046055,
+    "opponent_maximum": 0.006498410718873528
+  },
+  "v49_vs_v48_projection": {
+    "luma_rms": 0.0006842007883171738,
+    "opponent_rms": 0.0013873040505940684,
+    "opponent_over_luma": 2.027627085911743,
+    "opponent_p999": 0.008097807966879785,
+    "opponent_maximum": 0.020808034777726775
+  },
+  "gates": {
+    "v49_projection_opponent_is_lower_than_v48": true,
+    "v49_no_display_rgb_reinjection": true,
+    "v49_density_nonnegative": true
+  }
+}

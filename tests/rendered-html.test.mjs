@@ -17,19 +17,19 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the V48 first-principles release and thematic research", async () => {
+test("server-renders the V49 density-domain release and thematic research", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /5279 Emulsion Project/);
   const currentSection = html.match(/<section class="current-section wrap">([\s\S]*?)<\/section>/)?.[1] ?? "";
-  assert.match(currentSection, /CURRENT VISUAL RELEASE[\s\S]{0,80}V48/);
+  assert.match(currentSection, /CURRENT VISUAL RELEASE[\s\S]{0,80}V49/);
   assert.match(currentSection, /NEXT VISUAL RELEASE[\s\S]{0,80}measurement-dependent/);
-  assert.match(currentSection, /RESEARCH CYCLE[\s\S]{0,80}07/);
+  assert.match(currentSection, /RESEARCH CYCLE[\s\S]{0,80}08/);
   assert.match(html, /Grain is not an overlay[\s\S]{0,30}Grain is the image/);
-  assert.match(html, /v48-t020-projection/);
-  assert.match(html, /v48-t020-projection-live-srgb\.mp4/);
+  assert.match(html, /v49-t020-projection/);
+  assert.match(html, /v49-t020-projection-live-srgb\.mp4/);
   assert.match(html, /中文/);
   assert.match(html, />EN</);
   assert.doesNotMatch(html, /LIVE · 1s/);
@@ -39,7 +39,7 @@ test("server-renders the V48 first-principles release and thematic research", as
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("server-renders the V48 archive, research and algorithm routes", async () => {
+test("server-renders the V49 archive, research and algorithm routes", async () => {
   const pages = await Promise.all(
     ["/versions", "/research", "/algorithm"].map(render),
   );
@@ -47,7 +47,7 @@ test("server-renders the V48 archive, research and algorithm routes", async () =
   const [versions, research, algorithm] = await Promise.all(
     pages.map((page) => page.text()),
   );
-  assert.match(versions, /V4—[\s\S]{0,30}V48/);
+  assert.match(versions, /V4—[\s\S]{0,30}V49/);
   assert.match(versions, /SILVER-HALIDE MORPHOLOGY/);
   assert.match(versions, /CERTIFIED SPECTRAL INVERSE/);
   assert.match(versions, /OFFICIAL OBSERVER/);
@@ -107,7 +107,7 @@ test("server-renders the V48 archive, research and algorithm routes", async () =
   assert.match(research, /V44 · OBSERVER INTEGRITY \/ SCALE-HONEST REVIEW/);
   assert.match(research, /V45 · OFFICIAL CIE OBSERVER \/ 1 NM SPECTRAL INTEGRATION/);
   assert.match(research, /Legacy internal V47–V86 labels remain immutable experiment IDs/);
-  assert.match(research, /RESEARCH CYCLE 07 · FOUR THEMATIC THREADS/);
+  assert.match(research, /RESEARCH CYCLE 08 · FOUR THEMATIC THREADS/);
   assert.match(research, /V72[\s\S]{0,160}IMAGE RELEASE/);
   assert.match(research, /V79[\s\S]{0,160}Projection grain-policy ownership/);
   assert.match(research, /V80[\s\S]{0,160}Cross-record covariance bounds/);
@@ -136,7 +136,8 @@ test("server-renders the V48 archive, research and algorithm routes", async () =
   assert.doesNotMatch(research, /N=128/);
   assert.match(research, /V36 · MATCHED FRAME \/ 35 MM STRUCTURE/);
   assert.match(research, /SMPTE ST 428-1/);
-  assert.match(algorithm, /V48 VISUAL RELEASE \/ RESEARCH CYCLE 07/);
+  assert.match(algorithm, /V49 VISUAL RELEASE \/ RESEARCH CYCLE 08/);
+  assert.match(algorithm, /COMMON DENSITY · TWO MATERIAL OBSERVERS · NO RGB REINJECTION/);
   assert.match(algorithm, /FIRST PRINCIPLES · OBSERVER OWNERSHIP · ONE NEGATIVE/);
   assert.match(algorithm, /0\.013987 D/);
   assert.match(algorithm, /PAIRED REAL RAW · TWO OBSERVERS · SCALE-INTEGRATED ENERGY/);
@@ -892,4 +893,19 @@ test("V48 publishes first-principles projection ownership witnesses", async () =
   assert.match(html, /\/versions\/v48-t020-projection\.jpg/);
   assert.match(html, /\/versions\/v48-t020-projection-live-srgb\.mp4/);
   assert.doesNotMatch(html, /cdn\.jsdelivr\.net[^"']+\/versions\/v48-t020-/);
+});
+
+test("V49 web motion adds no material opponent error beyond its paired still", async () => {
+  const manifest = JSON.parse(
+    await readFile(new URL("../public/versions/v49-live-preview-manifest.json", import.meta.url)),
+  );
+  assert.equal(manifest.release_class, "conservative_common_density_joint_law_boundary");
+  assert.match(manifest.image_change, /no display-RGB grain reinjection/);
+  assert.doesNotMatch(JSON.stringify(manifest), /\/Users\/tianxing/);
+  for (const branch of Object.values(manifest.verification)) {
+    assert.equal(branch.review_metadata.bits_per_raw_sample, "12");
+    assert.equal(branch.review_metadata.pix_fmt, "yuv444p12le");
+    assert.ok(branch.video_extra_opponent_rms_over_still <= 0.001);
+    assert.ok(branch.video_extra_opponent_p999_over_still <= 0.005);
+  }
 });

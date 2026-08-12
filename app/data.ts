@@ -2478,6 +2478,43 @@ versions.push({
   ],
 });
 
+const v48 = versions.find((item) => item.version === "V48");
+if (v48) v48.status = "calibration";
+
+const v49Branch = (branch: string, label: string): BranchImage => ({
+  src: `/versions/v49-t020-${branch}.jpg`,
+  videoSrc: `/versions/v49-t020-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V49",
+  year: "密度域根治",
+  title: "不再压制彩噪：让错误的RGB彩噪根本无法形成",
+  status: "current",
+  projection: v49Branch("projection", "T020 · V49同一形成负片 → 2383氙灯 / CIE观察"),
+  bluray: v49Branch("bluray", "T020 · V49同一形成负片 → Cineon / Scan-DI观察"),
+  summary: "V49修复V48仍然存在的根本性所有权错误。V48虽然让2383拥有确定性颜色，却仍把另一条观察图中的formed−mean残差加回显示RGB，暗部因而出现像提亮传感器彩噪一样的红绿蓝尖点。Kodak公开曲线只约束三记录各自的48 µm Status-M RMS，并没有公布交叉协方差。V49因此不猜彩色联合统计：它在负片密度形成时只发布一个对三记录对称、且不超过任何公开边缘RMS的共同密度分量，再让2383和扫描观察器直接观看同一份形成负片。",
+  changes: ["删除显示RGB域的formed−mean随机残差回注", "随机性在5279负片密度内完成，两条观察链共享同一形成负片", "用三记录归一残差的对称共同分量，按局部最小Kodak边缘RMS定标", "网页视频提高到1920×1440、CRF 11，并新增视频／静帧综合色误差门禁"],
+  errors: ["V48的随机残差与确定性均值不属于同一观察图", "公开颗粒曲线不能识别真实5279三记录交叉功率谱", "V49共同密度是假设边界，不声称真实三记录事件完全配准"],
+  discoveries: ["彩点问题是成像阶段所有权错误，不只是颗粒太强", "保持近似相同亮度颗粒活动时，投影综合色RMS可降低62.8%", "未被测量的综合色方差应明确留空，而不是由RGB安全滤波器偷偷决定"],
+  refs: ["R1", "R2", "R25", "R70"],
+  parameters: [
+    { title: "密度形成边界", titleEn: "DENSITY-FORMATION BOUNDARY", items: [
+      { label: "发布随机量", labelEn: "Published stochastic term", value: "三记录共同Status-M密度", valueEn: "One common Status-M density across all three records" },
+      { label: "综合色策略", labelEn: "Opponent-colour policy", value: "不在显示RGB中重新注入", valueEn: "No display-RGB reinjection" },
+      { label: "证据边界", labelEn: "Evidence boundary", value: "交叉协方差未知 · 未分配方差保留为空", valueEn: "Cross-covariance unknown · unallocated variance withheld" },
+    ]},
+    { title: "A/B验证", titleEn: "PAIRED A/B VALIDATION", items: [
+      { label: "亮度颗粒RMS", labelEn: "Luma grain RMS", value: "V48 0.001319 → V49 0.001264", valueEn: "V48 0.001319 → V49 0.001264" },
+      { label: "综合色RMS", labelEn: "Opponent RMS", value: "0.001313 → 0.000489 · −62.8%", valueEn: "0.001313 → 0.000489 · −62.8%" },
+      { label: "综合色p99.9", labelEn: "Opponent p99.9", value: "0.007644 → 0.002182 · −71.5%", valueEn: "0.007644 → 0.002182 · −71.5%" },
+      { label: "核心运算", labelEn: "Core computation", value: "788.11秒 · 32.84秒/帧", valueEn: "788.11 s · 32.84 s/frame" },
+      { label: "交付", labelEn: "Delivery", value: "T020 · 24帧 · 5760×4320 · 12-bit ProRes 4444 XQ", valueEn: "T020 · 24 frames · 5760×4320 · 12-bit ProRes 4444 XQ" },
+    ]},
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

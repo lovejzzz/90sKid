@@ -1147,10 +1147,20 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     errors: ["V46 wrote scan opponent colour into the projection mean", "Removing all management would reopen speckles because the 5279 cross-spectrum remains unmeasured", "Native NPS, speed-population recipe and exact DIR topology remain unknown"],
     discoveries: ["Observer differences need no exaggerated hue", "A safety filter that changes the mean has become a grade", "Same-negative V48−V46 linear-RGB MAE is only 0.002200"],
   },
+  V49: {
+    year: "DENSITY-DOMAIN CORRECTION",
+    title: "Do not suppress chroma noise—prevent the wrong RGB noise from forming",
+    summary: "V49 fixes the remaining ownership error in V48. V48 gave 2383 ownership of deterministic colour but still added a formed-minus-mean residual from another observer graph in display RGB, producing lifted-sensor-like red, green and blue points in shadows. Kodak publishes only each record's marginal 48-micrometre Status-M RMS, not their cross-covariance. V49 therefore does not invent a coloured joint law: it publishes one symmetric common-density component while the image is still a negative and lets both material observers see that same formed negative directly.",
+    changes: ["Removed display-RGB formed-minus-mean stochastic reinjection", "Randomness completes inside the 5279 negative before both observers", "Scaled the symmetric normalized common component by the smallest local Kodak marginal RMS", "Raised web motion to 1920x1440 CRF 11 and added opponent-error gates against the still"],
+    errors: ["V48's stochastic residual and deterministic mean belonged to different observer graphs", "The public granularity curves do not identify the real 5279 cross-record spectrum", "V49 common density is a conservative hypothesis boundary, not a claim of perfectly registered real record events"],
+    discoveries: ["The coloured-point defect was an image-formation ownership error, not merely excessive grain", "Projection opponent RMS falls 62.8% while luma activity remains nearly unchanged", "Unmeasured opponent variance should remain explicit uncertainty rather than being silently decided by an RGB safety filter"],
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/T020 · V49同一形成负片 → 2383氙灯 \/ CIE观察/g, "T020 · same V49 formed negative → 2383 xenon / CIE observer")
+    .replace(/T020 · V49同一形成负片 → Cineon \/ Scan-DI观察/g, "T020 · same V49 formed negative → Cineon / Scan-DI observer")
     .replace(/T020 · 5279 → 2383直接确定性颜色 \+ 受控随机差值/g, "T020 · direct 5279 → 2383 deterministic colour + managed stochastic delta")
     .replace(/T020 · 同一V48负片 → Cineon \/ Scan-DI观察/g, "T020 · same V48 negative → Cineon / Scan-DI observer")
     .replace(/V46确定性2383观察 → V47 SHM有限银盐组织/g, "V46 deterministic 2383 observer → V47 SHM finite silver-halide organization")

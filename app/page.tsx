@@ -16,7 +16,7 @@ export default function Home() {
   const { language, text } = useLanguage();
   const current = versions[versions.length - 1];
   const currentEnglish = versionEnglish[current.version];
-  const sourceName = ["V48", "V47", "V46", "V45", "V44", "V43H"].includes(current.version) ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
+  const sourceName = ["V49", "V48", "V47", "V46", "V45", "V44", "V43H"].includes(current.version) ? "T020" : ["V42", "V41", "V40", "V39", "V38", "V37", "V36", "V35", "V34", "V33"].includes(current.version) ? "T031" : current.version === "V32" ? "T007" : "T002";
   const currentGallery = [
     { src: current.projection.src, alt: `${current.version} ${sourceName} 2383 projection monitor reference` },
     { src: current.bluray.src, alt: `${current.version} ${sourceName} scan / DI observer master` },
@@ -39,7 +39,7 @@ export default function Home() {
         <div className="wrap home-research-status"><ResearchStatus language={language} /></div>
 
         <section className="current-section wrap">
-          <div className="section-intro"><span>{text("当前视觉发布", "CURRENT VISUAL RELEASE")} · {currentVisualRelease}<br />{text("下一视觉发布", "NEXT VISUAL RELEASE")} · {nextVisualRelease}<br />{text("研究周期", "RESEARCH CYCLE")} · {currentResearchCycle}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}<br /><br />{text("V48是当前柯达第一性原则基线；V47只保留为历史形态对照。旧内部V47—V86标签继续作为不可变实验ID保留。", "V48 is the current first-principles Kodak baseline; V47 remains only as a historical morphology comparator. Legacy internal V47–V86 labels remain immutable experiment IDs.")}</p></div>
+          <div className="section-intro"><span>{text("当前视觉发布", "CURRENT VISUAL RELEASE")} · {currentVisualRelease}<br />{text("下一视觉发布", "NEXT VISUAL RELEASE")} · {nextVisualRelease}<br />{text("研究周期", "RESEARCH CYCLE")} · {currentResearchCycle}</span><h2>{language === "en" ? currentEnglish?.title : current.title}</h2><p>{language === "en" ? currentEnglish?.summary : current.summary}<br /><br />{text("V49是当前密度域基线；V48保留为错误所有权的可复现实例，V47只保留为历史形态对照。旧内部V47—V86标签继续作为不可变实验ID保留。", "V49 is the current density-domain baseline. V48 remains a reproducible ownership-error witness; V47 remains a historical morphology comparator. Legacy internal V47–V86 labels remain immutable experiment IDs.")}</p></div>
           <div className="current-visual-layout">
             <div className={`hero-comparison ${current.camera && !current.fsd ? "has-camera" : ""}`}>
               <figure><div className="image-title"><b>2383</b><span>sRGB / MAC VIEWING COMPANION</span></div><InteractiveImage src={current.projection.src} previewSrc={current.projection.src.replace(/\.jpg$/, "-sm.jpg")} videoSrc={current.projection.videoSrc} sizes="(max-width: 680px) 100vw, 42vw" alt={`${current.version} ${sourceName} 2383 projection monitor reference`} gallery={currentGallery} initialIndex={0} /><figcaption>{text("48 nit影院观察的本机sRGB观看链；专业母版为Rec.709/BT.1886", "Mac sRGB view of the 48-nit cinema observer; professional master is Rec.709/BT.1886")}</figcaption></figure>
@@ -65,7 +65,7 @@ export default function Home() {
             <li><b>{text("审看必须声明尺度", "Review declares its scale")}</b><span>{text("审看版在线性观察光中按显示像素面积积分，防止锐利缩放把超Nyquist颗粒折回成粗纹理。", "Review integrates linear observer light over display pixels so sharp resize cannot fold above-Nyquist grain into coarse texture.")}</span></li>
             <li><b>{text("一幅画面权威", "One picture authority")}</b><span>{text("视频先完成编码；静帧再从最终视频同一帧生成。", "The movie is encoded first; the still is then decoded from the same final movie frame.")}</span></li>
           </ol>
-          <Link href="/research#release-v48" className="button">{text("阅读V48第一性原则研究", "Read the V48 first-principles study")}</Link>
+          <Link href="/research#release-v49" className="button">{text("阅读V49密度域修复", "Read the V49 density-domain correction")}</Link>
         </section>
 
         <div className="wrap"><ResearchLedger language={language} compact /></div>

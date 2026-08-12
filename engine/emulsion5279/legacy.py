@@ -41,6 +41,7 @@ import v66_profile  # noqa: E402
 import v72_profile  # noqa: E402
 import v46_profile  # noqa: E402
 import v48_release_profile  # noqa: E402
+import v49_release_profile  # noqa: E402
 
 
 PROFILES = {
@@ -69,6 +70,7 @@ PROFILES = {
     "v72": v72_profile,
     "v46": v46_profile,
     "v48r": v48_release_profile,
+    "v49r": v49_release_profile,
 }
 
 

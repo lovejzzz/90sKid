@@ -329,6 +329,30 @@ class PipelineContractTests(unittest.TestCase):
             float(np.max(np.abs(published_mean - mean_scan))), 0.01
         )
 
+    def test_public_v49_forms_one_common_density_before_observation(self) -> None:
+        config = EngineConfig(profile="v49r", mode=EngineMode.REFERENCE)
+        engine = Emulsion5279Engine(config)
+        self.assertEqual(
+            engine.profile.PROFILE["projection_colour_policy"],
+            "direct_observer",
+        )
+        mean = np.full((5, 7, 3), 0.4, dtype=np.float32)
+        residual = np.arange(105, dtype=np.float32).reshape(5, 7, 3) / 1000
+        sigma = np.broadcast_to(
+            np.asarray([0.01, 0.02, 0.04], dtype=np.float32), mean.shape
+        )
+        formed = engine._apply_negative_publication_boundary(
+            mean, mean + residual, sigma
+        )
+        np.testing.assert_array_equal(
+            np.diff(formed - mean, axis=2),
+            np.zeros((5, 7, 2), dtype=np.float32),
+        )
+        self.assertEqual(
+            engine.profile.PROFILE["projection_stochastic_colour_policy"],
+            "none_display_rgb",
+        )
+
     def test_v48_isolates_isotropic_site_integration_and_v45_resets_it(self) -> None:
         import v45_profile
         import v48_profile

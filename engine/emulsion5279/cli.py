@@ -66,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--profile",
         choices=(
-            "v42", "v43h", "v44", "v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+            "v42", "v43h", "v44", "v45", "v46", "v48r", "v49r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
         ),
         default="v42",
     )
@@ -145,7 +145,7 @@ def main() -> None:
     finalization_started = time.perf_counter()
     review_sampling: dict[str, object] | None = None
     additional_srgb_movies: tuple[str, ...] = ()
-    if args.profile in ("v44", "v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"):
+    if args.profile in ("v44", "v45", "v46", "v48r", "v49r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"):
         review_name = "07_scale_integrated_review_srgb_prores4444.mov"
         review_sampling = {}
         for directory in ("projection", "bluray_scan"):

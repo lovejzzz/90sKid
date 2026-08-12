@@ -22,6 +22,7 @@ export const researchLedger: ResearchLedgerEntry[] = [
   { version: "V46", status: "audit", titleZh: "证据重新核对", titleEn: "Evidence reconciliation", summaryZh: "重新读取5279公开颗粒曲线，确认48 µm扩散孔径RMS是处理后材料的边缘约束，不能直接解释为单一颗粒尺寸。", summaryEn: "Re-read the public 5279 granularity curves: 48 µm diffuse-aperture RMS constrains processed material, not one literal grain size." },
   { version: "V47", status: "boundary", titleZh: "颗粒结构边界", titleEn: "Grain-structure boundary", summaryZh: "把颗粒幅度、空间相关、群体尺寸与记录间统计拆开；公开资料没有给出完整5279 NPS。", summaryEn: "Separated amplitude, spatial correlation, population size and inter-record statistics; the public record does not disclose a complete 5279 NPS." },
   { version: "V48", status: "boundary", titleZh: "密度形成边界", titleEn: "Density-formation boundary", summaryZh: "随机事件必须在染料密度形成中参与，而不是在显示RGB之后叠加；任何候选都要回闭公开RMS。", summaryEn: "Random events must participate in dye-density formation rather than being added after display RGB; every candidate must re-close the published RMS." },
+  { version: "V49R", status: "image", titleZh: "共同密度公共修复", titleEn: "Common-density public correction", summaryZh: "删除V48显示RGB残差回注，只在形成负片中发布对称共同密度；同一负片直接进入2383与扫描观察。", summaryEn: "Removed V48's display-RGB residual reinjection and publishes only a symmetric common density inside the formed negative before direct 2383 and scan observation." },
   { version: "V49", status: "boundary", titleZh: "颗粒—锐度共同约束", titleEn: "Grain–sharpness coupling", summaryZh: "确认清晰度与颗粒不能各自独立设定：MTF、染料云频谱和观察孔径共同决定35mm尺度感。", summaryEn: "Sharpness and grain cannot be tuned independently: MTF, dye-cloud spectrum and observer aperture jointly determine the 35 mm scale impression." },
   { version: "V50", status: "audit", titleZh: "矢量追踪颗粒度", titleEn: "Vector-traced granularity", summaryZh: "从官方曲线图重新矢量化颗粒度证据，并把采样、坐标与不确定性写入可复现资产。", summaryEn: "Re-vectorized the official granularity graph and recorded sampling, coordinates and uncertainty as reproducible assets." },
   { version: "V51", status: "audit", titleZh: "负片光谱矢量化", titleEn: "Vector-traced negative spectra", summaryZh: "重新追踪5279净染料密度光谱；确认曲线已是净密度变化，包含有色遮罩耦合剂造成的负向区域。", summaryEn: "Re-traced 5279 net dye-density spectra; the plotted net changes already include negative regions caused by coloured masking couplers." },
@@ -87,7 +88,7 @@ export const researchChapters: ResearchChapter[] = [
     summaryEn: "Separated grain amplitude, spatial spectrum, fast/mid/slow populations, DIR reaction–diffusion and cross-record covariance, then tested finite events against nonnegative density and the public 48 µm marginals.",
     conclusionZh: "共享事件不是免费的去彩噪：它会把综合色能量换成更强亮度颗粒；没有交叉频谱测量前不选择相关系数。",
     conclusionEn: "Shared events are not free chroma cleanup: they trade opponent energy for stronger luma grain. No correlation coefficient is selected without cross-spectral evidence.",
-    evidenceIds: ["V47", "V48", "V49", "V70", "V71", "V72", "V73", "V74", "V80", "V81", "V82", "V83", "V84"],
+    evidenceIds: ["V47", "V48", "V49", "V49R", "V70", "V71", "V72", "V73", "V74", "V80", "V81", "V82", "V83", "V84"],
   },
   {
     id: "print-projection",
@@ -111,7 +112,7 @@ export const researchChapters: ResearchChapter[] = [
   },
 ];
 
-export const currentVisualRelease = "V48";
+export const currentVisualRelease = "V49";
 export const nextVisualRelease = "measurement-dependent";
-export const currentResearchCycle = "07";
-export const currentEngineCandidate = "V48 first-principles Kodak 5279 / 2383 baseline";
+export const currentResearchCycle = "08";
+export const currentEngineCandidate = "V49 conservative common-density Kodak 5279 / 2383 baseline";

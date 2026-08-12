@@ -165,9 +165,11 @@ promote_alpha = False`;
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · V48 VISUAL RELEASE / RESEARCH CYCLE 07</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V48 returns to the smallest Kodak model: one 5279 negative feeds a 2383 projection observer and a Cineon scan observer. Each owns only its deterministic colour.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · V49 VISUAL RELEASE / RESEARCH CYCLE 08</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V49 forms one conservative stochastic density inside the negative, then lets 2383 projection and Cineon scan observe that same material image.</p></header>
 
       <ResearchStatus language="en" />
+
+      <section className="method-section"><div className="method-index">V49</div><div className="method-copy"><span className="section-tag">COMMON DENSITY · TWO MATERIAL OBSERVERS · NO RGB REINJECTION</span><h2>Publish only the stochastic component the evidence can support</h2><p>Kodak&apos;s three Status-M granularity curves identify marginal RMS, not the cross-record joint law. V49 normalizes the three current density residuals, forms a symmetric unit common field, scales it by the smallest local published marginal, and applies it equally to the three negative records. Projection and scan then observe the complete formed negative.</p><div className="equation"><span>V49 NEGATIVE</span><b>D<sub>49,c</sub>=max[0,D<sub>mean,c</sub>+min(σ<sub>c</sub>)(1/√3)Σ<sub>k</sub>δD<sub>k</sub>/σ<sub>k</sub>]</b><small>No display-RGB grain delta is added. Unidentified opponent variance remains withheld.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V48</div><div className="method-copy"><span className="section-tag">FIRST PRINCIPLES · OBSERVER OWNERSHIP · ONE NEGATIVE</span><h2>Make every stage compute only what it owns</h2><p>V48 does not redesign colour or add a grain model. The direct 5279-to-2383-to-xenon/CIE result owns the projection mean; the old safety operation contributes only the formed frame&apos;s stochastic difference from that mean.</p><div className="equation"><span>V48 PROJECTION</span><b>P<sub>48</sub>=P<sub>2383,mean</sub>+[M(P<sub>formed</sub>,S<sub>formed</sub>)−M(P<sub>mean</sub>,S<sub>mean</sub>)]</b><small>RAW, negative, H-D, 48 µm RMS, MTF, 2383 and Scan/DI are frozen.</small></div></div></section>
 

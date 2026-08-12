@@ -99,13 +99,23 @@ class Emulsion5279Engine:
                     "classification": "first_principles_observer_ownership",
                 }
                 if self.config.profile == "v48r"
-                else LEGACY_MANAGED_PROJECTION_CONTRACT
+                else (
+                    {
+                        "name": "v49_common_density_direct_material_observers",
+                        "deterministic_mean": "direct_5279_to_2383_xenon_cie_observer",
+                        "stochastic_domain": "formed_common_status_m_density",
+                        "display_rgb_reinjection": False,
+                        "classification": "conservative_unidentified_joint_law_boundary",
+                    }
+                    if self.config.profile == "v49r"
+                    else LEGACY_MANAGED_PROJECTION_CONTRACT
+                )
             ),
             "print_lattice_sha256": print_lattice.sha256,
             "cie_observer_sha256": (
                 CIE_1931_2DEG_1NM.sha256
                 if self.config.profile
-                in {"v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+                in {"v45", "v46", "v48r", "v49r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
                 else None
             ),
             "research_conformance": assert_research_conformance(
@@ -157,7 +167,7 @@ class Emulsion5279Engine:
                     "EngineConfig per process until the remaining kernels are lifted"
                 )
             print_lattice = projection_lattice_for_profile(self.config.profile)
-            if self.config.profile in {"v46", "v48r"}:
+            if self.config.profile in {"v46", "v48r", "v49r"}:
                 verify_v46_runtime_assets()
             e = legacy.model
             self.profile.apply(e)
@@ -216,6 +226,38 @@ class Emulsion5279Engine:
         # Extended-linear highlights are deliberately allowed above one.
         return frame
 
+    def _apply_negative_publication_boundary(
+        self,
+        mean: np.ndarray,
+        formed: np.ndarray,
+        marginal_sigma: np.ndarray | None = None,
+    ) -> np.ndarray:
+        """Apply a declared stochastic boundary before material observation."""
+        policy = self.profile.PROFILE.get(
+            "negative_stochastic_publication_policy", "full_record_density"
+        )
+        if policy == "full_record_density":
+            return np.asarray(formed, dtype=np.float32)
+        if policy != "symmetric_minimum_marginal_common_density_v49":
+            raise ValueError(f"unknown negative stochastic policy: {policy}")
+        # Kodak's marginal curves do not identify an opponent-density law.
+        # Retain only the scalar component common to the three analytical
+        # records. This happens before either observer: it is not denoise,
+        # chroma suppression, or an RGB overlay.
+        if marginal_sigma is None:
+            raise ValueError("V49 common-density boundary requires marginal RMS")
+        sigma = np.maximum(np.asarray(marginal_sigma, dtype=np.float32), 1e-6)
+        residual = np.asarray(formed, dtype=np.float32) - np.asarray(mean, dtype=np.float32)
+        # Symmetric normalized projection: if the three currently sampled
+        # marginal fields are independent, division by sqrt(3) gives one unit-
+        # variance latent field without privileging a colour record. Scaling by
+        # min(sigma_R,G,B) makes the published component no stronger than any
+        # Kodak marginal. The unallocated variance is explicitly withheld.
+        common_latent = np.sum(residual / sigma, axis=2, keepdims=True) / np.sqrt(3.0)
+        common_sigma = np.min(sigma, axis=2, keepdims=True)
+        common_density = common_latent * common_sigma
+        return np.maximum(mean + common_density, 0.0).astype(np.float32)
+
     def form_negative(self, raw: np.ndarray, absolute_frame: int) -> FormedNegative:
         self.configure()
         e = legacy.model
@@ -246,6 +288,9 @@ class Emulsion5279Engine:
             precomputed_activations=(
                 activations if self.config.oversample == 1 else None
             ),
+        )
+        formed = self._apply_negative_publication_boundary(
+            mean, formed, e.published_5279_granularity_sigma(log_exposure)
         )
         return FormedNegative(mean, formed)
 
@@ -390,6 +435,34 @@ class Emulsion5279Engine:
     ) -> tuple[ObserverPair, ObserverPair]:
         """Return physical and deterministic observers from shared intermediates."""
         self.configure()
+        if self.config.profile == "v49r":
+            # V49 deliberately has no observer-side mean+RGB-delta graph.
+            # Evaluate the formed and mean negatives as two complete material
+            # observations; the public frame still uses only the formed pass.
+            projection, scan = (
+                legacy.model.reconstruct_density_pair_to_dual_display_v39(
+                    negative.mean_record_density,
+                    negative.formed_record_density,
+                    int(absolute_frame),
+                    self.config.grain_scale,
+                    "linear_rec709",
+                    branch_executor=self._observer_executor,
+                )
+            )
+            mean_projection, mean_scan = (
+                legacy.model.reconstruct_density_pair_to_dual_display_v39(
+                    negative.mean_record_density,
+                    negative.mean_record_density,
+                    int(absolute_frame),
+                    0.0,
+                    "linear_rec709",
+                    branch_executor=self._observer_executor,
+                )
+            )
+            return (
+                ObserverPair(projection, scan),
+                ObserverPair(mean_projection, mean_scan),
+            )
         projection, scan, mean_projection, mean_scan = (
             legacy.model.reconstruct_density_pair_to_dual_display_v39(
                 negative.mean_record_density,
@@ -421,7 +494,7 @@ class Emulsion5279Engine:
     ) -> np.ndarray:
         """View V66 printing-density data through one named single-input policy."""
         self.configure()
-        if self.config.profile not in {"v46", "v48r", "v66", "v72"}:
+        if self.config.profile not in {"v46", "v48r", "v49r", "v66", "v72"}:
             raise ValueError(
                 "the named Cineon policies require profile='v66' or 'v72'"
             )

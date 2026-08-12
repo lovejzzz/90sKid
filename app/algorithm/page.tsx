@@ -217,9 +217,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · V48 VISUAL RELEASE / RESEARCH CYCLE 07</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V48回到最小柯达模型：同一份5279负片分别进入2383放映和Cineon扫描，每条观察链只拥有自己的确定性颜色。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V49 VISUAL RELEASE / RESEARCH CYCLE 08</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V49先在负片内形成一个保守的随机共同密度，再让2383放映和Cineon扫描观察同一幅材料影像。</p></header>
 
         <ResearchStatus language="zh" />
+
+        <section className="method-section"><div className="method-index">V49</div><div className="method-copy"><span className="section-tag">共同密度 · 两个材料观察器 · 不回注RGB</span><h2>只发布证据真正支持的随机分量</h2><p>Kodak三条Status-M颗粒曲线只识别各记录边缘RMS，不识别记录间联合规律。V49归一三条当前密度残差，以对称和形成一个单位共同场，用局部最小公开边缘定标，再等量加入三条负片记录。放映与扫描随后观察完整形成负片。</p><div className="equation"><span>V49负片</span><b>D<sub>49,c</sub>=max[0,D<sub>mean,c</sub>+min(σ<sub>c</sub>)(1/√3)Σ<sub>k</sub>δD<sub>k</sub>/σ<sub>k</sub>]</b><small>不再增加显示RGB颗粒差值；未识别的综合色方差继续保留为空。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V48</div><div className="method-copy"><span className="section-tag">FIRST PRINCIPLES · OBSERVER OWNERSHIP · ONE NEGATIVE</span><h2>每个阶段只计算它真正拥有的东西</h2><p>V48不重做颜色，也不新增颗粒模型。5279→2383→氙灯/CIE直接结果拥有放映均值；旧安全处理只贡献形成帧相对均值的随机差值。</p><div className="equation"><span>V48放映发布</span><b>P<sub>48</sub>=P<sub>2383,mean</sub>+[M(P<sub>formed</sub>,S<sub>formed</sub>)−M(P<sub>mean</sub>,S<sub>mean</sub>)]</b><small>RAW、负片、H-D、48 µm RMS、MTF、2383与Scan/DI全部冻结。</small></div></div></section>
 

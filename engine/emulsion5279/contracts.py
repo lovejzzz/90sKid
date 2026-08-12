@@ -58,10 +58,10 @@ class EngineConfig:
 
     def __post_init__(self) -> None:
         if self.profile not in {
-            "v42", "v43h", "v44", "v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+            "v42", "v43h", "v44", "v45", "v46", "v48r", "v49r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
         }:
             raise ValueError(
-                "the emulsion engine supports public V42-V48 releases and the immutable internal research profiles"
+                "the emulsion engine supports public V42-V49 releases and the immutable internal research profiles"
             )
         if self.oversample < 1:
             raise ValueError("oversample must be positive")
