@@ -1,0 +1,4643 @@
+{
+  "audit": "V77 frequency ownership and projection grain observer",
+  "profile": "V72 \u00b7 Evidence-minimal record formation",
+  "image_change": "candidate only; no profile promoted by this audit",
+  "input": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "frequency_band_edges_lp_mm": [
+    0.0,
+    4.0,
+    8.0,
+    16.0,
+    24.0,
+    32.0,
+    48.0,
+    64.0,
+    96.0,
+    128.0,
+    170.0
+  ],
+  "observer_ablation": {
+    "reference": "archive_pointwise retained from V40/V44",
+    "candidate": "formed_density through current V72 spectral coordinates",
+    "single_variable": "PROJECTION_GRAIN_DELTA_OBSERVER"
+  },
+  "real_T020": {
+    "frame": 0,
+    "frequency_native_center_1536": {
+      "archive_pointwise_projection": {
+        "rgb": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.012642924665707014,
+          "band_power_fraction": [
+            0.009618741723587797,
+            0.014605573042076285,
+            0.04876097705392947,
+            0.0621011737939072,
+            0.07235070947094814,
+            0.16344967295489934,
+            0.15848422587268465,
+            0.26037122747809627,
+            0.17791515242319175,
+            0.03234254618667898
+          ],
+          "band_rms_equivalent": [
+            0.001239957163335572,
+            0.0015279419356431553,
+            0.002791796444265342,
+            0.0031506303674278422,
+            0.003400704900485226,
+            0.0051113965809302395,
+            0.005033158088900995,
+            0.006451252574692791,
+            0.005332784311492699,
+            0.002273707810556453
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.013106538239700654,
+          "band_power_fraction": [
+            0.004655492333522607,
+            0.009686761444346754,
+            0.03941576159666131,
+            0.0599983842964875,
+            0.07385706363911544,
+            0.1678336039196038,
+            0.16270147121834524,
+            0.26683981163239906,
+            0.18201175568743674,
+            0.032999894232081654
+          ],
+          "band_rms_equivalent": [
+            0.0008942744170338784,
+            0.001289963141336867,
+            0.0026020938735257333,
+            0.0032103898719629416,
+            0.0035619188230864196,
+            0.0053694210260693985,
+            0.005286688708346734,
+            0.00677038415768943,
+            0.005591620885774069,
+            0.002380917093011229
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.0030788308098923765,
+          "band_power_fraction": [
+            0.09568626181845218,
+            0.07480158914121826,
+            0.16226916351666673,
+            0.08271150471471429,
+            0.04703946123900625,
+            0.10713879951228966,
+            0.11177094021655518,
+            0.17963801672937568,
+            0.11827356788010242,
+            0.020670695231619452
+          ],
+          "band_rms_equivalent": [
+            0.0009523807706294628,
+            0.0008420565068037877,
+            0.001240234541464916,
+            0.0008854596691427891,
+            0.0006677547613254287,
+            0.0010077648624086841,
+            0.0010293196792832025,
+            0.0013049231918225268,
+            0.0010588383752109575,
+            0.0004426529529917458
+          ]
+        }
+      },
+      "formed_density_projection": {
+        "rgb": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.013132526903946954,
+          "band_power_fraction": [
+            0.008979895791870331,
+            0.013672071992697061,
+            0.045892949865273626,
+            0.05867700170233375,
+            0.06877960943383898,
+            0.15751869884797745,
+            0.1565026335955166,
+            0.26603355736761675,
+            0.18846546558228028,
+            0.03547811582059502
+          ],
+          "band_rms_equivalent": [
+            0.0012444686129486336,
+            0.0015355553217746077,
+            0.002813333943399895,
+            0.003181136144488224,
+            0.003444119025639316,
+            0.005212119412330228,
+            0.005195281978838904,
+            0.0067735526380151385,
+            0.005701172610530501,
+            0.002473594876966905
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.013625213237089179,
+          "band_power_fraction": [
+            0.004517435643742573,
+            0.009167023949986424,
+            0.037215285761927744,
+            0.05661988577989247,
+            0.07005943569673818,
+            0.1614252008101033,
+            0.16035841956499744,
+            0.27208594380254214,
+            0.1924168712631677,
+            0.036134497726902005
+          ],
+          "band_rms_equivalent": [
+            0.0009157760785359041,
+            0.0013045402725888704,
+            0.0026284758239992407,
+            0.0032421104219254116,
+            0.0036064226774168663,
+            0.005474304811719611,
+            0.005456186308744513,
+            0.0071071643913933865,
+            0.005976747136139949,
+            0.002590027164112004
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.0031346517133850763,
+          "band_power_fraction": [
+            0.09174496703331517,
+            0.07165084104152332,
+            0.15519351268085055,
+            0.07910326358543103,
+            0.04537588464449537,
+            0.10561571353951918,
+            0.11276216870455225,
+            0.18731701508011814,
+            0.1279854743705033,
+            0.02325115931969167
+          ],
+          "band_rms_equivalent": [
+            0.0009494681885292886,
+            0.0008390733745362994,
+            0.0012348837496144645,
+            0.0008816302740014521,
+            0.0006677314725660678,
+            0.0010187170215284372,
+            0.0010526185130478117,
+            0.0013566815169379141,
+            0.0011214234548933366,
+            0.0004779820637236774
+          ]
+        }
+      },
+      "legacy_managed_scan": {
+        "rgb": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.005960323535801344,
+          "band_power_fraction": [
+            0.04625446488973009,
+            0.05363131993590099,
+            0.17727443491719472,
+            0.2181663327556215,
+            0.2208540423293693,
+            0.25564200618706673,
+            0.02564218093276003,
+            0.002130085550067575,
+            0.000320759139777587,
+            8.43733625115202e-05
+          ],
+          "band_rms_equivalent": [
+            0.0012818779143799455,
+            0.001380317764698291,
+            0.0025095328754684795,
+            0.0027839645466691426,
+            0.0028010606396621494,
+            0.0030136023309459037,
+            0.0009544371048816289,
+            0.00027508591725633214,
+            0.00010674790356591469,
+            5.474853634973435e-05
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.0053381379105028135,
+          "band_power_fraction": [
+            0.025609589630235307,
+            0.04298432598153337,
+            0.15655277836645523,
+            0.21833786689677465,
+            0.24011173579993567,
+            0.2869064208402277,
+            0.027596155650040546,
+            0.0015960239264575101,
+            0.00023969558494630548,
+            6.540732339363036e-05
+          ],
+          "band_rms_equivalent": [
+            0.0008542620218543685,
+            0.0011067380723243517,
+            0.002112127734389463,
+            0.002494332360350639,
+            0.0026157515012004947,
+            0.0028593013111074535,
+            0.0008867763098982212,
+            0.0002132600410264803,
+            8.264561330977066e-05,
+            4.317208050046717e-05
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            1536,
+            1536
+          ],
+          "pixels_per_mm": 231.32530120481928,
+          "nyquist_axis_lp_mm": 115.66265060240964,
+          "nyquist_corner_lp_mm": 163.57168914194835,
+          "total_rms": 0.0034148450051259193,
+          "band_power_fraction": [
+            0.07235345428245946,
+            0.09466086652247181,
+            0.2836022112241585,
+            0.2524142087292315,
+            0.16592328807694148,
+            0.11701425483020048,
+            0.011100522159379029,
+            0.002234012397550546,
+            0.0005534481833949176,
+            0.00014373359421216987
+          ],
+          "band_rms_equivalent": [
+            0.0009185454102308459,
+            0.0010506455715139367,
+            0.0018185523305791242,
+            0.0017156468436120731,
+            0.0013909921183814123,
+            0.001168127860212234,
+            0.0003597847080236764,
+            0.00016140381137903987,
+            8.03358659961128e-05,
+            4.094021691047324e-05
+          ]
+        }
+      },
+      "formed_density_over_archive_band_rms": {
+        "luma": [
+          1.0240436951929612,
+          1.011300424628332,
+          1.010138738937101,
+          1.0098805912140119,
+          1.012494348282728,
+          1.0195335372549452,
+          1.0320612030986753,
+          1.049743149850878,
+          1.0688756012314247,
+          1.0878275315484867
+        ],
+        "opponent": [
+          0.9969417882111908,
+          0.9964573253179748,
+          0.9956856613232756,
+          0.995675246118161,
+          0.9999651237838953,
+          1.010867772362668,
+          1.0226351776163787,
+          1.039663886303606,
+          1.0591073020657285,
+          1.0798122106565735
+        ]
+      }
+    },
+    "frequency_scale_integrated_center_512": {
+      "archive_pointwise_projection": {
+        "rgb": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.006523217735112218,
+          "band_power_fraction": [
+            0.034902849800348364,
+            0.05217879783526119,
+            0.16770341224770732,
+            0.198485884472088,
+            0.21509219809601715,
+            0.3162705128589937,
+            0.015366344689584173,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0012186873944883027,
+            0.0014900776797861,
+            0.002671362495889774,
+            0.0029062079623361266,
+            0.003025340099177563,
+            0.00366852283119275,
+            0.0008086249927714529,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.006576702547114179,
+          "band_power_fraction": [
+            0.01790848190635623,
+            0.036854852112355486,
+            0.14470084545347522,
+            0.20434761737612203,
+            0.23377420625775155,
+            0.34558102097978943,
+            0.016832975914150086,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0008801112778923334,
+            0.0012625702050125139,
+            0.0025017489963047226,
+            0.0029729868557200976,
+            0.003179848986285054,
+            0.003866189540830078,
+            0.0008532742719438924,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.0023424755370628917,
+          "band_power_fraction": [
+            0.19442054909068032,
+            0.1493900947906183,
+            0.30868013440625774,
+            0.14433150421774374,
+            0.08030329565737149,
+            0.11662498420113301,
+            0.006249437636195476,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0010328711497338426,
+            0.0009053905673760582,
+            0.001301455743959281,
+            0.0008899295610232803,
+            0.0006638068790959845,
+            0.000799964773303358,
+            0.00018518061983613518,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "formed_density_projection": {
+        "rgb": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.006630183897749604,
+          "band_power_fraction": [
+            0.03406409521664477,
+            0.051086519799384174,
+            0.16527941280704117,
+            0.19683005783438612,
+            0.21550289869147593,
+            0.32129540753090574,
+            0.01594160812016202,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.001223697304457735,
+            0.001498575863133569,
+            0.002695472807808933,
+            0.002941516469927543,
+            0.0030778831808865223,
+            0.0037581822180307893,
+            0.0008371275577085914,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.006693825072875435,
+          "band_power_fraction": [
+            0.018137635718090413,
+            0.036422833856721265,
+            0.1428665976678938,
+            0.20207248112171908,
+            0.23332955247285397,
+            0.34977473034687157,
+            0.017396168815849853,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0009014978524725435,
+            0.0012775009310373915,
+            0.002530111787978041,
+            0.003009039895448662,
+            0.00323339850332931,
+            0.003958845692065883,
+            0.0008828789568530109,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.0023484375928827382,
+          "band_power_fraction": [
+            0.19347254806377634,
+            0.1484945201878113,
+            0.30648513651268733,
+            0.14358746120150848,
+            0.08120429666229409,
+            0.12021899486135439,
+            0.00653704251056811,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0010329723565548675,
+            0.0009049701146568448,
+            0.0013001208782769244,
+            0.0008898919581970189,
+            0.0006692194094186579,
+            0.0008142646294837415,
+            0.00018987582697671914,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "legacy_managed_scan": {
+        "rgb": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.0050773367749422016,
+          "band_power_fraction": [
+            0.06457991628729279,
+            0.07363592986696381,
+            0.22979296355800438,
+            0.24913345129918338,
+            0.2085154263808919,
+            0.17095406259057463,
+            0.003388250017089195,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0012902822104786467,
+            0.0013777831160298882,
+            0.0024339089839976098,
+            0.0025342648086572462,
+            0.002318489139819556,
+            0.0020993056937186894,
+            0.0002955450536923758,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "luma": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.00444968903715071,
+          "band_power_fraction": [
+            0.03690820358809633,
+            0.060949443763458226,
+            0.2095564528556113,
+            0.25705643853200566,
+            0.2336744355195474,
+            0.1979495611669168,
+            0.003905464574364173,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.0008548523610009443,
+            0.0010985366103169144,
+            0.0020369491196196026,
+            0.002256024983763284,
+            0.0021509745051404056,
+            0.001979734417796773,
+            0.0002780776042176164,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "opponent": {
+          "dimensions": [
+            512,
+            512
+          ],
+          "pixels_per_mm": 77.10843373493977,
+          "nyquist_axis_lp_mm": 38.55421686746988,
+          "nyquist_corner_lp_mm": 54.523896380649454,
+          "total_rms": 0.003078720980611838,
+          "band_power_fraction": [
+            0.08957839244950587,
+            0.1152427884336846,
+            0.3264462400054083,
+            0.25714223349273274,
+            0.13996954442767126,
+            0.07061378880865785,
+            0.001007012382339323,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "band_rms_equivalent": [
+            0.000921450401307151,
+            0.0010451465957059152,
+            0.0017590418283331,
+            0.0015611945883408519,
+            0.001151826605381773,
+            0.0008181163808507592,
+            9.769846417872326e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "projection_image_change": {
+      "linear_rgb_mae": 0.0009852731600403786,
+      "linear_rgb_p95_absolute": 0.003891587257385254,
+      "linear_rgb_p99_absolute": 0.006661474704742432,
+      "linear_rgb_maximum_absolute": 0.07164470106363297,
+      "oklab_delta_median": 0.0017826056573539972,
+      "oklab_delta_p95": 0.0087962384801358,
+      "oklab_delta_p99": 0.018821740671992326,
+      "changed_12bit_component_fraction": 0.7963216547710905
+    },
+    "projection_mean_change": {
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0,
+      "changed_12bit_component_fraction": 0.0
+    },
+    "scan_maximum_absolute_change": 0.0,
+    "projection_stage_tail_trace": {
+      "archive_pointwise": {
+        "parity_maximum_absolute": 0.0,
+        "mean_tail": {
+          "excluded_perimeter_pixels": 2,
+          "dark_pixel_count": 12559636,
+          "luma_p001": 0.00016115968173835427,
+          "luma_p01": 0.0016288853948935866,
+          "luma_p50": 0.17750823497772217,
+          "luma_p99": 0.8327397704124451,
+          "luma_p999": 0.8401923021674158,
+          "display_black_fraction": 0.006800173377532153,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.041763969182966765,
+          "dark_spikes_gt_0_04_per_million": 186.629612514248,
+          "dark_spikes_gt_0_05_per_million": 4.140247376595946,
+          "visible_chroma_to_luma_highpass_rms": 1.171806167400881,
+          "median_opponent_p9999": 0.041351944344118235,
+          "isolated_impulses_gt_0.06_count": 3,
+          "isolated_impulses_gt_0.06_per_million": 0.23886042557284304,
+          "isolated_impulses_gt_0.08_count": 2,
+          "isolated_impulses_gt_0.08_per_million": 0.1592402837152287
+        },
+        "stages": {
+          "raw_observer_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12251793,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0017550407210364938,
+            "luma_p50": 0.183074489235878,
+            "luma_p99": 0.8411251902580261,
+            "luma_p999": 0.859382177591324,
+            "display_black_fraction": 0.007746037337997953,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.324937285423334,
+            "dark_spikes_gt_0_04_per_million": 767757.9110257577,
+            "dark_spikes_gt_0_05_per_million": 667409.3334747005,
+            "visible_chroma_to_luma_highpass_rms": 1.7213633743960854,
+            "median_opponent_p9999": 0.4032196647167206,
+            "isolated_impulses_gt_0.06_count": 145152,
+            "isolated_impulses_gt_0.06_per_million": 11847.40878335114,
+            "isolated_impulses_gt_0.08_count": 249069,
+            "isolated_impulses_gt_0.08_per_million": 20329.187736031778
+          },
+          "print_mtf_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12168385,
+            "luma_p001": 0.00026106357108801603,
+            "luma_p01": 0.003976995591074228,
+            "luma_p50": 0.1845375820994377,
+            "luma_p99": 0.8408309847116471,
+            "luma_p999": 0.8587860527634621,
+            "display_black_fraction": 0.002999449017538052,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.21515146822929027,
+            "dark_spikes_gt_0_04_per_million": 630557.7116437391,
+            "dark_spikes_gt_0_05_per_million": 492530.8494101723,
+            "visible_chroma_to_luma_highpass_rms": 1.2305961543834587,
+            "median_opponent_p9999": 0.23970397057533263,
+            "isolated_impulses_gt_0.06_count": 253963,
+            "isolated_impulses_gt_0.06_per_million": 20870.72360054354,
+            "isolated_impulses_gt_0.08_count": 451034,
+            "isolated_impulses_gt_0.08_per_million": 37066.052725978014
+          },
+          "opponent_finished_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12047906,
+            "luma_p001": 0.0009573784773238003,
+            "luma_p01": 0.004939302639104426,
+            "luma_p50": 0.18660522252321243,
+            "luma_p99": 0.8412446439266206,
+            "luma_p999": 0.8594098812341691,
+            "display_black_fraction": 0.0010247195013012975,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.07918365438282438,
+            "dark_spikes_gt_0_04_per_million": 11322.299493372542,
+            "dark_spikes_gt_0_05_per_million": 3312.0278328864783,
+            "visible_chroma_to_luma_highpass_rms": 0.308440867802087,
+            "median_opponent_p9999": 0.09796293079853058,
+            "isolated_impulses_gt_0.06_count": 32150,
+            "isolated_impulses_gt_0.06_per_million": 2668.5135159587066,
+            "isolated_impulses_gt_0.08_count": 6375,
+            "isolated_impulses_gt_0.08_per_million": 529.1375945330251
+          },
+          "oklab_gamut_compressed": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12047881,
+            "luma_p001": 0.0009955910505959765,
+            "luma_p01": 0.005030597397126258,
+            "luma_p50": 0.1866057887673378,
+            "luma_p99": 0.8412446439266206,
+            "luma_p999": 0.8594098812341691,
+            "display_black_fraction": 0.0009748058358413609,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.07867970624565553,
+            "dark_spikes_gt_0_04_per_million": 11216.744255691105,
+            "dark_spikes_gt_0_05_per_million": 3255.4272406907075,
+            "visible_chroma_to_luma_highpass_rms": 0.3078017164749002,
+            "median_opponent_p9999": 0.09734053137897468,
+            "isolated_impulses_gt_0.06_count": 31809,
+            "isolated_impulses_gt_0.06_per_million": 2640.2153208518575,
+            "isolated_impulses_gt_0.08_count": 6178,
+            "isolated_impulses_gt_0.08_per_million": 512.7872693961702
+          },
+          "perceptual_mean_preserved": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12419916,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.18002908676862717,
+            "luma_p99": 0.841191291809082,
+            "luma_p999": 0.8595134019851685,
+            "display_black_fraction": 0.022876640468969478,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.07194093547388948,
+            "dark_spikes_gt_0_04_per_million": 9446.118637195292,
+            "dark_spikes_gt_0_05_per_million": 1975.858773924075,
+            "visible_chroma_to_luma_highpass_rms": 0.3182855961903475,
+            "median_opponent_p9999": 0.0917830021455884,
+            "isolated_impulses_gt_0.06_count": 31330,
+            "isolated_impulses_gt_0.06_per_million": 2522.5613442152107,
+            "isolated_impulses_gt_0.08_count": 3636,
+            "isolated_impulses_gt_0.08_per_million": 292.7556031779925
+          },
+          "scan_referenced_colour_published": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12436120,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.17972993850708008,
+            "luma_p99": 0.8412261694669725,
+            "luma_p999": 0.8595488667488098,
+            "display_black_fraction": 0.022875151109596883,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.0434183248262854,
+            "dark_spikes_gt_0_04_per_million": 212.0436277552806,
+            "dark_spikes_gt_0_05_per_million": 21.469718851217262,
+            "visible_chroma_to_luma_highpass_rms": 0.08387940780493734,
+            "median_opponent_p9999": 0.05477988264039159,
+            "isolated_impulses_gt_0.06_count": 489,
+            "isolated_impulses_gt_0.06_per_million": 39.32094576121813,
+            "isolated_impulses_gt_0.08_count": 8,
+            "isolated_impulses_gt_0.08_per_million": 0.6432874562162475
+          }
+        }
+      },
+      "formed_density": {
+        "parity_maximum_absolute": 0.0,
+        "mean_tail": {
+          "excluded_perimeter_pixels": 2,
+          "dark_pixel_count": 12559636,
+          "luma_p001": 0.00016115968173835427,
+          "luma_p01": 0.0016288853948935866,
+          "luma_p50": 0.17750823497772217,
+          "luma_p99": 0.8327397704124451,
+          "luma_p999": 0.8401923021674158,
+          "display_black_fraction": 0.006800173377532153,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.041763969182966765,
+          "dark_spikes_gt_0_04_per_million": 186.629612514248,
+          "dark_spikes_gt_0_05_per_million": 4.140247376595946,
+          "visible_chroma_to_luma_highpass_rms": 1.171806167400881,
+          "median_opponent_p9999": 0.041351944344118235,
+          "isolated_impulses_gt_0.06_count": 3,
+          "isolated_impulses_gt_0.06_per_million": 0.23886042557284304,
+          "isolated_impulses_gt_0.08_count": 2,
+          "isolated_impulses_gt_0.08_per_million": 0.1592402837152287
+        },
+        "stages": {
+          "raw_observer_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12259649,
+            "luma_p001": 3.244068011554191e-06,
+            "luma_p01": 0.0009650904103182256,
+            "luma_p50": 0.18293610215187073,
+            "luma_p99": 0.840755045413971,
+            "luma_p999": 0.8586901488900185,
+            "display_black_fraction": 0.010038885965629771,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.3255703168392152,
+            "dark_spikes_gt_0_04_per_million": 771226.810816525,
+            "dark_spikes_gt_0_05_per_million": 671615.8839457802,
+            "visible_chroma_to_luma_highpass_rms": 1.7286544300820492,
+            "median_opponent_p9999": 0.40340384974479093,
+            "isolated_impulses_gt_0.06_count": 144024,
+            "isolated_impulses_gt_0.06_per_million": 11747.807787971744,
+            "isolated_impulses_gt_0.08_count": 248449,
+            "isolated_impulses_gt_0.08_per_million": 20265.58835412009
+          },
+          "print_mtf_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12259649,
+            "luma_p001": 3.244068011554191e-06,
+            "luma_p01": 0.0009650904103182256,
+            "luma_p50": 0.18293610215187073,
+            "luma_p99": 0.840755045413971,
+            "luma_p999": 0.8586901488900185,
+            "display_black_fraction": 0.010038885965629771,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.3255703168392152,
+            "dark_spikes_gt_0_04_per_million": 771226.810816525,
+            "dark_spikes_gt_0_05_per_million": 671615.8839457802,
+            "visible_chroma_to_luma_highpass_rms": 1.7286544300820492,
+            "median_opponent_p9999": 0.40340384974479093,
+            "isolated_impulses_gt_0.06_count": 144024,
+            "isolated_impulses_gt_0.06_per_million": 11747.807787971744,
+            "isolated_impulses_gt_0.08_count": 248449,
+            "isolated_impulses_gt_0.08_per_million": 20265.58835412009
+          },
+          "opponent_finished_delta_added": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12063588,
+            "luma_p001": 0.0012630144477589057,
+            "luma_p01": 0.004261020803824068,
+            "luma_p50": 0.18641342967748642,
+            "luma_p99": 0.8413046598434448,
+            "luma_p999": 0.8594774979352953,
+            "display_black_fraction": 0.0005406374522519435,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.08101467600092399,
+            "dark_spikes_gt_0_04_per_million": 13179.412294252754,
+            "dark_spikes_gt_0_05_per_million": 3941.3647084101344,
+            "visible_chroma_to_luma_highpass_rms": 0.30687106692911875,
+            "median_opponent_p9999": 0.09996185662299395,
+            "isolated_impulses_gt_0.06_count": 37654,
+            "isolated_impulses_gt_0.06_per_million": 3121.2935985545923,
+            "isolated_impulses_gt_0.08_count": 7730,
+            "isolated_impulses_gt_0.08_per_million": 640.7712199720349
+          },
+          "oklab_gamut_compressed": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12063560,
+            "luma_p001": 0.0013010147836757823,
+            "luma_p01": 0.004395801923237741,
+            "luma_p50": 0.18641391396522522,
+            "luma_p99": 0.8413046598434448,
+            "luma_p999": 0.8594774979352953,
+            "display_black_fraction": 0.0005049330802656824,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.08048955012410824,
+            "dark_spikes_gt_0_04_per_million": 13035.704219981499,
+            "dark_spikes_gt_0_05_per_million": 3869.255841559208,
+            "visible_chroma_to_luma_highpass_rms": 0.30604438080891694,
+            "median_opponent_p9999": 0.09935148060321808,
+            "isolated_impulses_gt_0.06_count": 37222,
+            "isolated_impulses_gt_0.06_per_million": 3085.4905185533958,
+            "isolated_impulses_gt_0.08_count": 7519,
+            "isolated_impulses_gt_0.08_per_million": 623.2820162539084
+          },
+          "perceptual_mean_preserved": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12418294,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.1800585463643074,
+            "luma_p99": 0.8414548635482788,
+            "luma_p999": 0.8597930198907853,
+            "display_black_fraction": 0.023994062527975805,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.07406717359722298,
+            "dark_spikes_gt_0_04_per_million": 11125.521750411126,
+            "dark_spikes_gt_0_05_per_million": 2419.4949805504684,
+            "visible_chroma_to_luma_highpass_rms": 0.3163015763660847,
+            "median_opponent_p9999": 0.09382772445678711,
+            "isolated_impulses_gt_0.06_count": 36994,
+            "isolated_impulses_gt_0.06_per_million": 2978.9921224284108,
+            "isolated_impulses_gt_0.08_count": 4360,
+            "isolated_impulses_gt_0.08_per_million": 351.0949249550703
+          },
+          "scan_referenced_colour_published": {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12433592,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.1797710508108139,
+            "luma_p99": 0.841488602757454,
+            "luma_p999": 0.8598289990425112,
+            "display_black_fraction": 0.02399402227501979,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.045422866134719075,
+            "dark_spikes_gt_0_04_per_million": 311.4144327721225,
+            "dark_spikes_gt_0_05_per_million": 33.61860353789958,
+            "visible_chroma_to_luma_highpass_rms": 0.08284625689245999,
+            "median_opponent_p9999": 0.057053481347113855,
+            "isolated_impulses_gt_0.06_count": 686,
+            "isolated_impulses_gt_0.06_per_million": 55.17311489712707,
+            "isolated_impulses_gt_0.08_count": 19,
+            "isolated_impulses_gt_0.08_per_million": 1.5281183426317995
+          }
+        }
+      }
+    },
+    "pre_codec_colour_tail": {
+      "archive_pointwise_projection": {
+        "excluded_perimeter_pixels": 2,
+        "dark_pixel_count": 12436120,
+        "luma_p001": 0.0,
+        "luma_p01": 0.0,
+        "luma_p50": 0.17972993850708008,
+        "luma_p99": 0.8412261694669725,
+        "luma_p999": 0.8595488667488098,
+        "display_black_fraction": 0.022875151109596883,
+        "display_white_fraction": 0.0,
+        "dark_opponent_p9999": 0.0434183248262854,
+        "dark_spikes_gt_0_04_per_million": 212.0436277552806,
+        "dark_spikes_gt_0_05_per_million": 21.469718851217262,
+        "visible_chroma_to_luma_highpass_rms": 0.08387940780493734,
+        "median_opponent_p9999": 0.05477988264039159,
+        "isolated_impulses_gt_0.06_count": 489,
+        "isolated_impulses_gt_0.06_per_million": 39.32094576121813,
+        "isolated_impulses_gt_0.08_count": 8,
+        "isolated_impulses_gt_0.08_per_million": 0.6432874562162475
+      },
+      "formed_density_projection": {
+        "excluded_perimeter_pixels": 2,
+        "dark_pixel_count": 12433592,
+        "luma_p001": 0.0,
+        "luma_p01": 0.0,
+        "luma_p50": 0.1797710508108139,
+        "luma_p99": 0.841488602757454,
+        "luma_p999": 0.8598289990425112,
+        "display_black_fraction": 0.02399402227501979,
+        "display_white_fraction": 0.0,
+        "dark_opponent_p9999": 0.045422866134719075,
+        "dark_spikes_gt_0_04_per_million": 311.4144327721225,
+        "dark_spikes_gt_0_05_per_million": 33.61860353789958,
+        "visible_chroma_to_luma_highpass_rms": 0.08284625689245999,
+        "median_opponent_p9999": 0.057053481347113855,
+        "isolated_impulses_gt_0.06_count": 686,
+        "isolated_impulses_gt_0.06_per_million": 55.17311489712707,
+        "isolated_impulses_gt_0.08_count": 19,
+        "isolated_impulses_gt_0.08_per_million": 1.5281183426317995
+      }
+    },
+    "post_v76_maximum_budget_xq_colour_tail": {
+      "archive_pointwise_projection": {
+        "excluded_perimeter_pixels": 2,
+        "dark_pixel_count": 12440701,
+        "luma_p001": 0.0,
+        "luma_p01": 0.00031644769478589296,
+        "luma_p50": 0.17967338860034943,
+        "luma_p99": 0.840925931930542,
+        "luma_p999": 0.8591145873069763,
+        "display_black_fraction": 0.01990335587284188,
+        "display_white_fraction": 0.0,
+        "dark_opponent_p9999": 0.04071734242141106,
+        "dark_spikes_gt_0_04_per_million": 117.11558697536417,
+        "dark_spikes_gt_0_05_per_million": 9.565377385084652,
+        "visible_chroma_to_luma_highpass_rms": 0.0798966453474129,
+        "median_opponent_p9999": 0.051667049527168274,
+        "isolated_impulses_gt_0.06_count": 254,
+        "isolated_impulses_gt_0.06_per_million": 20.416855931189087,
+        "isolated_impulses_gt_0.08_count": 4,
+        "isolated_impulses_gt_0.08_per_million": 0.32152529025494625
+      },
+      "formed_density_projection": {
+        "excluded_perimeter_pixels": 2,
+        "dark_pixel_count": 12438354,
+        "luma_p001": 0.0,
+        "luma_p01": 0.0003155901504214853,
+        "luma_p50": 0.17967504262924194,
+        "luma_p99": 0.8412091732025146,
+        "luma_p999": 0.8591253161430359,
+        "display_black_fraction": 0.020693561652393506,
+        "display_white_fraction": 0.0,
+        "dark_opponent_p9999": 0.04257623703740059,
+        "dark_spikes_gt_0_04_per_million": 184.3491510211078,
+        "dark_spikes_gt_0_05_per_million": 14.873350605715194,
+        "visible_chroma_to_luma_highpass_rms": 0.0788624383490538,
+        "median_opponent_p9999": 0.053760052163520554,
+        "isolated_impulses_gt_0.06_count": 349,
+        "isolated_impulses_gt_0.06_per_million": 28.05837492645731,
+        "isolated_impulses_gt_0.08_count": 6,
+        "isolated_impulses_gt_0.08_per_million": 0.482378938563736
+      }
+    },
+    "pre_codec_mean_relative_grain_tail": {
+      "archive_pointwise_projection": {
+        "dark_pixel_count": 12569894,
+        "opponent_p999": 0.05499776051193489,
+        "opponent_p9999": 0.06639025579616813,
+        "opponent_maximum": 0.09520471841096878,
+        "median_opponent_p9999": 0.05038340919222831,
+        "isolated_gt_0_04_count": 7799,
+        "isolated_gt_0_04_per_million": 620.4507372934092,
+        "isolated_gt_0_05_count": 1313,
+        "isolated_gt_0_05_per_million": 104.45593256395003,
+        "isolated_gt_0_06_count": 159,
+        "isolated_gt_0_06_per_million": 12.649271346281838,
+        "isolated_gt_0_08_count": 1,
+        "isolated_gt_0_08_per_million": 0.07955516569988577
+      },
+      "formed_density_projection": {
+        "dark_pixel_count": 12569894,
+        "opponent_p999": 0.055257486954331525,
+        "opponent_p9999": 0.06672237307578335,
+        "opponent_maximum": 0.0927945002913475,
+        "median_opponent_p9999": 0.0524005862521941,
+        "isolated_gt_0_04_count": 10335,
+        "isolated_gt_0_04_per_million": 822.2026375083195,
+        "isolated_gt_0_05_count": 1938,
+        "isolated_gt_0_05_per_million": 154.17791112637863,
+        "isolated_gt_0_06_count": 238,
+        "isolated_gt_0_06_per_million": 18.934129436572814,
+        "isolated_gt_0_08_count": 1,
+        "isolated_gt_0_08_per_million": 0.07955516569988577
+      }
+    },
+    "post_v76_maximum_budget_xq_mean_relative_grain_tail": {
+      "archive_pointwise_projection": {
+        "dark_pixel_count": 12573121,
+        "opponent_p999": 0.0543220928311348,
+        "opponent_p9999": 0.0655069900751114,
+        "opponent_maximum": 0.0944380983710289,
+        "median_opponent_p9999": 0.04731346909703366,
+        "isolated_gt_0_04_count": 4924,
+        "isolated_gt_0_04_per_million": 391.62909511488834,
+        "isolated_gt_0_05_count": 663,
+        "isolated_gt_0_05_per_million": 52.731537380416526,
+        "isolated_gt_0_06_count": 70,
+        "isolated_gt_0_06_per_million": 5.56743230260808,
+        "isolated_gt_0_08_count": 0,
+        "isolated_gt_0_08_per_million": 0.0
+      },
+      "formed_density_projection": {
+        "dark_pixel_count": 12573121,
+        "opponent_p999": 0.054505206644535065,
+        "opponent_p9999": 0.06575112673640252,
+        "opponent_maximum": 0.09245442599058151,
+        "median_opponent_p9999": 0.04954604898393156,
+        "isolated_gt_0_04_count": 6803,
+        "isolated_gt_0_04_per_million": 541.0748850663252,
+        "isolated_gt_0_05_count": 1106,
+        "isolated_gt_0_05_per_million": 87.96543038120765,
+        "isolated_gt_0_06_count": 137,
+        "isolated_gt_0_06_per_million": 10.896260363675813,
+        "isolated_gt_0_08_count": 0,
+        "isolated_gt_0_08_per_million": 0.0
+      }
+    },
+    "gates": {
+      "direct_dark_opponent_p9999_le_0_035": false,
+      "direct_median_opponent_p9999_le_0_05": false,
+      "direct_isolated_impulses_gt_0_08_zero": false,
+      "scan_is_bit_identical_under_projection_ablation": true
+    },
+    "pass": false
+  },
+  "uniform_exposure_rows": [
+    {
+      "log_exposure": -3.0,
+      "negative_native_density": {
+        "records": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.1482855688909904,
+            "band_power_fraction": [
+              0.0031947661873418763,
+              0.008992829776147737,
+              0.037973894938276805,
+              0.05665297231053031,
+              0.07199638892032058,
+              0.16767172089215038,
+              0.16837513979653915,
+              0.27624890712011235,
+              0.17921044844639192,
+              0.02968293161218899
+            ],
+            "band_rms_equivalent": [
+              0.008381435888151472,
+              0.014061999367673238,
+              0.028896248264274924,
+              0.03529476037817678,
+              0.03978819565088166,
+              0.0607195855460835,
+              0.0608468180992409,
+              0.07793798474031373,
+              0.06277410810435767,
+              0.025547727983823508
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.07438125055836589,
+            "band_power_fraction": [
+              0.0041856815254107315,
+              0.009728379615322939,
+              0.04288857712316089,
+              0.0652984161618387,
+              0.08281506090414964,
+              0.17890406598196745,
+              0.17200560539369958,
+              0.2576706347306175,
+              0.16000305750354216,
+              0.026500521060290445
+            ],
+            "band_rms_equivalent": [
+              0.00481223210747875,
+              0.007336412300065878,
+              0.01540402784257398,
+              0.019007053603463105,
+              0.02140514324876345,
+              0.03146107668351935,
+              0.03084855145693552,
+              0.037756866072040915,
+              0.029752784498159598,
+              0.0121085093764822
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.14832939994472955,
+            "band_power_fraction": [
+              0.0031977433857235584,
+              0.009245909793144717,
+              0.037609028533630594,
+              0.05754241834900873,
+              0.07204791530158121,
+              0.16751052569574457,
+              0.16750392434523603,
+              0.2762469090597028,
+              0.17959088198069922,
+              0.029504743555528644
+            ],
+            "band_rms_equivalent": [
+              0.008387818887663753,
+              0.014262710456781397,
+              0.028765590758252437,
+              0.0355812576796732,
+              0.03981419593253572,
+              0.06070833061447159,
+              0.06070713438839594,
+              0.07796074013331472,
+              0.06285927699524968,
+              0.02547845927558986
+            ]
+          }
+        }
+      },
+      "native_observers": {
+        "archive_pointwise_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.001846481205523928,
+            "band_power_fraction": [
+              0.0031045888938308975,
+              0.00790541299806111,
+              0.033491168344601564,
+              0.05110346520869431,
+              0.06566079891765486,
+              0.15473556288483273,
+              0.15982972052221578,
+              0.27559570744933826,
+              0.2076725274665564,
+              0.040901047314214
+            ],
+            "band_rms_equivalent": [
+              0.00010288378692469173,
+              0.00016417505606131067,
+              0.0003379169997987105,
+              0.0004174169364657882,
+              0.00047314905044069396,
+              0.0007263399989765916,
+              0.0007381993552664422,
+              0.000969351119013001,
+              0.0008414618208514283,
+              0.0003734324946527258
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0018464812474383032,
+            "band_power_fraction": [
+              0.0031045889346313373,
+              0.007905413016427996,
+              0.03349116850162962,
+              0.05110346541625286,
+              0.06566079927536232,
+              0.1547355635024112,
+              0.15982972066223178,
+              0.27559570713726506,
+              0.2076725265173487,
+              0.040901047036438994
+            ],
+            "band_rms_equivalent": [
+              0.00010288378993616026,
+              0.00016417505997873437,
+              0.0003379170082614752,
+              0.00041741694678866043,
+              0.0004731490624697984,
+              0.0007263400169136943,
+              0.0007381993723466117,
+              0.000969351140468052,
+              0.0008414618380292382,
+              0.000373432501861429
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 2.789832910815749e-10,
+            "band_power_fraction": [
+              0.001588022948944807,
+              0.0037861898030262485,
+              0.01691057818139836,
+              0.02567346870617339,
+              0.03548439710793063,
+              0.09256038708527368,
+              0.11498670643842517,
+              0.2940383551749435,
+              0.32123742296394314,
+              0.09373447158994123
+            ],
+            "band_rms_equivalent": [
+              1.1117485721095001e-11,
+              1.7166406166819657e-11,
+              3.627917658754736e-11,
+              4.4701332375846996e-11,
+              5.255292688038336e-11,
+              8.487714723704147e-11,
+              9.460236868400578e-11,
+              1.512795366140836e-10,
+              1.5812162169969131e-10,
+              8.541376404706304e-11
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.001892688869849574,
+            "band_power_fraction": [
+              0.002787059515791504,
+              0.007115258483457141,
+              0.030112347388906818,
+              0.04613947491746394,
+              0.06001400747451327,
+              0.14413781529166086,
+              0.15471432582229983,
+              0.2828944392941531,
+              0.22507303556443775,
+              0.047012236247315854
+            ],
+            "band_rms_equivalent": [
+              9.991998258204188e-05,
+              0.00015965207561249116,
+              0.00032843658985036537,
+              0.0004065514853551957,
+              0.0004636663111064826,
+              0.0007185685343124964,
+              0.0007444653565685614,
+              0.0010066799842337517,
+              0.000897926858801874,
+              0.0004103785788565333
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0018926889121555106,
+            "band_power_fraction": [
+              0.002787059539830869,
+              0.007115258483322257,
+              0.03011234757277752,
+              0.0461394750050996,
+              0.06001400781461103,
+              0.14413781569383247,
+              0.15471432602922464,
+              0.28289443902069134,
+              0.22507303485194427,
+              0.04701223598866602
+            ],
+            "band_rms_equivalent": [
+              9.991998524640507e-05,
+              0.00015965207917956789,
+              0.000328436598194419,
+              0.00040655149482864833,
+              0.0004636663227842802,
+              0.0007185685513766216,
+              0.0007444653737069171,
+              0.001006680006248801,
+              0.0008979268774513552,
+              0.00041037858690053423
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 2.835206424300223e-10,
+            "band_power_fraction": [
+              0.001529896500980292,
+              0.0036048701078273478,
+              0.015781530081715192,
+              0.024741827738088293,
+              0.033834001928810184,
+              0.0876530968709458,
+              0.11397060552790302,
+              0.2952543309105395,
+              0.3280491742546396,
+              0.0955806660785509
+            ],
+            "band_rms_equivalent": [
+              1.1089595619584457e-11,
+              1.7022741124421078e-11,
+              3.5617155963548136e-11,
+              4.4596479229824355e-11,
+              5.215084733560487e-11,
+              8.393987471268026e-11,
+              9.571524429293022e-11,
+              1.5405749172353689e-10,
+              1.6238808440703537e-10,
+              8.76535905181204e-11
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0,
+            "band_power_fraction": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "band_rms_equivalent": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0,
+            "band_power_fraction": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "band_rms_equivalent": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0,
+            "band_power_fraction": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "band_rms_equivalent": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "formed_density_over_archive_band_rms": {
+          "luma": [
+            0.9711926952574915,
+            0.9724502564533715,
+            0.9719445608380849,
+            0.9739697871789731,
+            0.9799582405679532,
+            0.9893005130433339,
+            1.0084882236358272,
+            1.0385091265923767,
+            1.067103505911049,
+            1.0989364472962102
+          ],
+          "opponent": [
+            0.9974913301253336,
+            0.9916310355817944,
+            0.9817520493498064,
+            0.9976543619518756,
+            0.9923490551593126,
+            0.9889573041169298,
+            1.0117637182282582,
+            1.018363059351113,
+            1.026982158805878,
+            1.0262232498010884
+          ]
+        }
+      },
+      "scale_integrated_review_and_codec": {
+        "archive_pointwise_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008968559746537002,
+              "band_power_fraction": [
+                0.012833689169033232,
+                0.03546561136125419,
+                0.13794786059384678,
+                0.1955653485023807,
+                0.23675217165864765,
+                0.3597473061239937,
+                0.021688012590843794,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.00010160111262840835,
+                0.00016889874828014115,
+                0.0003331042627389669,
+                0.00039661456489562875,
+                0.0004363848767116897,
+                0.0005379246932956583,
+                0.0001320786386664597,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008968560018207221,
+              "band_power_fraction": [
+                0.012833689193560519,
+                0.035465611480619726,
+                0.13794786065829287,
+                0.1955653487136374,
+                0.23675217148244798,
+                0.3597473060794102,
+                0.021688012392031285,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.00010160111580313636,
+                0.00016889875368054916,
+                0.0003331042729069703,
+                0.0003966145771238573,
+                0.00043638488976801117,
+                0.0005379247095568171,
+                0.00013207864206192852,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 1.0933325516891536e-10,
+              "band_power_fraction": [
+                0.010667494091454267,
+                0.02769484053019741,
+                0.1128628501621149,
+                0.17356001627921455,
+                0.2404561514104414,
+                0.40864392274782724,
+                0.026114724778750174,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                1.129232799234782e-11,
+                1.8194985461116397e-11,
+                3.673057991862832e-11,
+                4.554881885659266e-11,
+                5.3613014179361325e-11,
+                6.989157072384911e-11,
+                1.7668309777155387e-11,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008679122536555565,
+              "band_power_fraction": [
+                0.013522478656715414,
+                0.03630184436510232,
+                0.13958558038286573,
+                0.19723692268358683,
+                0.2374321132738776,
+                0.35562159399743315,
+                0.020299466640418904,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.00010092621173968135,
+                0.00016536369400097986,
+                0.0003242620308409895,
+                0.0003854516676794424,
+                0.00042290765760690527,
+                0.0005175709377185832,
+                0.00012365683701379097,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008679122536555565,
+              "band_power_fraction": [
+                0.013522478656715414,
+                0.03630184436510232,
+                0.13958558038286573,
+                0.19723692268358683,
+                0.2374321132738776,
+                0.35562159399743315,
+                0.020299466640418904,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.00010092621173968135,
+                0.00016536369400097986,
+                0.0003242620308409895,
+                0.0003854516676794424,
+                0.00042290765760690527,
+                0.0005175709377185832,
+                0.00012365683701379097,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.99335731642197,
+              0.9790699481047953,
+              0.9734550325974044,
+              0.9718545154710012,
+              0.9691161805160793,
+              0.9621624151547102,
+              0.9362364352278185,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.000884872278368281,
+              "band_power_fraction": [
+                0.012426408512370589,
+                0.03459661652534613,
+                0.13453760956960198,
+                0.1927267666844212,
+                0.23747467252090065,
+                0.3654723212945521,
+                0.022765604892807337,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                9.864007707487567e-05,
+                0.00016458771029197666,
+                0.0003245655664072979,
+                0.0003884647419815923,
+                0.0004312104115206908,
+                0.000534943402119553,
+                0.0001335119646510345,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008848723050478816,
+              "band_power_fraction": [
+                0.012426408521751814,
+                0.034596616418213454,
+                0.13453760995240904,
+                0.19272676649648263,
+                0.23747467279357146,
+                0.3654723211435671,
+                0.022765604674004358,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                9.864008008618599e-05,
+                0.00016458771499959355,
+                0.0003245655766549589,
+                0.0003884647535047054,
+                0.0004312104247695866,
+                0.0005349434181380218,
+                0.00013351196803492626,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 1.0949583383929549e-10,
+              "band_power_fraction": [
+                0.009756055791329715,
+                0.02672152940047524,
+                0.11263220796995296,
+                0.17387011404092775,
+                0.2377638015511226,
+                0.41153182061942334,
+                0.02772447062676858,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                1.0815204427168405e-11,
+                1.789897868380124e-11,
+                3.6747592698804006e-11,
+                4.56572831066832e-11,
+                5.3391296037386665e-11,
+                7.024239419423798e-11,
+                1.8231786497938306e-11,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008559757116825667,
+              "band_power_fraction": [
+                0.01301773736797945,
+                0.0353845482600769,
+                0.13604538140521283,
+                0.194162582175554,
+                0.23851233314685955,
+                0.36133628904665827,
+                0.021541128597659057,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                9.76628051890909e-05,
+                0.0001610157167131753,
+                0.0003157209078997307,
+                0.0003771761396705897,
+                0.00041803905960699565,
+                0.0005145377365783935,
+                0.0001256306678413394,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0008559757116825667,
+              "band_power_fraction": [
+                0.01301773736797945,
+                0.0353845482600769,
+                0.13604538140521283,
+                0.194162582175554,
+                0.23851233314685955,
+                0.36133628904665827,
+                0.021541128597659057,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                9.76628051890909e-05,
+                0.0001610157167131753,
+                0.0003157209078997307,
+                0.0003771761396705897,
+                0.00041803905960699565,
+                0.0005145377365783935,
+                0.0001256306678413394,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9900925171974596,
+              0.978297297058732,
+              0.9727492088151084,
+              0.9709404425182195,
+              0.9694549008882869,
+              0.961854504854636,
+              0.9409693354866498,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.0,
+              "band_power_fraction": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          }
+        }
+      },
+      "scan_identity_maximum_absolute": 0.0
+    },
+    {
+      "log_exposure": -1.0,
+      "negative_native_density": {
+        "records": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.08262186370989105,
+            "band_power_fraction": [
+              0.00230929593819327,
+              0.006537615629834639,
+              0.027537429300272368,
+              0.04295923426163608,
+              0.05483797058652044,
+              0.13650457384025363,
+              0.1509103970604568,
+              0.2962976471208733,
+              0.234125790161616,
+              0.04798004610034334
+            ],
+            "band_rms_equivalent": [
+              0.00397040476151111,
+              0.006680434016943725,
+              0.013710607073378504,
+              0.01712471107770287,
+              0.01934798198389477,
+              0.030525907853362497,
+              0.03209627024697941,
+              0.04497374867071884,
+              0.0399778666689507,
+              0.018097780545410832
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.04010926667536077,
+            "band_power_fraction": [
+              0.0021701024602764868,
+              0.006968873637813286,
+              0.02962523820904623,
+              0.04483700314134474,
+              0.056332113519320444,
+              0.13661302010410137,
+              0.15046208503847958,
+              0.29222967428085334,
+              0.2324657227947224,
+              0.04829616681404237
+            ],
+            "band_rms_equivalent": [
+              0.0018684644594494089,
+              0.003348312750564777,
+              0.006903600433047659,
+              0.008493036887103197,
+              0.009519688651025515,
+              0.014824865707959047,
+              0.015558160938987872,
+              0.021682376369664396,
+              0.019338562316289123,
+              0.00881456842090435
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.08265166148447027,
+            "band_power_fraction": [
+              0.0024128805254952745,
+              0.006430686698809262,
+              0.02719679806668541,
+              0.04293691298055928,
+              0.05495667734663207,
+              0.13725259098368975,
+              0.1506763918823062,
+              0.29579509795883496,
+              0.23418522858665317,
+              0.04815673497033483
+            ],
+            "band_rms_equivalent": [
+              0.004059938897052641,
+              0.006627965879009823,
+              0.01363045887038247,
+              0.017126436030543684,
+              0.019375897221021145,
+              0.03062047081753767,
+              0.03208294259971789,
+              0.044951798724071276,
+              0.0399973609593553,
+              0.018137611920273175
+            ]
+          }
+        }
+      },
+      "native_observers": {
+        "archive_pointwise_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.03207334054079249,
+            "band_power_fraction": [
+              0.006278815038191178,
+              0.016770011552339127,
+              0.05075791502347889,
+              0.0525763669435655,
+              0.05719397429757561,
+              0.13432472714628138,
+              0.1464117408633522,
+              0.27659788898995996,
+              0.21524525038740966,
+              0.0438433097578465
+            ],
+            "band_rms_equivalent": [
+              0.002541458604818371,
+              0.004153468071692035,
+              0.007225968809127046,
+              0.0073542685032313496,
+              0.0076704233316022,
+              0.011754987698364095,
+              0.012272474763016142,
+              0.01686819551050976,
+              0.01488027591013113,
+              0.006715770730825911
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.031412385647683574,
+            "band_power_fraction": [
+              0.00225075110327549,
+              0.007444781806898069,
+              0.031077799381980784,
+              0.046695995620845386,
+              0.05852924987594592,
+              0.14068694994150718,
+              0.15311368418985868,
+              0.28924686450311315,
+              0.22510204586257604,
+              0.045851877713999296
+            ],
+            "band_rms_equivalent": [
+              0.0014902689620669728,
+              0.002710359552293334,
+              0.005537656971937447,
+              0.006787982912700456,
+              0.007599541652618535,
+              0.011782238992790548,
+              0.012291585993475964,
+              0.016894107390150938,
+              0.014903581322797104,
+              0.006726350335175581
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.00796945708788225,
+            "band_power_fraction": [
+              0.08779594686407369,
+              0.19867119932281943,
+              0.4554479915075926,
+              0.20319696907591714,
+              0.04760620241495382,
+              0.006316486529519146,
+              0.00020901335769314802,
+              0.0003886515552809861,
+              0.000305696455013497,
+              6.184291713655127e-05
+            ],
+            "band_rms_equivalent": [
+              0.002361380485908665,
+              0.003552190048302463,
+              0.005378338498305593,
+              0.003592422016189696,
+              0.0017388435386843895,
+              0.0006333831763311278,
+              0.00011521678631474055,
+              0.0001571118496307635,
+              0.00013933940051684616,
+              6.267202393076164e-05
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0324520608786515,
+            "band_power_fraction": [
+              0.006190557768518852,
+              0.016552293278505062,
+              0.05011988907473662,
+              0.052051815751184734,
+              0.05629824445665805,
+              0.13271874819285567,
+              0.14561354964966977,
+              0.27818806774690336,
+              0.21779487556952504,
+              0.04447195851144304
+            ],
+            "band_rms_equivalent": [
+              0.0025533313193514652,
+              0.00417514313041886,
+              0.007265195957082042,
+              0.0074038945373563585,
+              0.007699981970463033,
+              0.011822475437748734,
+              0.012383493384133307,
+              0.017116364682030018,
+              0.015144889556370363,
+              0.006843612485474295
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.031769960047296944,
+            "band_power_fraction": [
+              0.002191849076853342,
+              0.007287136352086547,
+              0.03034526092457914,
+              0.04581089795486747,
+              0.0573462709194939,
+              0.13895925047607016,
+              0.15239956550084074,
+              0.2911506271707599,
+              0.2279596015166736,
+              0.046549540107775164
+            ],
+            "band_rms_equivalent": [
+              0.0014873801870704212,
+              0.0027120339171685273,
+              0.0055342924729354925,
+              0.006799877218682587,
+              0.00760797820399793,
+              0.011842963755067229,
+              0.012402479934481233,
+              0.017142554294681187,
+              0.015168603989325593,
+              0.006854477670858889
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.007969573688433595,
+            "band_power_fraction": [
+              0.08779473518535025,
+              0.19867289798625373,
+              0.4554378431412735,
+              0.20318719413764244,
+              0.047593240059251654,
+              0.006310470965850651,
+              0.00021376277833567861,
+              0.00040354809222096024,
+              0.0003208142863021114,
+              6.54933675191509e-05
+            ],
+            "band_rms_equivalent": [
+              0.0023613987400031506,
+              0.0035522572061614465,
+              0.005378357266670258,
+              0.0035923881663139203,
+              0.0017386322313021785,
+              0.0006330907629297618,
+              0.00011652017636567127,
+              0.00016009683260834358,
+              0.0001427453403569757,
+              6.44961441227564e-05
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.016162598508519237,
+            "band_power_fraction": [
+              0.019494420972395576,
+              0.05596443951464911,
+              0.19686979503121477,
+              0.22935146880001012,
+              0.22456794705602906,
+              0.25232079129507795,
+              0.020453245360046217,
+              0.0004291699133577124,
+              0.0004210608574872239,
+              0.00012766119973210398
+            ],
+            "band_rms_equivalent": [
+              0.0022566611638837617,
+              0.003823554317599929,
+              0.0071713468712084946,
+              0.007740374040452736,
+              0.007659229260151374,
+              0.008118722620995047,
+              0.002311491490526027,
+              0.0003348311227197662,
+              0.00033165276328866,
+              0.00018261676520744586
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.013663706110283641,
+            "band_power_fraction": [
+              0.011890985538698086,
+              0.038371431053396576,
+              0.15461558799649033,
+              0.21562733260438505,
+              0.2449073330029296,
+              0.3077606876222135,
+              0.026172931693784065,
+              0.0003060083195814907,
+              0.00026655845142801375,
+              8.114371709333255e-05
+            ],
+            "band_rms_equivalent": [
+              0.00148996970368188,
+              0.002676532434046194,
+              0.005372731661620122,
+              0.006344836241701307,
+              0.006761910322231311,
+              0.0075801026013634755,
+              0.002210521270289999,
+              0.00023902048830225754,
+              0.00022308210849913878,
+              0.00012308240153997979
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.010233796820833509,
+            "band_power_fraction": [
+              0.03695159290087728,
+              0.09180832360416273,
+              0.28840439585865735,
+              0.2655259937035898,
+              0.18124178369463034,
+              0.1274335700006137,
+              0.007009648268582761,
+              0.0006636643202316397,
+              0.0007380511036615076,
+              0.00022297654499298442
+            ],
+            "band_rms_equivalent": [
+              0.0019672220002545974,
+              0.003100829014088265,
+              0.005495886158067738,
+              0.005273395105419933,
+              0.004356783248540309,
+              0.0036532442994096337,
+              0.0008568107437018831,
+              0.00026363983141984126,
+              0.0002780225404101847,
+              0.0001528151391604794
+            ]
+          }
+        },
+        "formed_density_over_archive_band_rms": {
+          "luma": [
+            0.9980615747424915,
+            1.0006177648547685,
+            0.9993924327528764,
+            1.0017522592698158,
+            1.0011101395011748,
+            1.0051539238266884,
+            1.009021939159367,
+            1.014706127929262,
+            1.0177824819946533,
+            1.0190485670978604
+          ],
+          "opponent": [
+            1.0000077302639683,
+            1.000018906043334,
+            1.0000034896213155,
+            0.9999905774222452,
+            0.9998784782083552,
+            0.9995383309625308,
+            1.011312501351758,
+            1.0189990951325136,
+            1.024443479930989,
+            1.0291058127308925
+          ]
+        }
+      },
+      "scale_integrated_review_and_codec": {
+        "archive_pointwise_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.01602453843534505,
+              "band_power_fraction": [
+                0.025742502750753172,
+                0.06962124688441176,
+                0.19401580891911877,
+                0.1900029983821279,
+                0.20108540191853932,
+                0.30195491961942045,
+                0.01757712152562863,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.002571052311468906,
+                0.0042282088182439255,
+                0.007058364607132803,
+                0.006984989479917719,
+                0.007185811175361356,
+                0.008805551957762213,
+                0.0021245130680419746,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.01464504326733753,
+              "band_power_fraction": [
+                0.010718354788208498,
+                0.03571852793354656,
+                0.13867896320463205,
+                0.19598398760737779,
+                0.23627984713545888,
+                0.36159025276636203,
+                0.02103006656441416,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0015161938243210048,
+                0.002767817399361299,
+                0.005453759118938449,
+                0.0064833721932815195,
+                0.007118754233655506,
+                0.00880641234193546,
+                0.002123787120610334,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.007725190521272776,
+              "band_power_fraction": [
+                0.09600895416475781,
+                0.22262738829084863,
+                0.46066777745741566,
+                0.18093398827729726,
+                0.03614220702242306,
+                0.0036124692182262497,
+                7.215569031252471e-06,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0023936743630602907,
+                0.003645008074355896,
+                0.0052432808006226475,
+                0.0032860129990099243,
+                0.0014686439938869826,
+                0.0004643134631033697,
+                2.0751260958004732e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.015343275626147596,
+              "band_power_fraction": [
+                0.027060463204607334,
+                0.07100808741037859,
+                0.19409039679672085,
+                0.1896865141191882,
+                0.20259654918068365,
+                0.2992461306530474,
+                0.01631185863537396,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0025239787835122573,
+                0.0040885752407656545,
+                0.006759586200967573,
+                0.006682459180043398,
+                0.006906119814163492,
+                0.008393292506232553,
+                0.00195961074116629,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.014043643627804888,
+              "band_power_fraction": [
+                0.011445728195869479,
+                0.036649994400957196,
+                0.14091581715561496,
+                0.1982758090772788,
+                0.23769299278652972,
+                0.3555708642904291,
+                0.01944879409332069,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0015024551423136032,
+                0.002688541574212896,
+                0.005271809057952893,
+                0.006253377772485031,
+                0.006846805481536773,
+                0.008374191420618892,
+                0.0019585115607920127,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.007256396463689021,
+              "band_power_fraction": [
+                0.10272066531447448,
+                0.2327469649374441,
+                0.46188190048381267,
+                0.16580171908634525,
+                0.02968263943681364,
+                0.007071398801506125,
+                9.471193960372273e-05,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0023256797681465552,
+                0.0035007654664661655,
+                0.004931584456200179,
+                0.002954714460148285,
+                0.0012501791778672462,
+                0.0006102020583714856,
+                7.061929348296664e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9909387033590153,
+              0.971358000290519,
+              0.9666376792561803,
+              0.9645254947672411,
+              0.9617982664954166,
+              0.9509197497761528,
+              0.9221788482402961,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.971594049732477,
+              0.9604273557294604,
+              0.9405531848713016,
+              0.8991791758092681,
+              0.8512472614676774,
+              1.314202810948079,
+              3.4031326397890767,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.016125932600848457,
+              "band_power_fraction": [
+                0.025659015609575016,
+                0.06952803535965772,
+                0.19389723780579637,
+                0.19024626791966073,
+                0.2006853096241915,
+                0.30224095289170416,
+                0.017743180789414496,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0025831215095619134,
+                0.004252113213563801,
+                0.00710085511533524,
+                0.007033684975960998,
+                0.007224081413709359,
+                0.008865464502357336,
+                0.002148031170276789,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.014701108428125248,
+              "band_power_fraction": [
+                0.010603700173456198,
+                0.0355095729804935,
+                0.13771999137643814,
+                0.19550490298761805,
+                0.2360068444267134,
+                0.3633239158181437,
+                0.02133107223713704,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0015138359008265755,
+                0.002770274507585653,
+                0.00545567604385263,
+                0.006500232749594989,
+                0.007141877221212816,
+                0.0088612925320105,
+                0.0021471205272100137,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.007725233923255534,
+              "band_power_fraction": [
+                0.09601249014773997,
+                0.22263568515972873,
+                0.46067065771189447,
+                0.18092888258524054,
+                0.036135088682678125,
+                0.0036098315217084655,
+                7.364191009814853e-06,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0023937318903210457,
+                0.003645096473648628,
+                0.005243326650108404,
+                0.0032859850967994,
+                0.0014685076097478102,
+                0.0004641465272345577,
+                2.0964000490390034e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.015438282346563392,
+              "band_power_fraction": [
+                0.02687512951012377,
+                0.07083899717661697,
+                0.19367416009609098,
+                0.18974218904233534,
+                0.20214030382359482,
+                0.3002267146330119,
+                0.01650250571822619,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0025308957833579055,
+                0.004108990920565353,
+                0.00679414513576288,
+                0.006724824156498735,
+                0.006941054212308573,
+                0.008459090012327943,
+                0.001983233845059945,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.014097794672348826,
+              "band_power_fraction": [
+                0.011240749411312995,
+                0.0365482294213268,
+                0.13956583749114676,
+                0.19752658307620008,
+                0.2373503893887227,
+                0.3580251283151124,
+                0.01974308289617831,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.001494682033153265,
+                0.0026951587570780635,
+                0.005266726231492657,
+                0.006265618622010349,
+                0.006868250955745175,
+                0.008435443783998613,
+                0.0019808822730162756,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.007256494998343892,
+              "band_power_fraction": [
+                0.10269562183704856,
+                0.23256509869936468,
+                0.462147655389124,
+                0.16575135144198547,
+                0.029662791700369825,
+                0.007082231211834487,
+                9.524972027301308e-05,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.002325427825043061,
+                0.003499444985300226,
+                0.004933069990564585,
+                0.002954305746924453,
+                0.0012497781030761871,
+                0.0006106775446140799,
+                7.082046186098872e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9873474610670468,
+              0.9728850876323248,
+              0.9653663797408061,
+              0.9639068112446807,
+              0.9616870667203693,
+              0.9519428179948295,
+              0.9225761888599009,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.9714654487605027,
+              0.9600418015266933,
+              0.9408282794020845,
+              0.8990624302593435,
+              0.851053201754136,
+              1.315699911087501,
+              3.3781940566855573,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.013771644936358489,
+              "band_power_fraction": [
+                0.027353542951921266,
+                0.07970381612727541,
+                0.25316817055488294,
+                0.25778526367416277,
+                0.21231285946273987,
+                0.166344013886377,
+                0.003332333342640743,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0022776794849631945,
+                0.003887992108893817,
+                0.0069293160269602964,
+                0.006992216400495691,
+                0.006345618619610704,
+                0.005616805761457994,
+                0.0007949870173393199,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.011327752952198473,
+              "band_power_fraction": [
+                0.017654013820271403,
+                0.05801429186062322,
+                0.20963098719215723,
+                0.25452300994696864,
+                0.2435800142421826,
+                0.21216424691499225,
+                0.004433436022804624,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0015051004999450427,
+                0.002728420265585065,
+                0.005186465682717757,
+                0.005714882349431372,
+                0.005590679483555189,
+                0.005217709177987466,
+                0.0007542476951906135,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.009228223696589115,
+              "band_power_fraction": [
+                0.04603838674219389,
+                0.1175480624124617,
+                0.3341829649245516,
+                0.26896904300968205,
+                0.15486088135240078,
+                0.07736309985662064,
+                0.0010375617020894129,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019800591401836075,
+                0.00316392260181657,
+                0.005334703264481362,
+                0.0047859621798633815,
+                0.003631524486000509,
+                0.002566758713715223,
+                0.0002972522016292838,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.013139540025615543,
+              "band_power_fraction": [
+                0.02903999312340414,
+                0.08225514167712729,
+                0.25790687747654606,
+                0.2597141252398303,
+                0.20970539082679046,
+                0.1584823965569403,
+                0.0028960750993615556,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0022391254015159704,
+                0.00376844073414123,
+                0.006672854018025037,
+                0.006696192767231587,
+                0.006017068555119356,
+                0.005230830858934835,
+                0.0007071068948294707,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.010861120612076993,
+              "band_power_fraction": [
+                0.018909450803881782,
+                0.060051155841658856,
+                0.2142000235283217,
+                0.2581896542230732,
+                0.2422492881746018,
+                0.20261021796505385,
+                0.0037902094634088166,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0014935304945087743,
+                0.0026615542454907284,
+                0.0050267165154802085,
+                0.005518792361078024,
+                0.005345716109692746,
+                0.0048888341951750834,
+                0.0006686613831604201,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.008664010171466681,
+              "band_power_fraction": [
+                0.04973632552243131,
+                0.12391549050419813,
+                0.3447729543781449,
+                0.26827300022031886,
+                0.14675241474056444,
+                0.06577845124065047,
+                0.0007713633936918053,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019322165688282443,
+                0.0030498729887898936,
+                0.005087278912216437,
+                0.004487530740240715,
+                0.003319033084431368,
+                0.002222085550773552,
+                0.00024062927685438953,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9923128020775417,
+              0.9754927710595941,
+              0.9691988384749443,
+              0.9656878346108282,
+              0.9561836133545134,
+              0.9369694684786488,
+              0.886527578969182,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.9758378068692802,
+              0.9639530963996418,
+              0.9536198472533074,
+              0.9376444216633602,
+              0.9139503525933,
+              0.8657165704357236,
+              0.8095121769846092,
+              null,
+              null,
+              null
+            ]
+          }
+        }
+      },
+      "scan_identity_maximum_absolute": 0.0
+    },
+    {
+      "log_exposure": 0.0,
+      "negative_native_density": {
+        "records": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.06936066969723614,
+            "band_power_fraction": [
+              0.001954764121853703,
+              0.005369863205150574,
+              0.023105563911278933,
+              0.03805034996123283,
+              0.0497567887506054,
+              0.12702470668924382,
+              0.14633743784058856,
+              0.2979699792858915,
+              0.25492258882370816,
+              0.05550795741044643
+            ],
+            "band_rms_equivalent": [
+              0.0030666234855938963,
+              0.00508270482350455,
+              0.010543178610091948,
+              0.013529838276442116,
+              0.015471750367508762,
+              0.0247205072577588,
+              0.026533283733362823,
+              0.03786164970685307,
+              0.035020104512906616,
+              0.016341461719287586
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.03607275447916856,
+            "band_power_fraction": [
+              0.0022796293708083814,
+              0.0056562110299511505,
+              0.023051523355402864,
+              0.03817848099601929,
+              0.049812160331593865,
+              0.12530959936461306,
+              0.1416393620317523,
+              0.29480113144231185,
+              0.2612353811081423,
+              0.05803652096940476
+            ],
+            "band_rms_equivalent": [
+              0.001722310414808952,
+              0.0027129519884909804,
+              0.0054768282425788,
+              0.007048368935700138,
+              0.008050947498054335,
+              0.012769428967691895,
+              0.013575983042773541,
+              0.01958591560776985,
+              0.018437214319567963,
+              0.00869020439286162
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0694006434754327,
+            "band_power_fraction": [
+              0.001803894059296737,
+              0.005449792162969096,
+              0.023299756363765474,
+              0.03814799942999375,
+              0.04975374525133924,
+              0.12637510478942102,
+              0.14690720832237952,
+              0.29781955710022373,
+              0.25473880428850715,
+              0.05570413823210424
+            ],
+            "band_rms_equivalent": [
+              0.0029476031459270413,
+              0.005123343413158771,
+              0.01059349307704315,
+              0.013554995599989746,
+              0.015480193546101148,
+              0.024671426526881368,
+              0.0266002090755714,
+              0.037873906607724515,
+              0.035027653923284684,
+              0.016379748423580028
+            ]
+          }
+        }
+      },
+      "native_observers": {
+        "archive_pointwise_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.021964008597828467,
+            "band_power_fraction": [
+              0.009057587402280758,
+              0.02146757521634285,
+              0.06009556116074081,
+              0.0536482118787905,
+              0.05038891125930637,
+              0.11864495100015529,
+              0.13116075956195758,
+              0.2697024531788442,
+              0.23455994892125206,
+              0.051274040420329695
+            ],
+            "band_rms_equivalent": [
+              0.0020903445275387545,
+              0.003218126426282262,
+              0.0053843440467700645,
+              0.005087322043271096,
+              0.004930365234874472,
+              0.007565475613338729,
+              0.007954512461911195,
+              0.011406543299782187,
+              0.010637474554534836,
+              0.004973479998957558
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.021031971704893255,
+            "band_power_fraction": [
+              0.002381542567450618,
+              0.005630875531546701,
+              0.02364470957293115,
+              0.03938265126050726,
+              0.05099653808535942,
+              0.12908176541445665,
+              0.14304831790353872,
+              0.29411954361812626,
+              0.2558001877062374,
+              0.05591386833984579
+            ],
+            "band_rms_equivalent": [
+              0.001026382321375967,
+              0.0015782214896044378,
+              0.003234051867467478,
+              0.004173807966785394,
+              0.004749526730840934,
+              0.007556356462377431,
+              0.007954655326250086,
+              0.01140622490214025,
+              0.010637275765700907,
+              0.004973243899486565
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.0071271237468681055,
+            "band_power_fraction": [
+              0.07904252888059494,
+              0.19171028053815886,
+              0.45654109708341883,
+              0.21666830927061287,
+              0.04911894197216863,
+              0.006715089570555461,
+              4.520915962593418e-05,
+              7.629879784957515e-05,
+              6.742026993688148e-05,
+              1.4824457078053584e-05
+            ],
+            "band_rms_equivalent": [
+              0.0020037554321359983,
+              0.0031205920718115716,
+              0.004815642498498581,
+              0.0033175081361198257,
+              0.0015795697249363074,
+              0.0005840367887908582,
+              4.79211814399575e-05,
+              6.225484370077346e-05,
+              5.852070412440993e-05,
+              2.7441237838050768e-05
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.021809957287003547,
+            "band_power_fraction": [
+              0.009242520165993076,
+              0.021932136831069326,
+              0.06136394511748032,
+              0.054800606288740714,
+              0.051318952944884706,
+              0.12013953689074423,
+              0.1319354369051544,
+              0.26881674224086455,
+              0.23067010103792593,
+              0.049780021577142564
+            ],
+            "band_rms_equivalent": [
+              0.002096766254647955,
+              0.003229946199218829,
+              0.005402707447616683,
+              0.00510560834533089,
+              0.00494075943338263,
+              0.007559582166186767,
+              0.007922012892237129,
+              0.011307926366972046,
+              0.0104749140463226,
+              0.004866114854237143
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.020855891255390554,
+            "band_power_fraction": [
+              0.0024138041244185183,
+              0.0057395721660781045,
+              0.024072868473031292,
+              0.04005680110803879,
+              0.05186981738429901,
+              0.13094733568244488,
+              0.14427904920553244,
+              0.29394856554639526,
+              0.25224108495372294,
+              0.05443110135603884
+            ],
+            "band_rms_equivalent": [
+              0.0010246599608102701,
+              0.0015800415735588704,
+              0.003235881992581857,
+              0.004174138794768557,
+              0.004749918010336287,
+              0.007547047562060969,
+              0.007921918854596977,
+              0.01130744349819876,
+              0.010474581170751602,
+              0.004865778271144167
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.007126970037853148,
+            "band_power_fraction": [
+              0.0790430617317069,
+              0.19171442584491521,
+              0.4565498149684235,
+              0.21666428651431502,
+              0.04911578038687037,
+              0.006711513586768031,
+              4.5012669104617885e-05,
+              7.563779382524924e-05,
+              6.604858292682725e-05,
+              1.4417921144240977e-05
+            ],
+            "band_rms_equivalent": [
+              0.002003718971433011,
+              0.0031205585077383326,
+              0.004815584618023618,
+              0.003317405791581202,
+              0.001579484823783153,
+              0.0005838686672201115,
+              4.7815897953966136e-05,
+              6.19832522015476e-05,
+              5.792108453278319e-05,
+              2.7061773572942764e-05
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "rgb": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.018257843284801078,
+            "band_power_fraction": [
+              0.020159111222454954,
+              0.0479117837706033,
+              0.17700877395963474,
+              0.2288627011312183,
+              0.2317112429691643,
+              0.2713052314672699,
+              0.022090810754932768,
+              0.00043068638306683525,
+              0.0004029663224778474,
+              0.00011669201917709383
+            ],
+            "band_rms_equivalent": [
+              0.0025922994367758097,
+              0.003996415595246561,
+              0.007681514806290868,
+              0.008734478591455467,
+              0.008788667383966001,
+              0.009509957128122368,
+              0.0027136591847570775,
+              0.0003789047463511213,
+              0.0003665083310460871,
+              0.00019722867285147116
+            ]
+          },
+          "luma": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.015675349603168468,
+            "band_power_fraction": [
+              0.014945394349997684,
+              0.0345117450487157,
+              0.13725110868670407,
+              0.21153581575307434,
+              0.2507976493324886,
+              0.3227291831784078,
+              0.02733455510870271,
+              0.0003939790973241007,
+              0.0003844320950712602,
+              0.00011613734951382679
+            ],
+            "band_rms_equivalent": [
+              0.0019163327643896087,
+              0.0029120625237152482,
+              0.005807312092429614,
+              0.0072095671361351345,
+              0.007850168276256243,
+              0.00890504984989026,
+              0.002591631443467112,
+              0.0003111385518179788,
+              0.00030734563871169626,
+              0.0001689286030682019
+            ]
+          },
+          "opponent": {
+            "dimensions": [
+              5616,
+              144
+            ],
+            "pixels_per_mm": 231.32530120481928,
+            "nyquist_axis_lp_mm": 115.66265060240964,
+            "nyquist_corner_lp_mm": 163.57168914194835,
+            "total_rms": 0.01106301144671544,
+            "band_power_fraction": [
+              0.032208639064173414,
+              0.08580629361326914,
+              0.2814752881647834,
+              0.2730743049960211,
+              0.18441648761589693,
+              0.1339233040406304,
+              0.00787828319971137,
+              0.0005807907722419354,
+              0.0005020958850330442,
+              0.00013451264823923994
+            ],
+            "band_rms_equivalent": [
+              0.0019854527176650268,
+              0.003240656005735004,
+              0.0058693971651307,
+              0.005781143907976312,
+              0.004750870963264657,
+              0.00404856801211077,
+              0.000981949505789334,
+              0.0002666141626154667,
+              0.0002478943867257292,
+              0.00012830835092131766
+            ]
+          }
+        },
+        "formed_density_over_archive_band_rms": {
+          "luma": [
+            0.9983219113094349,
+            1.0011532500136522,
+            1.00056589232003,
+            1.000079262866379,
+            1.0000823828388652,
+            0.9987680702514751,
+            0.9958846146928478,
+            0.9913396934753624,
+            0.9847052385843093,
+            0.9783912411065357
+          ],
+          "opponent": [
+            0.999981803815774,
+            0.9999892443252861,
+            0.9999879807367383,
+            0.9999691501770532,
+            0.9999462504555423,
+            0.9997121387317146,
+            0.997802986428386,
+            0.9956374238038207,
+            0.9897537187804165,
+            0.9861717511670764
+          ]
+        }
+      },
+      "scale_integrated_review_and_codec": {
+        "archive_pointwise_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.011035221920995503,
+              "band_power_fraction": [
+                0.03749765089520366,
+                0.0890051447872525,
+                0.22652972177743505,
+                0.1910772677462361,
+                0.17870625364933798,
+                0.26062560628904546,
+                0.016558354855489284,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0021368946024164326,
+                0.0032922183168047387,
+                0.005252229167444332,
+                0.004823758786472537,
+                0.004664992464911626,
+                0.005633646762814378,
+                0.001420004315135495,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.009136495636641775,
+              "band_power_fraction": [
+                0.01317540435806583,
+                0.03069087010571319,
+                0.12136346827263578,
+                0.19331115896912088,
+                0.24297458828965737,
+                0.37463793488665476,
+                0.023846575118152236,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0010487250156463995,
+                0.0016006053040472103,
+                0.0031829047377520503,
+                0.004017058103004565,
+                0.004503602780597291,
+                0.005592236458609937,
+                0.0014108883845501997,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.006915458314791938,
+              "band_power_fraction": [
+                0.08943079972583348,
+                0.2152572393891534,
+                0.4632819605134881,
+                0.1914422690117563,
+                0.03677702994478246,
+                0.0038082964508042126,
+                2.4049641822022792e-06,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.00206806662072442,
+                0.00320848380089313,
+                0.004706994194956805,
+                0.003025797671300947,
+                0.0013262008273238358,
+                0.00042676258964127127,
+                1.0724456059515886e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.010173864897984917,
+              "band_power_fraction": [
+                0.041291729102440194,
+                0.092386709510763,
+                0.2274012166749532,
+                0.18837850363471131,
+                0.17965951919482545,
+                0.25660216251692913,
+                0.014280159365377673,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0020673666252982305,
+                0.0030923647627111046,
+                0.004851570628804302,
+                0.004415721123906694,
+                0.00431232101392268,
+                0.005153664255201722,
+                0.001215772997125659,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.008420676196510518,
+              "band_power_fraction": [
+                0.015067232435991363,
+                0.031906659305383944,
+                0.12424408105761493,
+                0.19736078333058535,
+                0.2461260125243344,
+                0.36481765039372593,
+                0.02047758095236413,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0010336266818289494,
+                0.0015041378331982899,
+                0.002968143007167192,
+                0.003740911186629995,
+                0.004177589139743765,
+                0.005086099927175337,
+                0.001204997909070681,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.006349497467689978,
+              "band_power_fraction": [
+                0.0979561736958736,
+                0.22592066540281963,
+                0.462319805953565,
+                0.17294837814816658,
+                0.030544721409837897,
+                0.010170658883017023,
+                0.00013959650672013343,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019872626063464883,
+                0.0030179867835775564,
+                0.004317283855989501,
+                0.002640569491090169,
+                0.0011097047334549936,
+                0.0006403448169566237,
+                7.501992568769774e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9856031527882035,
+              0.9397306315273368,
+              0.9325264975613015,
+              0.9312564296324153,
+              0.9276104806005364,
+              0.9094930024542612,
+              0.8540703306270694,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.9609277507947848,
+              0.9406270908201109,
+              0.917206114385089,
+              0.8726854132169557,
+              0.8367546683666957,
+              1.500470829682812,
+              6.9952196429703335,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "formed_density_projection": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.011048365474695166,
+              "band_power_fraction": [
+                0.03762804786656018,
+                0.08946673575885175,
+                0.22764433638221393,
+                0.1918668353305454,
+                0.17825151418685373,
+                0.25874929458931434,
+                0.016393235885660676,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0021431564517869093,
+                0.003304675556586282,
+                0.005271405883901813,
+                0.004839472075142957,
+                0.004664602556074484,
+                0.0056200168710357785,
+                0.001414589323978846,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.009124029041637362,
+              "band_power_fraction": [
+                0.013170615475813607,
+                0.03089093878823939,
+                0.12192388541569323,
+                0.19391468473759488,
+                0.24280108640872197,
+                0.37356959104662507,
+                0.023729198127311814,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0010471036999595324,
+                0.0016036227633181607,
+                0.003185892048777913,
+                0.0040178341725202555,
+                0.004495851644188517,
+                0.005576637533695048,
+                0.001405491392372811,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.006915325806757159,
+              "band_power_fraction": [
+                0.0894313987245256,
+                0.21526085791248378,
+                0.463286856896395,
+                0.19143870181386277,
+                0.03677355454870904,
+                0.003806246456505605,
+                2.383647518220795e-06,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0020680339199283973,
+                0.003208449289742305,
+                0.004706928876946869,
+                0.003025711503718691,
+                0.0013261127531406852,
+                0.0004266395366283874,
+                1.0676616994516277e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.010190070673651047,
+              "band_power_fraction": [
+                0.04150666889337743,
+                0.09317633556921405,
+                0.2278035925573027,
+                0.18908365996868448,
+                0.17909303705913587,
+                0.25514075369806766,
+                0.01419595225421773,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.002076042004716232,
+                0.0031104985939303803,
+                0.004863595864214021,
+                0.004431024956880654,
+                0.0043123752688242626,
+                0.005147153417469802,
+                0.0012141139834368584,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.008417419281962359,
+              "band_power_fraction": [
+                0.014962068612144922,
+                0.03241278112940151,
+                0.12461101759952736,
+                0.19781466790356922,
+                0.24558871781559377,
+                0.3641815246778625,
+                0.02042922226190066,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.001029614811421228,
+                0.0015154342860788747,
+                0.0029713730616494557,
+                0.0037437617784335,
+                0.0041714127699916306,
+                0.005079698258806981,
+                0.0012031087272972492,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.006349102665511735,
+              "band_power_fraction": [
+                0.09787900273098149,
+                0.22567355219197363,
+                0.4623608837637847,
+                0.17329182593251405,
+                0.030498174847505673,
+                0.010155972059671064,
+                0.0001405884735694819,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019863561419926094,
+                0.0030161482358754504,
+                0.0043172071961861186,
+                0.002643025715237043,
+                0.0011087899341767297,
+                0.0006398425217138063,
+                7.528131688311872e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9832978447703125,
+              0.9450067190011637,
+              0.9326659585936864,
+              0.9317860363771959,
+              0.9278359474747645,
+              0.9108890847064256,
+              0.8560057598546437,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.960504623667577,
+              0.9400641754003536,
+              0.9172025558598323,
+              0.873522049933936,
+              0.8361204064667493,
+              1.499726271902277,
+              7.0510459372837575,
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "legacy_managed_scan": {
+          "pre_codec": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.01542693115925392,
+              "band_power_fraction": [
+                0.02938870753061138,
+                0.07035342636802693,
+                0.2335255939225776,
+                0.26312233484217873,
+                0.2203227976148967,
+                0.1794044675469408,
+                0.0038826721747677925,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0026446596245397447,
+                0.004091873209575487,
+                0.0074549851756121385,
+                0.007913313996497194,
+                0.007241178617384009,
+                0.006534256346979475,
+                0.0009612689253227305,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.012898224543304682,
+              "band_power_fraction": [
+                0.022993952282695292,
+                0.0524612550674867,
+                0.1897245953566104,
+                0.25607024486894464,
+                0.25029904191189706,
+                0.22343060871420173,
+                0.005020301798164177,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019558554120561672,
+                0.002954263789819414,
+                0.005618129567572507,
+                0.006526938064802279,
+                0.0064529682286317185,
+                0.0060967904394925694,
+                0.0009138919379138737,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.009950336438758024,
+              "band_power_fraction": [
+                0.04195590957825038,
+                0.11108295781522531,
+                0.3301670222800203,
+                0.27746063202448723,
+                0.15668158108125504,
+                0.081456859577425,
+                0.0011950376433367573,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0020381415169444346,
+                0.0033163585841494135,
+                0.005717479442220119,
+                0.005241293150432256,
+                0.0039386440880697935,
+                0.002839890510900572,
+                0.00034397632964148437,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_v76_maximum_budget_xq": {
+            "rgb": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.014502508627828415,
+              "band_power_fraction": [
+                0.031845382079407354,
+                0.07311531485301606,
+                0.23871556882418504,
+                0.26477586330046926,
+                0.21834467578348876,
+                0.1698200523811075,
+                0.0033831427783260946,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.002588012469201844,
+                0.003921455668787945,
+                0.007085712134614614,
+                0.007462465371717633,
+                0.0067766403237839055,
+                0.0059763719367028414,
+                0.0008435353666393701,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "luma": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.012223902356217755,
+              "band_power_fraction": [
+                0.025075695348291505,
+                0.05469984517155715,
+                0.19505505242641122,
+                0.2592526790021138,
+                0.25005197152807174,
+                0.21153780372058298,
+                0.004326952802971704,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019356924874824482,
+                0.002858926041906677,
+                0.005398691041440995,
+                0.006224027438625676,
+                0.006112586439979515,
+                0.005622168630465913,
+                0.0008040831311754317,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "opponent": {
+              "dimensions": [
+                1920,
+                64
+              ],
+              "pixels_per_mm": 77.10843373493977,
+              "nyquist_axis_lp_mm": 38.55421686746988,
+              "nyquist_corner_lp_mm": 54.523896380649454,
+              "total_rms": 0.009132350812496777,
+              "band_power_fraction": [
+                0.04565525023605164,
+                0.11856821989567791,
+                0.3431347578131795,
+                0.2778834049959339,
+                0.1463881018522615,
+                0.06755918333568554,
+                0.0008110818712100799,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "band_rms_equivalent": [
+                0.0019513175473253775,
+                0.0031446096012466484,
+                0.005349521561432861,
+                0.004814086529664908,
+                0.0034941011731139996,
+                0.002373694272054661,
+                0.000260084777101833,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "post_over_pre_band_rms": {
+            "luma": [
+              0.9896909943089699,
+              0.9677287626645673,
+              0.9609409994034142,
+              0.9535907000849134,
+              0.9472519038383089,
+              0.9221521858530275,
+              0.8798448676666293,
+              null,
+              null,
+              null
+            ],
+            "opponent": [
+              0.9574004214637545,
+              0.9482115764792016,
+              0.9356433399532471,
+              0.9184921338101235,
+              0.8871330069395403,
+              0.8358400659967439,
+              0.7561124260291723,
+              null,
+              null,
+              null
+            ]
+          }
+        }
+      },
+      "scan_identity_maximum_absolute": 0.0
+    }
+  ],
+  "global_gates": {
+    "historical_total_image_tail_gate_at_maximum_xq": false,
+    "mean_relative_grain_tail": {
+      "archive_has_no_mean_relative_isolated_gt_0_08": true,
+      "direct_has_no_mean_relative_isolated_gt_0_08": true,
+      "direct_p9999_within_0_001_of_archive": true,
+      "direct_isolated_gt_0_06_does_not_exceed_archive": false
+    },
+    "scan_identical_for_all_uniform_exposures": true
+  },
+  "decision": "Retain archive_pointwise for V72. The current-coordinate formed_density candidate removes no category error, changes only the stochastic projection, and nearly doubles mean-relative isolated >0.06 opponent events on T020 (70 to 137 after V76 XQ). The old whole-image gate is not suitable for maximum-fidelity delivery because the deterministic mean itself contains natural isolated chromatic detail. Use paired mean-relative tails for future grain regressions.",
+  "decision_boundary": "Promote formed_density only if current-coordinate native colour-tail gates pass, scan remains identical, and its frequency change is physically attributable rather than a pleasing-by-eye adjustment."
+}

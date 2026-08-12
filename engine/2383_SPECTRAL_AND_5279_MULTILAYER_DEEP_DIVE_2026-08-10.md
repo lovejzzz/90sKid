@@ -4,6 +4,15 @@ Date: 2026-08-10
 Scope: V44 physical audit and exact execution optimization  
 Image authority: frozen V44 unless a later profile explicitly adopts a candidate
 
+> **V58/V59 correction (2026-08-11):** this document records the V44 audit and
+> should not be read as the final 2383 coordinate model. H-61B's
+> `1.09 / 1.06 / 1.03` are simultaneous integral Status-A readings, not three
+> separated H-D coordinates (corrected in V58). The 2005 graph also contains a
+> fourth `Visual Neutral` vector path whose residual supplies processed-print
+> base/D-min spectral absorption (corrected in V59). The stored xenon samples
+> match Kodak's generic lamp graph, not a measured projector/filter/lens/screen
+> chain.
+
 ## Result in one paragraph
 
 The architecture is fundamentally sound: the 5279 negative is formed once in
@@ -56,9 +65,11 @@ the 18-percent negative at LAD.
 ### 1.2 Print exposure to processed 2383
 
 The separated R/G/B sensitometric curves map log printer exposure to Status-A
-density. The current LAD target is `1.09 / 1.06 / 1.03`, not equal RGB density.
-This agrees with Kodak H-61B and the March 2005 2383 sheet: those unequal
-instrument readings produce visual-neutral density 1.0.
+density. The published LAD target is `1.09 / 1.06 / 1.03`, not equal RGB
+density. As corrected in V58, those numbers are the three simultaneous integral
+Status-A readings of one neutral patch. They must first be spectrally resolved
+to separated H-D coordinates; they are not themselves the three principal
+curve densities.
 
 The current interimage matrix acts in log exposure about LAD before these three
 curves. This placement agrees with the published preview/patent architecture,
@@ -82,7 +93,7 @@ D_A(a_i)=-\log_{10}
 for dye amount \(a_i\). The combined print spectrum is then
 
 \[
-T_{2383}(\lambda)=10^{-\sum_i a_i d_i(\lambda)}.
+T_{2383}(\lambda)=10^{-\left[D_{base}(\lambda)+\sum_i a_i d_i(\lambda)\right]}.
 \]
 
 Finally,
@@ -127,7 +138,7 @@ not exposure or white balance. A V45 candidate should replace only the CMF and
 quadrature, rebuild the offline LUT, and then repeat opponent-tail, neutral-scale,
 ColorChecker and real-frame gates.
 
-### 2.3 The xenon spectrum is still the larger evidence boundary
+### 2.3 The xenon spectrum is an evidence boundary, not the dominant tested error
 
 Kodak publishes a plotted xenon viewing condition, not a numerical projector SPD
 for one historical theatre installation. The current 21-point SPD is a visual
@@ -135,6 +146,10 @@ digitization with extrapolated 380 nm and 720–780 nm tails. Moving to 1 nm avo
 observer-integration error but cannot manufacture unmeasured xenon line structure,
 lamp ageing, reflector/filter transmission, screen reflectance or auditorium
 flare. Those belong in named observer conditions, not in the 2383 dye model.
+The later V59 white-adapted 17-cube bracket found maximum OKLab differences
+below 0.89 across generic xenon, 5400 K/6420 K Planck proxies and equal energy.
+That does not identify a theatre, but it rules out reasonable illuminant choice
+as the cause of the much larger historical blue/purple casts.
 
 ### 2.4 The era reference should be the 2005 sheet
 

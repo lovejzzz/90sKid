@@ -1,4 +1,4 @@
-"""Command-line renderer for explicit V42/V43H/V44/V45 engine profiles."""
+"""Command-line renderer for explicit, versioned 5279 engine profiles."""
 
 from __future__ import annotations
 
@@ -64,7 +64,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--grain-domain-salt", type=int, default=0)
     parser.add_argument(
-        "--profile", choices=("v42", "v43h", "v44", "v45"), default="v42"
+        "--profile",
+        choices=(
+            "v42", "v43h", "v44", "v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+        ),
+        default="v42",
     )
     parser.add_argument(
         "--review-width",
@@ -78,6 +82,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--experimental-overrides",
         action="store_true",
         help="permit non-baseline exposure/grain controls and mark the result experimental",
+    )
+    parser.add_argument(
+        "--cineon-dpx",
+        action="store_true",
+        help=(
+            "also write code-exact 10-bit RGB printing-density DPX frames; "
+            "these are exchange data, not display-ready images"
+        ),
     )
     return parser
 
@@ -114,6 +126,8 @@ def main() -> None:
             decoder.height,
             decoder.fps,
             args.frames,
+            cineon_dpx=args.cineon_dpx,
+            start_frame=args.start_frame,
         ) as writer:
             for offset, (absolute_frame, raw) in enumerate(decoder):
                 frame = engine.render_frame(raw, absolute_frame)
@@ -131,7 +145,7 @@ def main() -> None:
     finalization_started = time.perf_counter()
     review_sampling: dict[str, object] | None = None
     additional_srgb_movies: tuple[str, ...] = ()
-    if args.profile in ("v44", "v45"):
+    if args.profile in ("v44", "v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"):
         review_name = "07_scale_integrated_review_srgb_prores4444.mov"
         review_sampling = {}
         for directory in ("projection", "bluray_scan"):
@@ -178,10 +192,23 @@ def main() -> None:
             "observer_branch_workers": config.observer_branch_workers,
             "grain_domain_salt": config.grain_domain_salt,
             "research_baseline": config.research_baseline,
+            "cineon_dpx": args.cineon_dpx,
         },
         "stage_summaries": _summarize(timings),
         "source_delivery": source_delivery,
         "review_sampling": review_sampling,
+        "cineon_exchange": (
+            {
+                "path": str(args.output / "cineon_printing_density"),
+                "frame_range": [
+                    args.start_frame,
+                    args.start_frame + args.frames - 1,
+                ],
+                "contract": engine.provenance["cineon_exchange_contract"],
+            }
+            if args.cineon_dpx
+            else None
+        ),
         "total_wall_seconds": time.perf_counter() - started,
     }
     (args.output / "timing.json").write_text(

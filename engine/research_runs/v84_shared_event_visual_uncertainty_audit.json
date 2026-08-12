@@ -1,0 +1,1215 @@
+{
+  "audit": "V84 shared finite-event visual uncertainty endpoints",
+  "profile": "V72 observers; experimental exact CPU negative sampler",
+  "image_release": false,
+  "input": {
+    "path": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+    "sha256": "e1e05ce92f5b70ae5a2058e379dd6bc21f4567034b17dcdff4e7beba96bc704a",
+    "absolute_frame": 0,
+    "decoded_dimensions": [
+      5760,
+      4320
+    ],
+    "crop_xywh": [
+      2592,
+      1872,
+      576,
+      576
+    ]
+  },
+  "paired_sampler": {
+    "alphas": [
+      0.0,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "seed": 840000,
+    "law": "Every matched site always draws selector, common U and three independent U values. Alpha changes only selector < alpha, so all endpoints are paired and each record remains Bernoulli(p).",
+    "physical_site_alignment_is_measured": false
+  },
+  "timing_seconds": {
+    "decode": 0.5924184169853106,
+    "deterministic_full_frame_preparation": 38.95654979196843
+  },
+  "endpoints": {
+    "alpha_0.00": {
+      "alpha": 0.0,
+      "formation": {
+        "seconds": 1.047704791999422,
+        "alpha": 0.0,
+        "seed": 840000,
+        "minimum_unbounded_density_rgb": [
+          -0.030070513486862183,
+          0.3256356716156006,
+          0.175118088722229
+        ],
+        "below_zero_before_bound_count": 10,
+        "bound_changed_sample_count": 10,
+        "calibration_range_rgb": [
+          [
+            1.0684441328048706,
+            34.958675384521484
+          ],
+          [
+            1.494309902191162,
+            16.09592056274414
+          ],
+          [
+            5.07219123840332,
+            216.90487670898438
+          ]
+        ]
+      },
+      "observer_seconds": 1.5473973749903962,
+      "density_48um": {
+        "sigma_rgb": [
+          0.010696125014410677,
+          0.01592645089101356,
+          0.04125414246009798
+        ],
+        "covariance": [
+          [
+            0.00011440709032390179,
+            1.6859536568615054e-06,
+            7.40709832223696e-06
+          ],
+          [
+            1.6859536568615054e-06,
+            0.0002536518379838666,
+            1.1158258476660505e-05
+          ],
+          [
+            7.40709832223696e-06,
+            1.1158258476660505e-05,
+            0.0017019042701180592
+          ]
+        ],
+        "correlation": [
+          [
+            1.0,
+            0.009896922184959233,
+            0.016786265015976222
+          ],
+          [
+            0.009896922184959233,
+            1.0,
+            0.016982821568695336
+          ],
+          [
+            0.016786265015976222,
+            0.016982821568695336,
+            1.0
+          ]
+        ]
+      },
+      "density_native": {
+        "sigma_rgb": [
+          0.05891324876737158,
+          0.08466293696807244,
+          0.2351859835037138
+        ],
+        "covariance": [
+          [
+            0.003470770880326209,
+            2.478109825617866e-06,
+            3.2718915115003856e-05
+          ],
+          [
+            2.478109825617866e-06,
+            0.007167812896059807,
+            9.050228676130544e-05
+          ],
+          [
+            3.2718915115003856e-05,
+            9.050228676130544e-05,
+            0.055312446836609144
+          ]
+        ],
+        "correlation": [
+          [
+            1.0,
+            0.0004968373617696524,
+            0.0023614267967324984
+          ],
+          [
+            0.0004968373617696524,
+            1.0000000000000002,
+            0.0045452187274624
+          ],
+          [
+            0.0023614267967324984,
+            0.0045452187274624,
+            1.0
+          ]
+        ]
+      },
+      "projection": {
+        "native_grain_rms": {
+          "rgb": 0.011014871226787364,
+          "luma": 0.006455581246319782,
+          "opponent": 0.008956838335990874,
+          "opponent_over_luma": 1.3874565270318637
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.005849566445008644,
+          "luma": 0.0033220488665113056,
+          "opponent": 0.004739459601807652,
+          "opponent_over_luma": 1.426667635622368
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5310608108411585,
+          "luma": 0.5146010467152202,
+          "opponent": 0.5291442609568253
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 290691,
+          "opponent_p999": 0.31590346120297885,
+          "opponent_p9999": 0.38445851560681793,
+          "opponent_maximum": 0.486869752407074,
+          "median_opponent_p9999": 0.3406237643808025,
+          "isolated_gt_0_04_count": 3261,
+          "isolated_gt_0_04_per_million": 11218.09756752015,
+          "isolated_gt_0_05_count": 3733,
+          "isolated_gt_0_05_per_million": 12841.814848068912,
+          "isolated_gt_0_06_count": 4515,
+          "isolated_gt_0_06_per_million": 15531.95661372385,
+          "isolated_gt_0_08_count": 5808,
+          "isolated_gt_0_08_per_million": 19979.978740311875
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.000727251903232622,
+              "opponent_rms": 0.0017969860326420312,
+              "opponent_over_luma": 2.4709265450588163
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0011932202401282223,
+              "opponent_rms": 0.001455942877850219,
+              "opponent_over_luma": 1.2201795015593808
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.002182831032689784,
+              "opponent_rms": 0.0026188859275184644,
+              "opponent_over_luma": 1.1997657575407261
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.0034821954472912414,
+              "opponent_rms": 0.004418389329381941,
+              "opponent_over_luma": 1.2688516185439718
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.0039305770168037235,
+              "opponent_rms": 0.005533319098219718,
+              "opponent_over_luma": 1.407762543403695
+            }
+          ]
+        }
+      },
+      "scan": {
+        "native_grain_rms": {
+          "rgb": 0.015146287971437696,
+          "luma": 0.009794749908251929,
+          "opponent": 0.011425502769720926,
+          "opponent_over_luma": 1.1664925472058365
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.00818243517613216,
+          "luma": 0.005246321825313535,
+          "opponent": 0.005928026827932488,
+          "opponent_over_luma": 1.1299396082279438
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5402270966696454,
+          "luma": 0.5356259092326174,
+          "opponent": 0.5188416603987469
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 245556,
+          "opponent_p999": 0.3129625433310896,
+          "opponent_p9999": 0.3876805455535654,
+          "opponent_maximum": 0.4960450530052185,
+          "median_opponent_p9999": 0.3544870609939244,
+          "isolated_gt_0_04_count": 3032,
+          "isolated_gt_0_04_per_million": 12347.488963820879,
+          "isolated_gt_0_05_count": 3704,
+          "isolated_gt_0_05_per_million": 15084.135594324716,
+          "isolated_gt_0_06_count": 4361,
+          "isolated_gt_0_06_per_million": 17759.69636254052,
+          "isolated_gt_0_08_count": 5271,
+          "isolated_gt_0_08_per_million": 21465.572008014467
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0016380032768493712,
+              "opponent_rms": 0.0022380275323759277,
+              "opponent_over_luma": 1.3663144414953048
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0017950449936038311,
+              "opponent_rms": 0.0018665792906258697,
+              "opponent_over_luma": 1.0398509771492817
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.0032153834792481868,
+              "opponent_rms": 0.003357058190141274,
+              "opponent_over_luma": 1.044061528526051
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.005172333846715366,
+              "opponent_rms": 0.005669794498380859,
+              "opponent_over_luma": 1.0961772125326752
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.005945298545447994,
+              "opponent_rms": 0.00710110087546255,
+              "opponent_over_luma": 1.194406104450296
+            }
+          ]
+        }
+      },
+      "difference_from_alpha_0": {
+        "projection": {
+          "rms": 0.0,
+          "maximum_absolute": 0.0,
+          "mean_absolute": 0.0
+        },
+        "scan": {
+          "rms": 0.0,
+          "maximum_absolute": 0.0,
+          "mean_absolute": 0.0
+        }
+      }
+    },
+    "alpha_0.25": {
+      "alpha": 0.25,
+      "formation": {
+        "seconds": 0.9132947920588776,
+        "alpha": 0.25,
+        "seed": 840000,
+        "minimum_unbounded_density_rgb": [
+          -0.01909758150577545,
+          0.32264503836631775,
+          0.1319286823272705
+        ],
+        "below_zero_before_bound_count": 9,
+        "bound_changed_sample_count": 9,
+        "calibration_range_rgb": [
+          [
+            1.0684441328048706,
+            34.958675384521484
+          ],
+          [
+            1.494309902191162,
+            16.09592056274414
+          ],
+          [
+            5.07219123840332,
+            216.90487670898438
+          ]
+        ]
+      },
+      "observer_seconds": 0.8947838329477236,
+      "density_48um": {
+        "sigma_rgb": [
+          0.010782127372736927,
+          0.015988787273093153,
+          0.04101605269709627
+        ],
+        "covariance": [
+          [
+            0.00011625427068192291,
+            4.044338393276027e-05,
+            8.129530240969104e-05
+          ],
+          [
+            4.044338393276027e-05,
+            0.0002556413184642256,
+            0.0001243380986737308
+          ],
+          [
+            8.129530240969104e-05,
+            0.0001243380986737308,
+            0.0016823165788509779
+          ]
+        ],
+        "correlation": [
+          [
+            1.0,
+            0.23459972779842667,
+            0.18382608184100413
+          ],
+          [
+            0.23459972779842667,
+            1.0,
+            0.1895984729917519
+          ],
+          [
+            0.18382608184100413,
+            0.1895984729917519,
+            1.0
+          ]
+        ]
+      },
+      "density_native": {
+        "sigma_rgb": [
+          0.058831949769728574,
+          0.0847489071970058,
+          0.23454118853605158
+        ],
+        "covariance": [
+          [
+            0.0034611983137078656,
+            0.0010450488564397072,
+            0.0023686114647129756
+          ],
+          [
+            0.0010450488564397072,
+            0.007182377271086702,
+            0.0035396009187612753
+          ],
+          [
+            0.0023686114647129756,
+            0.0035396009187612753,
+            0.05500956911990369
+          ]
+        ],
+        "correlation": [
+          [
+            0.9999999999999999,
+            0.20959901905364506,
+            0.17165697845904007
+          ],
+          [
+            0.20959901905364506,
+            1.0000000000000002,
+            0.17807422818736574
+          ],
+          [
+            0.17165697845904007,
+            0.17807422818736574,
+            1.0
+          ]
+        ]
+      },
+      "projection": {
+        "native_grain_rms": {
+          "rgb": 0.011564468774447707,
+          "luma": 0.0072907967625846885,
+          "opponent": 0.00857370457669303,
+          "opponent_over_luma": 1.1759626356192012
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.006122910153184037,
+          "luma": 0.00373879763993346,
+          "opponent": 0.00456539703465686,
+          "opponent_over_luma": 1.2210869574471304
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5294588340030737,
+          "luma": 0.5128105695005005,
+          "opponent": 0.5324882603335259
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 290691,
+          "opponent_p999": 0.30374725788831697,
+          "opponent_p9999": 0.37323934776335366,
+          "opponent_maximum": 0.48167797923088074,
+          "median_opponent_p9999": 0.32583139306306486,
+          "isolated_gt_0_04_count": 3621,
+          "isolated_gt_0_04_per_million": 12456.526001837003,
+          "isolated_gt_0_05_count": 4095,
+          "isolated_gt_0_05_per_million": 14087.123440354191,
+          "isolated_gt_0_06_count": 4781,
+          "isolated_gt_0_06_per_million": 16447.017623524636,
+          "isolated_gt_0_08_count": 6153,
+          "isolated_gt_0_08_per_million": 21166.805989865526
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0008424851471274871,
+              "opponent_rms": 0.0017842666189823025,
+              "opponent_over_luma": 2.117861216979179
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.001356389389006609,
+              "opponent_rms": 0.0013642626292408465,
+              "opponent_over_luma": 1.0058045575245937
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.002468217009348142,
+              "opponent_rms": 0.002493224766784754,
+              "opponent_over_luma": 1.0101319119598873
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.003945071657025205,
+              "opponent_rms": 0.004193239763713923,
+              "opponent_over_luma": 1.0629058552705353
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.004444048773050324,
+              "opponent_rms": 0.005327363683674864,
+              "opponent_over_luma": 1.1987635500269829
+            }
+          ]
+        }
+      },
+      "scan": {
+        "native_grain_rms": {
+          "rgb": 0.015962042071025813,
+          "luma": 0.01090307057033958,
+          "opponent": 0.010916723039146306,
+          "opponent_over_luma": 1.0012521673338395
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.008597737350060641,
+          "luma": 0.00579459145340113,
+          "opponent": 0.0057035050557397915,
+          "opponent_over_luma": 0.9842807903898254
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5386364295873642,
+          "luma": 0.5314641793812268,
+          "opponent": 0.5224557804835368
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 245556,
+          "opponent_p999": 0.29811294630169954,
+          "opponent_p9999": 0.37450333677233494,
+          "opponent_maximum": 0.49313482642173767,
+          "median_opponent_p9999": 0.33445949118584634,
+          "isolated_gt_0_04_count": 3243,
+          "isolated_gt_0_04_per_million": 13206.76342667253,
+          "isolated_gt_0_05_count": 3959,
+          "isolated_gt_0_05_per_million": 16122.59525322126,
+          "isolated_gt_0_06_count": 4606,
+          "isolated_gt_0_06_per_million": 18757.432113245042,
+          "isolated_gt_0_08_count": 5428,
+          "isolated_gt_0_08_per_million": 22104.9373666292
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0017650126501922115,
+              "opponent_rms": 0.002237983711611652,
+              "opponent_over_luma": 1.2679703521489964
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.002005071629000414,
+              "opponent_rms": 0.0017503509603483793,
+              "opponent_over_luma": 0.8729618109558408
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.003604287194989681,
+              "opponent_rms": 0.003191439471257918,
+              "opponent_over_luma": 0.8854564851808528
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.0057852170327183676,
+              "opponent_rms": 0.005369177784111447,
+              "opponent_over_luma": 0.9280858010591468
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.006620728869985084,
+              "opponent_rms": 0.006823008843318998,
+              "opponent_over_luma": 1.0305525233408885
+            }
+          ]
+        }
+      },
+      "difference_from_alpha_0": {
+        "projection": {
+          "rms": 0.008214057079751985,
+          "maximum_absolute": 0.30854372680187225,
+          "mean_absolute": 0.00422515781763129
+        },
+        "scan": {
+          "rms": 0.011286195398575954,
+          "maximum_absolute": 0.3098560571670532,
+          "mean_absolute": 0.005406014807611715
+        }
+      }
+    },
+    "alpha_0.50": {
+      "alpha": 0.5,
+      "formation": {
+        "seconds": 1.16623966593761,
+        "alpha": 0.5,
+        "seed": 840000,
+        "minimum_unbounded_density_rgb": [
+          -0.03237822651863098,
+          0.3055393099784851,
+          0.0810689926147461
+        ],
+        "below_zero_before_bound_count": 12,
+        "bound_changed_sample_count": 12,
+        "calibration_range_rgb": [
+          [
+            1.0684441328048706,
+            34.958675384521484
+          ],
+          [
+            1.494309902191162,
+            16.09592056274414
+          ],
+          [
+            5.07219123840332,
+            216.90487670898438
+          ]
+        ]
+      },
+      "observer_seconds": 0.9011620419332758,
+      "density_48um": {
+        "sigma_rgb": [
+          0.01077003946153685,
+          0.0162162632931206,
+          0.04147052789507131
+        ],
+        "covariance": [
+          [
+            0.00011599375000306097,
+            7.826775136847285e-05,
+            0.00015528232984022913
+          ],
+          [
+            7.826775136847285e-05,
+            0.00026296719519181054,
+            0.0002431519710772985
+          ],
+          [
+            0.00015528232984022913,
+            0.0002431519710772985,
+            0.0017198046838958877
+          ]
+        ],
+        "correlation": [
+          [
+            0.9999999999999999,
+            0.44814109919825684,
+            0.34766836905292037
+          ],
+          [
+            0.44814109919825684,
+            1.0,
+            0.3615658825958283
+          ],
+          [
+            0.34766836905292037,
+            0.3615658825958283,
+            1.0000000000000002
+          ]
+        ]
+      },
+      "density_native": {
+        "sigma_rgb": [
+          0.058822259113879755,
+          0.08480063575279062,
+          0.23574202915239487
+        ],
+        "covariance": [
+          [
+            0.0034600581672604097,
+            0.0020962833986555517,
+            0.004753138239466905
+          ],
+          [
+            0.0020962833986555517,
+            0.007191147824077471,
+            0.007052165027198965
+          ],
+          [
+            0.004753138239466905,
+            0.007052165027198965,
+            0.05557430430888859
+          ]
+        ],
+        "correlation": [
+          [
+            1.0,
+            0.4202514174188054,
+            0.342769150467879
+          ],
+          [
+            0.4202514174188054,
+            1.0000000000000002,
+            0.35276569164454785
+          ],
+          [
+            0.342769150467879,
+            0.35276569164454785,
+            1.0
+          ]
+        ]
+      },
+      "projection": {
+        "native_grain_rms": {
+          "rgb": 0.01236067839337393,
+          "luma": 0.008168082772928175,
+          "opponent": 0.00833464673566131,
+          "opponent_over_luma": 1.020392051276119
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.006542061193519593,
+          "luma": 0.004175482327448666,
+          "opponent": 0.00449554293511782,
+          "opponent_over_luma": 1.0766523679348727
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5292639275386805,
+          "luma": 0.5111949087107253,
+          "opponent": 0.5393801414381268
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 290691,
+          "opponent_p999": 0.2914435217529535,
+          "opponent_p9999": 0.3616513166725545,
+          "opponent_maximum": 0.4915580153465271,
+          "median_opponent_p9999": 0.31981388673186045,
+          "isolated_gt_0_04_count": 4014,
+          "isolated_gt_0_04_per_million": 13808.477042632898,
+          "isolated_gt_0_05_count": 4459,
+          "isolated_gt_0_05_per_million": 15339.312190607896,
+          "isolated_gt_0_06_count": 5163,
+          "isolated_gt_0_06_per_million": 17761.127795494187,
+          "isolated_gt_0_08_count": 6364,
+          "isolated_gt_0_08_per_million": 21892.662655534572
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0009600215893254933,
+              "opponent_rms": 0.0018045167330787437,
+              "opponent_over_luma": 1.8796626587810268
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0015304531367530798,
+              "opponent_rms": 0.0013377355316291255,
+              "opponent_over_luma": 0.8740780749858094
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.0027609252424321434,
+              "opponent_rms": 0.0023946195146600942,
+              "opponent_over_luma": 0.8673250104195633
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.004412847405683456,
+              "opponent_rms": 0.0040373476219883195,
+              "opponent_over_luma": 0.9149075983883972
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.004993022064206209,
+              "opponent_rms": 0.005198118887477345,
+              "opponent_over_luma": 1.041076690756371
+            }
+          ]
+        }
+      },
+      "scan": {
+        "native_grain_rms": {
+          "rgb": 0.016980939605767034,
+          "luma": 0.011993211667675096,
+          "opponent": 0.010551538914333393,
+          "opponent_over_luma": 0.8797926032417659
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.009150415292212439,
+          "luma": 0.0063378742168915935,
+          "opponent": 0.005597448226473027,
+          "opponent_over_luma": 0.8831743949027584
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5388638970899344,
+          "luma": 0.5284551288270727,
+          "opponent": 0.5304864315923961
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 245556,
+          "opponent_p999": 0.2881541481241584,
+          "opponent_p9999": 0.36726454158129573,
+          "opponent_maximum": 0.5041728615760803,
+          "median_opponent_p9999": 0.32422708085180124,
+          "isolated_gt_0_04_count": 3508,
+          "isolated_gt_0_04_per_million": 14285.946993761097,
+          "isolated_gt_0_05_count": 4229,
+          "isolated_gt_0_05_per_million": 17222.140774405838,
+          "isolated_gt_0_06_count": 4850,
+          "isolated_gt_0_06_per_million": 19751.095473130365,
+          "isolated_gt_0_08_count": 5609,
+          "isolated_gt_0_08_per_million": 22842.040104904787
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0019030705058401183,
+              "opponent_rms": 0.0022767611271969712,
+              "opponent_over_luma": 1.1963619425607597
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0022287672928001864,
+              "opponent_rms": 0.0017096551030164997,
+              "opponent_over_luma": 0.7670855133864233
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.003981715781360937,
+              "opponent_rms": 0.0030470047858281524,
+              "opponent_over_luma": 0.7652491923435821
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.006388805796394639,
+              "opponent_rms": 0.005140912220162303,
+              "opponent_over_luma": 0.8046749868439337
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.007309308831230859,
+              "opponent_rms": 0.006617893601805468,
+              "opponent_over_luma": 0.9054062093434682
+            }
+          ]
+        }
+      },
+      "difference_from_alpha_0": {
+        "projection": {
+          "rms": 0.011604918526575478,
+          "maximum_absolute": 0.41633862257003784,
+          "mean_absolute": 0.006019977137984534
+        },
+        "scan": {
+          "rms": 0.015832686981326376,
+          "maximum_absolute": 0.4118860512971878,
+          "mean_absolute": 0.007676955075083002
+        }
+      }
+    },
+    "alpha_1.00": {
+      "alpha": 1.0,
+      "formation": {
+        "seconds": 0.9063672079937533,
+        "alpha": 1.0,
+        "seed": 840000,
+        "minimum_unbounded_density_rgb": [
+          -0.028429388999938965,
+          0.3393826484680176,
+          0.15646755695343018
+        ],
+        "below_zero_before_bound_count": 8,
+        "bound_changed_sample_count": 8,
+        "calibration_range_rgb": [
+          [
+            1.0684441328048706,
+            34.958675384521484
+          ],
+          [
+            1.494309902191162,
+            16.09592056274414
+          ],
+          [
+            5.07219123840332,
+            216.90487670898438
+          ]
+        ]
+      },
+      "observer_seconds": 0.9103507089894265,
+      "density_48um": {
+        "sigma_rgb": [
+          0.010762169047700469,
+          0.01614562092567084,
+          0.04068876097432806
+        ],
+        "covariance": [
+          [
+            0.000115824282611282,
+            0.0001480086802529361,
+            0.0003006528645004264
+          ],
+          [
+            0.0001480086802529361,
+            0.0002606810750754602,
+            0.0004642515580274181
+          ],
+          [
+            0.0003006528645004264,
+            0.0004642515580274181,
+            0.001655575269626002
+          ]
+        ],
+        "correlation": [
+          [
+            0.9999999999999999,
+            0.8517901722696976,
+            0.6865798782020509
+          ],
+          [
+            0.8517901722696976,
+            1.0000000000000002,
+            0.7066822009651291
+          ],
+          [
+            0.6865798782020509,
+            0.7066822009651291,
+            0.9999999999999999
+          ]
+        ]
+      },
+      "density_native": {
+        "sigma_rgb": [
+          0.05877417398903017,
+          0.08463447219692731,
+          0.2351209753173621
+        ],
+        "covariance": [
+          [
+            0.0034544035280927904,
+            0.004145709655698638,
+            0.009480113877830992
+          ],
+          [
+            0.004145709655698638,
+            0.007162993884052463,
+            0.013934089354182175
+          ],
+          [
+            0.009480113877830992,
+            0.013934089354182175,
+            0.05528187303418759
+          ]
+        ],
+        "correlation": [
+          [
+            1.0,
+            0.8334221884162176,
+            0.6860182122010207
+          ],
+          [
+            0.8334221884162176,
+            1.0000000000000002,
+            0.7002287312229649
+          ],
+          [
+            0.6860182122010207,
+            0.7002287312229649,
+            1.0
+          ]
+        ]
+      },
+      "projection": {
+        "native_grain_rms": {
+          "rgb": 0.013831338698200968,
+          "luma": 0.009928970763077548,
+          "opponent": 0.007495615021013182,
+          "opponent_over_luma": 0.7549236673036459
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.007264405907598449,
+          "luma": 0.005032368385821937,
+          "opponent": 0.004177596355228368,
+          "opponent_over_luma": 0.8301451791562436
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5252135072466504,
+          "luma": 0.5068368621383795,
+          "opponent": 0.5573387031640377
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 290691,
+          "opponent_p999": 0.2604807198047626,
+          "opponent_p9999": 0.3295509640275999,
+          "opponent_maximum": 0.43420302867889404,
+          "median_opponent_p9999": 0.29156147229669227,
+          "isolated_gt_0_04_count": 5003,
+          "isolated_gt_0_04_per_million": 17210.71515802003,
+          "isolated_gt_0_05_count": 5435,
+          "isolated_gt_0_05_per_million": 18696.82927920025,
+          "isolated_gt_0_06_count": 5962,
+          "isolated_gt_0_06_per_million": 20509.75090388075,
+          "isolated_gt_0_08_count": 6701,
+          "isolated_gt_0_08_per_million": 23051.969273214512
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.0011621145063823364,
+              "opponent_rms": 0.0017571258559667701,
+              "opponent_over_luma": 1.5120075055570081
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0017922235625262692,
+              "opponent_rms": 0.0011191194553831858,
+              "opponent_over_luma": 0.6244307232551422
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.0033224111695398365,
+              "opponent_rms": 0.0020436885729075436,
+              "opponent_over_luma": 0.6151221112077468
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.005295088682675779,
+              "opponent_rms": 0.003495959405306372,
+              "opponent_over_luma": 0.6602267902980147
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.006147267104583655,
+              "opponent_rms": 0.004650867971856656,
+              "opponent_over_luma": 0.7565748962475989
+            }
+          ]
+        }
+      },
+      "scan": {
+        "native_grain_rms": {
+          "rgb": 0.018679232186899736,
+          "luma": 0.014023318329994455,
+          "opponent": 0.009328047033861144,
+          "opponent_over_luma": 0.6651811514475428
+        },
+        "exact_3x3_integrated_grain_rms": {
+          "rgb": 0.009994225549754977,
+          "luma": 0.007303684946711909,
+          "opponent": 0.005139055905250762,
+          "opponent_over_luma": 0.7036250800446076
+        },
+        "exact_3x3_retention": {
+          "rgb": 0.5350447732409582,
+          "luma": 0.5208242995589758,
+          "opponent": 0.5509251707882482
+        },
+        "mean_relative_colour_tail": {
+          "dark_pixel_count": 245556,
+          "opponent_p999": 0.2575326761603375,
+          "opponent_p9999": 0.32963159729540803,
+          "opponent_maximum": 0.4396166205406189,
+          "median_opponent_p9999": 0.29464126949012354,
+          "isolated_gt_0_04_count": 4200,
+          "isolated_gt_0_04_per_million": 17104.041440648976,
+          "isolated_gt_0_05_count": 4942,
+          "isolated_gt_0_05_per_million": 20125.755428496963,
+          "isolated_gt_0_06_count": 5414,
+          "isolated_gt_0_06_per_million": 22047.92389516037,
+          "isolated_gt_0_08_count": 5543,
+          "isolated_gt_0_08_per_million": 22573.262310837446
+        },
+        "frequency_bands": {
+          "bands": [
+            {
+              "range_lp_mm": [
+                0.0,
+                8.0
+              ],
+              "luma_rms": 0.002146450825944064,
+              "opponent_rms": 0.002242458208412995,
+              "opponent_over_luma": 1.0447284332389513
+            },
+            {
+              "range_lp_mm": [
+                8.0,
+                16.0
+              ],
+              "luma_rms": 0.0025258105599195706,
+              "opponent_rms": 0.0014145350035179125,
+              "opponent_over_luma": 0.5600321045308146
+            },
+            {
+              "range_lp_mm": [
+                16.0,
+                32.0
+              ],
+              "luma_rms": 0.004620329243200961,
+              "opponent_rms": 0.002558916476271519,
+              "opponent_over_luma": 0.5538385559940535
+            },
+            {
+              "range_lp_mm": [
+                32.0,
+                64.0
+              ],
+              "luma_rms": 0.007424460836023242,
+              "opponent_rms": 0.004370990455083326,
+              "opponent_over_luma": 0.5887283334939856
+            },
+            {
+              "range_lp_mm": [
+                64.0,
+                116.0
+              ],
+              "luma_rms": 0.008641786409799934,
+              "opponent_rms": 0.005807671277664413,
+              "opponent_over_luma": 0.6720452233207724
+            }
+          ]
+        }
+      },
+      "difference_from_alpha_0": {
+        "projection": {
+          "rms": 0.01619031315354612,
+          "maximum_absolute": 0.40734703093767166,
+          "mean_absolute": 0.008556331646269762
+        },
+        "scan": {
+          "rms": 0.021854688450436394,
+          "maximum_absolute": 0.4264225447550416,
+          "mean_absolute": 0.010843919238939034
+        }
+      }
+    }
+  },
+  "observer_energy_transfer_summary": {
+    "projection": {
+      "alpha_1_luma_rms_over_alpha_0": 1.538044427639709,
+      "alpha_1_opponent_rms_over_alpha_0": 0.8368594742738493,
+      "alpha_1_total_rgb_rms_over_alpha_0": 1.2556968132831332
+    },
+    "scan": {
+      "alpha_1_luma_rms_over_alpha_0": 1.431717855111341,
+      "alpha_1_opponent_rms_over_alpha_0": 0.8164233313724877,
+      "alpha_1_total_rgb_rms_over_alpha_0": 1.233254789696613
+    }
+  },
+  "artifacts": {
+    "directory": "engine/research_runs/v84_shared_event_visual_uncertainty/T020",
+    "encoding": "16-bit PNG, Rec.709 primaries, sRGB transfer",
+    "authority": "research crop from one decoded RAW frame"
+  },
+  "decision": "Do not promote a shared-site alpha. The experiment proves that alpha can trade opponent power for luma power while preserving each record's 48 um marginal RMS, but it changes total visible grain energy and the two observers differently. Alpha=1 is rejected as a default extreme; alpha=.25/.50 remain diagnostic witnesses only. Re-audit the large blue-record marginal and the mapping from analytical record RMS to visible colour before using site sharing as a cure for electronic-looking grain."
+}

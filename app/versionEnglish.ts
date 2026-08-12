@@ -1075,10 +1075,50 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
     trialNote:
       "T020 tests mixed foliage and dark bark; T032 tests rainy cyan-green low contrast; T007 tests water, green detail and local saturation. Each case includes projection, frozen scan, independent FSD and the Panasonic V-709 camera witness.",
   },
+  V46: {
+    year: "CERTIFIED SPECTRAL INVERSE",
+    title: "Keep finite silver-halide events and spectral density inside their measurable boundaries",
+    summary:
+      "V46 is the first complete consolidation after the source-loss rebuild and a genuine numerical image correction. The former model held target RMS beyond Kodak's published granularity support while finite-site activation probability approached zero, creating very rare but enormous dye-density impulses. V46 holds the complete stochastic state at the measured endpoint. It also replaces the clipped iterative Status-M inverse with an exact nonnegative active-set solution. A 129-cubed base atlas plus local exact 5-cubed microbricks bounds maximum real-frame printer-density error to 0.0005094 D. Reliable findings from legacy internal V46–V86 studies are absorbed here, while those labels remain immutable experiment IDs rather than being rewritten as public releases.",
+    changes: [
+      "Hold the complete stochastic state outside Kodak's measured granularity support, eliminating the catastrophic tail produced as activation probability approached zero",
+      "Replace the clipped projected Status-M spectral inverse with an exact nonnegative active-set/KKT solution",
+      "Build a power-2 129-cubed base atlas and load exact 5-cubed microbricks only at active-set boundaries and interpolation-disagreement regions",
+      "Discover cache demand from every real pixel before/after MTF and in mean/formed density for T020, T032 and T007; all 25,333 final risk cells are covered",
+      "Compile the adaptive observer as a parallel CPU kernel with fast-math disabled and bit-identical NumPy-reference output",
+      "Share one negative printer-density observation between scan and projection, removing duplicate spectral-inverse work",
+      "Keep evidence-minimal identity record formation; do not invent RGB cross-covariance from three 48-micrometre marginal curves",
+      "Render each scene as a 24-frame 5760×4320 12-bit ProRes 4444 master with a scale-honest web witness",
+    ],
+    errors: [
+      "The old model held fixed RMS outside published exposure support while activation probability tended to zero, causing calibration amplitude to diverge into rare broken-TV-like dye events",
+      "The former Status-M inverse clipped a projected iteration and did not guarantee the KKT optimum; worst shadow error had reached about 0.01399 D",
+      "A fixed 27-probe cell test missed active-set boundaries reached by real pixels; V46 uses the exact runtime predicate on complete pipeline states",
+      "Presenting legacy V46–V86 audits as dozens of visual releases confused research evidence with rendered releases; their historical IDs remain but the site consolidates them thematically",
+      "V46 still lacks a closed measured loop of same-batch 5279, same-batch 2383, measured printer light and a characterized scanner, so it is not an absolute colour-reproduction claim",
+    ],
+    discoveries: [
+      "A granularity endpoint must constrain the complete finite-event state, not only macro RMS; otherwise a mathematically matched RMS can hide an unphysical microscopic tail",
+      "Sparse synthetic probes cannot represent real-frame risk; the final cache must cover pre/post-MTF and mean/formed density states",
+      "Exact active-set structure is locally sparse, favouring a base atlas plus risk microbricks over an expensive exact solve at every pixel",
+      "One negative printer-density result can derive both scan coordinates and projection input; branch differences belong after the shared negative",
+      "V70–V85 show that shared record events trade opponent grain for stronger luma grain rather than removing noise for free; identity record formation is the honest boundary without cross-spectral measurements",
+      "V46 improves numerical correctness and evidence ownership. It adds no creative grade and does not exaggerate hue merely to make projection and scan look different",
+    ],
+    trialNote:
+      "T020 tests mixed foliage and bark; T032 tests rainy cyan-green shadows and low contrast; T007 tests water, fine green detail and local saturation. Projection and scan are newly rendered from the same V46 negative, while FSD and Panasonic V-709 remain independent controls.",
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/V46端点稳定/g, "V46 endpoint-stable ")
+    .replace(/V46经认证光谱逆解/g, "V46 certified spectral inverse")
+    .replace(/同一V46负片/g, "same V46 negative")
+    .replace(/独立FSD有限密度对照 · 不并入V46/g, "independent FSD finite-density control · not part of V46")
+    .replace(/原始观察 · 无胶片管线/g, "original camera witness · no film pipeline")
+    .replace(/原图/g, "camera original")
+    .replace(/同一负片/g, "same negative")
     .replace(/完整三记录5279乳剂形成/g, "Full three-record 5279 emulsion formation")
     .replace(/逆二项密度形成的独立对照/g, "Independent inverse-binomial density control")
     .replace(/随机密度关闭；颜色、MTF与观察器保持/g, "Stochastic density disabled; colour, MTF and observer retained")

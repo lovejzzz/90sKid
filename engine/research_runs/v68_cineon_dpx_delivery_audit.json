@@ -1,0 +1,83 @@
+{
+  "audit": "V68 independent Cineon printing-density DPX delivery",
+  "classification": "delivery contract; no image-model revision",
+  "source_authorities": [
+    {
+      "name": "SMPTE ST 268-1:2014",
+      "url": "https://pub.smpte.org/latest/st268-1/st0268-1-2014_stable2015.pdf",
+      "facts": [
+        "DPX does not define input, output, or display device characteristics.",
+        "Printing-density transfer and colorimetry are code 1.",
+        "10-bit defaults are code 0 = density 0.00 and code 1023 = density 2.048."
+      ]
+    },
+    {
+      "name": "Kodak Cineon file-format description",
+      "url": "https://www.kodak.com/content/products-brochures/Film/Cineon-File-Format-Description.pdf",
+      "facts": [
+        "Printing density is the exchange metric.",
+        "Code 95 is the conventional reference-black aim."
+      ]
+    }
+  ],
+  "display_master_decoded_md5": {
+    "projection": "d77e31f7cf9c207273da2f34949047ef",
+    "bluray_scan": "d43af174bd6859ff5be73b7a1ad34de8"
+  },
+  "reference_v66_decoded_md5": {
+    "projection": "d77e31f7cf9c207273da2f34949047ef",
+    "bluray_scan": "d43af174bd6859ff5be73b7a1ad34de8"
+  },
+  "display_masters_unchanged": true,
+  "dpx": {
+    "path": "outputs/native_5k_v68_cineon_dpx_contract_1f/T020/cineon_printing_density/00000000.dpx",
+    "file_bytes": 99534464,
+    "dimensions": [
+      5760,
+      4320
+    ],
+    "image_offset": 1664,
+    "reference_low": {
+      "code": 0,
+      "density": 0.0
+    },
+    "reference_high": {
+      "code": 1023,
+      "density": 2.0480000972747803
+    },
+    "descriptor": 50,
+    "transfer_characteristic": 1,
+    "colorimetric_specification": 1,
+    "bit_depth": 10,
+    "packing": 1,
+    "ffmpeg_decode_matches_packed_words": true,
+    "raw_gbrp10_md5": "ceb2bb0d15251e87740528c1d59c08fe",
+    "code_min_rgb": [
+      52,
+      11,
+      0
+    ],
+    "code_median_rgb": [
+      290.0,
+      285.0,
+      212.0
+    ],
+    "code_max_rgb": [
+      715,
+      723,
+      781
+    ],
+    "fraction_at_or_below_reference_black_rgb": [
+      0.0035002330889917694,
+      0.012515753600823045,
+      0.11923687467849794
+    ],
+    "fraction_at_code_1023_rgb": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "pass": true,
+  "interpretation": "The DPX is scene-independent printing-density exchange data from the same formed negative and Spirit aperture that feed the scan observer. It is not a Rec.709 picture and carries no Blu-ray finish."
+}

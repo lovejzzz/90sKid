@@ -1,0 +1,133 @@
+{
+  "archive_compatibility": {
+    "exactly_equal": true,
+    "maximum_absolute_difference": 0.0,
+    "sampled_v63_native_nodes": 128,
+    "v63_lattice_sha256": "ef861a38d840b30fa0dd2b9a6f01b41c8122600daea13e43dcb6ee49bfa67024",
+    "v64_lattice_sha256": "27203fdc8407c446fae65b9f259677cdd8320cdb1ec95961c859105cf211bd32"
+  },
+  "audit": "V64 2383 density-neutral shaper ownership audit",
+  "construction_path": {
+    "interpretation": "The historical builder uses the complete active 5279 development path. Its simplified neutral film-light coordinate differs only slightly from the production camera-to-film path and is not the reason the continuous target lacks measurement authority.",
+    "maximum_absolute_density_difference_D": 0.0015363693237304688,
+    "mean_absolute_density_difference_D": 0.00020700889581348747
+  },
+  "decision": {
+    "retain": "vector-traced Kodak separated Status-A H-D curves, analytical dye inversion, V63 actual view-neutral trajectory, scan colour authority and V62 identity interimage endpoint",
+    "withdraw": "continuous principal-density mean shaper: no measured off-LAD triplets identify its up-to-0.114 D curve rewrite"
+  },
+  "pre_view_neutral": {
+    "v63_continuous_shaper": {
+      "density_policy": "continuous_principal_mean_shaper_archive",
+      "nearest_lad_integral_status_a_rgb": [
+        1.0834989547729492,
+        1.0528197288513184,
+        1.023087501525879
+      ],
+      "pre_view_oklab_chroma_maximum": 0.029133284464478493,
+      "pre_view_oklab_chroma_median": 0.006046932190656662,
+      "pre_view_oklab_chroma_p95": 0.026948765665292737
+    },
+    "v64_published_curves": {
+      "density_policy": "published_separated_status_a_curves_unshaped_v64",
+      "nearest_lad_integral_status_a_rgb": [
+        1.0821529626846313,
+        1.0532264709472656,
+        1.0239337682724
+      ],
+      "pre_view_oklab_chroma_maximum": 0.013363161124289036,
+      "pre_view_oklab_chroma_median": 0.005265661980956793,
+      "pre_view_oklab_chroma_p95": 0.011772047355771063
+    }
+  },
+  "published_curve_interpretation": "Kodak H-1-2383 identifies the sensitometric curves as response to red, green and blue light, exposed through Series 1700 filters, processed ECP-2D and measured by Status-A densitometry. The engine already inverts each separated Status-A response to analytical dye amount before combining the three vector-traced dye spectra.",
+  "real_frame": {
+    "frame": 0,
+    "luma": {
+      "v63_physical_projection": {
+        "at_or_above_one_fraction": 0.0,
+        "at_or_below_zero_fraction": 0.0,
+        "median": 0.0270624765438959,
+        "p001": 1.1171476598054505e-05,
+        "p01": 9.749856247303251e-05,
+        "p99": 0.6554969192620516,
+        "p999": 0.669532745669115
+      },
+      "v63_scan_referenced_projection": {
+        "at_or_above_one_fraction": 0.0,
+        "at_or_below_zero_fraction": 0.0,
+        "median": 0.030722894255444406,
+        "p001": 1.11278161481685e-05,
+        "p01": 0.00012167535942571703,
+        "p99": 0.6576275327812433,
+        "p999": 0.6716481983474617
+      },
+      "v64_physical_projection": {
+        "at_or_above_one_fraction": 0.0,
+        "at_or_below_zero_fraction": 0.0,
+        "median": 0.026863317717984316,
+        "p001": 1.0705702831389135e-05,
+        "p01": 0.00010071329102468734,
+        "p99": 0.656758102171421,
+        "p999": 0.6707948808268785
+      },
+      "v64_scan_referenced_projection": {
+        "at_or_above_one_fraction": 0.0,
+        "at_or_below_zero_fraction": 0.0,
+        "median": 0.030722894255444406,
+        "p001": 1.11278161481685e-05,
+        "p01": 0.00012167535942571703,
+        "p99": 0.6591833303372859,
+        "p999": 0.673015445831395
+      }
+    },
+    "physical_projection_v63_vs_v64": {
+      "changed_12bit_component_fraction": 0.8182208076131687,
+      "linear_rgb_mae": 0.0020307032391428947,
+      "linear_rgb_maximum_absolute": 0.04210488498210907,
+      "linear_rgb_p95_absolute": 0.010054752975702283,
+      "linear_rgb_p99_absolute": 0.019668266475200646,
+      "oklab_delta_median": 0.0035617565736174583,
+      "oklab_delta_p95": 0.010626571625471115,
+      "oklab_delta_p99": 0.011964458096772433
+    },
+    "scan_branch_v63_vs_v64": {
+      "changed_12bit_component_fraction": 0.0,
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0
+    },
+    "scan_referenced_projection_v63_vs_v64": {
+      "changed_12bit_component_fraction": 0.05601208847736625,
+      "linear_rgb_mae": 7.209072646219283e-05,
+      "linear_rgb_maximum_absolute": 0.003944337368011475,
+      "linear_rgb_p95_absolute": 0.00022596120834350586,
+      "linear_rgb_p99_absolute": 0.0020567774772644043,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.00011307016284263228,
+      "oklab_delta_p99": 0.0009135610441444447
+    },
+    "seconds": 106.93415774998721,
+    "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+    "working_dimensions": [
+      1440,
+      1080
+    ]
+  },
+  "shaper_magnitude": {
+    "maximum_absolute_change_D_rgb": [
+      0.11378622055053711,
+      0.07212519645690918,
+      0.10062674432992935
+    ],
+    "rms_change_D_rgb": [
+      0.07115189731121063,
+      0.042210206389427185,
+      0.07154042273759842
+    ]
+  }
+}

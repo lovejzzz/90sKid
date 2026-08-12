@@ -569,11 +569,14 @@ def apply(
         neutral_negative = module.negative_total_printer_density(
             np.array([0.18, 0.18, 0.18], dtype=np.float32)
         )
+        principal_lad_density = (
+            module._active_2383_lad_principal_density_rgb()
+        )
         aim_log_exposure = np.array(
             [
                 module._inverse_2383_density(
                     channel,
-                    float(module.PRINT_2383_LAD_STATUS_A_AIM_RGB[channel]),
+                    float(principal_lad_density[channel]),
                 )
                 for channel in range(3)
             ],
@@ -600,6 +603,17 @@ def apply(
         source = np.asarray(negative_density_rgb, dtype=np.float32)
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_print_density(source)
+        if module.PRINT_2383_DENSITY_NEUTRAL_POLICY == (
+            "published_separated_status_a_curves_unshaped_v64"
+        ):
+            return module._raw_print_2383_density_from_negative(source)
+        if module.PRINT_2383_DENSITY_NEUTRAL_POLICY != (
+            "continuous_principal_mean_shaper_archive"
+        ):
+            raise ValueError(
+                "unknown 2383 density-neutral policy: "
+                f"{module.PRINT_2383_DENSITY_NEUTRAL_POLICY}"
+            )
         if module._PRINT_2383_NEUTRAL_SHAPERS is None:
             module._PRINT_2383_NEUTRAL_SHAPERS = (
                 module._build_2383_neutral_shapers()
@@ -961,6 +975,23 @@ def apply(
     def scanner_density_parallel(total_density: np.ndarray) -> np.ndarray:
         """Preserve the scanner model while parallelizing its pointwise tail."""
         source = np.asarray(total_density)
+        if module.SPIRIT_PRIMARY_CORRECTION_TARGET == (
+            "active_2383_printing_density_v66"
+        ):
+            base = module.negative_total_printer_density_from_record_density(
+                module.SENSITO_DMIN_RGB
+            )
+            return (
+                module.negative_total_printer_density_from_record_density(source)
+                - base
+            ).astype(np.float32)
+        if module.SPIRIT_PRIMARY_CORRECTION_TARGET != (
+            module.SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE
+        ):
+            raise ValueError(
+                "unknown Spirit/Cineon calibration target: "
+                f"{module.SPIRIT_PRIMARY_CORRECTION_TARGET}"
+            )
         if source.ndim != 3 or source.shape[-1] != 3:
             return reference_scanner_density(source)
         signed_net_density = source - module.SENSITO_DMIN_RGB

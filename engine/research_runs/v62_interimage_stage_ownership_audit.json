@@ -1,0 +1,2831 @@
+{
+  "audit": "V62 2383 interimage stage-ownership audit",
+  "decision": {
+    "archive_matrix": "withdraw from the evidence-corrected physical stage",
+    "display_policy": "do not move the old matrix into display; the current scan-referenced monitor boundary already owns its declared display colour",
+    "required_pipeline_fix": "build and bind a V62 193-cube observer lattice from the same V62 profile used for mean print formation",
+    "v62_physical_interimage_policy": "identity minimum-assumption endpoint, explicitly unmeasured"
+  },
+  "fit_provenance": {
+    "classification": "Mixed finished-look transforms: Resolve Cineon-to-Rec.709, Adobe 5218-plus-2383, FilmVision looks without a documented input contract, and an AP0-to-AP0 ACES LMT. They are useful display brackets, not same-process 5279-to-2383 chemical measurements.",
+    "source_hashes": {
+      "adobe_5218_2383": {
+        "path": "/Applications/Adobe Photoshop 2026/Presets/3DLUTs/Kodak 5218 Kodak 2383 (by Adobe).cube",
+        "sha256": "a11b24b774a2134fba5899e150f25c0f0f3ebc8d04231f41ecab7bb8410778fe"
+      },
+      "bmd_aces_lmt": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/LMT Kodak 2383 Print Emulation.xml",
+        "sha256": "2fa5003ca9f3052d22a49fafc5aa91f22e20feea165cbbea2e07e09253e5e5cf"
+      },
+      "filmvision_sd1": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/FilmVision Pro/Print/I- Standard/Print SD1 Kodak 2383.cube",
+        "sha256": "640719da0b293cb09821de25b44b2479062fd398a09078f8cfe239b4971f9ddd"
+      },
+      "filmvision_sd2": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/FilmVision Pro/Print/I- Standard/Print SD2 Kodak 2383.cube",
+        "sha256": "78ca439b09fa99b14850f55ea5cca20b642b3cda5a6d0d0746d5f9a67768f12f"
+      },
+      "filmvision_sd3": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/FilmVision Pro/Print/I- Standard/Print SD3 Kodak 2383.cube",
+        "sha256": "a8ac108344ffe5c111b8e9b8959c462fd4fd44590e182495b572fc1e76d55aad"
+      },
+      "resolve_rec709_d55": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/Film Looks/Rec709 Kodak 2383 D55.cube",
+        "sha256": "a14245cd4092e17a7b3ec9bd0a7575102c50b03cc558a7d169c24092fff8904d"
+      },
+      "resolve_rec709_d60": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/Film Looks/Rec709 Kodak 2383 D60.cube",
+        "sha256": "73a1b85a18a440db2282b0da8dc26a0510f3a68446ff5dc605df3087d2bd3d52"
+      },
+      "resolve_rec709_d65": {
+        "path": "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/Film Looks/Rec709 Kodak 2383 D65.cube",
+        "sha256": "d315680d7c6c84a941dc41c8c9fea7afe0007c58811bc6f008edc56c15057b60"
+      }
+    },
+    "vendor_analyzer_sha256": "825af0bcd3111809e0aaedb115982491891289249d7312c18e857f1c43d00462",
+    "vendor_metrics_sha256": "4110c0df3bb791d7a7263c358176b00d9b96d68c0a8f5ab8cd17533dd1cef13e"
+  },
+  "matrix_geometry": {
+    "archive": [
+      [
+        1.4105000495910645,
+        -0.95660001039505,
+        0.9151999950408936
+      ],
+      [
+        0.41269999742507935,
+        0.6942999958992004,
+        -0.23240000009536743
+      ],
+      [
+        -0.5640000104904175,
+        0.6093000173568726,
+        0.8424999713897705
+      ]
+    ],
+    "archive_column_sums": [
+      1.2591999769210815,
+      0.34700000286102295,
+      1.5253000259399414
+    ],
+    "archive_condition_number": 2.414963960647583,
+    "archive_row_sums": [
+      1.3691000938415527,
+      0.8745999932289124,
+      0.8877999782562256
+    ],
+    "identity": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "primary_evidence_boundary": {
+    "Ishii_2003": "EK5279-to-EK2383 was measured with 401 patches and required a stock-specific 3x13 density polynomial; the paper does not publish the EK5279 coefficients.",
+    "US20020118211A1": "A chemical print-film interimage matrix must be identified from separated colour exposures, converted from Status-A to analytical density. Identity is the no-measurement/no-effect endpoint, not proof that real 2383 has no interimage effect.",
+    "US8654192B2": "The LAD-anchored log-exposure placement is valid, but fitting requires DPX-to-theatre-Lab pairs from the same film workflow distributed through the input space, including saturated hues."
+  },
+  "question": "Does the archived cross-vendor preview surrogate remain a valid positive-film interimage model after V61 corrected the negative Status-M/analytical coordinate?",
+  "real_frame": {
+    "frame": 0,
+    "identity_vs_archive": {
+      "monitor_projection": {
+        "changed_12bit_component_fraction": 0.0019127229080932785,
+        "linear_rgb_mae": 2.0728894014609978e-06,
+        "linear_rgb_maximum_absolute": 0.032966405153274536,
+        "linear_rgb_p95_absolute": 0.0,
+        "linear_rgb_p99_absolute": 0.0,
+        "oklab_delta_median": 0.0,
+        "oklab_delta_p95": 0.0,
+        "oklab_delta_p99": 0.0
+      },
+      "physical_projection": {
+        "changed_12bit_component_fraction": 0.829298482510288,
+        "linear_rgb_mae": 0.017542237415909767,
+        "linear_rgb_maximum_absolute": 0.5331070423126221,
+        "linear_rgb_p95_absolute": 0.09965951368212696,
+        "linear_rgb_p99_absolute": 0.2501481869816778,
+        "oklab_delta_median": 0.023576089181005955,
+        "oklab_delta_p95": 0.09583703987300397,
+        "oklab_delta_p99": 0.12627068355679513
+      },
+      "print_principal_density": {
+        "component_fraction_changed_over_1e_5D": 0.9999541323731138,
+        "density_mae": 0.2893839478492737,
+        "density_maximum_absolute": 2.3527512550354004,
+        "density_p95_absolute": 0.9796553462743756,
+        "density_p99_absolute": 1.7359212720394133
+      }
+    },
+    "production_lattice_consistency": {
+      "interpretation": "V61's mean projection uses V61's direct model, while the archive-pointwise projection grain delta still samples this V60 lattice. V62 binds its profile-identical lattice so one observer owns both mean and microscopic density changes.",
+      "v60_direct_vs_v60_lattice_interpolation_floor": {
+        "changed_12bit_component_fraction": 0.41549982853223594,
+        "linear_rgb_mae": 0.00017279930762015283,
+        "linear_rgb_maximum_absolute": 0.007482320070266724,
+        "linear_rgb_p95_absolute": 0.0007604658603668213,
+        "linear_rgb_p99_absolute": 0.0011875033378601074,
+        "oklab_delta_median": 0.0003661813243525103,
+        "oklab_delta_p95": 0.0010385121626313777,
+        "oklab_delta_p99": 0.002609040085226298
+      },
+      "v60_microscopic_density_delta_direct_vs_lattice_delta": {
+        "sample_mae": 0.00020510591275524348,
+        "sample_maximum_absolute": 0.0033720433712005615,
+        "sample_p95_absolute": 0.0009405612945556641,
+        "sample_p99_absolute": 0.0015756487846374512
+      },
+      "v61_archive_direct_vs_loaded_v60_lattice": {
+        "changed_12bit_component_fraction": 0.7676348165294925,
+        "linear_rgb_mae": 0.0016469050897285342,
+        "linear_rgb_maximum_absolute": 0.03790938854217529,
+        "linear_rgb_p95_absolute": 0.008737787976860999,
+        "linear_rgb_p99_absolute": 0.02074715495109558,
+        "oklab_delta_median": 0.0019823568873107433,
+        "oklab_delta_p95": 0.012104188557714227,
+        "oklab_delta_p99": 0.015228510545566681
+      },
+      "v61_identity_direct_vs_loaded_v60_lattice": {
+        "changed_12bit_component_fraction": 0.7679953275034294,
+        "linear_rgb_mae": 0.0016478056786581874,
+        "linear_rgb_maximum_absolute": 0.03790938854217529,
+        "linear_rgb_p95_absolute": 0.00873988941311836,
+        "linear_rgb_p99_absolute": 0.02074837863445278,
+        "oklab_delta_median": 0.00198488833848387,
+        "oklab_delta_p95": 0.01211572475731373,
+        "oklab_delta_p99": 0.015240015462040903
+      },
+      "v62_direct_vs_v62_lattice": {
+        "changed_12bit_component_fraction": 0.42539137517146774,
+        "linear_rgb_mae": 0.0001853082940215245,
+        "linear_rgb_maximum_absolute": 0.007364094257354736,
+        "linear_rgb_p95_absolute": 0.0008300840854644775,
+        "linear_rgb_p99_absolute": 0.0013167262077331543,
+        "oklab_delta_median": 0.00038644246524199843,
+        "oklab_delta_p95": 0.0011294420226477088,
+        "oklab_delta_p99": 0.002707832583691925
+      },
+      "v62_microscopic_density_delta_direct_vs_lattice_delta": {
+        "sample_mae": 0.00019993213936686516,
+        "sample_maximum_absolute": 0.0037268996238708496,
+        "sample_p95_absolute": 0.0009364485740661621,
+        "sample_p99_absolute": 0.001610458046197888
+      }
+    },
+    "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+    "timing_seconds": {
+      "archive_observer": 6.871975499961991,
+      "decode_and_reduce": 0.353541792021133,
+      "deterministic_negative_formation": 9.962565042020287,
+      "identity_observer": 6.816868458001409,
+      "total": 43.147399292036425
+    },
+    "total_status_m_density_mean_rgb": [
+      0.5584856867790222,
+      1.1114544868469238,
+      1.2000364065170288
+    ],
+    "working_dimensions": [
+      1440,
+      1080
+    ]
+  },
+  "stage_local_jacobians": {
+    "archive": {
+      "+0": {
+        "neutral_scene_stop_from_18_percent": 0.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.2516528367996216,
+                0.0,
+                0.0
+              ],
+              [
+                0.19778311252593994,
+                0.0,
+                0.0
+              ],
+              [
+                0.19763410091400146,
+                0.0,
+                0.0
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.0,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.19778311252593994,
+                0.0,
+                0.0
+              ],
+              [
+                0.19763410091400146,
+                0.0,
+                0.0
+              ]
+            ],
+            "value": [
+              0.17997007071971893,
+              0.17997002601623535,
+              0.17997002601623535
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0789036750793457,
+                -0.03451108932495117,
+                0.00903010368347168
+              ],
+              [
+                0.0016093254089355469,
+                0.9201169013977051,
+                0.0559687614440918
+              ],
+              [
+                0.027060508728027344,
+                0.013232231140136719,
+                0.9000897407531738
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.06082788106497376,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03198718302856196,
+                0.008369703331307663
+              ],
+              [
+                0.0017490445034656992,
+                1.0,
+                0.06082788106497376
+              ],
+              [
+                0.030064234156678367,
+                0.014701013177935237,
+                1.0
+              ]
+            ],
+            "value": [
+              0.8461472988128662,
+              1.3220263719558716,
+              1.5680499076843262
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -3.701448440551758,
+                2.1964609622955322,
+                -1.8759071826934814
+              ],
+              [
+                -1.5256404876708984,
+                -2.1544992923736572,
+                0.5775094032287598
+              ],
+              [
+                1.8948614597320557,
+                -1.9169747829437256,
+                -2.5785863399505615
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7434208245206477,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5934057971014493,
+                0.5068035426731079
+              ],
+              [
+                0.7081183517076343,
+                1.0,
+                -0.2680480821103011
+              ],
+              [
+                -0.7348450700969684,
+                0.7434208245206477,
+                1.0
+              ]
+            ],
+            "value": [
+              0.9897195100784302,
+              0.8820611238479614,
+              0.8421473503112793
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.556396484375,
+                -0.8982047438621521,
+                0.6998851895332336
+              ],
+              [
+                0.6299763917922974,
+                0.5867406725883484,
+                0.011458992958068848
+              ],
+              [
+                -0.760979950428009,
+                0.9705647826194763,
+                1.244567334651947
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.0736879531688486,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5771053538602942,
+                0.44968309589460786
+              ],
+              [
+                1.0736879531688486,
+                1.0,
+                0.019529910731292302
+              ],
+              [
+                -0.6114413653969337,
+                0.7798411187538538,
+                1.0
+              ]
+            ],
+            "value": [
+              0.14845609664916992,
+              0.18671368062496185,
+              0.20386441051959991
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.5450119972229004,
+                0.9168386459350586,
+                -0.7830262184143066
+              ],
+              [
+                -0.4400908946990967,
+                -0.621497631072998,
+                0.1665949821472168
+              ],
+              [
+                0.584721565246582,
+                -0.591278076171875,
+                -0.7873177528381348
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7510031039442804,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5934184637938351,
+                0.5068091508815247
+              ],
+              [
+                0.7081135513570538,
+                1.0,
+                -0.26805409034238037
+              ],
+              [
+                -0.7426754485578015,
+                0.7510031039442804,
+                1.0
+              ]
+            ],
+            "value": [
+              1.006640076637268,
+              0.6231135725975037,
+              0.3050801157951355
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -5.806982517242432,
+                3.445953130722046,
+                -2.9430389404296875
+              ],
+              [
+                -1.1448860168457031,
+                -1.6168057918548584,
+                0.43338537216186523
+              ],
+              [
+                1.2862682342529297,
+                -1.3013184070587158,
+                -1.7514228820800781
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7430063980397495,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5934154477803438,
+                0.5068103669489351
+              ],
+              [
+                0.7081159794289507,
+                1.0,
+                -0.268050358518737
+              ],
+              [
+                -0.7344132861421182,
+                0.7430063980397495,
+                1.0
+              ]
+            ],
+            "value": [
+              0.9897210001945496,
+              0.8820608854293823,
+              0.8421475887298584
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.806064248085022,
+          1.3268886804580688,
+          1.657684564590454
+        ]
+      },
+      "+2": {
+        "neutral_scene_stop_from_18_percent": 2.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.0470449924468994,
+                -0.1900792121887207,
+                0.0
+              ],
+              [
+                -0.05683302879333496,
+                0.9077787399291992,
+                0.0
+              ],
+              [
+                -0.05728006362915039,
+                -0.1913905143737793,
+                0.0
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.0,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.1815387242763214,
+                0.0
+              ],
+              [
+                -0.06260669730794484,
+                1.0,
+                0.0
+              ],
+              [
+                -0.05728006362915039,
+                -0.1913905143737793,
+                0.0
+              ]
+            ],
+            "value": [
+              0.5622602701187134,
+              0.5644843578338623,
+              0.5647029876708984
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0697245597839355,
+                -0.0324249267578125,
+                0.01150369644165039
+              ],
+              [
+                0.004708766937255859,
+                0.9124279022216797,
+                0.06830692291259766
+              ],
+              [
+                0.03921985626220703,
+                0.012576580047607422,
+                0.8801817893981934
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07486281682780245,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03031147266952694,
+                0.010753886443416728
+              ],
+              [
+                0.005160700287431408,
+                1.0,
+                0.07486281682780245
+              ],
+              [
+                0.04455881357079976,
+                0.014288616509785333,
+                1.0
+              ]
+            ],
+            "value": [
+              1.179800271987915,
+              1.678196668624878,
+              1.9098074436187744
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -1.0901987552642822,
+                0.6420016288757324,
+                -0.5353987216949463
+              ],
+              [
+                -0.46890974044799805,
+                -0.6643384695053101,
+                0.16404688358306885
+              ],
+              [
+                0.5966648459434509,
+                -0.6150007247924805,
+                -0.8167698979377747
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7529669327251995,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5888849402695389,
+                0.491101938164621
+              ],
+              [
+                0.7058295762958975,
+                1.0,
+                -0.24693268734719512
+              ],
+              [
+                -0.7305176738882554,
+                0.7529669327251995,
+                1.0
+              ]
+            ],
+            "value": [
+              0.377861350774765,
+              0.2702042758464813,
+              0.23029235005378723
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.0322034358978271,
+                -0.6543099880218506,
+                0.4729926586151123
+              ],
+              [
+                0.518798828125,
+                0.5401372909545898,
+                -0.022470951080322266
+              ],
+              [
+                -0.42825937271118164,
+                0.5641579627990723,
+                0.7338523864746094
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.9604943721032885,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.6338963476252346,
+                0.4582358885520427
+              ],
+              [
+                0.9604943721032885,
+                1.0,
+                -0.04160229529905098
+              ],
+              [
+                -0.5835769980506823,
+                0.7687621832358674,
+                1.0
+              ]
+            ],
+            "value": [
+              0.5418250560760498,
+              0.6468132138252258,
+              0.6898918151855469
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.5402138233184814,
+                0.9070336818695068,
+                -0.7564425468444824
+              ],
+              [
+                -0.43563544750213623,
+                -0.6171911954879761,
+                0.15237927436828613
+              ],
+              [
+                0.567406415939331,
+                -0.5848407745361328,
+                -0.7766932249069214
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7529881242445753,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5889011435537238,
+                0.49112826764188
+              ],
+              [
+                0.705835486129554,
+                1.0,
+                -0.24689152321398392
+              ],
+              [
+                -0.730541219806995,
+                0.7529881242445753,
+                1.0
+              ]
+            ],
+            "value": [
+              0.5639585256576538,
+              0.3175503611564636,
+              -0.01168486475944519
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -0.965707004070282,
+                0.5687102675437927,
+                -0.47428905963897705
+              ],
+              [
+                -0.49802660942077637,
+                -0.7055848836898804,
+                0.17420947551727295
+              ],
+              [
+                0.6269365549087524,
+                -0.6462037563323975,
+                -0.8581727743148804
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7529996006320432,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5889056050611426,
+                0.4911314276896964
+              ],
+              [
+                0.7058351460370426,
+                1.0,
+                -0.2469008046292581
+              ],
+              [
+                -0.7305481759302669,
+                0.7529996006320432,
+                1.0
+              ]
+            ],
+            "value": [
+              0.21414312720298767,
+              0.3194732367992401,
+              0.3447415828704834
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          1.124627709388733,
+          1.6906322240829468,
+          2.024675130844116
+        ]
+      },
+      "+4": {
+        "neutral_scene_stop_from_18_percent": 4.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.0806024074554443,
+                -0.43770670890808105,
+                -0.04413723945617676
+              ],
+              [
+                -0.13130903244018555,
+                0.7649660110473633,
+                -0.04416704177856445
+              ],
+              [
+                -0.13130903244018555,
+                -0.438004732131958,
+                1.152127981185913
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.4050580545519733,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.4050580545519733,
+                -0.04084503157836675
+              ],
+              [
+                -0.1716534206015272,
+                1.0,
+                -0.05773726040205704
+              ],
+              [
+                -0.11397087353526993,
+                -0.3801702061615665,
+                1.0
+              ]
+            ],
+            "value": [
+              0.7942065596580505,
+              0.7940459251403809,
+              0.7943500876426697
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0566115379333496,
+                -0.03147125244140625,
+                0.013709068298339844
+              ],
+              [
+                0.008344650268554688,
+                0.8757114410400391,
+                0.07206201553344727
+              ],
+              [
+                0.051021575927734375,
+                0.010848045349121094,
+                0.8471012115478516
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.08228968145929758,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.029785073616517176,
+                0.012974558582952558
+              ],
+              [
+                0.00952899537163082,
+                1.0,
+                0.08228968145929758
+              ],
+              [
+                0.06023079088094568,
+                0.012806079369546862,
+                1.0
+              ]
+            ],
+            "value": [
+              1.4689967632293701,
+              1.9846519231796265,
+              2.19944429397583
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -0.287376344203949,
+                0.16392022371292114,
+                -0.13638287782669067
+              ],
+              [
+                -0.12762099504470825,
+                -0.17586350440979004,
+                0.041890889406204224
+              ],
+              [
+                0.16357377171516418,
+                -0.16734004020690918,
+                -0.22387132048606873
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7474831516765121,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5704026341033419,
+                0.4745793471779316
+              ],
+              [
+                0.7256820877817319,
+                1.0,
+                -0.23820115234705982
+              ],
+              [
+                -0.7306597886679425,
+                0.7474831516765121,
+                1.0
+              ]
+            ],
+            "value": [
+              0.21363571286201477,
+              0.10597871243953705,
+              0.06606680899858475
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.2911984920501709,
+                -0.18334388732910156,
+                0.1386702060699463
+              ],
+              [
+                0.11965632438659668,
+                0.10007619857788086,
+                -0.00432133674621582
+              ],
+              [
+                0.017762184143066406,
+                0.08311867713928223,
+                0.10129809379577637
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.1956521739130435,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.6296182581107358,
+                0.4762050967147682
+              ],
+              [
+                1.1956521739130435,
+                1.0,
+                -0.04318046456223943
+              ],
+              [
+                0.1753456899087967,
+                0.8205354516034128,
+                1.0
+              ]
+            ],
+            "value": [
+              0.7135123610496521,
+              0.8027965426445007,
+              0.8137304186820984
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.5290677547454834,
+                0.8721649646759033,
+                -0.7256865501403809
+              ],
+              [
+                -0.42998790740966797,
+                -0.5925297737121582,
+                0.141143798828125
+              ],
+              [
+                0.5478560924530029,
+                -0.560462474822998,
+                -0.7498264312744141
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.747456279809221,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5703900052624398,
+                0.4745941099655018
+              ],
+              [
+                0.725681520973745,
+                1.0,
+                -0.2382054119303893
+              ],
+              [
+                -0.730643879173291,
+                0.747456279809221,
+                1.0
+              ]
+            ],
+            "value": [
+              0.1841263771057129,
+              0.05273866653442383,
+              -0.27932026982307434
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -0.158555805683136,
+                0.09043887257575989,
+                -0.07525086402893066
+              ],
+              [
+                -0.17924606800079346,
+                -0.24700164794921875,
+                0.05883723497390747
+              ],
+              [
+                0.17014145851135254,
+                -0.17406046390533447,
+                -0.23286044597625732
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7474883214948487,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5703914289742024,
+                0.4746017574362107
+              ],
+              [
+                0.7256877413127413,
+                1.0,
+                -0.23820583976833976
+              ],
+              [
+                -0.7306584757151084,
+                0.7474883214948487,
+                1.0
+              ]
+            ],
+            "value": [
+              0.07502109557390213,
+              0.1310163289308548,
+              0.17964375019073486
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          1.4024674892425537,
+          2.0065078735351562,
+          2.3411056995391846
+        ]
+      },
+      "-2": {
+        "neutral_scene_stop_from_18_percent": -2.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.12966338545084,
+                -0.009430572390556335,
+                -0.0009713694453239441
+              ],
+              [
+                -0.002802349627017975,
+                0.12260116636753082,
+                -0.0009378418326377869
+              ],
+              [
+                -0.002880580723285675,
+                -0.009435229003429413,
+                0.131240114569664
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07273119051894415,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.07273119051894415,
+                -0.007491470641048662
+              ],
+              [
+                -0.022857446711535834,
+                1.0,
+                -0.007649534343142766
+              ],
+              [
+                -0.02194893484153905,
+                -0.07189287386991015,
+                1.0
+              ]
+            ],
+            "value": [
+              0.022956281900405884,
+              0.02257818542420864,
+              0.02297806926071644
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.086413860321045,
+                -0.03549456596374512,
+                0.007420778274536133
+              ],
+              [
+                -0.000476837158203125,
+                0.9402632713317871,
+                0.05081295967102051
+              ],
+              [
+                0.017642974853515625,
+                0.013530254364013672,
+                0.9236931800842285
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.05404120443740095,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03267131179020135,
+                0.006830526142535798
+              ],
+              [
+                -0.0005071315372424723,
+                1.0,
+                0.05404120443740095
+              ],
+              [
+                0.019100471058914627,
+                0.014647996386397367,
+                1.0
+              ]
+            ],
+            "value": [
+              0.5088882446289062,
+              0.962136447429657,
+              1.2233686447143555
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -5.285739898681641,
+                3.197789192199707,
+                -2.75421142578125
+              ],
+              [
+                -2.1736621856689453,
+                -3.109097480773926,
+                0.8634328842163086
+              ],
+              [
+                2.8123855590820312,
+                -2.8411149978637695,
+                -3.7844181060791016
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7507402507402507,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.6049842129003158,
+                0.52106450157871
+              ],
+              [
+                0.6991296345999003,
+                1.0,
+                -0.2777117441815881
+              ],
+              [
+                -0.7431487431487431,
+                0.7507402507402507,
+                1.0
+              ]
+            ],
+            "value": [
+              2.393040657043457,
+              2.28538179397583,
+              2.2454676628112793
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.05523231811821461,
+                -0.029084505513310432,
+                0.0219796784222126
+              ],
+              [
+                0.029152492061257362,
+                0.029288465157151222,
+                0.003227498382329941
+              ],
+              [
+                -0.026305438950657845,
+                0.038354890421032906,
+                0.045318854972720146
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.9953574523224663,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5265849144890208,
+                0.39794959130936974
+              ],
+              [
+                0.9953574523224663,
+                1.0,
+                0.11019691079789813
+              ],
+              [
+                -0.5804524180165739,
+                0.8463340577364714,
+                1.0
+              ]
+            ],
+            "value": [
+              0.004325972404330969,
+              0.005513221025466919,
+              0.006136695854365826
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.549065113067627,
+                0.9371638298034668,
+                -0.8071660995483398
+              ],
+              [
+                -0.44396519660949707,
+                -0.6350278854370117,
+                0.17634034156799316
+              ],
+              [
+                0.5981922149658203,
+                -0.6043314933776855,
+                -0.8049905300140381
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.75073118359187,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.6049867251529494,
+                0.5210666051021586
+              ],
+              [
+                0.6991270884174958,
+                1.0,
+                -0.27768913084287594
+              ],
+              [
+                -0.743104661064011,
+                0.75073118359187,
+                1.0
+              ]
+            ],
+            "value": [
+              1.4535255432128906,
+              0.9320679903030396,
+              0.6245409250259399
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -6.318211555480957,
+                3.822445869445801,
+                -3.292202949523926
+              ],
+              [
+                -1.805424690246582,
+                -2.582371234893799,
+                0.7171034812927246
+              ],
+              [
+                2.739429473876953,
+                -2.7674436569213867,
+                -3.6863088607788086
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.7507356983475083,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.6049885851210355,
+                0.5210656402709383
+              ],
+              [
+                0.699134448932487,
+                1.0,
+                -0.27769186381996536
+              ],
+              [
+                -0.743136176955664,
+                0.7507356983475083,
+                1.0
+              ]
+            ],
+            "value": [
+              2.923515558242798,
+              1.9692764282226562,
+              2.0310986042022705
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.4856901168823242,
+          0.9612854719161987,
+          1.2931199073791504
+        ]
+      },
+      "-4": {
+        "neutral_scene_stop_from_18_percent": -4.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.06429426139220595,
+                0.009032373782247305,
+                0.0009424402378499508
+              ],
+              [
+                0.0024834880605340004,
+                0.06462167948484421,
+                0.0007953494787216187
+              ],
+              [
+                0.002535758540034294,
+                0.0077811419032514095,
+                0.058303994592279196
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.14048491399797386,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.14048491399797386,
+                0.014658232592500047
+              ],
+              [
+                0.03843119028060011,
+                1.0,
+                0.012307780996440256
+              ],
+              [
+                0.043492020705732014,
+                0.13345812680014577,
+                1.0
+              ]
+            ],
+            "value": [
+              0.0019526059040799737,
+              0.0016470486298203468,
+              0.0016822946490719914
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                0.8911937475204468,
+                0.04484504461288452,
+                0.014707446098327637
+              ],
+              [
+                0.018924474716186523,
+                0.7994472980499268,
+                0.09891390800476074
+              ],
+              [
+                0.01570582389831543,
+                0.022619962692260742,
+                0.9006857872009277
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.12372786579683132,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.050320196632501216,
+                0.016503084923169528
+              ],
+              [
+                0.023671947809878843,
+                1.0,
+                0.12372786579683132
+              ],
+              [
+                0.017437628217854544,
+                0.02511415525114155,
+                1.0
+              ]
+            ],
+            "value": [
+              0.23787102103233337,
+              0.6687548160552979,
+              0.9336467981338501
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -2.6235580444335938,
+                1.4247894287109375,
+                -1.570582389831543
+              ],
+              [
+                -1.208662986755371,
+                -1.8203258514404297,
+                0.431060791015625
+              ],
+              [
+                1.3427734375,
+                -1.3511180877685547,
+                -2.278447151184082
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.6639816633922724,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5430752453653217,
+                0.5986459469283897
+              ],
+              [
+                0.6639816633922724,
+                1.0,
+                -0.23680419122462346
+              ],
+              [
+                -0.5893371004028671,
+                0.5929995291163083,
+                1.0
+              ]
+            ],
+            "value": [
+              3.4181599617004395,
+              3.3105030059814453,
+              3.2705905437469482
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.0018889113562181592,
+                -0.0007428170647472143,
+                0.0008066563168540597
+              ],
+              [
+                0.0010568037396296859,
+                0.0011959346011281013,
+                0.0002595334080979228
+              ],
+              [
+                -0.0007926573744043708,
+                0.0013600074453279376,
+                0.0018583086784929037
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.8836634868100847,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.39325141558491583,
+                0.42704826470474944
+              ],
+              [
+                0.8836634868100847,
+                1.0,
+                0.21701304390148934
+              ],
+              [
+                -0.4265477439664218,
+                0.7318522810919171,
+                1.0
+              ]
+            ],
+            "value": [
+              0.0003160079359076917,
+              0.0003932603867724538,
+              0.0004365182830952108
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.2534260749816895,
+                0.6807446479797363,
+                -0.750422477722168
+              ],
+              [
+                -0.37729740142822266,
+                -0.5682706832885742,
+                0.13458728790283203
+              ],
+              [
+                0.47785043716430664,
+                -0.48083066940307617,
+                -0.8108019828796387
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.6639395846444305,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.543107137762138,
+                0.598697037424509
+              ],
+              [
+                0.6639395846444305,
+                1.0,
+                -0.236836584854206
+              ],
+              [
+                -0.5893552892744247,
+                0.5930309490553555,
+                1.0
+              ]
+            ],
+            "value": [
+              1.8202998638153076,
+              1.180280327796936,
+              0.8945353031158447
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -1.56402587890625,
+                0.8493661880493164,
+                -0.9362697601318359
+              ],
+              [
+                -1.2943744659423828,
+                -1.9494295120239258,
+                0.4616975784301758
+              ],
+              [
+                1.7892122268676758,
+                -1.8004179000854492,
+                -3.036022186279297
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.6639760288632055,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.5430640243902439,
+                0.5986280487804878
+              ],
+              [
+                0.6639760288632055,
+                1.0,
+                -0.23683727756374978
+              ],
+              [
+                -0.5893277838856604,
+                0.5930186901209361,
+                1.0
+              ]
+            ],
+            "value": [
+              3.829047203063965,
+              2.9616997241973877,
+              3.2085070610046387
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.219114750623703,
+          0.657307505607605,
+          0.9875847697257996
+        ]
+      }
+    },
+    "identity": {
+      "+0": {
+        "neutral_scene_stop_from_18_percent": 0.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.2516528367996216,
+                0.0,
+                0.0
+              ],
+              [
+                0.19778311252593994,
+                0.0,
+                0.0
+              ],
+              [
+                0.19763410091400146,
+                0.0,
+                0.0
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.0,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.19778311252593994,
+                0.0,
+                0.0
+              ],
+              [
+                0.19763410091400146,
+                0.0,
+                0.0
+              ]
+            ],
+            "value": [
+              0.17997007071971893,
+              0.17997002601623535,
+              0.17997002601623535
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0789036750793457,
+                -0.03451108932495117,
+                0.00903010368347168
+              ],
+              [
+                0.0016093254089355469,
+                0.9201169013977051,
+                0.0559687614440918
+              ],
+              [
+                0.027060508728027344,
+                0.013232231140136719,
+                0.9000897407531738
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.06082788106497376,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03198718302856196,
+                0.008369703331307663
+              ],
+              [
+                0.0017490445034656992,
+                1.0,
+                0.06082788106497376
+              ],
+              [
+                0.030064234156678367,
+                0.014701013177935237,
+                1.0
+              ]
+            ],
+            "value": [
+              0.8461472988128662,
+              1.3220263719558716,
+              1.5680499076843262
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -3.190934658050537,
+                0.10219216346740723,
+                -0.02676248550415039
+              ],
+              [
+                -0.004470348358154297,
+                -2.5615692138671875,
+                -0.1558363437652588
+              ],
+              [
+                -0.07382035255432129,
+                -0.03612041473388672,
+                -2.5344789028167725
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.06083628071481757,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03202577752871953,
+                0.008387036518165686
+              ],
+              [
+                0.0017451600893521966,
+                1.0,
+                0.06083628071481757
+              ],
+              [
+                0.029126441917618148,
+                0.014251613889444164,
+                1.0
+              ]
+            ],
+            "value": [
+              0.9897189736366272,
+              0.882060170173645,
+              0.8421486020088196
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.289956271648407,
+                -0.007554888725280762,
+                -0.03773719072341919
+              ],
+              [
+                0.19276142120361328,
+                0.7793381810188293,
+                0.12505054473876953
+              ],
+              [
+                0.10032206773757935,
+                0.13244152069091797,
+                1.2194141745567322
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.24733989158803454,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.005856701417968637,
+                -0.02925462789152973
+              ],
+              [
+                0.24733989158803454,
+                1.0,
+                0.16045735700423513
+              ],
+              [
+                0.08227070820629694,
+                0.1086107767601288,
+                1.0
+              ]
+            ],
+            "value": [
+              0.14845634996891022,
+              0.18671397864818573,
+              0.20386381447315216
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.0789036750793457,
+                0.03457069396972656,
+                -0.009059906005859375
+              ],
+              [
+                -0.0016093254089355469,
+                -0.9201169013977051,
+                -0.0559687614440918
+              ],
+              [
+                -0.027060508728027344,
+                -0.013232231140136719,
+                -0.9000897407531738
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.06082788106497376,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03204242859510524,
+                0.008397326114579304
+              ],
+              [
+                0.0017490445034656992,
+                1.0,
+                0.06082788106497376
+              ],
+              [
+                0.030064234156678367,
+                0.014701013177935237,
+                1.0
+              ]
+            ],
+            "value": [
+              1.0066397190093994,
+              0.6231132745742798,
+              0.3050805330276489
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -4.055112600326538,
+                0.12993812561035156,
+                -0.03403425216674805
+              ],
+              [
+                -0.004172325134277344,
+                -2.393662929534912,
+                -0.1456141471862793
+              ],
+              [
+                -0.05844235420227051,
+                -0.028580427169799805,
+                -2.0103156566619873
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.06083318807739237,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03204303762117192,
+                0.008392924074169344
+              ],
+              [
+                0.001743071291615827,
+                1.0,
+                0.06083318807739237
+              ],
+              [
+                0.029071232673634276,
+                0.014216885330961382,
+                1.0
+              ]
+            ],
+            "value": [
+              0.9897196292877197,
+              0.8820601105690002,
+              0.84214848279953
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.806064248085022,
+          1.3268886804580688,
+          1.657684564590454
+        ]
+      },
+      "+2": {
+        "neutral_scene_stop_from_18_percent": 2.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.0470449924468994,
+                -0.1900792121887207,
+                0.0
+              ],
+              [
+                -0.05683302879333496,
+                0.9077787399291992,
+                0.0
+              ],
+              [
+                -0.05728006362915039,
+                -0.1913905143737793,
+                0.0
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 1.0,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.1815387242763214,
+                0.0
+              ],
+              [
+                -0.06260669730794484,
+                1.0,
+                0.0
+              ],
+              [
+                -0.05728006362915039,
+                -0.1913905143737793,
+                0.0
+              ]
+            ],
+            "value": [
+              0.5622602701187134,
+              0.5644843578338623,
+              0.5647029876708984
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0697245597839355,
+                -0.0324249267578125,
+                0.01150369644165039
+              ],
+              [
+                0.004708766937255859,
+                0.9124279022216797,
+                0.06830692291259766
+              ],
+              [
+                0.03921985626220703,
+                0.012576580047607422,
+                0.8801817893981934
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07486281682780245,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03031147266952694,
+                0.010753886443416728
+              ],
+              [
+                0.005160700287431408,
+                1.0,
+                0.07486281682780245
+              ],
+              [
+                0.04455881357079976,
+                0.014288616509785333,
+                1.0
+              ]
+            ],
+            "value": [
+              1.179800271987915,
+              1.678196668624878,
+              1.9098074436187744
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -1.0357946157455444,
+                0.03139674663543701,
+                -0.011146068572998047
+              ],
+              [
+                -0.004380941390991211,
+                -0.8360594511032104,
+                -0.06364285945892334
+              ],
+              [
+                -0.03571808338165283,
+                -0.011451542377471924,
+                -0.801481306552887
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.0761224089685779,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.030311749219547986,
+                0.010760886766123348
+              ],
+              [
+                0.005239987880300141,
+                1.0,
+                0.0761224089685779
+              ],
+              [
+                0.04456508603459976,
+                0.01428797188885687,
+                1.0
+              ]
+            ],
+            "value": [
+              0.3813733160495758,
+              0.2737163007259369,
+              0.23380453884601593
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.9734034538269043,
+                -0.06213784217834473,
+                -0.026881694793701172
+              ],
+              [
+                0.14218688011169434,
+                0.7373392581939697,
+                0.10839104652404785
+              ],
+              [
+                0.08666515350341797,
+                0.07930397987365723,
+                0.7157325744628906
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.19283779960389635,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.06383564999081501,
+                -0.027616190067968893
+              ],
+              [
+                0.19283779960389635,
+                1.0,
+                0.14700295056788326
+              ],
+              [
+                0.12108594270486342,
+                0.11080113257828114,
+                1.0
+              ]
+            ],
+            "value": [
+              0.5388091802597046,
+              0.6430262923240662,
+              0.686306893825531
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.0697245597839355,
+                0.0324249267578125,
+                -0.01150369644165039
+              ],
+              [
+                -0.004708766937255859,
+                -0.9124279022216797,
+                -0.06830692291259766
+              ],
+              [
+                -0.03921985626220703,
+                -0.012576580047607422,
+                -0.8801817893981934
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07486281682780245,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03031147266952694,
+                0.010753886443416728
+              ],
+              [
+                0.005160700287431408,
+                1.0,
+                0.07486281682780245
+              ],
+              [
+                0.04455881357079976,
+                0.014288616509785333,
+                1.0
+              ]
+            ],
+            "value": [
+              0.6729867458343506,
+              0.26694297790527344,
+              -0.036677002906799316
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -1.0019391775131226,
+                0.030368566513061523,
+                -0.010773539543151855
+              ],
+              [
+                -0.004887580871582031,
+                -0.9327530860900879,
+                -0.07100403308868408
+              ],
+              [
+                -0.032708048820495605,
+                -0.01049041748046875,
+                -0.7339417934417725
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07612307495686625,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.030309790448995375,
+                0.010752688172043012
+              ],
+              [
+                0.00523995143459646,
+                1.0,
+                0.07612307495686625
+              ],
+              [
+                0.04456490843383278,
+                0.014293255370122224,
+                1.0
+              ]
+            ],
+            "value": [
+              0.3044346570968628,
+              0.2655295133590698,
+              0.3189300298690796
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          1.124627709388733,
+          1.6906322240829468,
+          2.024675130844116
+        ]
+      },
+      "+4": {
+        "neutral_scene_stop_from_18_percent": 4.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                1.0806024074554443,
+                -0.43770670890808105,
+                -0.04413723945617676
+              ],
+              [
+                -0.13130903244018555,
+                0.7649660110473633,
+                -0.04416704177856445
+              ],
+              [
+                -0.13130903244018555,
+                -0.438004732131958,
+                1.152127981185913
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.4050580545519733,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.4050580545519733,
+                -0.04084503157836675
+              ],
+              [
+                -0.1716534206015272,
+                1.0,
+                -0.05773726040205704
+              ],
+              [
+                -0.11397087353526993,
+                -0.3801702061615665,
+                1.0
+              ]
+            ],
+            "value": [
+              0.7942065596580505,
+              0.7940459251403809,
+              0.7943500876426697
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.0566115379333496,
+                -0.03147125244140625,
+                0.013709068298339844
+              ],
+              [
+                0.008344650268554688,
+                0.8757114410400391,
+                0.07206201553344727
+              ],
+              [
+                0.051021575927734375,
+                0.010848045349121094,
+                0.8471012115478516
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.08228968145929758,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.029785073616517176,
+                0.012974558582952558
+              ],
+              [
+                0.00952899537163082,
+                1.0,
+                0.08228968145929758
+              ],
+              [
+                0.06023079088094568,
+                0.012806079369546862,
+                1.0
+              ]
+            ],
+            "value": [
+              1.4689967632293701,
+              1.9846519231796265,
+              2.19944429397583
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -0.3111511468887329,
+                0.009275972843170166,
+                -0.004038214683532715
+              ],
+              [
+                -0.0023543834686279297,
+                -0.24727359414100647,
+                -0.020343810319900513
+              ],
+              [
+                -0.015541911125183105,
+                -0.0033080577850341797,
+                -0.25806576013565063
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.08227247389909155,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.029811790623054453,
+                0.012978305636703224
+              ],
+              [
+                0.00952137035418895,
+                1.0,
+                0.08227247389909155
+              ],
+              [
+                0.06022461529578197,
+                0.012818662124317926,
+                1.0
+              ]
+            ],
+            "value": [
+              0.21740935742855072,
+              0.10975237190723419,
+              0.06984063982963562
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.32195448875427246,
+                -0.02568960189819336,
+                -0.0023245811462402344
+              ],
+              [
+                0.043511390686035156,
+                0.1652538776397705,
+                0.020682811737060547
+              ],
+              [
+                0.06052851676940918,
+                0.06330013275146484,
+                0.10827183723449707
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.5846407927332783,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.0797926501897621,
+                -0.007220216606498195
+              ],
+              [
+                0.26330027051397653,
+                1.0,
+                0.12515779981965736
+              ],
+              [
+                0.5590421139554087,
+                0.5846407927332783,
+                1.0
+              ]
+            ],
+            "value": [
+              0.7099314332008362,
+              0.7996658086776733,
+              0.8106123805046082
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.0566115379333496,
+                0.03147125244140625,
+                -0.013709068298339844
+              ],
+              [
+                -0.008344650268554688,
+                -0.8757114410400391,
+                -0.07206201553344727
+              ],
+              [
+                -0.051021575927734375,
+                -0.010848045349121094,
+                -0.8471012115478516
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.08228968145929758,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.029785073616517176,
+                0.012974558582952558
+              ],
+              [
+                0.00952899537163082,
+                1.0,
+                0.08228968145929758
+              ],
+              [
+                0.06023079088094568,
+                0.012806079369546862,
+                1.0
+              ]
+            ],
+            "value": [
+              0.3837902545928955,
+              -0.0395122766494751,
+              -0.3263138234615326
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -0.3850087523460388,
+                0.011473894119262695,
+                -0.004991888999938965
+              ],
+              [
+                -0.001735985279083252,
+                -0.18236413598060608,
+                -0.01500546932220459
+              ],
+              [
+                -0.015929341316223145,
+                -0.003390014171600342,
+                -0.26448071002960205
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.08228300614875493,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.029801644895984518,
+                0.012965650701499758
+              ],
+              [
+                0.009519334872224379,
+                1.0,
+                0.08228300614875493
+              ],
+              [
+                0.06022874528142431,
+                0.012817623528086089,
+                1.0
+              ]
+            ],
+            "value": [
+              0.12646085023880005,
+              0.10554268956184387,
+              0.1649988740682602
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          1.4024674892425537,
+          2.0065078735351562,
+          2.3411056995391846
+        ]
+      },
+      "-2": {
+        "neutral_scene_stop_from_18_percent": -2.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.12966338545084,
+                -0.009430572390556335,
+                -0.0009713694453239441
+              ],
+              [
+                -0.002802349627017975,
+                0.12260116636753082,
+                -0.0009378418326377869
+              ],
+              [
+                -0.002880580723285675,
+                -0.009435229003429413,
+                0.131240114569664
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.07273119051894415,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.07273119051894415,
+                -0.007491470641048662
+              ],
+              [
+                -0.022857446711535834,
+                1.0,
+                -0.007649534343142766
+              ],
+              [
+                -0.02194893484153905,
+                -0.07189287386991015,
+                1.0
+              ]
+            ],
+            "value": [
+              0.022956281900405884,
+              0.02257818542420864,
+              0.02297806926071644
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                1.086413860321045,
+                -0.03549456596374512,
+                0.007420778274536133
+              ],
+              [
+                -0.000476837158203125,
+                0.9402632713317871,
+                0.05081295967102051
+              ],
+              [
+                0.017642974853515625,
+                0.013530254364013672,
+                0.9236931800842285
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.05404120443740095,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.03267131179020135,
+                0.006830526142535798
+              ],
+              [
+                -0.0005071315372424723,
+                1.0,
+                0.05404120443740095
+              ],
+              [
+                0.019100471058914627,
+                0.014647996386397367,
+                1.0
+              ]
+            ],
+            "value": [
+              0.5088882446289062,
+              0.962136447429657,
+              1.2233686447143555
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -5.148053169250488,
+                0.1684427261352539,
+                -0.034928321838378906
+              ],
+              [
+                0.0020265579223632812,
+                -4.238605499267578,
+                -0.22912025451660156
+              ],
+              [
+                -0.08106231689453125,
+                -0.06222724914550781,
+                -4.252195358276367
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.05405557430532118,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.032719694338311914,
+                0.0067847632279726755
+              ],
+              [
+                -0.0004781190235122061,
+                1.0,
+                0.05405557430532118
+              ],
+              [
+                0.019063638912251192,
+                0.014634146341463415,
+                1.0
+              ]
+            ],
+            "value": [
+              2.3477680683135986,
+              2.2401084899902344,
+              2.2001969814300537
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.06977817974984646,
+                0.003716209903359413,
+                -0.003255670890212059
+              ],
+              [
+                0.0135018490254879,
+                0.044166576117277145,
+                0.009999144822359085
+              ],
+              [
+                0.004066154360771179,
+                0.010169344022870064,
+                0.06278324872255325
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.3057028688308539,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.05325747843641035,
+                -0.046657435058976626
+              ],
+              [
+                0.3057028688308539,
+                1.0,
+                0.22639619597878688
+              ],
+              [
+                0.06476495631406405,
+                0.1619754350051177,
+                1.0
+              ]
+            ],
+            "value": [
+              0.004875838290899992,
+              0.006165746133774519,
+              0.006808471865952015
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -1.0864734649658203,
+                0.03552436828613281,
+                -0.0073909759521484375
+              ],
+              [
+                0.000476837158203125,
+                -0.9402632713317871,
+                -0.05081295967102051
+              ],
+              [
+                -0.017642974853515625,
+                -0.013530254364013672,
+                -0.9236931800842285
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.05404120443740095,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.032696949747640994,
+                0.006802721088435374
+              ],
+              [
+                -0.0005071315372424723,
+                1.0,
+                0.05404120443740095
+              ],
+              [
+                0.019100471058914627,
+                0.014647996386397367,
+                1.0
+              ]
+            ],
+            "value": [
+              1.3438987731933594,
+              0.9830031991004944,
+              0.6497617959976196
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -5.279898643493652,
+                0.17273426055908203,
+                -0.035881996154785156
+              ],
+              [
+                0.0020265579223632812,
+                -4.150629043579102,
+                -0.2243518829345703
+              ],
+              [
+                -0.0807046890258789,
+                -0.06198883056640625,
+                -4.229903221130371
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.05405250157964271,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                -0.0327154500914407,
+                0.006795963062473188
+              ],
+              [
+                -0.000488253202366592,
+                1.0,
+                0.05405250157964271
+              ],
+              [
+                0.019079559225544628,
+                0.014654905165854071,
+                1.0
+              ]
+            ],
+            "value": [
+              2.4608054161071777,
+              2.1806740760803223,
+              2.146594285964966
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.4856901168823242,
+          0.9612854719161987,
+          1.2931199073791504
+        ]
+      },
+      "-4": {
+        "neutral_scene_stop_from_18_percent": -4.0,
+        "stages": {
+          "monitor_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.06429426139220595,
+                0.009032373782247305,
+                0.0009424402378499508
+              ],
+              [
+                0.0024834880605340004,
+                0.06462167948484421,
+                0.0007953494787216187
+              ],
+              [
+                0.002535758540034294,
+                0.0077811419032514095,
+                0.058303994592279196
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.14048491399797386,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.14048491399797386,
+                0.014658232592500047
+              ],
+              [
+                0.03843119028060011,
+                1.0,
+                0.012307780996440256
+              ],
+              [
+                0.043492020705732014,
+                0.13345812680014577,
+                1.0
+              ]
+            ],
+            "value": [
+              0.0019526059040799737,
+              0.0016470486298203468,
+              0.0016822946490719914
+            ]
+          },
+          "negative_printer_density": {
+            "jacobian": [
+              [
+                0.8911937475204468,
+                0.04484504461288452,
+                0.014707446098327637
+              ],
+              [
+                0.018924474716186523,
+                0.7994472980499268,
+                0.09891390800476074
+              ],
+              [
+                0.01570582389831543,
+                0.022619962692260742,
+                0.9006857872009277
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.12372786579683132,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.050320196632501216,
+                0.016503084923169528
+              ],
+              [
+                0.023671947809878843,
+                1.0,
+                0.12372786579683132
+              ],
+              [
+                0.017437628217854544,
+                0.02511415525114155,
+                1.0
+              ]
+            ],
+            "value": [
+              0.23787102103233337,
+              0.6687548160552979,
+              0.9336467981338501
+            ]
+          },
+          "neutral_shaped_print_principal_density": {
+            "jacobian": [
+              [
+                -2.9338598251342773,
+                -0.14770030975341797,
+                -0.04839897155761719
+              ],
+              [
+                -0.054836273193359375,
+                -2.3217201232910156,
+                -0.2872943878173828
+              ],
+              [
+                -0.045180320739746094,
+                -0.06473064422607422,
+                -2.5843381881713867
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.1237420414869583,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.0503433424078664,
+                0.016496688472634188
+              ],
+              [
+                0.023618812897925653,
+                1.0,
+                0.1237420414869583
+              ],
+              [
+                0.01748235619724157,
+                0.0250472807786337,
+                1.0
+              ]
+            ],
+            "value": [
+              3.4442245960235596,
+              3.3365674018859863,
+              3.2966558933258057
+            ]
+          },
+          "physical_projection_linear_rgb": {
+            "jacobian": [
+              [
+                0.0018149585230275989,
+                0.00036755227483808994,
+                -7.655762601643801e-05
+              ],
+              [
+                0.00048494257498532534,
+                0.0015822297427803278,
+                0.0005281035555526614
+              ],
+              [
+                0.0001501757651567459,
+                0.00042904866859316826,
+                0.002131302608177066
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.3337717281339097,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.2025127682945407,
+                -0.04218147414670911
+              ],
+              [
+                0.3064931481651798,
+                1.0,
+                0.3337717281339097
+              ],
+              [
+                0.07046196282994907,
+                0.20130818915486612,
+                1.0
+              ]
+            ],
+            "value": [
+              0.0002979411801788956,
+              0.0003682510578073561,
+              0.0004100470105186105
+            ]
+          },
+          "print_log_exposure": {
+            "jacobian": [
+              [
+                -0.8912086486816406,
+                -0.04488229751586914,
+                -0.014722347259521484
+              ],
+              [
+                -0.018894672393798828,
+                -0.7994174957275391,
+                -0.09894371032714844
+              ],
+              [
+                -0.015735626220703125,
+                -0.022590160369873047,
+                -0.9006857872009277
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.12376975842529078,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.05036115569823435,
+                0.016519529159978598
+              ],
+              [
+                0.023635550253504323,
+                1.0,
+                0.12376975842529078
+              ],
+              [
+                0.017470716696446297,
+                0.025081066772549798,
+                1.0
+              ]
+            ],
+            "value": [
+              1.6149159669876099,
+              1.2763848304748535,
+              0.939483642578125
+            ]
+          },
+          "raw_print_principal_density": {
+            "jacobian": [
+              [
+                -2.457737922668457,
+                -0.12373924255371094,
+                -0.040531158447265625
+              ],
+              [
+                -0.05507469177246094,
+                -2.331852912902832,
+                -0.2886056900024414
+              ],
+              [
+                -0.05233287811279297,
+                -0.0749826431274414,
+                -2.99072265625
+              ]
+            ],
+            "maximum_absolute_row_normalized_off_diagonal": 0.12376667859516384,
+            "row_normalized_jacobian": [
+              [
+                1.0,
+                0.05034680118348935,
+                0.01649124508900422
+              ],
+              [
+                0.023618424415929654,
+                1.0,
+                0.12376667859516384
+              ],
+              [
+                0.0174984056122449,
+                0.02507174744897959,
+                1.0
+              ]
+            ],
+            "value": [
+              3.451698064804077,
+              3.266880512237549,
+              3.3588693141937256
+            ]
+          }
+        },
+        "total_status_m_density_rgb": [
+          0.219114750623703,
+          0.657307505607605,
+          0.9875847697257996
+        ]
+      }
+    }
+  }
+}

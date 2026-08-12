@@ -1,0 +1,30 @@
+{
+  "policy": "trilinear_each_fixed_active_set_then_minimum_residual",
+  "lut_size": 65,
+  "point_count": 16000,
+  "interpolation_seconds": 0.03795316699961404,
+  "exact_nnls_seconds": 20.02315520800039,
+  "active_set_classification_accuracy": 0.88575,
+  "oracle_exact_mask_interpolation": {
+    "maximum_absolute_printer_density_error": 0.012401428024380018,
+    "p99_absolute_printer_density_error": 0.005342019622678843,
+    "rms_printer_density_error": 0.0009060754930766249
+  },
+  "interpolated_residual_minus_exact": {
+    "maximum_absolute": 0.0008225957359932362,
+    "rms": 0.0001869441254460416
+  },
+  "maximum_absolute_printer_density_error": 0.012628646806328137,
+  "p99_absolute_printer_density_error": 0.007482910760645759,
+  "rms_printer_density_error": 0.0013779174814913565,
+  "worst_status_m_net_density": [
+    0.0678713470697403,
+    0.20413708686828613,
+    0.0017151832580566406
+  ],
+  "worst_output_record": "red",
+  "worst_approximate_mask": 7,
+  "worst_exact_mask": 2,
+  "quality_gate_maximum_density_error": 0.001,
+  "quality_gate_pass": false
+}

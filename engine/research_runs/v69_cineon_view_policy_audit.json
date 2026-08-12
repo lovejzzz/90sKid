@@ -1,0 +1,128 @@
+{
+  "audit": "V69 named Cineon view-policy ownership",
+  "classification": "delivery/view architecture; no 5279 profile promoted",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "absolute_frame": 0,
+  "dimensions": [
+    5760,
+    4320
+  ],
+  "cineon_code_md5": "52d3069d29d149852d6536c6d76ea9fd",
+  "policies": {
+    "cineon_open_monitor_v66": {
+      "inputs": [
+        "rgb_10bit_printing_density_code"
+      ],
+      "output": "linear_rec709_display_light",
+      "pure_function_of_dpx": true,
+      "operations": [
+        "code95_reference_black",
+        "0.008D_soft_toe",
+        "scene10_derived_high_anchor",
+        "0.90_linear_peak",
+        "unit_gamut_compression"
+      ],
+      "classification": "provisional_monitor_policy_not_5279_property"
+    },
+    "cineon_bluray_pointwise_v66": {
+      "inputs": [
+        "rgb_10bit_printing_density_code"
+      ],
+      "output": "linear_rec709_display_light",
+      "pure_function_of_dpx": true,
+      "operations": [
+        "cineon_open_monitor_v66",
+        "lower_scale_gamma_1.20_anchored_at_18_percent",
+        "finish_fade_from_luma_0.12_to_0.30",
+        "luminance_preserving_neutral_scale_calibration",
+        "rec709_gamut_compression"
+      ],
+      "classification": "provisional_finish_policy_not_5279_property"
+    }
+  },
+  "legacy_managed_contract": {
+    "name": "legacy_managed_bluray_v40_to_v66",
+    "inputs": [
+      "formed_rgb_10bit_printing_density_code",
+      "hidden_deterministic_mean_scan"
+    ],
+    "pure_function_of_dpx": false,
+    "additional_operations": [
+      "mean_relative_luma_opponent_decomposition",
+      "0.55px_at_2k_opponent_lowpass",
+      "0.55_high_frequency_opponent_retention",
+      "mean_luma_dependent_shadow_visibility"
+    ],
+    "classification": "historical_delivery_grain_management_not_view_transform"
+  },
+  "files": {
+    "cineon_open_monitor": {
+      "master": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_open_monitor/05_emulsion_master_prores4444.mov",
+      "preview": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_open_monitor/06_quicktime_preview_srgb_prores4444.mov",
+      "still": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_open_monitor/still_emulsion.jpg",
+      "decoded_master_md5": "2bed86367a8d73e3fa7a5b2ee6031890"
+    },
+    "cineon_bluray_pointwise": {
+      "master": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_bluray_pointwise/05_emulsion_master_prores4444.mov",
+      "preview": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_bluray_pointwise/06_quicktime_preview_srgb_prores4444.mov",
+      "still": "outputs/native_5k_v69_cineon_view_policy_1f/T020/cineon_bluray_pointwise/still_emulsion.jpg",
+      "decoded_master_md5": "14e224bb46bf611aa5c0db62259c7412"
+    },
+    "legacy_managed_bluray": {
+      "master": "outputs/native_5k_v69_cineon_view_policy_1f/T020/legacy_managed_bluray/05_emulsion_master_prores4444.mov",
+      "preview": "outputs/native_5k_v69_cineon_view_policy_1f/T020/legacy_managed_bluray/06_quicktime_preview_srgb_prores4444.mov",
+      "still": "outputs/native_5k_v69_cineon_view_policy_1f/T020/legacy_managed_bluray/still_emulsion.jpg",
+      "decoded_master_md5": "d43af174bd6859ff5be73b7a1ad34de8"
+    }
+  },
+  "review_metrics_1920": {
+    "pointwise_vs_legacy_managed": {
+      "linear_rgb_mae": 0.0036062602885067463,
+      "linear_rgb_p95_abs": 0.01402900833636522,
+      "linear_rgb_p99_abs": 0.025861443057656266,
+      "oklab_median": 0.010154783725738525,
+      "oklab_p95": 0.033380763046443454,
+      "oklab_p99": 0.05122017253190276
+    },
+    "open_vs_pointwise_finish": {
+      "linear_rgb_mae": 0.005320773925632238,
+      "linear_rgb_p95_abs": 0.013187825679779053,
+      "linear_rgb_p99_abs": 0.015805438235402106,
+      "oklab_median": 0.02890835702419281,
+      "oklab_p95": 0.038111884333193305,
+      "oklab_p99": 0.03892618428915739
+    },
+    "luma_median": {
+      "cineon_open_monitor": 0.049735043197870255,
+      "cineon_bluray_pointwise": 0.03850022330880165,
+      "legacy_managed_bluray": 0.03850022703409195
+    },
+    "luma_p99": {
+      "cineon_open_monitor": 0.5047536563873289,
+      "cineon_bluray_pointwise": 0.5047536569833754,
+      "legacy_managed_bluray": 0.5047536569833754
+    }
+  },
+  "native_centre_crop_structure": {
+    "cineon_open_monitor": {
+      "highpass_luma_rms": 0.003044962417334318,
+      "highpass_opponent_rms": 0.0046632071025669575
+    },
+    "cineon_bluray_pointwise": {
+      "highpass_luma_rms": 0.0027561585884541273,
+      "highpass_opponent_rms": 0.0037321229465305805
+    },
+    "legacy_managed_bluray": {
+      "highpass_luma_rms": 0.0026565834414213896,
+      "highpass_opponent_rms": 0.0014479751698672771
+    }
+  },
+  "render_stage_seconds": {
+    "negative_formation": 35.22092824999709,
+    "dual_observer": 16.4128426250536,
+    "delivery_encoding": 0.49431866698432714,
+    "total": 52.12808954203501
+  },
+  "wall_seconds": 72.13521512504667,
+  "interpretation": "The historical managed scan is not reconstructible from one DPX frame because it also consumes the deterministic mean observer. The two named V69 policies are pure functions of DPX data."
+}

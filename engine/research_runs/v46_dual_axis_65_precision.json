@@ -1,0 +1,147 @@
+{
+  "policy": "complementary_uniform_and_toe_dense_active_set_atlases",
+  "point_count": 16000,
+  "atlas_seconds": 0.8115141250000306,
+  "uniform_cubic": {
+    "maximum_absolute": 0.010441759317371124,
+    "p99_absolute": 0.002773446813788116,
+    "rms": 0.0005772995261369403,
+    "worst_point": 9506,
+    "worst_output_record": "blue"
+  },
+  "toe_cubic": {
+    "maximum_absolute": 0.005224013217384971,
+    "p99_absolute": 0.00047033234600713495,
+    "rms": 0.00013614083652936797,
+    "worst_point": 13335,
+    "worst_output_record": "red"
+  },
+  "minimum_record_threshold_sweep": [
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.02,
+      "toe_fraction": 0.2786875,
+      "maximum_absolute": 0.008823555359007862,
+      "p99_absolute": 0.0020544480213228705,
+      "rms": 0.000415262270662935,
+      "worst_point": 10874,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.3247947692871094,
+        1.0899510383605957,
+        0.9894402623176575
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.05,
+      "toe_fraction": 0.34675,
+      "maximum_absolute": 0.008823555359007862,
+      "p99_absolute": 0.0014686068758421084,
+      "rms": 0.00031370642873807707,
+      "worst_point": 10874,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.3247947692871094,
+        1.0899510383605957,
+        0.9894402623176575
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.1,
+      "toe_fraction": 0.4023125,
+      "maximum_absolute": 0.008823555359007862,
+      "p99_absolute": 0.0009311403951659252,
+      "rms": 0.00026307996037202636,
+      "worst_point": 10874,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.3247947692871094,
+        1.0899510383605957,
+        0.9894402623176575
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.2,
+      "toe_fraction": 0.476875,
+      "maximum_absolute": 0.008823555359007862,
+      "p99_absolute": 0.0006723716528329876,
+      "rms": 0.0002143910768443986,
+      "worst_point": 10874,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.3247947692871094,
+        1.0899510383605957,
+        0.9894402623176575
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.3,
+      "toe_fraction": 0.5450625,
+      "maximum_absolute": 0.008823555359007862,
+      "p99_absolute": 0.0005878490873591842,
+      "rms": 0.00019347881545951986,
+      "worst_point": 10874,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.3247947692871094,
+        1.0899510383605957,
+        0.9894402623176575
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.4,
+      "toe_fraction": 0.6151875,
+      "maximum_absolute": 0.005224013217384971,
+      "p99_absolute": 0.0005251159408058177,
+      "rms": 0.00014957337326555045,
+      "worst_point": 13335,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.34258727894214125,
+        1.129601615643514,
+        0.9103175397671003
+      ],
+      "worst_exact_mask": 6
+    },
+    {
+      "policy": "toe_atlas_if_minimum_record_below_threshold",
+      "threshold": 0.5,
+      "toe_fraction": 0.69225,
+      "maximum_absolute": 0.005224013217384971,
+      "p99_absolute": 0.00047033234600713495,
+      "rms": 0.0001361414538887855,
+      "worst_point": 13335,
+      "worst_output_record": "red",
+      "worst_status_m_net_density": [
+        0.34258727894214125,
+        1.129601615643514,
+        0.9103175397671003
+      ],
+      "worst_exact_mask": 6
+    }
+  ],
+  "minimum_linear_cubic_disagreement_selection": {
+    "maximum_absolute": 0.009156179258571817,
+    "p99_absolute": 0.0005238730375086467,
+    "rms": 0.00018006879342180007,
+    "worst_point": 8258,
+    "worst_output_record": "green",
+    "toe_fraction": 0.5425,
+    "worst_status_m_net_density": [
+      0.0,
+      0.06694424152374268,
+      0.38302749395370483
+    ]
+  },
+  "quality_gate": 0.001
+}

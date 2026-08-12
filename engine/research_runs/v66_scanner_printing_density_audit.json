@@ -1,0 +1,332 @@
+{
+  "audit": "V66 scanner printing-density coordinate audit",
+  "status": "profile_selected_full_printing_density",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "frame": 0,
+  "working_dimensions": [
+    1440,
+    1080
+  ],
+  "diagnostic_image_directory": "engine/research_runs/v66_scanner_printing_density_stills",
+  "seconds": 22.71628937497735,
+  "v64_lattice_sha256": "27203fdc8407c446fae65b9f259677cdd8320cdb1ec95961c859105cf211bd32",
+  "v66_lattice_sha256": "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+  "selected_endpoint": "full_printing_density",
+  "selection_rationale": "Cineon data codes are defined in printing-density coordinates. A partial blend would preserve an aesthetic/device prior but would knowingly leave the data coordinate inconsistent.",
+  "printing_density_gate_17cube": {
+    "v64_current_82pct_status_m": {
+      "rms_D": 0.1651090681552887,
+      "mae_D": 0.1020316481590271,
+      "p95_absolute_D": 0.3768304586410516,
+      "maximum_absolute_D": 0.8479377031326294
+    },
+    "raw_period_observer": {
+      "rms_D": 0.37184539437294006,
+      "mae_D": 0.2545868456363678,
+      "p95_absolute_D": 0.8910761356353756,
+      "maximum_absolute_D": 1.5856764316558838
+    },
+    "full_status_m_records": {
+      "rms_D": 0.21765998005867004,
+      "mae_D": 0.12970225512981415,
+      "p95_absolute_D": 0.5125867307186125,
+      "maximum_absolute_D": 1.0939422845840454
+    },
+    "partial_printing_density": {
+      "rms_D": 0.07072634249925613,
+      "mae_D": 0.04820210114121437,
+      "p95_absolute_D": 0.16941646337509136,
+      "maximum_absolute_D": 0.307222843170166
+    },
+    "full_printing_density": {
+      "rms_D": 0.0,
+      "mae_D": 0.0,
+      "p95_absolute_D": 0.0,
+      "maximum_absolute_D": 0.0
+    }
+  },
+  "t003_chart_diagnostic": {
+    "source": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/90sKid/engine/research_runs/2026-08-06_t003_colorchecker/frame160_audit/t003_dkc_pro_audit.json",
+    "models": {
+      "v64_current_82pct_status_m": {
+        "synthetic_primaries_7_to_12": {
+          "median_absolute_hue_error_degrees": 8.016854308510617,
+          "maximum_absolute_hue_error_degrees": 11.894864999611343,
+          "median_chroma_ratio": 0.4044997818038757
+        },
+        "natural_colours_13_to_18": {
+          "median_absolute_hue_error_degrees": 11.705034697707262,
+          "maximum_absolute_hue_error_degrees": 23.273983411468635,
+          "median_chroma_ratio": 0.5736385408331168
+        },
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified"
+      },
+      "raw_period_observer": {
+        "synthetic_primaries_7_to_12": {
+          "median_absolute_hue_error_degrees": 5.639471722481105,
+          "maximum_absolute_hue_error_degrees": 9.385551408263808,
+          "median_chroma_ratio": 0.23852669438696258
+        },
+        "natural_colours_13_to_18": {
+          "median_absolute_hue_error_degrees": 9.06212045213094,
+          "maximum_absolute_hue_error_degrees": 14.777960897073797,
+          "median_chroma_ratio": 0.3516919271663712
+        },
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified"
+      },
+      "full_status_m_records": {
+        "synthetic_primaries_7_to_12": {
+          "median_absolute_hue_error_degrees": 9.235523323380306,
+          "maximum_absolute_hue_error_degrees": 12.111391410416843,
+          "median_chroma_ratio": 0.4365694340986264
+        },
+        "natural_colours_13_to_18": {
+          "median_absolute_hue_error_degrees": 12.668592989228742,
+          "maximum_absolute_hue_error_degrees": 24.92872864458957,
+          "median_chroma_ratio": 0.6188923307276684
+        },
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified"
+      },
+      "partial_printing_density": {
+        "synthetic_primaries_7_to_12": {
+          "median_absolute_hue_error_degrees": 5.9106814825304355,
+          "maximum_absolute_hue_error_degrees": 13.665459685565054,
+          "median_chroma_ratio": 0.3822552279573294
+        },
+        "natural_colours_13_to_18": {
+          "median_absolute_hue_error_degrees": 11.025594569403168,
+          "maximum_absolute_hue_error_degrees": 17.84677074846283,
+          "median_chroma_ratio": 0.5664530545802821
+        },
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified"
+      },
+      "full_printing_density": {
+        "synthetic_primaries_7_to_12": {
+          "median_absolute_hue_error_degrees": 7.18948298612473,
+          "maximum_absolute_hue_error_degrees": 16.542149654503874,
+          "median_chroma_ratio": 0.4083142238372488
+        },
+        "natural_colours_13_to_18": {
+          "median_absolute_hue_error_degrees": 9.721790491666951,
+          "maximum_absolute_hue_error_degrees": 19.179674944365075,
+          "median_chroma_ratio": 0.6063150557604142
+        },
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified"
+      }
+    },
+    "authority": "diagnostic only: scene SPD and manufacturer Lab reference illuminant/observer remain unidentified"
+  },
+  "real_frame_vs_v64": {
+    "v64_current_82pct_status_m": {
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0,
+      "changed_12bit_component_fraction": 0.0
+    },
+    "raw_period_observer": {
+      "linear_rgb_mae": 0.010559371672570705,
+      "linear_rgb_p95_absolute": 0.04164147842675446,
+      "linear_rgb_p99_absolute": 0.09818446137011046,
+      "linear_rgb_maximum_absolute": 0.19275173544883728,
+      "oklab_delta_median": 0.024410272017121315,
+      "oklab_delta_p95": 0.08314207792282115,
+      "oklab_delta_p99": 0.10304863445460796,
+      "changed_12bit_component_fraction": 0.9412982253086419
+    },
+    "full_status_m_records": {
+      "linear_rgb_mae": 0.0022283224388957024,
+      "linear_rgb_p95_absolute": 0.008430331945419312,
+      "linear_rgb_p99_absolute": 0.021095813959836923,
+      "linear_rgb_maximum_absolute": 0.042026668787002563,
+      "oklab_delta_median": 0.005213714204728603,
+      "oklab_delta_p95": 0.01511101694777608,
+      "oklab_delta_p99": 0.017961487676948308,
+      "changed_12bit_component_fraction": 0.8430332647462278
+    },
+    "partial_printing_density": {
+      "linear_rgb_mae": 0.0030342796817421913,
+      "linear_rgb_p95_absolute": 0.014083924144506446,
+      "linear_rgb_p99_absolute": 0.03800176113843917,
+      "linear_rgb_maximum_absolute": 0.09114342927932739,
+      "oklab_delta_median": 0.006996436044573784,
+      "oklab_delta_p95": 0.02738805683329702,
+      "oklab_delta_p99": 0.03588944490998983,
+      "changed_12bit_component_fraction": 0.8357064471879286
+    },
+    "full_printing_density": {
+      "linear_rgb_mae": 0.0026042854879051447,
+      "linear_rgb_p95_absolute": 0.012105236575007429,
+      "linear_rgb_p99_absolute": 0.02505388855934143,
+      "linear_rgb_maximum_absolute": 0.06903982162475586,
+      "oklab_delta_median": 0.004057537764310837,
+      "oklab_delta_p95": 0.017995871324092156,
+      "oklab_delta_p99": 0.02450574303045869,
+      "changed_12bit_component_fraction": 0.8382392403978052
+    }
+  },
+  "real_frame_luma": {
+    "v64_current_82pct_status_m": {
+      "p001": 3.021280044987407e-06,
+      "p01": 3.3080578360386427e-05,
+      "median": 0.04519065874284133,
+      "p99": 0.5034029315173626,
+      "p999": 0.5178309370401981,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "raw_period_observer": {
+      "p001": 3.650691876100609e-06,
+      "p01": 3.5701373490519466e-05,
+      "median": 0.0381185554375872,
+      "p99": 0.5027702805042267,
+      "p999": 0.5169189704477787,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "full_status_m_records": {
+      "p001": 3.128264299107286e-06,
+      "p01": 3.3989660108045424e-05,
+      "median": 0.04691661245077848,
+      "p99": 0.5015128308534622,
+      "p999": 0.5159467481434344,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "partial_printing_density": {
+      "p001": 3.7064307427726814e-06,
+      "p01": 4.1918601263087103e-05,
+      "median": 0.04235391266010701,
+      "p99": 0.5044470840699672,
+      "p999": 0.5187573783397674,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "full_printing_density": {
+      "p001": 3.879241566642122e-06,
+      "p01": 4.5076957982384555e-05,
+      "median": 0.043475364093016826,
+      "p99": 0.5029882263243198,
+      "p999": 0.5172929616749287,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    }
+  },
+  "cineon_code": {
+    "v64_current_82pct_status_m": {
+      "minimum_unclipped": 95.0,
+      "p001_unclipped": 95.57075039672851,
+      "median_unclipped": 260.4757080078125,
+      "p999_unclipped": 691.9387222290047,
+      "maximum_unclipped": 704.344970703125,
+      "below_zero_fraction": 0.0,
+      "above_1023_fraction": 0.0
+    },
+    "raw_period_observer": {
+      "minimum_unclipped": 95.0,
+      "p001_unclipped": 97.2722682723999,
+      "median_unclipped": 261.6534729003906,
+      "p999_unclipped": 686.8197876586914,
+      "maximum_unclipped": 697.7998046875,
+      "below_zero_fraction": 0.0,
+      "above_1023_fraction": 0.0
+    },
+    "full_status_m_records": {
+      "minimum_unclipped": 95.0,
+      "p001_unclipped": 95.1049026260376,
+      "median_unclipped": 260.25897216796875,
+      "p999_unclipped": 693.0894533691408,
+      "maximum_unclipped": 705.7864990234375,
+      "below_zero_fraction": 0.0,
+      "above_1023_fraction": 0.0
+    },
+    "partial_printing_density": {
+      "minimum_unclipped": 95.0,
+      "p001_unclipped": 96.40798791503906,
+      "median_unclipped": 258.9355773925781,
+      "p999_unclipped": 686.2904430541998,
+      "maximum_unclipped": 697.5587768554688,
+      "below_zero_fraction": 0.0,
+      "above_1023_fraction": 0.0
+    },
+    "full_printing_density": {
+      "minimum_unclipped": 95.0,
+      "p001_unclipped": 96.11745286560058,
+      "median_unclipped": 258.3978576660156,
+      "p999_unclipped": 686.3702030029299,
+      "maximum_unclipped": 697.5358276367188,
+      "below_zero_fraction": 0.0,
+      "above_1023_fraction": 0.0
+    }
+  },
+  "neutral_anchors": {
+    "v64_current_82pct_status_m": {
+      "neutral_mid_scanner_density": [
+        0.6398894786834717,
+        0.719037652015686,
+        0.7230421900749207
+      ],
+      "neutral_high_scanner_density": [
+        1.4030627012252808,
+        1.5824681520462036,
+        1.5966242551803589
+      ]
+    },
+    "raw_period_observer": {
+      "neutral_mid_scanner_density": [
+        0.6070488691329956,
+        0.660609781742096,
+        0.6804891228675842
+      ],
+      "neutral_high_scanner_density": [
+        1.317903757095337,
+        1.441267967224121,
+        1.4930710792541504
+      ]
+    },
+    "full_status_m_records": {
+      "neutral_mid_scanner_density": [
+        0.6470983624458313,
+        0.731863260269165,
+        0.7323830723762512
+      ],
+      "neutral_high_scanner_density": [
+        1.4252078533172607,
+        1.6191866397857666,
+        1.6235527992248535
+      ]
+    },
+    "partial_printing_density": {
+      "neutral_mid_scanner_density": [
+        0.6692038178443909,
+        0.7111693620681763,
+        0.69367915391922
+      ],
+      "neutral_high_scanner_density": [
+        1.4574873447418213,
+        1.5552394390106201,
+        1.510668158531189
+      ]
+    },
+    "full_printing_density": {
+      "neutral_mid_scanner_density": [
+        0.6828476190567017,
+        0.7222678065299988,
+        0.6965745091438293
+      ],
+      "neutral_high_scanner_density": [
+        1.4937855005264282,
+        1.5848772525787354,
+        1.5152442455291748
+      ]
+    }
+  },
+  "coordinate_interpretation": {
+    "v64_current": "Broad period-telecine density blended 82 percent toward independent Status-M record density, with a four-point shoulder release.",
+    "printing_density": "D-min-subtracted integral density seen by the active 3200 K printer and vector-traced 2383 record sensitivities, then normalized to Cineon 445 at neutral 18 percent.",
+    "evidence_boundary": "Kodak identifies printing density as the calibration target for a data scan, but the exact Spirit optical filters, lamp, CCD response and production printer spectrum remain unknown."
+  }
+}

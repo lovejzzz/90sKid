@@ -1,0 +1,52 @@
+{
+  "audit": "V46 Status-M nonnegative inverse",
+  "point_count": 16000,
+  "legacy_policy": "unconstrained_3x3_step_then_clip",
+  "v46_policy": "enumerate_eight_active_sets_and_select_minimum_residual",
+  "legacy_seconds": 3.1961252919999765,
+  "v46_exact_seconds": 22.474605499999996,
+  "legacy_status_m_squared_residual": {
+    "maximum": 0.06026471399598906,
+    "p99": 0.03404278095101575,
+    "median": 2.5763709435903998e-15,
+    "mean": 0.002317072565681447
+  },
+  "v46_status_m_squared_residual": {
+    "maximum": 0.04881016130939375,
+    "p99": 0.027705463743321963,
+    "median": 7.703719777548943e-32,
+    "mean": 0.0018774027286698751
+  },
+  "v46_strictly_improves_fraction": 0.396125,
+  "v46_worsens_count": 0,
+  "active_mask_counts": {
+    "0": 51,
+    "1": 757,
+    "2": 656,
+    "3": 669,
+    "4": 841,
+    "5": 1310,
+    "6": 2355,
+    "7": 9361
+  },
+  "nnls_minus_legacy_printer_density": {
+    "maximum_absolute": 0.08372974395751953,
+    "p99_absolute": 0.055342353582382334,
+    "rms": 0.01101822492114166,
+    "worst_status_m_net_density": [
+      0.0,
+      0.7048477857724804,
+      0.15587083591656997
+    ],
+    "worst_output_record": "green",
+    "worst_signed_delta": -0.08372974395751953
+  },
+  "reachable_closure": {
+    "sample_count": 512,
+    "maximum_status_m_absolute_error": 1.1920928955078125e-07,
+    "cmy_rms_error": 7.227470888437892e-08,
+    "maximum_squared_residual": 7.888609052210118e-31,
+    "all_full_active_set": true
+  },
+  "interpretation": "V46 changes the inverse only where the legacy clipped Newton step fails the conditional optimum on a nonnegative CMY boundary. Reachable mixtures close back to their source to floating precision."
+}

@@ -20,6 +20,26 @@ import v42_profile as profile  # noqa: E402
 import v43h_profile  # noqa: E402
 import v44_profile  # noqa: E402
 import v45_profile  # noqa: E402
+import v48_profile  # noqa: E402
+import v49_profile  # noqa: E402
+import v50_profile  # noqa: E402
+import v51_profile  # noqa: E402
+import v52_profile  # noqa: E402
+import v53_profile  # noqa: E402
+import v54_profile  # noqa: E402
+import v55_profile  # noqa: E402
+import v56_profile  # noqa: E402
+import v57_profile  # noqa: E402
+import v58_profile  # noqa: E402
+import v59_profile  # noqa: E402
+import v60_profile  # noqa: E402
+import v61_profile  # noqa: E402
+import v62_profile  # noqa: E402
+import v63_profile  # noqa: E402
+import v64_profile  # noqa: E402
+import v66_profile  # noqa: E402
+import v72_profile  # noqa: E402
+import v46_profile  # noqa: E402
 
 
 PROFILES = {
@@ -27,6 +47,26 @@ PROFILES = {
     "v43h": v43h_profile,
     "v44": v44_profile,
     "v45": v45_profile,
+    "v48": v48_profile,
+    "v49": v49_profile,
+    "v50": v50_profile,
+    "v51": v51_profile,
+    "v52": v52_profile,
+    "v53": v53_profile,
+    "v54": v54_profile,
+    "v55": v55_profile,
+    "v56": v56_profile,
+    "v57": v57_profile,
+    "v58": v58_profile,
+    "v59": v59_profile,
+    "v60": v60_profile,
+    "v61": v61_profile,
+    "v62": v62_profile,
+    "v63": v63_profile,
+    "v64": v64_profile,
+    "v66": v66_profile,
+    "v72": v72_profile,
+    "v46": v46_profile,
 }
 
 

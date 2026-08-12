@@ -5,6 +5,7 @@ from __future__ import annotations
 import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
+import struct
 import subprocess
 import time
 from typing import Generic, Iterator, TypeVar
@@ -145,7 +146,16 @@ class ProResRawDecoder:
 
 def _xq_command(path: Path, width: int, height: int, fps: str) -> list[str]:
     command = legacy.model.prores_encoder_command(path, width, height, fps)
-    command[command.index("-profile:v") + 1] = "5"
+    profile_index = command.index("-profile:v")
+    command[profile_index + 1] = "5"
+    # V76: prores_ks' default XQ budget measurably suppresses low-amplitude
+    # stochastic structure after scale integration.  Its documented maximum
+    # substantially improves luma, opponent and colour-error parity without
+    # the slight high-pass overshoot observed from VideoToolbox XQ.
+    command[profile_index + 2 : profile_index + 2] = [
+        "-bits_per_mb",
+        "8192",
+    ]
     return command
 
 
@@ -508,6 +518,127 @@ class _Writer:
             legacy.model.finalize_prores_srgb_metadata(self.path)
 
 
+class CineonDPXSequenceWriter:
+    """Write code-exact 10-bit RGB printing-density DPX exchange frames.
+
+    FFmpeg owns only the well-tested 10-bit RGB word packing. Its DPX encoder
+    cannot currently signal printing-density transfer/colorimetry, so the
+    standard image-element fields are patched after encoding. No display
+    transfer, Rec.709 matrix, viewing LUT, or Blu-ray finish enters this path.
+    """
+
+    def __init__(
+        self,
+        output: Path,
+        width: int,
+        height: int,
+        fps: str,
+        frames: int,
+        start_frame: int,
+    ) -> None:
+        self.output = Path(output)
+        self.width = int(width)
+        self.height = int(height)
+        self.frames = int(frames)
+        self.start_frame = int(start_frame)
+        self.written = 0
+        self.output.mkdir(parents=True, exist_ok=True)
+        self.pattern = self.output / "%08d.dpx"
+        self.process = subprocess.Popen(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-f",
+                "rawvideo",
+                "-pixel_format",
+                "gbrp10le",
+                "-video_size",
+                f"{self.width}x{self.height}",
+                "-framerate",
+                str(fps),
+                "-i",
+                "pipe:0",
+                "-frames:v",
+                str(self.frames),
+                "-c:v",
+                "dpx",
+                "-pix_fmt",
+                "gbrp10le",
+                "-start_number",
+                str(self.start_frame),
+                str(self.pattern),
+            ],
+            stdin=subprocess.PIPE,
+        )
+
+    def write(self, code: np.ndarray) -> None:
+        if self.process.stdin is None:
+            raise RuntimeError("DPX encoder stdin is closed")
+        source = np.asarray(code)
+        expected = (self.height, self.width, 3)
+        if source.shape != expected:
+            raise ValueError(f"Cineon code shape {source.shape} != {expected}")
+        if source.dtype.kind not in "ui":
+            raise TypeError("Cineon DPX code must be an integer array")
+        if np.any(source < 0) or np.any(source > 1023):
+            raise ValueError("Cineon DPX code lies outside unsigned 10-bit range")
+        # gbrp10le is planar G, B, R; the DPX encoder restores descriptor-50
+        # RGB component order while packing three ten-bit samples per word.
+        for channel in (1, 2, 0):
+            plane = np.ascontiguousarray(source[..., channel], dtype="<u2")
+            self.process.stdin.write(plane.tobytes())
+        self.written += 1
+
+    @staticmethod
+    def _patch_printing_density_header(path: Path) -> None:
+        with path.open("r+b") as stream:
+            magic = stream.read(4)
+            if magic == b"SDPX":
+                endian = ">"
+            elif magic == b"XPDS":
+                endian = "<"
+            else:
+                raise RuntimeError(f"invalid DPX magic in {path}")
+
+            def write_at(offset: int, fmt: str, value) -> None:
+                stream.seek(offset)
+                stream.write(struct.pack(endian + fmt, value))
+
+            # SMPTE ST 268-1 printing-density defaults and RGB image-element
+            # declaration. Code 95 remains Kodak's conventional reference-
+            # black aim inside this legal 0..1023 exchange range.
+            write_at(780, "I", 0)       # unsigned data
+            write_at(784, "I", 0)       # reference low code
+            write_at(788, "f", 0.0)     # reference low density
+            write_at(792, "I", 1023)    # reference high code
+            write_at(796, "f", 2.048)   # reference high density
+            write_at(800, "B", 50)      # RGB descriptor
+            write_at(801, "B", 1)       # printing-density transfer
+            write_at(802, "B", 1)       # printing-density colorimetry
+            write_at(803, "B", 10)      # ten significant bits
+            write_at(804, "H", 1)       # filled 32-bit packing
+            write_at(806, "H", 0)       # uncompressed
+
+    def close(self) -> None:
+        if self.process.stdin is not None:
+            self.process.stdin.close()
+        status = self.process.wait()
+        if status != 0:
+            raise RuntimeError("Cineon DPX encoder failed")
+        if self.written != self.frames:
+            raise RuntimeError(
+                f"Cineon DPX frame count {self.written}/{self.frames}"
+            )
+        for absolute_frame in range(
+            self.start_frame, self.start_frame + self.frames
+        ):
+            path = self.output / f"{absolute_frame:08d}.dpx"
+            if not path.exists():
+                raise RuntimeError(f"missing Cineon DPX frame: {path}")
+            self._patch_printing_density_header(path)
+
+
 class DualDeliveryWriter:
     """Write two observer masters, then derive every viewing deliverable."""
 
@@ -518,10 +649,25 @@ class DualDeliveryWriter:
         height: int,
         fps: str,
         frames: int,
+        *,
+        cineon_dpx: bool = False,
+        start_frame: int = 0,
     ) -> None:
         self.output = Path(output)
         self.frames = int(frames)
         self._writers: dict[tuple[str, DeliveryEncoding], _Writer] = {}
+        self._cineon_writer = (
+            CineonDPXSequenceWriter(
+                self.output / "cineon_printing_density",
+                width,
+                height,
+                fps,
+                frames,
+                start_frame,
+            )
+            if cineon_dpx
+            else None
+        )
         for branch, directory in (
             ("projection", "projection"),
             ("scan", "bluray_scan"),
@@ -539,6 +685,10 @@ class DualDeliveryWriter:
         encoded = frame.reference_master
         self._writers[("projection", encoded.encoding)].write(encoded.projection)
         self._writers[("scan", encoded.encoding)].write(encoded.scan)
+        if self._cineon_writer is not None:
+            if frame.cineon_printing_density_code is None:
+                raise RuntimeError("rendered frame has no Cineon exchange data")
+            self._cineon_writer.write(frame.cineon_printing_density_code)
 
     def close(self) -> None:
         errors: list[Exception] = []
@@ -546,6 +696,11 @@ class DualDeliveryWriter:
             try:
                 writer.close()
             except Exception as error:  # close every stream before reporting
+                errors.append(error)
+        if self._cineon_writer is not None:
+            try:
+                self._cineon_writer.close()
+            except Exception as error:
                 errors.append(error)
         if errors:
             raise errors[0]
@@ -569,3 +724,8 @@ class DualDeliveryWriter:
                     writer.process.stdin.close()
                 writer.process.terminate()
                 writer.process.wait()
+            if self._cineon_writer is not None:
+                if self._cineon_writer.process.stdin is not None:
+                    self._cineon_writer.process.stdin.close()
+                self._cineon_writer.process.terminate()
+                self._cineon_writer.process.wait()

@@ -1,0 +1,235 @@
+{
+  "active_v72_mapping": {
+    "channel_order": [
+      "red microdensitometer / cyan-forming analytical record",
+      "green microdensitometer / magenta-forming analytical record",
+      "blue microdensitometer / yellow-forming analytical record"
+    ],
+    "maximum_absolute_delta_from_retrace": 2.8834089618873238e-06,
+    "status": "pass"
+  },
+  "audit": "V85 5279 granularity graph and measurement-domain re-audit",
+  "decision": {
+    "axis": "The four-log-unit horizontal translation is retained.",
+    "blue_record": "The large blue-record marginal is present in Kodak's graph; it is not corrected by relabelling or by lowering it to taste.",
+    "image_release": "V72 remains unchanged; V85 changes no pixels.",
+    "remaining_unknown": "Kodak publishes three marginal aperture RMS curves but not the cross-record covariance/cross-spectrum. That missing joint law, not a trace error, owns the unresolved colour-versus-luma grain.",
+    "status_m": "V61's joint ISO Status-M coordinate is retained.",
+    "trace": "V50 numerical trace and channel identity are retained."
+  },
+  "horizontal_coordinate_audit": {
+    "interpretation": "The combined graph's companion H-D curves agree with the separate Status-M graph after a four-log-unit horizontal translation. The small residual is consistent with Kodak's note that sensitometry and granularity used different equipment.",
+    "mapping": "printed graph 0..4 -> engine logE -4..0",
+    "maximum_absolute_density_delta_rgb": [
+      0.0228407779420729,
+      0.017907542819205702,
+      0.016368860895977555
+    ],
+    "page3_status_m_density_rgb": [
+      [
+        0.15896643220334017,
+        0.5950253310212399,
+        0.9253015284850283
+      ],
+      [
+        0.16537670764810386,
+        0.5992579305017021,
+        0.9295178662127848
+      ],
+      [
+        0.20348832096828762,
+        0.6395162604528295,
+        0.969794022088672
+      ],
+      [
+        0.40450044553946496,
+        0.868255837118947,
+        1.2006631818300497
+      ],
+      [
+        0.6696922103597496,
+        1.1722014020001756,
+        1.504624996387479
+      ],
+      [
+        0.9391701977190712,
+        1.4772975048786616,
+        1.8107150027440277
+      ],
+      [
+        1.1960586827997535,
+        1.77199967828704,
+        2.106584141546081
+      ],
+      [
+        1.4198447147171795,
+        2.026170491515856,
+        2.3607723151995064
+      ],
+      [
+        1.5841742555343976,
+        2.2142118994495723,
+        2.5488543775149886
+      ]
+    ],
+    "page4_companion_density_rgb": [
+      [
+        0.15999606020927318,
+        0.5799835455799035,
+        0.9199990729904184
+      ],
+      [
+        0.1663667197651901,
+        0.5877015231170294,
+        0.9276996690978642
+      ],
+      [
+        0.22149732268828365,
+        0.643914871663151,
+        0.9776377662533282
+      ],
+      [
+        0.38165966759739206,
+        0.8678906413530654,
+        1.1978920350069429
+      ],
+      [
+        0.6536234009189982,
+        1.1627420023068054,
+        1.4927284447916547
+      ],
+      [
+        0.9264539678286355,
+        1.4652236619839814,
+        1.7952862421048628
+      ],
+      [
+        1.1889854685672736,
+        1.7582420345639704,
+        2.0902152806501033
+      ],
+      [
+        1.4109874921877075,
+        2.0082629486966503,
+        2.3467730870572843
+      ],
+      [
+        1.5899662800264205,
+        2.219956198797206,
+        2.559954344778041
+      ]
+    ],
+    "rms_density_delta_rgb": [
+      0.012605126714834939,
+      0.011340658220476158,
+      0.010889991918373986
+    ]
+  },
+  "measurement_domain": {
+    "engine_coordinate": "V61+ jointly inverts complete Status-M densities through D-min and all three net dye/mask spectra. The marginal curves belong in Status-M density space, not independently scaled display RGB.",
+    "iso_10505_2009": "Colour negative films use ISO 5-3 Status-M spectral products; the 48.0 +/- 0.5 micrometre circular efflux aperture is the standard geometry.",
+    "kodak_page3": "Diffuse RMS read with red, green and blue microdensitometer responses through a 48 micrometre aperture.",
+    "phrase_checks": {
+      "Diffuse rms Granularity Curves": true,
+      "Granularity Sigma D": true,
+      "Read with a microdensitometer, (red, green, blue) using a 48-micrometer aperture.": true,
+      "Status M": true,
+      "multiply by 1000": true,
+      "produced on different equipment": true
+    }
+  },
+  "reproducible_vector_trace": {
+    "axis_fit_rms_pdf_points": 0.4595442113155486,
+    "curve_identity": "The printed left-side labels identify the lower paths as R/G/B microdensitometer records. They are not display RGB and not direct measurements of isolated silver-halide sublayers.",
+    "maximum_absolute_delta_from_v50_csv": 2.8847506386014965e-06,
+    "maximum_relative_delta_from_v50_csv": 0.0001519984469378658,
+    "path_indices_rgb": [
+      [
+        5,
+        6,
+        7
+      ],
+      [
+        0
+      ],
+      [
+        3
+      ]
+    ],
+    "sample_graph_loge": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5,
+      4.0
+    ],
+    "sample_internal_loge": [
+      -4.0,
+      -3.5,
+      -3.0,
+      -2.5,
+      -2.0,
+      -1.5,
+      -1.0,
+      -0.5,
+      0.0
+    ],
+    "sigma_d_rgb": [
+      [
+        0.005433725792362369,
+        0.012925071001916791,
+        0.02284301139375778
+      ],
+      [
+        0.006480305447141009,
+        0.014339752005676443,
+        0.025892727167910728
+      ],
+      [
+        0.013670647762228205,
+        0.019086062524886302,
+        0.03903774130835587
+      ],
+      [
+        0.010663661443073447,
+        0.015498336637169272,
+        0.0445402152493614
+      ],
+      [
+        0.007201872617931762,
+        0.011633463286599251,
+        0.031311451446976946
+      ],
+      [
+        0.007047639554568122,
+        0.009461091513206267,
+        0.02277250546659905
+      ],
+      [
+        0.006896709498505015,
+        0.008329792784385668,
+        0.01879376708838522
+      ],
+      [
+        0.006749011713565712,
+        0.007494279334581014,
+        0.01580706799518904
+      ],
+      [
+        0.0066044769784374385,
+        0.006789171302423804,
+        0.014272299147026902
+      ]
+    ]
+  },
+  "source": {
+    "granularity_graph": "printed page 4, F002_0269AC",
+    "publication": "H-1-5279t, March 2003",
+    "sha256": "f76fa5e6b48bbcf6a4a62fe043221af864feb3b517b42d84ebafc431942250c8",
+    "title": "KODAK VISION 500T Color Negative Film 5279 / 7279"
+  }
+}

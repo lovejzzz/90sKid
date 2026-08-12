@@ -57,9 +57,11 @@ class EngineConfig:
     research_baseline: bool = True
 
     def __post_init__(self) -> None:
-        if self.profile not in {"v42", "v43h", "v44", "v45"}:
+        if self.profile not in {
+            "v42", "v43h", "v44", "v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+        }:
             raise ValueError(
-                "the emulsion engine supports V42, V43H, V44 and V45 profiles"
+                "the emulsion engine supports V42, V43H, V44, V45, V46, V48, V49, V50, V51, V52, V53, V54, V55, V56, V57, V58, V59, V60, V61, V62, V63, V64, V66 and V72 profiles"
             )
         if self.oversample < 1:
             raise ValueError("oversample must be positive")
@@ -122,6 +124,9 @@ class RenderedFrame:
     # Release rendering leaves this empty: the sRGB companion is derived from
     # the encoded professional master, never realized independently here.
     quicktime_companion: EncodedObserverPair | None = None
+    # Optional exchange-data authority. Values are RGB printing-density code
+    # values in a uint16 container with ten significant bits, not display RGB.
+    cineon_printing_density_code: np.ndarray | None = None
     stage_seconds: Mapping[str, float] = field(default_factory=dict)
 
     def __post_init__(self) -> None:

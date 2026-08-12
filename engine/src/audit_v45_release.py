@@ -37,10 +37,14 @@ def main() -> None:
     parser.add_argument("root", type=Path)
     parser.add_argument("--scenes", nargs="+", default=["T020", "T032", "T007"])
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--profile", default="v45")
+    parser.add_argument("--lattice-sha256", default=LATTICE_SHA256)
+    parser.add_argument("--mode", default="archive_exact_cpu")
+    parser.add_argument("--audit-label", default="V45 official-observer native release gate")
     args = parser.parse_args()
 
     report: dict[str, object] = {
-        "audit": "V45 official-observer native release gate",
+        "audit": args.audit_label,
         "familywise_false_rejection_rate": FAMILYWISE_ALPHA,
         "scenes": {},
     }
@@ -49,15 +53,14 @@ def main() -> None:
         timing = json.loads((args.root / scene / "timing.json").read_text())
         scene_record: dict[str, object] = {}
         scene_common = {
-            "profile_v45": timing["engine"].get("profile") == "v45",
-            "official_cie_lattice": timing["engine"].get("print_lattice_sha256")
-            == LATTICE_SHA256,
+            "expected_profile": timing["engine"].get("profile") == args.profile,
+            "expected_projection_lattice": timing["engine"].get("print_lattice_sha256")
+            == args.lattice_sha256,
             "research_conformance": timing["engine"]["research_conformance"].get(
                 "image_model_conformant"
             )
             is True,
-            "archive_exact_reference": timing["config"].get("mode")
-            == "archive_exact_cpu",
+            "expected_execution_mode": timing["config"].get("mode") == args.mode,
         }
         for branch, directory in BRANCHES.items():
             root = args.root / scene / directory
@@ -100,7 +103,7 @@ def main() -> None:
             }
         report["scenes"][scene] = scene_record
     report["all_gates_pass"] = passed
-    output = args.output or args.root / "v45_release_audit.json"
+    output = args.output or args.root / f"{args.profile}_release_audit.json"
     output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
     if not passed:

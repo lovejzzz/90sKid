@@ -1,3 +1,5 @@
+import { ResearchStatus } from "../components/ResearchLedger";
+
 const siteCode = `p = sigmoid((logE - speed_centre) / transition_width)
 developed = binomial(finite_sites, p) / finite_sites
 density_delta = optical_integrate(developed - p, dye_cloud_kernel)
@@ -112,10 +114,73 @@ XYZ = trapz(T * xenon_1nm * xyz_bar, dx=1nm)
 # Profile, standard table and 193³ runtime lattice share SHA-256 gates
 assert lattice == build_from(profile="v45", observer=xyz_bar)`;
 
+const v81BoundCode = `# V81: a feasible set, not a new 5279 coefficient
+joint_max = minimum(p_i, p_j)
+rho_max = (joint_max - p_i*p_j) / sqrt(p_i*(1-p_i)*p_j*(1-p_j))
+
+# A bounded shared-event family preserves every Bernoulli marginal exactly
+if bernoulli(alpha):
+    u = shared_uniform()
+    x_i, x_j = (u < p_i), (u < p_j)
+else:
+    x_i, x_j = (uniform() < p_i), (uniform() < p_j)
+
+assert requested_rho <= rho_max
+# alpha remains unknown and is not part of the V72 image release`;
+
+const v82JointCode = `# V82: all three pair joints must share one legal P(111)
+t_min = max(0, q_rg+q_rb-p_r, q_rg+q_gb-p_g, q_rb+q_gb-p_b)
+t_max = min(q_rg, q_rb, q_gb,
+            1-p_r-p_g-p_b+q_rg+q_rb+q_gb)
+assert t_min <= t_max
+
+# PSD constrains second moments only; reconstruct all eight Bernoulli cells
+cells = rgb_bernoulli_cells(p_rgb, q_pairs, t)
+assert min(cells) >= 0 and sum(cells) == 1`;
+
+const v83TransferCode = `# V83: reproduce the executable V72 stage order
+S_shared(f, E, alpha) = finite_site_cross_power(p_rgb, alpha)
+D_raw(f) = stochastic_DIR(f, E) @ S_shared(f, E, alpha)
+
+# Current gain acts after DIR but uses an independent pre-DIR denominator
+g_rgb = sigma_kodak_48um / sqrt(var_pre_DIR_independent)
+D_formed = mean_density + g_rgb * D_raw
+
+assert max_relative_48um_error <= 0.010762
+# Closing marginals does not identify the joint law; alpha remains unknown`;
+
+const v84EnergyCode = `# V84: fixed marginal RMS does not fix observer energy
+var_record = diag(Sigma_D)              # Kodak 48 um boundary
+var_observer = w.T @ Sigma_D @ w        # projector / scanner result
+
+# Paired T020 crop, alpha 0 -> 1
+projection_luma *= 1.538
+projection_opponent *= 0.837
+scan_luma *= 1.432
+scan_opponent *= 0.816
+
+assert deterministic_mean_is_bit_exact
+promote_alpha = False`;
+
 export function AlgorithmEnglish() {
   return (
     <main className="algorithm-page wrap">
-      <header className="page-header"><span className="eyebrow">METHOD · V45 OFFICIAL CIE OBSERVER / V42 IMAGE BASELINE</span><h1>Not a filter.<br />An image-formation chain.</h1><p>V45 changes only 2383 spectral observation to the official CIE 1931 2° one-nanometre table. V44/V42 emulsion, scan, grain, black, contrast and delivery remain frozen.</p></header>
+      <header className="page-header"><span className="eyebrow">METHOD · V46 VISUAL RELEASE / RESEARCH CYCLE 05</span><h1>Not a filter.<br />An image-formation chain.</h1><p>The current reviewable pixels come from V46: the complete stochastic state holds at measured-support endpoints and a KKT-certified nonnegative active set solves the Status-M spectral inverse. Material measurement, multilayer randomness, 2383 projection, and scan/delivery remain four explicit research threads; legacy experiment IDs preserve traceability.</p></header>
+
+      <ResearchStatus language="en" />
+
+      <section className="method-section"><div className="method-index">V46</div><div className="method-copy"><span className="section-tag">PUBLIC RELEASE · ENDPOINT HOLD · EXACT NNLS</span><h2>Randomness stays inside measured endpoints and the spectral inverse no longer depends on clipping</h2><p>V46 holds the complete finite-event state outside Kodak&apos;s granularity support, removing the huge-density tail created as activation probability approached zero. The three Status-M records map to net dye/mask density through an exact nonnegative active-set solve. A 129-cubed base atlas covers smooth regions; exact 5-cubed microbricks cover active-set boundaries and interpolation risks reached by real frames. Worst printer-density error over the three sources is 0.0005094 D.</p><div className="equation"><span>CERTIFIED BOUNDARY</span><b>max |D<sub>adaptive</sub>−D<sub>exact</sub>| = 0.0005094 D &lt; 0.001 D</b><small>Projection and scan share one negative printer density; unknown cross-record covariance remains unknown.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V86</div><div className="method-copy"><span className="section-tag">PSD ENVELOPE · ONE-SIGMA SECANT · DIRECT SPECTRAL CROSS-CHECK</span><h2>Separate unknown inter-record statistics from a known shadow-precision error</h2><p>With Kodak&apos;s three 48 µm RMS values fixed, the linear-Rec.709 observer envelope is solved over every positive-semidefinite 3×3 correlation matrix. Common events reduce opponent noise but raise luma grain to roughly 1.48–1.67× independent records; they are not free chroma cleanup. V61&apos;s joint spectral equations are then evaluated directly at every neutral point and ±1σ perturbation. The 29³ runtime spectral LUT misses by as much as 0.013987 D at −3 logE, while −2.5 to 0 logE stays below 0.000366 D.</p><div className="equation"><span>THE SHARED ERROR V87 MUST CLOSE</span><b>max |D<sub>29³</sub>−D<sub>direct spectral</sub>| = 0.013987 D @ −3 logE</b><small>Drive shadow error below 0.001 D before choosing any joint covariance. V86 changes no pixels.</small></div></div></section>
+      <section className="method-section"><div className="method-index">V85</div><div className="method-copy"><span className="section-tag">SOURCE PDF · VECTOR RE-EXTRACTION · STATUS-M DOMAIN</span><h2>Do not repair an unknown joint law by falsifying a measured marginal</h2><p>The March 2003 PDF was rendered and re-extracted from its vector objects. R/G/B path identity, all twelve Sigma-D ticks and the 0—4 to −4—0 exposure translation close against V50/V72; the maximum trace difference is 2.9×10<sup>−6</sup> D. ISO 10505 requires Status-M spectral products for colour-negative RMS granularity, so V61&apos;s joint spectral inverse is also retained. The large blue marginal is real public evidence. What Kodak does not publish is its cross-record covariance or cross-spectrum.</p><div className="equation"><span>THE CORRECT UNKNOWN</span><b>known diag(Σ<sub>D</sub>)　+　unknown off-diagonals　→　unknown observer grain</b><small>V85 changes no pixels. The next audit computes physical observer-space bounds instead of choosing a pleasant correlation by taste.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V84</div><div className="method-copy"><span className="section-tag">PAIRED REAL RAW · TWO OBSERVERS · SCALE-INTEGRATED ENERGY</span><h2>Fixing three covariance diagonals cannot fix the grain seen by a projector and scanner</h2><p>V84 uses a native 576² T020 crop and strictly paired finite events at alpha=0/.25/.5/1. The deterministic means are pixel-identical and the three 48 µm marginals barely move, yet alpha=1 raises projection luma RMS 53.8%, scan luma 43.2% and total RGB grain about one quarter. Opponent power falls, but grain is redistributed rather than removed. Alpha=1 is rejected as a default; .25/.50 remain diagnostics only.</p><pre><code>{v84EnergyCode}</code></pre><div className="equation"><span>WHY THE MARGINAL GATE IS STILL INCOMPLETE</span><b>fixed diag(Σ)　≠　fixed wᵀΣw</b><small>The next audit returns to the official blue-record RMS legend, Status-M coordinate and visible-colour mapping instead of hiding the problem with an attractive alpha.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V83</div><div className="method-copy"><span className="section-tag">EXACT CROSS-SPECTRUM · STOCHASTIC DIR · DIRECT FINITE-SITE CHECK</span><h2>Compute the order the code actually executes before deciding whether the research description is true</h2><p>The full profile audit found that V72 inherits post-DIR residual calibration, not the pre-DIR dye-yield calibration we had once described. V83 expresses all 45 production spatial kernels, three DIR diffusion scales and the 48 µm aperture as a complete cross-spectrum, then verifies it with direct finite Bernoulli/multinomial events. Marginal RMS error remains below 1.076% at every alpha and exposure endpoint, yet alpha=0 and alpha=1 can produce near-zero versus roughly 0.7–0.95 record correlation. The public marginal curves cannot choose between them.</p><pre><code>{v83TransferCode}</code></pre><div className="equation"><span>THE ACTUAL BOUNDARY</span><b>marginal RMS compatible ≠ joint colour structure identified</b><small>V83 changes no V72 pixels. The next step may render labelled shared-event uncertainty cases only, with covariance, tails and scale integration reported together.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V82</div><div className="method-copy"><span className="section-tag">THREE-RECORD BERNOULLI POLYTOPE · EIGHT-CELL GATE</span><h2>A legal correlation matrix can still be an illegal colour emulsion</h2><p>Every record pair can pass its Fréchet bound and the 3×3 correlation matrix can be positive-semidefinite while at least one of the eight RGB activation states is forced to have negative probability. V82 tests 7,500 independent pair-alpha settings over 60 exposure/population triplets: 3,462 have no joint solution, including 1,484 PSD false positives. A future sampler therefore cannot expose three independent correlation sliders.</p><pre><code>{v82JointCode}</code></pre><div className="equation"><span>THREE-RECORD FEASIBLE INTERVAL</span><b>max(0,q<sub>RG</sub>+q<sub>RB</sub>−p<sub>R</sub>,…) ≤ P(111) ≤ min(q<sub>RG</sub>,q<sub>RB</sub>,q<sub>GB</sub>,1−Σp+Σq)</b><small>The V81 single-common-alpha family passes the eight-cell gate everywhere tested, but alpha remains unmeasured and does not alter V72 pixels.</small></div></div></section>
+
+      <section className="method-section"><div className="method-index">V81</div><div className="method-copy"><span className="section-tag">SHARED FINITE EVENTS · EXACT FEASIBILITY BOUND</span><h2>Prove stochastic coupling is mathematically feasible before asking whether it looks like film</h2><p>V80 showed that mixing three completed density records breaks the finite nonnegative boundary. V81 moves the candidate back into activation: a shared uniform variable preserves every Bernoulli marginal exactly, but the permitted correlation is bounded by both activation probabilities. Across 180 record/population/exposure cases, ρ=.99 is feasible in only 13. Alpha still has no 5279 measurement, so V72 pixels remain unchanged.</p><pre><code>{v81BoundCode}</code></pre><div className="equation"><span>EXACT POSITIVE-CORRELATION BOUND</span><b>ρ<sub>max</sub>=[min(p<sub>i</sub>,p<sub>j</sub>)−p<sub>i</sub>p<sub>j</sub>] / √[p<sub>i</sub>(1−p<sub>i</sub>)p<sub>j</sub>(1−p<sub>j</sub>)]</b><small>This is a probability identity, not a 5279 measurement. A future candidate must also re-close 48 µm RMS, density bounds, opponent tails, CPU/Metal identity and both observers.</small></div></div></section>
 
       <section className="method-section"><div className="method-index">V45</div><div className="method-copy"><span className="section-tag">OFFICIAL CIE 1931 2° · 1 NM</span><h2>Improve the standard observer without taking the opportunity to alter film</h2><p>V45 linearly interpolates the same Kodak 2383 dye and xenon 20 nm graph samples to one nanometre, then integrates from 380 to 780 nm through the CIE&apos;s official colour-matching table. Status-A inversion, LAD, 2383 H-D, the V31 normal-process colour boundary and complete V42 negative formation are frozen. Dye-free white changes by less than 4×10⁻⁷, demonstrating that this is not hidden white balance.</p><pre><code>{v45Code}</code></pre><div className="equation"><span>SINGLE-VARIABLE RELEASE</span><b>V45 = V44 + official CIE 1 nm observer</b><small>The 20 nm Kodak graphs remain the material-information limit; interpolation is not described as a new 1 nm film measurement.</small></div></div></section>
 

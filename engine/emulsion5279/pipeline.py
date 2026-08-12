@@ -10,7 +10,11 @@ import time
 import cv2
 import numpy as np
 
-from .assets import CIE_1931_2DEG_1NM, projection_lattice_for_profile
+from .assets import (
+    CIE_1931_2DEG_1NM,
+    projection_lattice_for_profile,
+    verify_v46_runtime_assets,
+)
 from .contracts import (
     DeliveryEncoding,
     EncodedObserverPair,
@@ -21,6 +25,13 @@ from .contracts import (
 )
 from .conformance import assert_research_conformance
 from . import legacy
+from .view_policy import (
+    CineonViewPolicy,
+    LEGACY_MANAGED_PROJECTION_CONTRACT,
+    LEGACY_MANAGED_SCAN_CONTRACT,
+    POLICY_CONTRACTS,
+    render_cineon_view,
+)
 
 
 _CONFIGURE_LOCK = threading.Lock()
@@ -62,10 +73,29 @@ class Emulsion5279Engine:
                 DeliveryEncoding.REFERENCE_BT1886.value,
                 DeliveryEncoding.QUICKTIME_SRGB.value,
             ],
+            "cineon_exchange_contract": {
+                "container": "SMPTE_ST_268-1_DPX_v2.0",
+                "image_element": "RGB_unsigned_10bit",
+                "transfer_characteristic": "printing_density_code_1",
+                "colorimetric_specification": "printing_density_code_1",
+                "reference_low": {"code": 0, "density": 0.0},
+                "reference_high": {"code": 1023, "density": 2.048},
+                "reference_black_aim_code": 95,
+                "display_ready": False,
+            },
+            "cineon_view_policies": {
+                policy.value: contract
+                for policy, contract in POLICY_CONTRACTS.items()
+            },
+            "legacy_scan_delivery_contract": LEGACY_MANAGED_SCAN_CONTRACT,
+            "legacy_projection_delivery_contract": (
+                LEGACY_MANAGED_PROJECTION_CONTRACT
+            ),
             "print_lattice_sha256": print_lattice.sha256,
             "cie_observer_sha256": (
                 CIE_1931_2DEG_1NM.sha256
-                if self.config.profile == "v45"
+                if self.config.profile
+                in {"v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
                 else None
             ),
             "research_conformance": assert_research_conformance(
@@ -117,6 +147,8 @@ class Emulsion5279Engine:
                     "EngineConfig per process until the remaining kernels are lifted"
                 )
             print_lattice = projection_lattice_for_profile(self.config.profile)
+            if self.config.profile == "v46":
+                verify_v46_runtime_assets()
             e = legacy.model
             self.profile.apply(e)
             cv2.setNumThreads(self.config.opencv_threads)
@@ -221,7 +253,7 @@ class Emulsion5279Engine:
         policy = self.profile.PROFILE.get(
             "projection_colour_policy", "scan_referenced_v31"
         )
-        if policy == "direct_observer":
+        if policy in {"direct_observer", "physical_spectral_v56"}:
             return np.asarray(projection, dtype=np.float32)
         if policy != "scan_referenced_v31":
             raise ValueError(f"unknown projection colour policy: {policy}")
@@ -247,6 +279,31 @@ class Emulsion5279Engine:
         )
         projection = self._publish_projection_colour(projection, scan)
         return ObserverPair(projection, scan)
+
+    def observe_with_cineon_data(
+        self, negative: FormedNegative, absolute_frame: int
+    ) -> tuple[ObserverPair, np.ndarray]:
+        """Return both display observers and their pre-display Cineon data.
+
+        The DPX payload is produced inside the shared observer traversal from
+        the same formed negative, scanner-density transform, and Spirit 2K
+        aperture that feed the scan view.  It therefore cannot silently drift
+        into a second stochastic realization or a duplicate scan model.
+        """
+        self.configure()
+        projection, scan, cineon_code = (
+            legacy.model.reconstruct_density_pair_to_dual_display_v39(
+                negative.mean_record_density,
+                negative.formed_record_density,
+                int(absolute_frame),
+                self.config.grain_scale,
+                "linear_rec709",
+                return_cineon_code=True,
+                branch_executor=self._observer_executor,
+            )
+        )
+        projection = self._publish_projection_colour(projection, scan)
+        return ObserverPair(projection, scan), cineon_code
 
     def observe_with_mean(
         self, negative: FormedNegative, absolute_frame: int
@@ -274,6 +331,19 @@ class Emulsion5279Engine:
                 mean_scan,
             ),
         )
+
+    def view_cineon_data(
+        self,
+        cineon_code: np.ndarray,
+        policy: CineonViewPolicy,
+    ) -> np.ndarray:
+        """View V66 printing-density data through one named single-input policy."""
+        self.configure()
+        if self.config.profile not in {"v46", "v66", "v72"}:
+            raise ValueError(
+                "the named Cineon policies require profile='v66' or 'v72'"
+            )
+        return render_cineon_view(cineon_code, policy)
 
     @staticmethod
     def encode_reference(observers: ObserverPair) -> EncodedObserverPair:
@@ -306,7 +376,9 @@ class Emulsion5279Engine:
             started = time.perf_counter()
             negative = self.form_negative(raw, absolute_frame)
             formed_at = time.perf_counter()
-            observers = self.observe(negative, absolute_frame)
+            observers, cineon_code = self.observe_with_cineon_data(
+                negative, absolute_frame
+            )
             observed_at = time.perf_counter()
             master = self.encode_reference(observers)
             encoded_at = time.perf_counter()
@@ -315,6 +387,7 @@ class Emulsion5279Engine:
             observers=observers,
             reference_master=master,
             quicktime_companion=None,
+            cineon_printing_density_code=cineon_code,
             stage_seconds={
                 "negative_formation": formed_at - started,
                 "dual_observer": observed_at - formed_at,

@@ -1,0 +1,241 @@
+{
+  "audit": "V67 Cineon display-layer ownership audit",
+  "status": "research_only_no_image_profile",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "frame": 0,
+  "working_dimensions": [
+    1440,
+    1080
+  ],
+  "seconds": 24.19197758298833,
+  "cineon_code_before_10bit_clamp": {
+    "minimum_unclipped": 94.5778579711914,
+    "p001_unclipped": 95.9477414779663,
+    "median_unclipped": 258.50787353515625,
+    "p999_unclipped": 686.4081665649414,
+    "maximum_unclipped": 697.6932983398438,
+    "below_zero_fraction": 0.0,
+    "above_1023_fraction": 0.0
+  },
+  "parameterized_current_map_exactly_closes": true,
+  "neutral_scale": {
+    "stops_from_18_percent": [
+      -6.0,
+      -5.0,
+      -4.0,
+      -3.0,
+      -2.0,
+      -1.0,
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      6.0
+    ],
+    "scene_linear": [
+      0.002812500111758709,
+      0.005625000223517418,
+      0.011250000447034836,
+      0.02250000089406967,
+      0.04500000178813934,
+      0.09000000357627869,
+      0.18000000715255737,
+      0.36000001430511475,
+      0.7200000286102295,
+      1.440000057220459,
+      2.880000114440918,
+      5.760000228881836,
+      11.520000457763672
+    ],
+    "open_display_linear_luma": [
+      1.531108770686842e-05,
+      0.00013753939467133023,
+      0.001516375215840526,
+      0.011492643202282488,
+      0.04409033183529973,
+      0.10021578726023435,
+      0.18000004444420337,
+      0.28515592252016064,
+      0.4094882145285606,
+      0.5444782381176948,
+      0.682554336965084,
+      0.8051662215471267,
+      0.9215453172802924
+    ],
+    "bluray_finish_linear_luma": [
+      2.3493772457868545e-06,
+      3.273844353570894e-05,
+      0.0005833289200265426,
+      0.006629021332785487,
+      0.03327802477777004,
+      0.08913923082798719,
+      0.18000004444420337,
+      0.2856858210921287,
+      0.4094882145285606,
+      0.5444782381176948,
+      0.682554336965084,
+      0.8051662215471267,
+      0.9215453172802924
+    ]
+  },
+  "models_vs_current_bluray_finish": {
+    "current_bluray_finish": {
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0,
+      "changed_12bit_component_fraction": 0.0
+    },
+    "current_open_display_map": {
+      "linear_rgb_mae": 0.0048003545962274075,
+      "linear_rgb_p95_absolute": 0.012931447476148605,
+      "linear_rgb_p99_absolute": 0.014681398905813693,
+      "linear_rgb_maximum_absolute": 0.022722560912370682,
+      "oklab_delta_median": 0.027629559859633446,
+      "oklab_delta_p95": 0.03817299772053957,
+      "oklab_delta_p99": 0.038572408445179465,
+      "changed_12bit_component_fraction": 0.8580621999314129
+    },
+    "parameterized_current_display_map": {
+      "linear_rgb_mae": 0.0048003545962274075,
+      "linear_rgb_p95_absolute": 0.012931447476148605,
+      "linear_rgb_p99_absolute": 0.014681398905813693,
+      "linear_rgb_maximum_absolute": 0.022722560912370682,
+      "oklab_delta_median": 0.027629559859633446,
+      "oklab_delta_p95": 0.03817299772053957,
+      "oklab_delta_p99": 0.038572408445179465,
+      "changed_12bit_component_fraction": 0.8580621999314129
+    },
+    "current_map_without_subreference_soft_toe": {
+      "linear_rgb_mae": 0.004795015789568424,
+      "linear_rgb_p95_absolute": 0.012926548719406128,
+      "linear_rgb_p99_absolute": 0.014677032977342602,
+      "linear_rgb_maximum_absolute": 0.022717799991369247,
+      "oklab_delta_median": 0.02756565436720848,
+      "oklab_delta_p95": 0.0381215775385499,
+      "oklab_delta_p99": 0.03851572424173355,
+      "changed_12bit_component_fraction": 0.8575546553497942
+    },
+    "display_peak_1p00": {
+      "linear_rgb_mae": 0.005499756429344416,
+      "linear_rgb_p95_absolute": 0.025953590869903564,
+      "linear_rgb_p99_absolute": 0.03605383634567261,
+      "linear_rgb_maximum_absolute": 0.04250013828277588,
+      "oklab_delta_median": 0.01890365593135357,
+      "oklab_delta_p95": 0.025647958740592003,
+      "oklab_delta_p99": 0.026407940946519375,
+      "changed_12bit_component_fraction": 0.9099839248971193
+    },
+    "high_anchor_scene_1p0": {
+      "linear_rgb_mae": 0.04251852259039879,
+      "linear_rgb_p95_absolute": 0.3490530252456665,
+      "linear_rgb_p99_absolute": 0.4868917465209961,
+      "linear_rgb_maximum_absolute": 0.5471495985984802,
+      "oklab_delta_median": 0.05739179253578186,
+      "oklab_delta_p95": 0.16932163983583456,
+      "oklab_delta_p99": 0.20166738331317902,
+      "changed_12bit_component_fraction": 0.9571324159807956
+    },
+    "high_anchor_scene_4p0": {
+      "linear_rgb_mae": 0.00732208788394928,
+      "linear_rgb_p95_absolute": 0.055436670780181885,
+      "linear_rgb_p99_absolute": 0.07738518714904785,
+      "linear_rgb_maximum_absolute": 0.090179443359375,
+      "oklab_delta_median": 0.011342769488692284,
+      "oklab_delta_p95": 0.031908323243260386,
+      "oklab_delta_p99": 0.03790946766734123,
+      "changed_12bit_component_fraction": 0.8941171553497942
+    }
+  },
+  "model_luma": {
+    "current_bluray_finish": {
+      "p001": 3.6878616342164604e-06,
+      "p01": 4.464130146189927e-05,
+      "median": 0.04351784635623917,
+      "p99": 0.5030045501589775,
+      "p999": 0.5173518045008182,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "current_open_display_map": {
+      "p001": 2.2294150816014734e-05,
+      "p01": 0.0001780981687483472,
+      "median": 0.05513595780106261,
+      "p99": 0.5030045501589775,
+      "p999": 0.5173518045008182,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "parameterized_current_display_map": {
+      "p001": 2.2294150816014734e-05,
+      "p01": 0.0001780981687483472,
+      "median": 0.05513595780106261,
+      "p99": 0.5030045501589775,
+      "p999": 0.5173518045008182,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "current_map_without_subreference_soft_toe": {
+      "p001": 1.4086895660352637e-05,
+      "p01": 0.0001684958926469651,
+      "median": 0.05513005874622613,
+      "p99": 0.5030089012980461,
+      "p999": 0.5173560554385185,
+      "at_or_below_zero_fraction": 1.1574074074074073e-05,
+      "at_or_above_one_fraction": 0.0
+    },
+    "display_peak_1p00": {
+      "p001": 1.2453976245251397e-05,
+      "p01": 0.00011526056431084727,
+      "median": 0.05116513415109366,
+      "p99": 0.5380304609537124,
+      "p999": 0.5543894054651259,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "high_anchor_scene_1p0": {
+      "p001": 6.299336128527954e-08,
+      "p01": 2.291341335812909e-06,
+      "median": 0.025924503671983255,
+      "p99": 0.9981153095006943,
+      "p999": 1.0,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.009520961934156379
+    },
+    "high_anchor_scene_4p0": {
+      "p001": 6.7582772322111845e-06,
+      "p01": 7.234335070534143e-05,
+      "median": 0.047199676429666576,
+      "p99": 0.578688952422142,
+      "p999": 0.597469548523426,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    }
+  },
+  "ownership": {
+    "standardized_or_calibration_aim": [
+      "10-bit code range",
+      "0.002 printing density per code value",
+      "reference black aim code 95",
+      "neutral LAD/mid aim code 445 (0.700 D above code 95)"
+    ],
+    "active_model_not_measured_device_fact": [
+      "5279-to-2383 printing-density spectral integration",
+      "Spirit 2048-line aperture prior",
+      "neutral high reference generated from scene-linear 10.0"
+    ],
+    "viewing_or_finishing_choice": [
+      "0.008 D sub-reference soft toe",
+      "display peak placement 0.90",
+      "power curve derived from the scene-10 high anchor",
+      "lower-scale gamma 1.20",
+      "finish fade between display luma 0.12 and 0.30"
+    ]
+  },
+  "conclusion": "Cineon defines density data, not a unique Rec.709 image. The current open display map and Blu-ray finish are explicit viewing policies; neither may be attributed to 5279 without a measured film-print emulation or a named graded-master reference."
+}

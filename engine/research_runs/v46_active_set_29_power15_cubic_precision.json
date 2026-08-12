@@ -1,0 +1,43 @@
+{
+  "policy": "trilinear_each_fixed_active_set_then_minimum_residual",
+  "interpolation": "cubic",
+  "lut_size": 29,
+  "axis_first_steps": [
+    0.01889822445809841,
+    0.034554025158286095,
+    0.0447457991540432,
+    0.05298774689435959
+  ],
+  "axis_last_steps": [
+    0.14030981063842773,
+    0.1431446075439453,
+    0.14592480659484863,
+    0.1486525535583496
+  ],
+  "point_count": 16000,
+  "interpolation_seconds": 0.2781821660000787,
+  "exact_nnls_seconds": 19.372040042000208,
+  "active_set_classification_accuracy": 0.9666875,
+  "oracle_exact_mask_interpolation": {
+    "maximum_absolute_printer_density_error": 0.013505407184695617,
+    "p99_absolute_printer_density_error": 0.003356408515727524,
+    "rms_printer_density_error": 0.0007047630048847541
+  },
+  "interpolated_residual_minus_exact": {
+    "maximum_absolute": 0.00047160989244601423,
+    "rms": 5.010224732788575e-05
+  },
+  "maximum_absolute_printer_density_error": 0.013730312578871251,
+  "p99_absolute_printer_density_error": 0.003702667374043624,
+  "rms_printer_density_error": 0.0007574319726807088,
+  "worst_status_m_net_density": [
+    0.37758487462997437,
+    1.1840537786483765,
+    0.5553351044654846
+  ],
+  "worst_output_record": "red",
+  "worst_approximate_mask": 7,
+  "worst_exact_mask": 6,
+  "quality_gate_maximum_density_error": 0.001,
+  "quality_gate_pass": false
+}

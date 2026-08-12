@@ -1,0 +1,1864 @@
+{
+  "release": "V46 certified spectral inverse",
+  "release_class": "stochastic_endpoint_and_nonnegative_inverse_correction",
+  "image_changes": [
+    "hold the complete stochastic state at published granularity endpoints",
+    "replace clipped Status-M projection with exact active-set/KKT inverse"
+  ],
+  "evidence_boundary": "identity record formation; cross-record covariance remains unmeasured",
+  "dimensions": [
+    1280,
+    960
+  ],
+  "large_still_dimensions": [
+    1920,
+    1440
+  ],
+  "fps": "24000/1001",
+  "frames": 24,
+  "representative_frame": 12,
+  "web_authority": "same middle frame decoded from each final encoded review movie",
+  "timing": {
+    "T020": {
+      "engine": {
+        "engine_api": "emulsion5279-v46",
+        "profile": "v46",
+        "input_colour_contract": "avfoundation_extended_linear_bt2020_d65",
+        "delivery_contract": [
+          "rec709_primaries_bt1886_gamma24",
+          "rec709_primaries_srgb_transfer"
+        ],
+        "cineon_exchange_contract": {
+          "container": "SMPTE_ST_268-1_DPX_v2.0",
+          "image_element": "RGB_unsigned_10bit",
+          "transfer_characteristic": "printing_density_code_1",
+          "colorimetric_specification": "printing_density_code_1",
+          "reference_low": {
+            "code": 0,
+            "density": 0.0
+          },
+          "reference_high": {
+            "code": 1023,
+            "density": 2.048
+          },
+          "reference_black_aim_code": 95,
+          "display_ready": false
+        },
+        "cineon_view_policies": {
+          "cineon_open_monitor_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "code95_reference_black",
+              "0.008D_soft_toe",
+              "scene10_derived_high_anchor",
+              "0.90_linear_peak",
+              "unit_gamut_compression"
+            ],
+            "classification": "provisional_monitor_policy_not_5279_property"
+          },
+          "cineon_bluray_pointwise_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "cineon_open_monitor_v66",
+              "lower_scale_gamma_1.20_anchored_at_18_percent",
+              "finish_fade_from_luma_0.12_to_0.30",
+              "luminance_preserving_neutral_scale_calibration",
+              "rec709_gamut_compression"
+            ],
+            "classification": "provisional_finish_policy_not_5279_property"
+          }
+        },
+        "legacy_scan_delivery_contract": {
+          "name": "legacy_managed_bluray_v40_to_v66",
+          "inputs": [
+            "formed_rgb_10bit_printing_density_code",
+            "hidden_deterministic_mean_scan"
+          ],
+          "pure_function_of_dpx": false,
+          "additional_operations": [
+            "mean_relative_luma_opponent_decomposition",
+            "0.55px_at_2k_opponent_lowpass",
+            "0.55_high_frequency_opponent_retention",
+            "mean_luma_dependent_shadow_visibility"
+          ],
+          "classification": "historical_delivery_grain_management_not_view_transform"
+        },
+        "legacy_projection_delivery_contract": {
+          "name": "legacy_managed_projection_v40_to_v72",
+          "inputs": [
+            "formed_5279_record_density",
+            "hidden_deterministic_mean_2383_projection",
+            "matched_legacy_managed_scan"
+          ],
+          "pure_function_of_projected_print": false,
+          "stochastic_observer": "archive_pointwise_signed_delta",
+          "local_projection_grain_operations": [
+            "mean_relative_rec709_luma_opponent_decomposition",
+            "0.62px_at_2k_opponent_lowpass",
+            "0.0_high_frequency_opponent_retention",
+            "0.66_opponent_strength"
+          ],
+          "publication_operations": [
+            "scan_referenced_low_frequency_oklab_opponent_colour",
+            "0.72px_at_2k_colour_crossover",
+            "0.0_projection_high_frequency_opponent_retention",
+            "exact_projection_rec709_linear_luma"
+          ],
+          "classification": "historical_managed_monitor_policy_not_measured_5279_or_2383_property",
+          "evidence_boundary": "Kodak's public granularity curves do not identify cross-record covariance or the final projected colour-grain NPS. V79 showed that removing this management reopens sparse primary-colour events in the current model; retention is therefore a defect-containment boundary, not evidence that real 5279 projection has these coefficients."
+        },
+        "print_lattice_sha256": "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+        "cie_observer_sha256": "bd7973e895a97e543815614b19c51ceff552ae9910a424724ae04ed89bd863a3",
+        "research_conformance": {
+          "contract": "public-v46-consolidation-plus-certified-spectral-inverse-and-endpoint-correction",
+          "checks": {
+            "v37_stable_balanced_phase": true,
+            "v37_or_v48_site_integration_radius": true,
+            "v37_phase_offset_30_degrees": true,
+            "v40_post_process_granularity_boundary": true,
+            "v40_formed_density_observer_management": true,
+            "v40_or_v43h_explicit_2383_grain_boundary": true,
+            "v40_archive_pointwise_signed_grain_observer": true,
+            "v40_no_duplicate_hf_opponent_reinjection": true,
+            "v41_signed_basis_only_when_records_stay_positive": true,
+            "v41_chart_residual_enabled_at_one_eighth": true,
+            "v30_to_v41_unidentified_d60_lattice_disabled": true,
+            "baseline_controls_frozen": true,
+            "v44_is_an_evidence_boundary_revision": true,
+            "v44_retains_accepted_normal_process_colour_boundary": true,
+            "v44_review_integration_is_explicit": true,
+            "v44_withholds_unmeasured_2383_grain": true,
+            "v44_retains_v42_negative_morphology": true,
+            "v44_retains_v42_spirit_observer": true,
+            "active_release_class_matches_profile": true,
+            "v45_uses_official_cie_1931_1nm_observer": true,
+            "v48_removes_global_bilinear_phase": true,
+            "v48_uses_geometric_second_moment_integration": true,
+            "v48_plus_declares_local_density_boundary": true,
+            "v50_uses_vector_traced_granularity_domain": true,
+            "v50_uses_vector_traced_granularity_sigma": true,
+            "v50_withholds_unplotted_plus_one_loge_sample": true,
+            "v51_uses_vector_traced_net_dye_spectra": true,
+            "v51_uses_vector_traced_minimum_density_spectrum": true,
+            "v52_uses_vector_traced_characteristic_domain": true,
+            "v52_uses_vector_traced_characteristic_density": true,
+            "v52_dmin_matches_first_traced_density": true,
+            "v52_pretrace_dmin_hold_is_explicit": true,
+            "v52_inferred_shoulder_preserves_archive_increments": true,
+            "v53_uses_vector_traced_2383_characteristic_domain": true,
+            "v53_uses_vector_traced_2383_characteristic_density": true,
+            "v53_2383_dmin_is_one_consistent_source": true,
+            "v53_2383_curves_are_monotonic": true,
+            "v53_2383_dmax_covers_all_vector_endpoints": true,
+            "v53_2383_graph_border_holds_are_explicit": true,
+            "v54_uses_vector_traced_2383_record_sensitivity": true,
+            "v54_retains_unmodified_2383_dye_spectra": true,
+            "v54_explicit_sensitivity_floor_is_bounded": true,
+            "v55_uses_vector_traced_2383_dye_spectra": true,
+            "v55_retains_archive_xenon_spd": true,
+            "v55_dye_peaks_match_vector_graph_regions": true,
+            "v55_dye_density_is_nonnegative": true,
+            "v60_preserves_checksum_locked_visual_neutral_residual": true,
+            "v60_dmin_registered_spectral_policy_enabled": true,
+            "v60_integral_lad_coordinate_policy_enabled": true,
+            "v60_zero_dye_amount_is_exactly_hd_curve_dmin": true,
+            "v60_integral_lad_inverse_is_numerically_closed": true,
+            "v60_principal_triplet_forwards_to_official_integral_lad": true,
+            "v60_forward_and_inverse_dye_amounts_agree": true,
+            "v60_documented_principal_density_triplet": true,
+            "v60_documented_analytical_dye_triplet": true,
+            "v60_plus_interimage_matches_declared_profile": true,
+            "v60_scan_referenced_colour_policy_is_unchanged": true,
+            "v61_checksum_locked_iso_status_m_table": true,
+            "v61_iso_status_m_policy_enabled": true,
+            "v61_joint_analytical_inverse_enabled": true,
+            "v61_status_m_grid_is_380_to_780_at_1nm": true,
+            "v61_status_m_receivers_have_official_peak_wavelengths": true,
+            "v61_zero_analytical_dye_is_registered_to_hd_dmin": true,
+            "v61_joint_status_m_inverse_is_numerically_closed": true,
+            "v61_plus_2383_interimage_matches_declared_profile": true,
+            "v61_scan_referenced_colour_policy_is_unchanged": true,
+            "v62_unmeasured_interimage_surrogate_is_withheld": true,
+            "v62_interimage_endpoint_is_exact_identity": true,
+            "v62_projection_colour_policy_is_unchanged": true,
+            "v62_profile_declares_native_observer_lattice": true,
+            "v63_uses_actual_negative_to_print_neutral_trajectory": true,
+            "v63_keeps_scan_referenced_colour_authority_frozen": true,
+            "v63_keeps_unmeasured_interimage_at_identity": true,
+            "v63_restores_declared_v31_chroma_configuration": true,
+            "v64_retains_published_separated_status_a_curves": true,
+            "v64_retains_v63_actual_view_neutral_trajectory": true,
+            "v64_keeps_scan_referenced_colour_authority_frozen": true,
+            "v66_cineon_target_is_printing_density": true,
+            "v66_cineon_coordinate_is_numerically_exact": true,
+            "v66_does_not_claim_measured_spirit_colour": true,
+            "v72_direct_record_mix_is_exact_identity": true,
+            "v72_declares_minimum_assumption_not_measurement": true,
+            "v46_complete_stochastic_state_endpoint_hold": true,
+            "v46_certified_adaptive_printer_observer": true,
+            "v46_projection_delta_lattice_is_declared_containment": true
+          },
+          "image_model_conformant": true,
+          "production_execution_conformant": true,
+          "sampler": "Philox-u32 Bernoulli Metal; 45 unique record/population/size identities per frame",
+          "delivery_authority": "encoded 12-bit BT.1886 master; sRGB companion and still are derived from the delivered master"
+        },
+        "production_sampler_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "tile_workset_pixels": null,
+          "tile_in_flight": 2,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 30000000,
+          "maximum_seed": 30232204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "0": 45,
+            "1": 45,
+            "2": 45,
+            "3": 45,
+            "4": 45,
+            "5": 45,
+            "6": 45,
+            "7": 45,
+            "8": 45,
+            "9": 45,
+            "10": 45,
+            "11": 45,
+            "12": 45,
+            "13": 45,
+            "14": 45,
+            "15": 45,
+            "16": 45,
+            "17": 45,
+            "18": 45,
+            "19": 45,
+            "20": 45,
+            "21": 45,
+            "22": 45,
+            "23": 45
+          }
+        },
+        "execution": {
+          "observer_branch_workers": 1,
+          "observer_schedule": "sequential_projection_and_scan"
+        },
+        "model_sha256": "4ef7fbc7a6d2932935152762422e2009277f4ced1882f6d0eec531d58e8b4d2d",
+        "profile_sha256": "d3571ee1424558b72ff6c7bab2e733ac442a8082eb0d48565882a7d7be449754"
+      },
+      "input": "NJARAW_S001_S001_T020.MOV",
+      "start_frame": 0,
+      "frames": 24,
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "config": {
+        "exposure_stops": 0.45,
+        "grain_scale": 1.0,
+        "oversample": 1,
+        "mode": "production_philox_metal",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_branch_workers": 1,
+        "grain_domain_salt": 0,
+        "research_baseline": true,
+        "cineon_dpx": false
+      },
+      "stage_summaries": {
+        "negative_formation": {
+          "total_seconds": 539.9637722919942,
+          "mean_seconds_per_frame": 22.498490512166427,
+          "p95_seconds_per_frame": 26.210893926798963
+        },
+        "dual_observer": {
+          "total_seconds": 552.7733982080008,
+          "mean_seconds_per_frame": 23.032224925333367,
+          "p95_seconds_per_frame": 27.786925193748626
+        },
+        "delivery_encoding": {
+          "total_seconds": 13.347237002002657,
+          "mean_seconds_per_frame": 0.5561348750834441,
+          "p95_seconds_per_frame": 0.7144152018002385
+        },
+        "total": {
+          "total_seconds": 1106.0844075019977,
+          "mean_seconds_per_frame": 46.08685031258324,
+          "p95_seconds_per_frame": 54.860019657999324
+        }
+      },
+      "source_delivery": {
+        "contract": "V29 frame-accurate source PCM/timecode retention",
+        "source_frames": 297,
+        "range": [
+          0,
+          23
+        ],
+        "outputs_finalized": [
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov"
+        ],
+        "seconds": 33.0337023330012
+      },
+      "review_sampling": {
+        "projection": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        },
+        "bluray_scan": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        }
+      },
+      "cineon_exchange": null,
+      "total_wall_seconds": 1237.395187125001
+    },
+    "T032": {
+      "engine": {
+        "engine_api": "emulsion5279-v46",
+        "profile": "v46",
+        "input_colour_contract": "avfoundation_extended_linear_bt2020_d65",
+        "delivery_contract": [
+          "rec709_primaries_bt1886_gamma24",
+          "rec709_primaries_srgb_transfer"
+        ],
+        "cineon_exchange_contract": {
+          "container": "SMPTE_ST_268-1_DPX_v2.0",
+          "image_element": "RGB_unsigned_10bit",
+          "transfer_characteristic": "printing_density_code_1",
+          "colorimetric_specification": "printing_density_code_1",
+          "reference_low": {
+            "code": 0,
+            "density": 0.0
+          },
+          "reference_high": {
+            "code": 1023,
+            "density": 2.048
+          },
+          "reference_black_aim_code": 95,
+          "display_ready": false
+        },
+        "cineon_view_policies": {
+          "cineon_open_monitor_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "code95_reference_black",
+              "0.008D_soft_toe",
+              "scene10_derived_high_anchor",
+              "0.90_linear_peak",
+              "unit_gamut_compression"
+            ],
+            "classification": "provisional_monitor_policy_not_5279_property"
+          },
+          "cineon_bluray_pointwise_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "cineon_open_monitor_v66",
+              "lower_scale_gamma_1.20_anchored_at_18_percent",
+              "finish_fade_from_luma_0.12_to_0.30",
+              "luminance_preserving_neutral_scale_calibration",
+              "rec709_gamut_compression"
+            ],
+            "classification": "provisional_finish_policy_not_5279_property"
+          }
+        },
+        "legacy_scan_delivery_contract": {
+          "name": "legacy_managed_bluray_v40_to_v66",
+          "inputs": [
+            "formed_rgb_10bit_printing_density_code",
+            "hidden_deterministic_mean_scan"
+          ],
+          "pure_function_of_dpx": false,
+          "additional_operations": [
+            "mean_relative_luma_opponent_decomposition",
+            "0.55px_at_2k_opponent_lowpass",
+            "0.55_high_frequency_opponent_retention",
+            "mean_luma_dependent_shadow_visibility"
+          ],
+          "classification": "historical_delivery_grain_management_not_view_transform"
+        },
+        "legacy_projection_delivery_contract": {
+          "name": "legacy_managed_projection_v40_to_v72",
+          "inputs": [
+            "formed_5279_record_density",
+            "hidden_deterministic_mean_2383_projection",
+            "matched_legacy_managed_scan"
+          ],
+          "pure_function_of_projected_print": false,
+          "stochastic_observer": "archive_pointwise_signed_delta",
+          "local_projection_grain_operations": [
+            "mean_relative_rec709_luma_opponent_decomposition",
+            "0.62px_at_2k_opponent_lowpass",
+            "0.0_high_frequency_opponent_retention",
+            "0.66_opponent_strength"
+          ],
+          "publication_operations": [
+            "scan_referenced_low_frequency_oklab_opponent_colour",
+            "0.72px_at_2k_colour_crossover",
+            "0.0_projection_high_frequency_opponent_retention",
+            "exact_projection_rec709_linear_luma"
+          ],
+          "classification": "historical_managed_monitor_policy_not_measured_5279_or_2383_property",
+          "evidence_boundary": "Kodak's public granularity curves do not identify cross-record covariance or the final projected colour-grain NPS. V79 showed that removing this management reopens sparse primary-colour events in the current model; retention is therefore a defect-containment boundary, not evidence that real 5279 projection has these coefficients."
+        },
+        "print_lattice_sha256": "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+        "cie_observer_sha256": "bd7973e895a97e543815614b19c51ceff552ae9910a424724ae04ed89bd863a3",
+        "research_conformance": {
+          "contract": "public-v46-consolidation-plus-certified-spectral-inverse-and-endpoint-correction",
+          "checks": {
+            "v37_stable_balanced_phase": true,
+            "v37_or_v48_site_integration_radius": true,
+            "v37_phase_offset_30_degrees": true,
+            "v40_post_process_granularity_boundary": true,
+            "v40_formed_density_observer_management": true,
+            "v40_or_v43h_explicit_2383_grain_boundary": true,
+            "v40_archive_pointwise_signed_grain_observer": true,
+            "v40_no_duplicate_hf_opponent_reinjection": true,
+            "v41_signed_basis_only_when_records_stay_positive": true,
+            "v41_chart_residual_enabled_at_one_eighth": true,
+            "v30_to_v41_unidentified_d60_lattice_disabled": true,
+            "baseline_controls_frozen": true,
+            "v44_is_an_evidence_boundary_revision": true,
+            "v44_retains_accepted_normal_process_colour_boundary": true,
+            "v44_review_integration_is_explicit": true,
+            "v44_withholds_unmeasured_2383_grain": true,
+            "v44_retains_v42_negative_morphology": true,
+            "v44_retains_v42_spirit_observer": true,
+            "active_release_class_matches_profile": true,
+            "v45_uses_official_cie_1931_1nm_observer": true,
+            "v48_removes_global_bilinear_phase": true,
+            "v48_uses_geometric_second_moment_integration": true,
+            "v48_plus_declares_local_density_boundary": true,
+            "v50_uses_vector_traced_granularity_domain": true,
+            "v50_uses_vector_traced_granularity_sigma": true,
+            "v50_withholds_unplotted_plus_one_loge_sample": true,
+            "v51_uses_vector_traced_net_dye_spectra": true,
+            "v51_uses_vector_traced_minimum_density_spectrum": true,
+            "v52_uses_vector_traced_characteristic_domain": true,
+            "v52_uses_vector_traced_characteristic_density": true,
+            "v52_dmin_matches_first_traced_density": true,
+            "v52_pretrace_dmin_hold_is_explicit": true,
+            "v52_inferred_shoulder_preserves_archive_increments": true,
+            "v53_uses_vector_traced_2383_characteristic_domain": true,
+            "v53_uses_vector_traced_2383_characteristic_density": true,
+            "v53_2383_dmin_is_one_consistent_source": true,
+            "v53_2383_curves_are_monotonic": true,
+            "v53_2383_dmax_covers_all_vector_endpoints": true,
+            "v53_2383_graph_border_holds_are_explicit": true,
+            "v54_uses_vector_traced_2383_record_sensitivity": true,
+            "v54_retains_unmodified_2383_dye_spectra": true,
+            "v54_explicit_sensitivity_floor_is_bounded": true,
+            "v55_uses_vector_traced_2383_dye_spectra": true,
+            "v55_retains_archive_xenon_spd": true,
+            "v55_dye_peaks_match_vector_graph_regions": true,
+            "v55_dye_density_is_nonnegative": true,
+            "v60_preserves_checksum_locked_visual_neutral_residual": true,
+            "v60_dmin_registered_spectral_policy_enabled": true,
+            "v60_integral_lad_coordinate_policy_enabled": true,
+            "v60_zero_dye_amount_is_exactly_hd_curve_dmin": true,
+            "v60_integral_lad_inverse_is_numerically_closed": true,
+            "v60_principal_triplet_forwards_to_official_integral_lad": true,
+            "v60_forward_and_inverse_dye_amounts_agree": true,
+            "v60_documented_principal_density_triplet": true,
+            "v60_documented_analytical_dye_triplet": true,
+            "v60_plus_interimage_matches_declared_profile": true,
+            "v60_scan_referenced_colour_policy_is_unchanged": true,
+            "v61_checksum_locked_iso_status_m_table": true,
+            "v61_iso_status_m_policy_enabled": true,
+            "v61_joint_analytical_inverse_enabled": true,
+            "v61_status_m_grid_is_380_to_780_at_1nm": true,
+            "v61_status_m_receivers_have_official_peak_wavelengths": true,
+            "v61_zero_analytical_dye_is_registered_to_hd_dmin": true,
+            "v61_joint_status_m_inverse_is_numerically_closed": true,
+            "v61_plus_2383_interimage_matches_declared_profile": true,
+            "v61_scan_referenced_colour_policy_is_unchanged": true,
+            "v62_unmeasured_interimage_surrogate_is_withheld": true,
+            "v62_interimage_endpoint_is_exact_identity": true,
+            "v62_projection_colour_policy_is_unchanged": true,
+            "v62_profile_declares_native_observer_lattice": true,
+            "v63_uses_actual_negative_to_print_neutral_trajectory": true,
+            "v63_keeps_scan_referenced_colour_authority_frozen": true,
+            "v63_keeps_unmeasured_interimage_at_identity": true,
+            "v63_restores_declared_v31_chroma_configuration": true,
+            "v64_retains_published_separated_status_a_curves": true,
+            "v64_retains_v63_actual_view_neutral_trajectory": true,
+            "v64_keeps_scan_referenced_colour_authority_frozen": true,
+            "v66_cineon_target_is_printing_density": true,
+            "v66_cineon_coordinate_is_numerically_exact": true,
+            "v66_does_not_claim_measured_spirit_colour": true,
+            "v72_direct_record_mix_is_exact_identity": true,
+            "v72_declares_minimum_assumption_not_measurement": true,
+            "v46_complete_stochastic_state_endpoint_hold": true,
+            "v46_certified_adaptive_printer_observer": true,
+            "v46_projection_delta_lattice_is_declared_containment": true
+          },
+          "image_model_conformant": true,
+          "production_execution_conformant": true,
+          "sampler": "Philox-u32 Bernoulli Metal; 45 unique record/population/size identities per frame",
+          "delivery_authority": "encoded 12-bit BT.1886 master; sRGB companion and still are derived from the delivered master"
+        },
+        "production_sampler_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "tile_workset_pixels": null,
+          "tile_in_flight": 2,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 30000000,
+          "maximum_seed": 30232204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "0": 45,
+            "1": 45,
+            "2": 45,
+            "3": 45,
+            "4": 45,
+            "5": 45,
+            "6": 45,
+            "7": 45,
+            "8": 45,
+            "9": 45,
+            "10": 45,
+            "11": 45,
+            "12": 45,
+            "13": 45,
+            "14": 45,
+            "15": 45,
+            "16": 45,
+            "17": 45,
+            "18": 45,
+            "19": 45,
+            "20": 45,
+            "21": 45,
+            "22": 45,
+            "23": 45
+          }
+        },
+        "execution": {
+          "observer_branch_workers": 1,
+          "observer_schedule": "sequential_projection_and_scan"
+        },
+        "model_sha256": "4ef7fbc7a6d2932935152762422e2009277f4ced1882f6d0eec531d58e8b4d2d",
+        "profile_sha256": "d3571ee1424558b72ff6c7bab2e733ac442a8082eb0d48565882a7d7be449754"
+      },
+      "input": "NJARAW_S001_S001_T032.MOV",
+      "start_frame": 0,
+      "frames": 24,
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "config": {
+        "exposure_stops": 0.45,
+        "grain_scale": 1.0,
+        "oversample": 1,
+        "mode": "production_philox_metal",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_branch_workers": 1,
+        "grain_domain_salt": 0,
+        "research_baseline": true,
+        "cineon_dpx": false
+      },
+      "stage_summaries": {
+        "negative_formation": {
+          "total_seconds": 522.9292985409957,
+          "mean_seconds_per_frame": 21.788720772541485,
+          "p95_seconds_per_frame": 24.577351253550386
+        },
+        "dual_observer": {
+          "total_seconds": 541.0747419170038,
+          "mean_seconds_per_frame": 22.544780913208495,
+          "p95_seconds_per_frame": 24.765080910650248
+        },
+        "delivery_encoding": {
+          "total_seconds": 12.58960353999828,
+          "mean_seconds_per_frame": 0.524566814166595,
+          "p95_seconds_per_frame": 0.6382689187994401
+        },
+        "total": {
+          "total_seconds": 1076.5936439979978,
+          "mean_seconds_per_frame": 44.85806849991658,
+          "p95_seconds_per_frame": 49.113347520548906
+        }
+      },
+      "source_delivery": {
+        "contract": "V29 frame-accurate source PCM/timecode retention",
+        "source_frames": 241,
+        "range": [
+          0,
+          23
+        ],
+        "outputs_finalized": [
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov"
+        ],
+        "seconds": 26.66476008400059
+      },
+      "review_sampling": {
+        "projection": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        },
+        "bluray_scan": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        }
+      },
+      "cineon_exchange": null,
+      "total_wall_seconds": 1196.6069671669993
+    },
+    "T007": {
+      "engine": {
+        "engine_api": "emulsion5279-v46",
+        "profile": "v46",
+        "input_colour_contract": "avfoundation_extended_linear_bt2020_d65",
+        "delivery_contract": [
+          "rec709_primaries_bt1886_gamma24",
+          "rec709_primaries_srgb_transfer"
+        ],
+        "cineon_exchange_contract": {
+          "container": "SMPTE_ST_268-1_DPX_v2.0",
+          "image_element": "RGB_unsigned_10bit",
+          "transfer_characteristic": "printing_density_code_1",
+          "colorimetric_specification": "printing_density_code_1",
+          "reference_low": {
+            "code": 0,
+            "density": 0.0
+          },
+          "reference_high": {
+            "code": 1023,
+            "density": 2.048
+          },
+          "reference_black_aim_code": 95,
+          "display_ready": false
+        },
+        "cineon_view_policies": {
+          "cineon_open_monitor_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "code95_reference_black",
+              "0.008D_soft_toe",
+              "scene10_derived_high_anchor",
+              "0.90_linear_peak",
+              "unit_gamut_compression"
+            ],
+            "classification": "provisional_monitor_policy_not_5279_property"
+          },
+          "cineon_bluray_pointwise_v66": {
+            "inputs": [
+              "rgb_10bit_printing_density_code"
+            ],
+            "output": "linear_rec709_display_light",
+            "pure_function_of_dpx": true,
+            "operations": [
+              "cineon_open_monitor_v66",
+              "lower_scale_gamma_1.20_anchored_at_18_percent",
+              "finish_fade_from_luma_0.12_to_0.30",
+              "luminance_preserving_neutral_scale_calibration",
+              "rec709_gamut_compression"
+            ],
+            "classification": "provisional_finish_policy_not_5279_property"
+          }
+        },
+        "legacy_scan_delivery_contract": {
+          "name": "legacy_managed_bluray_v40_to_v66",
+          "inputs": [
+            "formed_rgb_10bit_printing_density_code",
+            "hidden_deterministic_mean_scan"
+          ],
+          "pure_function_of_dpx": false,
+          "additional_operations": [
+            "mean_relative_luma_opponent_decomposition",
+            "0.55px_at_2k_opponent_lowpass",
+            "0.55_high_frequency_opponent_retention",
+            "mean_luma_dependent_shadow_visibility"
+          ],
+          "classification": "historical_delivery_grain_management_not_view_transform"
+        },
+        "legacy_projection_delivery_contract": {
+          "name": "legacy_managed_projection_v40_to_v72",
+          "inputs": [
+            "formed_5279_record_density",
+            "hidden_deterministic_mean_2383_projection",
+            "matched_legacy_managed_scan"
+          ],
+          "pure_function_of_projected_print": false,
+          "stochastic_observer": "archive_pointwise_signed_delta",
+          "local_projection_grain_operations": [
+            "mean_relative_rec709_luma_opponent_decomposition",
+            "0.62px_at_2k_opponent_lowpass",
+            "0.0_high_frequency_opponent_retention",
+            "0.66_opponent_strength"
+          ],
+          "publication_operations": [
+            "scan_referenced_low_frequency_oklab_opponent_colour",
+            "0.72px_at_2k_colour_crossover",
+            "0.0_projection_high_frequency_opponent_retention",
+            "exact_projection_rec709_linear_luma"
+          ],
+          "classification": "historical_managed_monitor_policy_not_measured_5279_or_2383_property",
+          "evidence_boundary": "Kodak's public granularity curves do not identify cross-record covariance or the final projected colour-grain NPS. V79 showed that removing this management reopens sparse primary-colour events in the current model; retention is therefore a defect-containment boundary, not evidence that real 5279 projection has these coefficients."
+        },
+        "print_lattice_sha256": "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+        "cie_observer_sha256": "bd7973e895a97e543815614b19c51ceff552ae9910a424724ae04ed89bd863a3",
+        "research_conformance": {
+          "contract": "public-v46-consolidation-plus-certified-spectral-inverse-and-endpoint-correction",
+          "checks": {
+            "v37_stable_balanced_phase": true,
+            "v37_or_v48_site_integration_radius": true,
+            "v37_phase_offset_30_degrees": true,
+            "v40_post_process_granularity_boundary": true,
+            "v40_formed_density_observer_management": true,
+            "v40_or_v43h_explicit_2383_grain_boundary": true,
+            "v40_archive_pointwise_signed_grain_observer": true,
+            "v40_no_duplicate_hf_opponent_reinjection": true,
+            "v41_signed_basis_only_when_records_stay_positive": true,
+            "v41_chart_residual_enabled_at_one_eighth": true,
+            "v30_to_v41_unidentified_d60_lattice_disabled": true,
+            "baseline_controls_frozen": true,
+            "v44_is_an_evidence_boundary_revision": true,
+            "v44_retains_accepted_normal_process_colour_boundary": true,
+            "v44_review_integration_is_explicit": true,
+            "v44_withholds_unmeasured_2383_grain": true,
+            "v44_retains_v42_negative_morphology": true,
+            "v44_retains_v42_spirit_observer": true,
+            "active_release_class_matches_profile": true,
+            "v45_uses_official_cie_1931_1nm_observer": true,
+            "v48_removes_global_bilinear_phase": true,
+            "v48_uses_geometric_second_moment_integration": true,
+            "v48_plus_declares_local_density_boundary": true,
+            "v50_uses_vector_traced_granularity_domain": true,
+            "v50_uses_vector_traced_granularity_sigma": true,
+            "v50_withholds_unplotted_plus_one_loge_sample": true,
+            "v51_uses_vector_traced_net_dye_spectra": true,
+            "v51_uses_vector_traced_minimum_density_spectrum": true,
+            "v52_uses_vector_traced_characteristic_domain": true,
+            "v52_uses_vector_traced_characteristic_density": true,
+            "v52_dmin_matches_first_traced_density": true,
+            "v52_pretrace_dmin_hold_is_explicit": true,
+            "v52_inferred_shoulder_preserves_archive_increments": true,
+            "v53_uses_vector_traced_2383_characteristic_domain": true,
+            "v53_uses_vector_traced_2383_characteristic_density": true,
+            "v53_2383_dmin_is_one_consistent_source": true,
+            "v53_2383_curves_are_monotonic": true,
+            "v53_2383_dmax_covers_all_vector_endpoints": true,
+            "v53_2383_graph_border_holds_are_explicit": true,
+            "v54_uses_vector_traced_2383_record_sensitivity": true,
+            "v54_retains_unmodified_2383_dye_spectra": true,
+            "v54_explicit_sensitivity_floor_is_bounded": true,
+            "v55_uses_vector_traced_2383_dye_spectra": true,
+            "v55_retains_archive_xenon_spd": true,
+            "v55_dye_peaks_match_vector_graph_regions": true,
+            "v55_dye_density_is_nonnegative": true,
+            "v60_preserves_checksum_locked_visual_neutral_residual": true,
+            "v60_dmin_registered_spectral_policy_enabled": true,
+            "v60_integral_lad_coordinate_policy_enabled": true,
+            "v60_zero_dye_amount_is_exactly_hd_curve_dmin": true,
+            "v60_integral_lad_inverse_is_numerically_closed": true,
+            "v60_principal_triplet_forwards_to_official_integral_lad": true,
+            "v60_forward_and_inverse_dye_amounts_agree": true,
+            "v60_documented_principal_density_triplet": true,
+            "v60_documented_analytical_dye_triplet": true,
+            "v60_plus_interimage_matches_declared_profile": true,
+            "v60_scan_referenced_colour_policy_is_unchanged": true,
+            "v61_checksum_locked_iso_status_m_table": true,
+            "v61_iso_status_m_policy_enabled": true,
+            "v61_joint_analytical_inverse_enabled": true,
+            "v61_status_m_grid_is_380_to_780_at_1nm": true,
+            "v61_status_m_receivers_have_official_peak_wavelengths": true,
+            "v61_zero_analytical_dye_is_registered_to_hd_dmin": true,
+            "v61_joint_status_m_inverse_is_numerically_closed": true,
+            "v61_plus_2383_interimage_matches_declared_profile": true,
+            "v61_scan_referenced_colour_policy_is_unchanged": true,
+            "v62_unmeasured_interimage_surrogate_is_withheld": true,
+            "v62_interimage_endpoint_is_exact_identity": true,
+            "v62_projection_colour_policy_is_unchanged": true,
+            "v62_profile_declares_native_observer_lattice": true,
+            "v63_uses_actual_negative_to_print_neutral_trajectory": true,
+            "v63_keeps_scan_referenced_colour_authority_frozen": true,
+            "v63_keeps_unmeasured_interimage_at_identity": true,
+            "v63_restores_declared_v31_chroma_configuration": true,
+            "v64_retains_published_separated_status_a_curves": true,
+            "v64_retains_v63_actual_view_neutral_trajectory": true,
+            "v64_keeps_scan_referenced_colour_authority_frozen": true,
+            "v66_cineon_target_is_printing_density": true,
+            "v66_cineon_coordinate_is_numerically_exact": true,
+            "v66_does_not_claim_measured_spirit_colour": true,
+            "v72_direct_record_mix_is_exact_identity": true,
+            "v72_declares_minimum_assumption_not_measurement": true,
+            "v46_complete_stochastic_state_endpoint_hold": true,
+            "v46_certified_adaptive_printer_observer": true,
+            "v46_projection_delta_lattice_is_declared_containment": true
+          },
+          "image_model_conformant": true,
+          "production_execution_conformant": true,
+          "sampler": "Philox-u32 Bernoulli Metal; 45 unique record/population/size identities per frame",
+          "delivery_authority": "encoded 12-bit BT.1886 master; sRGB companion and still are derived from the delivered master"
+        },
+        "production_sampler_audit": {
+          "mode": "bernoulli",
+          "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+          "domain_salt_uint32": 0,
+          "tile_workset_pixels": null,
+          "tile_in_flight": 2,
+          "total_calls": 1080,
+          "duplicate_identity_count": 0,
+          "minimum_seed": 32760000,
+          "maximum_seed": 32992204,
+          "minimum_trials": 1,
+          "maximum_trials": 30,
+          "frames_audited": 24,
+          "calls_per_frame": 45,
+          "frame_call_counts": {
+            "276": 45,
+            "277": 45,
+            "278": 45,
+            "279": 45,
+            "280": 45,
+            "281": 45,
+            "282": 45,
+            "283": 45,
+            "284": 45,
+            "285": 45,
+            "286": 45,
+            "287": 45,
+            "288": 45,
+            "289": 45,
+            "290": 45,
+            "291": 45,
+            "292": 45,
+            "293": 45,
+            "294": 45,
+            "295": 45,
+            "296": 45,
+            "297": 45,
+            "298": 45,
+            "299": 45
+          }
+        },
+        "execution": {
+          "observer_branch_workers": 1,
+          "observer_schedule": "sequential_projection_and_scan"
+        },
+        "model_sha256": "4ef7fbc7a6d2932935152762422e2009277f4ced1882f6d0eec531d58e8b4d2d",
+        "profile_sha256": "d3571ee1424558b72ff6c7bab2e733ac442a8082eb0d48565882a7d7be449754"
+      },
+      "input": "NJARAW_S001_S001_T007.MOV",
+      "start_frame": 276,
+      "frames": 24,
+      "machine": {
+        "system": "Darwin",
+        "release": "25.5.0",
+        "machine": "arm64"
+      },
+      "config": {
+        "exposure_stops": 0.45,
+        "grain_scale": 1.0,
+        "oversample": 1,
+        "mode": "production_philox_metal",
+        "opencv_threads": 8,
+        "binomial_workers": 8,
+        "numba_threads": 8,
+        "array_workers": 8,
+        "observer_branch_workers": 1,
+        "grain_domain_salt": 0,
+        "research_baseline": true,
+        "cineon_dpx": false
+      },
+      "stage_summaries": {
+        "negative_formation": {
+          "total_seconds": 513.0503008730011,
+          "mean_seconds_per_frame": 21.37709586970838,
+          "p95_seconds_per_frame": 27.05245989744999
+        },
+        "dual_observer": {
+          "total_seconds": 555.4597286280004,
+          "mean_seconds_per_frame": 23.14415535950002,
+          "p95_seconds_per_frame": 28.402372933900093
+        },
+        "delivery_encoding": {
+          "total_seconds": 12.556568663996586,
+          "mean_seconds_per_frame": 0.5231903609998577,
+          "p95_seconds_per_frame": 0.6505809079999381
+        },
+        "total": {
+          "total_seconds": 1081.0665981649981,
+          "mean_seconds_per_frame": 45.04444159020826,
+          "p95_seconds_per_frame": 57.539511081150245
+        }
+      },
+      "source_delivery": {
+        "contract": "V29 frame-accurate source PCM/timecode retention",
+        "source_frames": 776,
+        "range": [
+          276,
+          299
+        ],
+        "outputs_finalized": [
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+          "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov"
+        ],
+        "seconds": 31.92010995900091
+      },
+      "review_sampling": {
+        "projection": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        },
+        "bluray_scan": {
+          "source_master": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+          "review": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+          "still": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/07_scale_integrated_review_srgb_prores4444_still.jpg",
+          "source_dimensions": [
+            5760,
+            4320
+          ],
+          "review_dimensions": [
+            1920,
+            1440
+          ],
+          "sampling": "linear_light_pixel_area_integration",
+          "transfer": "sRGB",
+          "frames": 24
+        }
+      },
+      "cineon_exchange": null,
+      "total_wall_seconds": 1230.0971508340008
+    }
+  },
+  "spectral_precision": {
+    "audit": "V46 adaptive observer exact real-frame precision gate",
+    "profile": "V72 plus complete stochastic endpoint hold",
+    "sources": {
+      "T020": {
+        "source": "NJARAW_S001_S001_T020.MOV",
+        "absolute_frame": 0,
+        "negative_formation_seconds": 13.2124676250005,
+        "mean": {
+          "sample_count": 6000,
+          "adaptive_seconds": 0.04618945899983373,
+          "exact_seconds": 7.625826624999718,
+          "active_mask_counts": {
+            "0": 516,
+            "1": 142,
+            "2": 221,
+            "3": 262,
+            "4": 107,
+            "5": 230,
+            "6": 459,
+            "7": 4063
+          },
+          "maximum_absolute_printer_density_error": 0.00023059546947479248,
+          "p99_absolute_printer_density_error": 3.2038986682891607e-06,
+          "rms_printer_density_error": 4.800092312790773e-06,
+          "worst_sample_index": 4182,
+          "worst_output_record": "red",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        },
+        "formed": {
+          "sample_count": 6000,
+          "adaptive_seconds": 0.02546733300005144,
+          "exact_seconds": 7.6401506669999435,
+          "active_mask_counts": {
+            "0": 299,
+            "1": 271,
+            "2": 289,
+            "3": 854,
+            "4": 179,
+            "5": 252,
+            "6": 221,
+            "7": 3635
+          },
+          "maximum_absolute_printer_density_error": 0.0005094408988952637,
+          "p99_absolute_printer_density_error": 2.2059679031371116e-06,
+          "rms_printer_density_error": 6.441503442014069e-06,
+          "worst_sample_index": 2277,
+          "worst_output_record": "green",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        }
+      },
+      "T032": {
+        "source": "NJARAW_S001_S001_T032.MOV",
+        "absolute_frame": 0,
+        "negative_formation_seconds": 13.04557104199921,
+        "mean": {
+          "sample_count": 6000,
+          "adaptive_seconds": 0.01656825000009121,
+          "exact_seconds": 7.608390834000602,
+          "active_mask_counts": {
+            "0": 516,
+            "1": 80,
+            "2": 158,
+            "3": 384,
+            "4": 117,
+            "5": 278,
+            "6": 542,
+            "7": 3925
+          },
+          "maximum_absolute_printer_density_error": 0.00023706257343292236,
+          "p99_absolute_printer_density_error": 5.126446485519338e-06,
+          "rms_printer_density_error": 6.13725438057143e-06,
+          "worst_sample_index": 1676,
+          "worst_output_record": "red",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        },
+        "formed": {
+          "sample_count": 6000,
+          "adaptive_seconds": 0.015770499999234744,
+          "exact_seconds": 7.642907292000018,
+          "active_mask_counts": {
+            "0": 347,
+            "1": 316,
+            "2": 338,
+            "3": 423,
+            "4": 201,
+            "5": 262,
+            "6": 241,
+            "7": 3872
+          },
+          "maximum_absolute_printer_density_error": 0.0004681050777435303,
+          "p99_absolute_printer_density_error": 2.2949278354644537e-06,
+          "rms_printer_density_error": 7.676531552019376e-06,
+          "worst_sample_index": 5283,
+          "worst_output_record": "red",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        }
+      },
+      "T007": {
+        "source": "NJARAW_S001_S001_T007.MOV",
+        "absolute_frame": 276,
+        "negative_formation_seconds": 13.208022832999632,
+        "mean": {
+          "sample_count": 5893,
+          "adaptive_seconds": 0.018760291000035068,
+          "exact_seconds": 7.512805666000531,
+          "active_mask_counts": {
+            "0": 216,
+            "1": 49,
+            "2": 529,
+            "3": 255,
+            "4": 55,
+            "5": 27,
+            "6": 580,
+            "7": 4182
+          },
+          "maximum_absolute_printer_density_error": 0.0002334117889404297,
+          "p99_absolute_printer_density_error": 5.019903182983468e-06,
+          "rms_printer_density_error": 7.057751941049735e-06,
+          "worst_sample_index": 1757,
+          "worst_output_record": "red",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        },
+        "formed": {
+          "sample_count": 6000,
+          "adaptive_seconds": 0.020364791999782028,
+          "exact_seconds": 7.641504999999597,
+          "active_mask_counts": {
+            "0": 223,
+            "1": 228,
+            "2": 294,
+            "3": 380,
+            "4": 156,
+            "5": 198,
+            "6": 393,
+            "7": 4128
+          },
+          "maximum_absolute_printer_density_error": 0.0003057122230529785,
+          "p99_absolute_printer_density_error": 4.410743713378906e-06,
+          "rms_printer_density_error": 8.227905498208835e-06,
+          "worst_sample_index": 4833,
+          "worst_output_record": "red",
+          "quality_gate_maximum_density_error": 0.001,
+          "quality_gate_pass": true
+        }
+      }
+    },
+    "all_quality_gates_pass": true
+  },
+  "pipeline_cache_coverage": {
+    "audit": "V46 pipeline-stage adaptive cache coverage",
+    "sources": {
+      "T020": {
+        "source": "NJARAW_S001_S001_T020.MOV",
+        "absolute_frame": 0,
+        "seconds": 26.969804166999893,
+        "missing_cells_by_stage": {
+          "pre_mtf_mean": 0,
+          "pre_mtf_formed": 0,
+          "post_mtf_mean": 0,
+          "post_mtf_formed": 0
+        }
+      },
+      "T032": {
+        "source": "NJARAW_S001_S001_T032.MOV",
+        "absolute_frame": 0,
+        "seconds": 31.772864999999,
+        "missing_cells_by_stage": {
+          "pre_mtf_mean": 0,
+          "pre_mtf_formed": 0,
+          "post_mtf_mean": 0,
+          "post_mtf_formed": 0
+        }
+      },
+      "T007": {
+        "source": "NJARAW_S001_S001_T007.MOV",
+        "absolute_frame": 276,
+        "seconds": 27.004655291000745,
+        "missing_cells_by_stage": {
+          "pre_mtf_mean": 0,
+          "pre_mtf_formed": 0,
+          "post_mtf_mean": 0,
+          "post_mtf_formed": 0
+        }
+      }
+    },
+    "union_missing_cell_count": 0,
+    "cells_output": "engine/research_runs/v46_pipeline_stage_missing_cells_final.npy",
+    "cells_sha256": "eda2db76e20e675a00d154723ec24181542250119ba5b50dd26e48ddcd85e8c7"
+  },
+  "release_audits": {
+    "paired_mean_relative_tail": {
+      "audit": "V46 paired deterministic-mean stochastic colour-tail gate",
+      "profile": "v46",
+      "input": "NJARAW_S001_S001_T020.MOV",
+      "absolute_frame": 0,
+      "method": "decode delivered sRGB ProRes XQ formed frame; independently encode the same-path deterministic mean through the identical XQ command; measure formed-minus-mean in sRGB",
+      "historical_gate_status": "whole-picture colour-tail statistics are diagnostic only because they include deterministic scene detail",
+      "branches": {
+        "projection": {
+          "delivered_path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+          "delivered_reproduction": {
+            "linear_rgb_mae": 0.0,
+            "linear_rgb_p95_absolute": 0.0,
+            "linear_rgb_p99_absolute": 0.0,
+            "linear_rgb_maximum_absolute": 0.0,
+            "oklab_delta_median": 0.0,
+            "oklab_delta_p95": 0.0,
+            "oklab_delta_p99": 0.0,
+            "changed_12bit_component_fraction": 0.0
+          },
+          "mean_relative_grain_tail": {
+            "dark_pixel_count": 12578240,
+            "opponent_p999": 0.05418480187654495,
+            "opponent_p9999": 0.06524758040904999,
+            "opponent_maximum": 0.09445332735776901,
+            "median_opponent_p9999": 0.04649422897037585,
+            "isolated_gt_0_04_count": 4331,
+            "isolated_gt_0_04_per_million": 344.3248021980817,
+            "isolated_gt_0_05_count": 523,
+            "isolated_gt_0_05_per_million": 41.57974406594246,
+            "isolated_gt_0_06_count": 59,
+            "isolated_gt_0_06_per_million": 4.690640343959091,
+            "isolated_gt_0_08_count": 0,
+            "isolated_gt_0_08_per_million": 0.0
+          },
+          "gates": {
+            "delivered_reproduction_linear_mae_le_5e_4": true,
+            "median_opponent_p9999_le_0_07": true,
+            "isolated_gt_0_08_zero": true,
+            "opponent_p9999_le_0_07": true
+          },
+          "pass": true
+        },
+        "scan": {
+          "delivered_path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+          "delivered_reproduction": {
+            "linear_rgb_mae": 0.0,
+            "linear_rgb_p95_absolute": 0.0,
+            "linear_rgb_p99_absolute": 0.0,
+            "linear_rgb_maximum_absolute": 0.0,
+            "oklab_delta_median": 0.0,
+            "oklab_delta_p95": 0.0,
+            "oklab_delta_p99": 0.0,
+            "changed_12bit_component_fraction": 0.0
+          },
+          "mean_relative_grain_tail": {
+            "dark_pixel_count": 10443839,
+            "opponent_p999": 0.0803387314081192,
+            "opponent_p9999": 0.10016375686377432,
+            "opponent_maximum": 0.16359195858240128,
+            "median_opponent_p9999": 0.031158935619890693,
+            "isolated_gt_0_04_count": 38,
+            "isolated_gt_0_04_per_million": 3.638508789727609,
+            "isolated_gt_0_05_count": 0,
+            "isolated_gt_0_05_per_million": 0.0,
+            "isolated_gt_0_06_count": 0,
+            "isolated_gt_0_06_per_million": 0.0,
+            "isolated_gt_0_08_count": 0,
+            "isolated_gt_0_08_per_million": 0.0
+          },
+          "gates": {
+            "delivered_reproduction_linear_mae_le_5e_4": true,
+            "median_opponent_p9999_le_0_07": true,
+            "isolated_gt_0_08_zero": true
+          },
+          "pass": true
+        }
+      },
+      "all_gates_pass": true,
+      "decision": "The paired stochastic gate replaces only the confounded whole-picture colour-tail assertions; metadata, transfer, frame-count, tone, and all other native release gates remain mandatory."
+    },
+    "master_companion_delivery": {
+      "contract": "V46 one observer light / BT.1886 master / master-derived sRGB companion",
+      "scenes": {
+        "T020": {
+          "projection": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                0.0001264849094927036,
+                0.00010423710496316423,
+                0.00020279574478562036
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.0022907014936208725,
+                0.0026362063363194466,
+                0.006778165698051453
+              ]
+            },
+            "pass": true
+          },
+          "bluray_scan": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                8.313214364959296e-05,
+                5.614751438493583e-05,
+                0.00014879543472721396
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.0015677714254707098,
+                0.002190082333981991,
+                0.0036139357835054398
+              ]
+            },
+            "pass": true
+          }
+        },
+        "T032": {
+          "projection": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/projection/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                0.0001620742207990658,
+                0.000139286780978427,
+                0.00018676866655584445
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.004759564995765686,
+                0.004036516882479191,
+                0.006910309195518494
+              ]
+            },
+            "pass": true
+          },
+          "bluray_scan": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T032/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                0.00010522683507528338,
+                7.2805477502844e-05,
+                0.00012520676458915826
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.0031652580946683884,
+                0.003989754244685173,
+                0.004826974123716354
+              ]
+            },
+            "pass": true
+          }
+        },
+        "T007": {
+          "projection": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/projection/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                0.00012112644660037804,
+                7.376125192699152e-05,
+                0.00012381552174391404
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.0042981840670108795,
+                0.0026112645864486694,
+                0.008963271975517273
+              ]
+            },
+            "pass": true
+          },
+          "bluray_scan": {
+            "professional_master": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/05_emulsion_master_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "bt709",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "mac_companion": {
+              "path": "outputs/native_5k_v46_certified_spectral_inverse_1s/T007/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+              "observed": {
+                "width": 5760,
+                "height": 4320,
+                "pix_fmt": "yuv444p12le",
+                "profile": "XQ",
+                "frames": 24,
+                "primaries": "bt709",
+                "transfer": "iec61966-2-1",
+                "matrix": "bt709",
+                "audio_streams": 1,
+                "timecode_streams": 1
+              },
+              "failures": {}
+            },
+            "linear_light_comparison": {
+              "frames": 24,
+              "comparison_size": [
+                960,
+                720
+              ],
+              "mean_absolute_light_error_rgb": [
+                0.00011180308997536689,
+                6.437339151374489e-05,
+                0.00011903600257125239
+              ],
+              "maximum_absolute_light_error_rgb": [
+                0.0019991695880889893,
+                0.0010333247482776642,
+                0.0026216283440589905
+              ]
+            },
+            "pass": true
+          }
+        }
+      },
+      "pass": true
+    },
+    "final_decision": {
+      "audit": "V46 final release decision",
+      "release": "V46 certified spectral inverse",
+      "native_audit": "outputs/native_5k_v46_certified_spectral_inverse_1s/v46_release_audit.json",
+      "paired_tail_audit": "outputs/native_5k_v46_certified_spectral_inverse_1s/v46_mean_relative_release_audit.json",
+      "delivery_audit": "outputs/native_5k_v46_certified_spectral_inverse_1s/v46_delivery_audit.json",
+      "precision_audit": "engine/research_runs/v46_adaptive_real_frame_precision.json",
+      "coverage_audit": "engine/research_runs/v46_pipeline_stage_cache_coverage_final.json",
+      "superseded_whole_picture_gates": [
+        [
+          "T020",
+          "projection",
+          "median_opponent_p9999_le_0_05"
+        ],
+        [
+          "T020",
+          "projection",
+          "isolated_gt_0_06_poisson_fwer"
+        ],
+        [
+          "T020",
+          "projection",
+          "dark_opponent_p9999_le_0_035"
+        ]
+      ],
+      "supersession_reason": "V77 proved these complete-picture statistics include deterministic scene colour/detail. V46 replaces only those assertions with an exact same-path formed-minus-deterministic-mean stochastic audit.",
+      "unexpected_native_failures": [],
+      "gates": {
+        "no_unexpected_native_failures": true,
+        "only_declared_whole_picture_gates_superseded": true,
+        "paired_mean_relative_tail_pass": true,
+        "master_companion_delivery_pass": true,
+        "adaptive_inverse_precision_pass": true,
+        "production_cache_coverage_pass": true
+      },
+      "pass": true
+    }
+  },
+  "verification": {
+    "v46-t020-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "T020/projection/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "57c56f33d6800f2982cabfc559981be94397c7b0a1a7833b1e61f0192198d493",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008018,
+        0.006518,
+        0.009618
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.002501,
+        0.001955,
+        0.000566
+      ],
+      "first_frame_median_luma_delta": 0.001955
+    },
+    "v46-t020-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "T020/bluray_scan/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "407e934638fbe094ea63ba4ad0be750189a8a215f148afa5e661522ebc4dea7d",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008258,
+        0.006236,
+        0.00987
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001184,
+        0.0015,
+        0.001688
+      ],
+      "first_frame_median_luma_delta": 0.0015
+    },
+    "v46-t032-projection": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "T032/projection/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T032/projection/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "98d51f2df53c2db41878f9f1a6cedd1c4734b682fd367a0fe8d802e27f7bb19a",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008985,
+        0.007074,
+        0.009848
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001384,
+        0.000496,
+        0.001547
+      ],
+      "first_frame_median_luma_delta": 0.000496
+    },
+    "v46-t032-bluray": {
+      "absolute_source_frames": [
+        0,
+        23
+      ],
+      "native_master": "T032/bluray_scan/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T032/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "b03de0cd260bd639b8cb6e4299db5e74886aac2e8a3422fe0b33e90f9820a08b",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008693,
+        0.006247,
+        0.009761
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.000834,
+        0.003025,
+        0.001998
+      ],
+      "first_frame_median_luma_delta": 0.003025
+    },
+    "v46-t007-projection": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "native_master": "T007/projection/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T007/projection/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "b2a1f4727ec1c7b47d593fceb5acc6b7590894e8b618df6619d3b231d0ab08e3",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008521,
+        0.006645,
+        0.009846
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001667,
+        0.000634,
+        0.002593
+      ],
+      "first_frame_median_luma_delta": 0.000634
+    },
+    "v46-t007-bluray": {
+      "absolute_source_frames": [
+        276,
+        299
+      ],
+      "native_master": "T007/bluray_scan/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "T007/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "07bcb96f519b1eeacc8014b63da8fe8a428ec7129844de281d986cf1c6452e3e",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008763,
+        0.006428,
+        0.010485
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001951,
+        0.002533,
+        0.002238
+      ],
+      "first_frame_median_luma_delta": 0.002533
+    }
+  }
+}

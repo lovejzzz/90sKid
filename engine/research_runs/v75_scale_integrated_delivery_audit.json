@@ -1,0 +1,330 @@
+{
+  "audit": "V75 scale-integrated delivery ownership",
+  "profile": "V72 \u00b7 Evidence-minimal record formation",
+  "image_change": "none",
+  "root": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020",
+  "frame": 0,
+  "branches": {
+    "projection": {
+      "files": {
+        "master": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/05_emulsion_master_prores4444.mov",
+        "native_srgb_companion": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+        "scale_integrated_review": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/07_scale_integrated_review_srgb_prores4444.mov"
+      },
+      "metadata": {
+        "master": {
+          "width": 5760,
+          "height": 4320,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        },
+        "native_srgb_companion": {
+          "width": 5760,
+          "height": 4320,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "iec61966-2-1",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        },
+        "scale_integrated_review": {
+          "width": 1920,
+          "height": 1440,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "iec61966-2-1",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        }
+      },
+      "integration_factor": 3,
+      "opencv_area_vs_exact_3x3": {
+        "maximum_absolute_linear_light_difference": 1.1920928955078125e-07,
+        "mean_absolute_linear_light_difference": 3.730966202653008e-09,
+        "exact_within_float32_rounding": true
+      },
+      "decoded_review_vs_exact_master_integration": {
+        "difference": {
+          "linear_rgb_mae": 0.001014391309581697,
+          "linear_rgb_p95_absolute": 0.0038879811763763428,
+          "linear_rgb_p99_absolute": 0.00681552380323408,
+          "linear_rgb_maximum_absolute": 0.03735116124153137,
+          "oklab_delta_median": 0.002349382732063532,
+          "oklab_delta_p95": 0.006189441867172718,
+          "oklab_delta_p99": 0.011793056260794323,
+          "changed_12bit_component_fraction": 0.839253833912037
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.012768557295203209,
+          "highpass_opponent_rms": 0.0033140210434794426
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.012106718495488167,
+          "highpass_opponent_rms": 0.002979462966322899
+        },
+        "candidate_over_reference_highpass_luma_rms": 0.9481665168261667,
+        "candidate_over_reference_highpass_opponent_rms": 0.8990476907758902
+      },
+      "integrated_native_companion_vs_exact_master_integration": {
+        "difference": {
+          "linear_rgb_mae": 0.00022519289632327855,
+          "linear_rgb_p95_absolute": 0.0008285641670227051,
+          "linear_rgb_p99_absolute": 0.001427829414606091,
+          "linear_rgb_maximum_absolute": 0.006551563739776611,
+          "oklab_delta_median": 0.0005585950566455722,
+          "oklab_delta_p95": 0.0016784490901045493,
+          "oklab_delta_p99": 0.003748873893637206,
+          "changed_12bit_component_fraction": 0.5425495515046296
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.012768557295203209,
+          "highpass_opponent_rms": 0.0033140210434794426
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.012617700733244419,
+          "highpass_opponent_rms": 0.0032343482598662376
+        },
+        "candidate_over_reference_highpass_luma_rms": 0.9881853087650346,
+        "candidate_over_reference_highpass_opponent_rms": 0.9759588781821508
+      },
+      "linear_light_lanczos_vs_exact_area": {
+        "difference": {
+          "linear_rgb_mae": 0.009118185378611088,
+          "linear_rgb_p95_absolute": 0.03815710768103599,
+          "linear_rgb_p99_absolute": 0.06163455590605735,
+          "linear_rgb_maximum_absolute": 0.6844688653945923,
+          "oklab_delta_median": 0.015827538445591927,
+          "oklab_delta_p95": 0.05478536244481799,
+          "oklab_delta_p99": 0.08371009424328793,
+          "changed_12bit_component_fraction": 0.9702611400462963
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.012768557295203209,
+          "highpass_opponent_rms": 0.0033140210434794426
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.02241668291389942,
+          "highpass_opponent_rms": 0.004756801296025515
+        },
+        "candidate_over_reference_highpass_luma_rms": 1.755615955321808,
+        "candidate_over_reference_highpass_opponent_rms": 1.4353563944275003
+      },
+      "srgb_code_lanczos_vs_exact_linear_area": {
+        "difference": {
+          "linear_rgb_mae": 0.00881161354482174,
+          "linear_rgb_p95_absolute": 0.03696024492383003,
+          "linear_rgb_p99_absolute": 0.059723675698041906,
+          "linear_rgb_maximum_absolute": 0.669649064540863,
+          "oklab_delta_median": 0.01509425975382328,
+          "oklab_delta_p95": 0.0504323424771428,
+          "oklab_delta_p99": 0.0723949313908815,
+          "changed_12bit_component_fraction": 0.9686129195601851
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.012768557295203209,
+          "highpass_opponent_rms": 0.0033140210434794426
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.021919196471571922,
+          "highpass_opponent_rms": 0.004623847547918558
+        },
+        "candidate_over_reference_highpass_luma_rms": 1.7166541187708304,
+        "candidate_over_reference_highpass_opponent_rms": 1.3952378356245765
+      }
+    },
+    "bluray_scan": {
+      "files": {
+        "master": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+        "native_srgb_companion": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+        "scale_integrated_review": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov"
+      },
+      "metadata": {
+        "master": {
+          "width": 5760,
+          "height": 4320,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        },
+        "native_srgb_companion": {
+          "width": 5760,
+          "height": 4320,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "iec61966-2-1",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        },
+        "scale_integrated_review": {
+          "width": 1920,
+          "height": 1440,
+          "pix_fmt": "yuv444p12le",
+          "color_space": "bt709",
+          "color_transfer": "iec61966-2-1",
+          "color_primaries": "bt709",
+          "r_frame_rate": "24000/1001",
+          "nb_frames": "1"
+        }
+      },
+      "integration_factor": 3,
+      "opencv_area_vs_exact_3x3": {
+        "maximum_absolute_linear_light_difference": 1.1920928955078125e-07,
+        "mean_absolute_linear_light_difference": 3.172796692041402e-09,
+        "exact_within_float32_rounding": true
+      },
+      "decoded_review_vs_exact_master_integration": {
+        "difference": {
+          "linear_rgb_mae": 0.001403552247211337,
+          "linear_rgb_p95_absolute": 0.004903041198849677,
+          "linear_rgb_p99_absolute": 0.00808255389332771,
+          "linear_rgb_maximum_absolute": 0.032356202602386475,
+          "oklab_delta_median": 0.0035581982228904963,
+          "oklab_delta_p95": 0.010352163622155783,
+          "oklab_delta_p99": 0.01912533307448021,
+          "changed_12bit_component_fraction": 0.8719476996527777
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.008115402422845364,
+          "highpass_opponent_rms": 0.004601233638823032
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.007507565896958113,
+          "highpass_opponent_rms": 0.003917498514056206
+        },
+        "candidate_over_reference_highpass_luma_rms": 0.9251008767998795,
+        "candidate_over_reference_highpass_opponent_rms": 0.8514017808185629
+      },
+      "integrated_native_companion_vs_exact_master_integration": {
+        "difference": {
+          "linear_rgb_mae": 0.00011682115291478112,
+          "linear_rgb_p95_absolute": 0.0004261881113052368,
+          "linear_rgb_p99_absolute": 0.0007548034191131592,
+          "linear_rgb_maximum_absolute": 0.0029183626174926758,
+          "oklab_delta_median": 0.0002780705108307302,
+          "oklab_delta_p95": 0.0012290473619941595,
+          "oklab_delta_p99": 0.005586939519271252,
+          "changed_12bit_component_fraction": 0.37249867380401236
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.008115402422845364,
+          "highpass_opponent_rms": 0.004601233638823032
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.008070142939686775,
+          "highpass_opponent_rms": 0.004540805239230394
+        },
+        "candidate_over_reference_highpass_luma_rms": 0.9944230143127369,
+        "candidate_over_reference_highpass_opponent_rms": 0.9868669134549544
+      },
+      "linear_light_lanczos_vs_exact_area": {
+        "difference": {
+          "linear_rgb_mae": 0.0013167927972972393,
+          "linear_rgb_p95_absolute": 0.004414752125740051,
+          "linear_rgb_p99_absolute": 0.006864011585712426,
+          "linear_rgb_maximum_absolute": 0.03542877733707428,
+          "oklab_delta_median": 0.002862028544768691,
+          "oklab_delta_p95": 0.008152595302090046,
+          "oklab_delta_p99": 0.011753017408773296,
+          "changed_12bit_component_fraction": 0.8244558979552469
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.008115402422845364,
+          "highpass_opponent_rms": 0.004601233638823032
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.009397557936608791,
+          "highpass_opponent_rms": 0.005281833931803703
+        },
+        "candidate_over_reference_highpass_luma_rms": 1.157990380138646,
+        "candidate_over_reference_highpass_opponent_rms": 1.14791691672383
+      },
+      "srgb_code_lanczos_vs_exact_linear_area": {
+        "difference": {
+          "linear_rgb_mae": 0.0012602257775142789,
+          "linear_rgb_p95_absolute": 0.004222869873046875,
+          "linear_rgb_p99_absolute": 0.006582245230674744,
+          "linear_rgb_maximum_absolute": 0.034692198038101196,
+          "oklab_delta_median": 0.0028389254584908485,
+          "oklab_delta_p95": 0.008373867813497781,
+          "oklab_delta_p99": 0.01338480252772569,
+          "changed_12bit_component_fraction": 0.8227001350308641
+        },
+        "reference_structure": {
+          "highpass_luma_rms": 0.008115402422845364,
+          "highpass_opponent_rms": 0.004601233638823032
+        },
+        "candidate_structure": {
+          "highpass_luma_rms": 0.009331620298326015,
+          "highpass_opponent_rms": 0.005205544643104076
+        },
+        "candidate_over_reference_highpass_luma_rms": 1.1498653809276203,
+        "candidate_over_reference_highpass_opponent_rms": 1.131336735257726
+      }
+    }
+  },
+  "gates": {
+    "opencv_area_is_exact_3x3_linear_integration": true,
+    "master_5760_native_companion_5760_review_1920": true
+  },
+  "file_roles": {
+    "05_emulsion_master_prores4444.mov": "native 5760x4320 12-bit BT.1886 picture authority; inspect at 1:1 for native samples or use a declared viewing integration",
+    "06_quicktime_preview_srgb_prores4444.mov": "native-resolution sRGB transfer of the encoded master; it does not own a 1920-window resampling policy",
+    "07_scale_integrated_review_srgb_prores4444.mov": "declared 1920x1440 linear-light 3x3 pixel-area integration; preferred file for judging 2K-scale grain geometry in QuickTime, while its final ProRes encode is not a lossless NPS authority"
+  },
+  "decoded_structure_retention": {
+    "scale_integrated_review_luma": [
+      0.9481665168261667,
+      0.9251008767998795
+    ],
+    "scale_integrated_review_opponent": [
+      0.8990476907758902,
+      0.8514017808185629
+    ],
+    "area_integrated_native_companion_luma": [
+      0.9881853087650346,
+      0.9944230143127369
+    ],
+    "area_integrated_native_companion_opponent": [
+      0.9759588781821508,
+      0.9868669134549544
+    ]
+  },
+  "decision": "Keep one native master and the separate scale-declared review. Use the review to control viewing scale, but do not treat either its lossy ProRes high-pass amplitude or an unknown player resize of the 5760 companion as an NPS measurement. Do not tune the film model to compensate for either delivery effect.",
+  "uniform_grain_only_resampling": {
+    "log_exposure": -3.0,
+    "source_dimensions": [
+      5760,
+      192
+    ],
+    "target_dimensions": [
+      1920,
+      64
+    ],
+    "grain_only_area_rms_rgb": [
+      0.03814209142876877,
+      0.05293448268542366,
+      0.11240962957998993
+    ],
+    "grain_only_lanczos_rms_rgb": [
+      0.07346627871479001,
+      0.09940190939387245,
+      0.22473394293441373
+    ],
+    "lanczos_over_area_rms_rgb": [
+      1.9261208801827232,
+      1.8778290511422022,
+      1.999241023870598
+    ],
+    "interpretation": "Lanczos is a deliberately sharp diagnostic, not a claim about QuickTime's private compositor. It demonstrates how a resize that does not integrate source-pixel area can retain or fold native grain energy into a coarser review raster."
+  }
+}

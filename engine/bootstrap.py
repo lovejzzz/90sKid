@@ -20,6 +20,20 @@ from emulsion5279.assets import (  # noqa: E402
     PANASONIC_V709,
     PRINT_2383_OUTPUT_LATTICE,
     PRINT_2383_OUTPUT_LATTICE_V45,
+    PRINT_2383_OUTPUT_LATTICE_V51,
+    PRINT_2383_OUTPUT_LATTICE_V53,
+    PRINT_2383_OUTPUT_LATTICE_V54,
+    PRINT_2383_OUTPUT_LATTICE_V55,
+    PRINT_2383_OUTPUT_LATTICE_V56,
+    PRINT_2383_OUTPUT_LATTICE_V57,
+    PRINT_2383_OUTPUT_LATTICE_V58,
+    PRINT_2383_OUTPUT_LATTICE_V59,
+    PRINT_2383_OUTPUT_LATTICE_V60,
+    PRINT_2383_OUTPUT_LATTICE_V62,
+    PRINT_2383_OUTPUT_LATTICE_V63,
+    PRINT_2383_OUTPUT_LATTICE_V64,
+    PRINT_2383_OUTPUT_LATTICE_V66,
+    verify_v46_runtime_assets,
 )
 
 
@@ -40,27 +54,85 @@ def download(url: str, output: Path) -> None:
 
 
 def build_runtime() -> None:
+    builders = (
+        ("build_v30_print_lut.py", PRINT_2383_OUTPUT_LATTICE),
+        ("build_v45_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V45),
+        ("build_v51_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V51),
+        ("build_v53_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V53),
+        ("build_v54_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V54),
+        ("build_v55_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V55),
+        ("build_v56_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V56),
+        ("build_v57_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V57),
+        ("build_v58_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V58),
+        ("build_v59_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V59),
+        ("build_v60_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V60),
+        ("build_v62_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V62),
+        ("build_v63_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V63),
+        ("build_v64_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V64),
+        ("build_v66_print_lut.py", PRINT_2383_OUTPUT_LATTICE_V66),
+    )
     PRINT_2383_OUTPUT_LATTICE.path.parent.mkdir(parents=True, exist_ok=True)
+    environment = {**dict(__import__("os").environ), "PYTHONPATH": str(SRC)}
+    for builder, asset in builders:
+        subprocess.run(
+            [sys.executable, str(SRC / builder), str(asset.path)],
+            check=True,
+            env=environment,
+        )
+        asset.verify()
+
+
+def build_v46_adaptive_observer() -> None:
+    """Rebuild the large V46 atlas from versioned code and cell demand."""
+
+    cache = ROOT / "cache"
+    research = ROOT / "research_runs"
+    candidate = cache / "v46_active_set_129_power2_candidate"
+    adaptive = cache / "v46_adaptive_129_power2"
+    environment = {**dict(__import__("os").environ), "PYTHONPATH": str(SRC)}
     subprocess.run(
         [
             sys.executable,
-            str(SRC / "build_v30_print_lut.py"),
-            str(PRINT_2383_OUTPUT_LATTICE.path),
+            str(SRC / "build_v46_active_set_printer_lut.py"),
+            str(candidate),
+            "--size", "129",
+            "--iterations", "6",
+            "--axis-power", "2",
         ],
         check=True,
-        env={**dict(__import__("os").environ), "PYTHONPATH": str(SRC)},
+        env=environment,
     )
-    PRINT_2383_OUTPUT_LATTICE.verify()
     subprocess.run(
         [
             sys.executable,
-            str(SRC / "build_v45_print_lut.py"),
-            str(PRINT_2383_OUTPUT_LATTICE_V45.path),
+            str(SRC / "build_v46_adaptive_spectral_cache.py"),
+            "base",
+            str(candidate.with_name(candidate.name + "_printer.npy")),
+            str(candidate.with_name(candidate.name + "_residual.npy")),
+            str(candidate.with_name(candidate.name + "_axis.npy")),
+            str(adaptive),
         ],
         check=True,
-        env={**dict(__import__("os").environ), "PYTHONPATH": str(SRC)},
+        env=environment,
     )
-    PRINT_2383_OUTPUT_LATTICE_V45.verify()
+    subprocess.run(
+        [
+            sys.executable,
+            str(SRC / "build_v46_adaptive_spectral_cache.py"),
+            "microbricks",
+            str(adaptive.with_name(adaptive.name + "_node_mask.npy")),
+            str(adaptive.with_name(adaptive.name + "_axis.npy")),
+            str(adaptive),
+            str(research / "v46_microbrick_cells_T020_exact_pixels.npy"),
+            str(research / "v46_microbrick_cells_T032_exact_pixels.npy"),
+            str(research / "v46_microbrick_cells_T007_exact_pixels.npy"),
+            str(research / "v46_pipeline_stage_missing_cells.npy"),
+            "--iterations", "6",
+        ],
+        check=True,
+        env=environment,
+    )
+    verify_v46_runtime_assets()
 
 
 def fetch_research() -> None:
@@ -88,8 +160,15 @@ def main() -> None:
         action="store_true",
         help="also fetch Panasonic's checksum-locked diagnostic LUTs",
     )
+    parser.add_argument(
+        "--v46",
+        action="store_true",
+        help="also rebuild the large V46 adaptive spectral-observer cache",
+    )
     args = parser.parse_args()
     build_runtime()
+    if args.v46:
+        build_v46_adaptive_observer()
     if args.research:
         fetch_research()
     print("5279 engine assets verified")

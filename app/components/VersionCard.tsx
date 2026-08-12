@@ -50,12 +50,12 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
   );
   const gallery: GalleryItem[] = [
     { src: item.projection.src, alt: branchAlt(item.projection, english ? "2383 projection" : "2383 放映", english) },
-    { src: item.bluray.src, alt: branchAlt(item.bluray, english ? "2K DI / Blu-ray" : "2K DI / 蓝光", english) },
+    { src: item.bluray.src, alt: branchAlt(item.bluray, english ? "Scan / DI observer" : "扫描 / DI观察", english) },
     ...(item.fsd ? [{ src: item.fsd.src, alt: branchAlt(item.fsd, english ? "FSD finite-site density" : "FSD 有限密度", english) }] : []),
     ...(item.camera ? [{ src: item.camera.src, alt: branchAlt(item.camera, english ? "Camera baseline" : "相机原图", english) }] : []),
     ...(item.additionalTrials?.flatMap((trial) => [
       { src: trial.projection.src, alt: branchAlt(trial.projection, english ? "2383 projection" : "2383 放映", english) },
-      { src: trial.bluray.src, alt: branchAlt(trial.bluray, english ? "2K DI / Blu-ray" : "2K DI / 蓝光", english) },
+      { src: trial.bluray.src, alt: branchAlt(trial.bluray, english ? "Scan / DI observer" : "扫描 / DI观察", english) },
       ...(trial.fsd ? [{ src: trial.fsd.src, alt: branchAlt(trial.fsd, english ? "FSD finite-site density" : "FSD 有限密度", english) }] : []),
       ...(trial.camera ? [{ src: trial.camera.src, alt: branchAlt(trial.camera, english ? "Camera baseline" : "相机原图", english) }] : []),
     ]) ?? []),
@@ -69,7 +69,7 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
       <div className="version-visual-layout">
         <div className={`branch-grid ${item.camera && !item.fsd ? "has-camera" : ""}`}>
           <Branch branch={item.projection} title={text("2383 放映", "2383 PROJECTION")} gallery={gallery} galleryIndex={0} english={english} />
-          <Branch branch={item.bluray} title={text("2K DI / 蓝光", "2K DI / BLU-RAY")} gallery={gallery} galleryIndex={1} english={english} />
+          <Branch branch={item.bluray} title={text("扫描 / DI观察", "SCAN / DI OBSERVER")} gallery={gallery} galleryIndex={1} english={english} />
           {item.fsd && <Branch branch={item.fsd} title={text("FSD 有限密度", "FSD FINITE-SITE DENSITY")} gallery={gallery} galleryIndex={2} english={english} />}
           {item.camera && <Branch branch={item.camera} title={text("相机原图", "CAMERA BASELINE")} gallery={gallery} galleryIndex={2 + (item.fsd ? 1 : 0)} english={english} />}
         </div>
@@ -80,7 +80,7 @@ export function VersionCard({ item, open = false }: { item: VersionEntry; open?:
           <header><div><span>ADDITIONAL SOURCE</span><b>{trial.name}</b></div><p>{english ? (copy?.trialNote ?? trial.note) : trial.note}</p></header>
           <div className={`branch-grid ${trial.camera && !trial.fsd ? "has-camera" : ""}`}>
             <Branch branch={trial.projection} title={text("2383 放映", "2383 PROJECTION")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex)} english={english} />
-            <Branch branch={trial.bluray} title={text("2K DI / 蓝光", "2K DI / BLU-RAY")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 1} english={english} />
+            <Branch branch={trial.bluray} title={text("扫描 / DI观察", "SCAN / DI OBSERVER")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 1} english={english} />
             {trial.fsd && <Branch branch={trial.fsd} title={text("FSD 有限密度", "FSD FINITE-SITE DENSITY")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 2} english={english} />}
             {trial.camera && <Branch branch={trial.camera} title={text("相机原图", "CAMERA BASELINE")} gallery={gallery} galleryIndex={trialBaseIndex(trialIndex) + 2 + (trial.fsd ? 1 : 0)} english={english} />}
           </div>

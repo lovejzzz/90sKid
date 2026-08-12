@@ -1,0 +1,393 @@
+{
+  "independent_density_cube_physical_gamut": {
+    "exactly_reachable_fraction_at_1e-5D": 0.6484890729427201,
+    "interpretation": "The full independent Status-M cube is not the physical gamut of a masked three-dye negative; real developed records are the relevant validation domain.",
+    "maximum_absolute_projection_error_rgb": [
+      1.1029497385025024,
+      0.8820357322692871,
+      0.22351951599121112
+    ],
+    "rms_projection_error_rgb": [
+      0.18171818534999126,
+      0.13086544742933337,
+      0.029885068372735638
+    ]
+  },
+  "midscale_neutral_spectral_decomposition": {
+    "analytical_cmy_coefficients": [
+      0.47126241065100677,
+      0.610124295070199,
+      0.7357094479700149
+    ],
+    "iso_status_m_dmin_rgb": [
+      0.15592978012440634,
+      0.5743634819120466,
+      0.8833551931738935
+    ],
+    "iso_status_m_net_density_rgb": [
+      0.5904087085293097,
+      0.6939811440798024,
+      0.6983593403990561
+    ],
+    "iso_status_m_total_density_rgb": [
+      0.746338488653716,
+      1.268344625991849,
+      1.5817145335729497
+    ],
+    "joint_inverse_closure_error_rgb": [
+      3.3898516216268604e-08,
+      2.6574494493836198e-08,
+      2.983257230138037e-08
+    ],
+    "joint_inverse_cmy": [
+      0.47388407588005066,
+      0.6088367104530334,
+      0.7351832985877991
+    ],
+    "maximum_absolute_spectral_density_error": 0.017015007646246028,
+    "rms_spectral_density_error": 0.007972955989111739
+  },
+  "negative_to_2383_printing_density_local_audit": {
+    "boundary": "EK5218 is a cross-stock witness, not a substitute for an unpublished EK5279 matrix.",
+    "point_status_m_net_rgb": [
+      0.7,
+      0.8,
+      0.8
+    ],
+    "published_ek5218_row_normalized": [
+      [
+        1.0,
+        0.07483329217090638,
+        0.017782168436651022
+      ],
+      [
+        0.15275080906148866,
+        1.0,
+        0.06181229773462783
+      ],
+      [
+        0.08513559903879163,
+        0.13628561620322693,
+        1.0
+      ]
+    ],
+    "published_ek5218_to_2383_matrix": [
+      [
+        4.049,
+        0.303,
+        0.072
+      ],
+      [
+        0.472,
+        3.09,
+        0.191
+      ],
+      [
+        0.248,
+        0.397,
+        2.913
+      ]
+    ],
+    "v60_jacobian": [
+      [
+        0.9642839431762695,
+        0.35572052001953125,
+        0.018596649169921875
+      ],
+      [
+        0.09918212890625,
+        0.948786735534668,
+        0.23257732391357422
+      ],
+      [
+        0.05125999450683594,
+        0.0820159912109375,
+        0.9126663208007812
+      ]
+    ],
+    "v60_output_rgb": [
+      1.1338635683059692,
+      1.6133637428283691,
+      1.6992641687393188
+    ],
+    "v60_row_normalized_jacobian": [
+      [
+        1.0,
+        0.3688960316479169,
+        0.019285449375695388
+      ],
+      [
+        0.10453574569669556,
+        1.0,
+        0.24513129790174645
+      ],
+      [
+        0.05616509926854754,
+        0.08986415882967608,
+        1.0
+      ]
+    ],
+    "v61_jacobian": [
+      [
+        1.0746121406555176,
+        -0.03463029861450195,
+        0.009119510650634766
+      ],
+      [
+        0.0017881393432617188,
+        0.9113550186157227,
+        0.05519390106201172
+      ],
+      [
+        0.028014183044433594,
+        0.012993812561035156,
+        0.8921623229980469
+      ]
+    ],
+    "v61_output_rgb": [
+      0.901569664478302,
+      1.389074444770813,
+      1.6314082145690918
+    ],
+    "v61_row_normalized_jacobian": [
+      [
+        1.0,
+        -0.03222585833934217,
+        0.008486327583337956
+      ],
+      [
+        0.001962066710268149,
+        1.0,
+        0.060562459123610204
+      ],
+      [
+        0.03140032068412613,
+        0.014564404061998932,
+        1.0
+      ]
+    ]
+  },
+  "real_material_sample": {
+    "any_nonnegative_boundary_fraction": 0.06395833333333334,
+    "exactly_reachable_fraction_at_1e-5D": 0.9361111111111111,
+    "maximum_absolute_density_error_rgb": [
+      0.10192903876304626,
+      0.020922530442476273,
+      0.010483186691999435
+    ],
+    "path": "/tmp/t020_net_stride24.npy",
+    "rms_density_error_rgb": [
+      0.005691051483154297,
+      0.0008273798157460988,
+      0.0002954457304440439
+    ],
+    "samples": 43200
+  },
+  "status_m_receiver_correction": {
+    "archive_peak_wavelengths_rgb": [
+      680.0,
+      540.0,
+      440.0
+    ],
+    "archive_to_iso_cosine_rgb": [
+      0.26433962527924926,
+      0.9567995130867399,
+      0.9865351169922135
+    ],
+    "archive_to_iso_l1_rgb": [
+      1.474611862033191,
+      0.34775641224970855,
+      0.20476795019890093
+    ],
+    "iso_peak_wavelengths_rgb": [
+      640.0,
+      540.0,
+      450.0
+    ]
+  },
+  "v61_profile": {
+    "amplitude_constraint": "Kodak 5279 per-record diffuse RMS at 48 micrometre aperture",
+    "binomial_parallel_workers": 8,
+    "binomial_random_stripes": 8,
+    "binomial_sampler": "fixed seeded stripes; exact binomial distribution",
+    "bluray_chroma_grain_high_frequency_retention": 0.3,
+    "bluray_chroma_grain_opponent_strength": 0.64,
+    "bluray_chroma_grain_sigma_at_2k": 0.72,
+    "bluray_output": "Rec.709-D65 OETF / 1-1-1; BT.1886 retained as reference-display EOTF",
+    "camera_lut_boundary": "Panasonic VLog_RAWGamut_to_VLog_VGamut is valid only when the decoder supplies Panasonic RAW Gamut at the documented Camera-LUT stage",
+    "characteristic_authority": "Kodak H-1-5279t, March 2003, F010_0238AC; 3200 K, 1/50 second, ECN-2, Status M",
+    "cie_observer": "CIE 1931 2 degree; official 1 nm table; 380--780 nm",
+    "comparison_frame_contract": "T002=0, T007=276 and T031=132; every comparison branch and version must use the same absolute source-frame index and frame count",
+    "delivery_change": "replace the duplicated camera-OETF/system-gamma boundary with two explicit encodings of the same display-linear observer light",
+    "delivery_consistency_contract": "stills and web media derive from the sRGB companion; professional master and QuickTime companion decode to the same display-linear RGB",
+    "delivery_contract": "native 5760x4320, complete source frame count, 12-bit ProRes 4444, Rec.709 1-1-1, source 24-bit/48-kHz four-channel PCM and timecode",
+    "delivery_family": "display_linear_dual_encoding",
+    "drawn_path_domain_loge": [
+      -3.795937,
+      0.0
+    ],
+    "engine_change_from_v41": "Make the V35--V41 Philox-u32 Bernoulli Metal sampler the explicit Production default; retain Archive CPU as a reproducible reference; enforce V37--V41 image-model invariants at runtime; write one encoded 12-bit BT.1886 picture authority and derive sRGB/stills from it.",
+    "evidence_boundary": "ISO 5-3 defines the receiver, and Kodak H-1-5279t supplies only representative 20 nm graph traces. V61 linearly interpolates those density curves to the 1 nm receiver grid. Unreachable independent Status-M triplets are projected to the nearest nonnegative dye mixture; the proprietary 5279 interimage transform remains unknown.",
+    "film_constraint": "V30/V29 5279 sensitometry, mean colour, DIR/interimage transport, density-domain MTF, RAW input, black, gamma and exposure remain fixed; only unsupported stochastic inversions and duplicate high-frequency opponent passage are removed",
+    "final_adapter_opponent_high_frequency_retention": 0.0,
+    "final_projection_adapter": "v31_scan_low_frequency_chroma",
+    "frozen_from_v40": "5279 sensitometry, speed layers, DIR/interimage transport, processed 48-micrometre RMS, density-domain MTF, observer grain integration, 2383/Period-2K formation, black, gamma and 12-bit delivery",
+    "frozen_from_v45": "RAW colour, H-D curves, finite-site law, five size-class weights and radii, DIR, density MTF, 48-micrometre RMS authority, scan observer, 2383 observer, official CIE table and delivery encodings",
+    "frozen_observer_contract": "V38 sensitometry, colour calibration authority, black, contrast, gamma, BT.1886 master and sRGB companion remain unchanged",
+    "fsd_contract": "same deterministic V41 colour baseline; independent post-observer finite-site density only, N=176 and sigma=0.597 native pixels",
+    "grain_site_rasterization": "isotropic_continuous_site_second_moment",
+    "grain_size_class_fractions": [
+      0.16,
+      0.3,
+      0.32,
+      0.17,
+      0.05
+    ],
+    "grain_size_class_fractions_by_population": [
+      [
+        0.12,
+        0.26,
+        0.34,
+        0.2,
+        0.08
+      ],
+      [
+        0.16,
+        0.3,
+        0.32,
+        0.17,
+        0.05
+      ],
+      [
+        0.22,
+        0.34,
+        0.29,
+        0.12,
+        0.03
+      ]
+    ],
+    "grain_size_class_optical_factors": [
+      0.68,
+      0.8,
+      0.92,
+      1.05,
+      1.18
+    ],
+    "grain_size_class_radius_factors": [
+      0.5,
+      0.68,
+      0.86,
+      1.08,
+      1.34
+    ],
+    "grain_stable_phase_offset_degrees": 30.0,
+    "grain_subpixel_phase_mode": "stable_balanced",
+    "grain_subpixel_phase_radius_native_px": 0.38,
+    "grain_temporal_contract": "independent finite-site activation per exposed film frame; stable raster integration kernel; no temporal smoothing, grain advection, fixed grain plate or per-shot aesthetic seed",
+    "granularity_authority": "Kodak H-1-5279t, March 2003, F002_0269AC; RGB density sigma through a 48-micrometre microdensitometer aperture",
+    "hourly_research_boundary": "no grain, DIR or NPS parameter change without stock-specific, frequency-resolved or separation-wedge evidence",
+    "image_change_from_v34": "No colour, contrast, black, gamma, MTF, DIR, grain amplitude or grain spectrum retune. Production uses a statistically equivalent independent Philox-u32 Bernoulli finite-site realization and float32 spatial storage.",
+    "image_change_from_v35": "None. V36 corrects cross-version source-frame selection and adds a joint MTF/granularity validation contract; colour, tone, MTF, grain, DIR and both observers remain V35.",
+    "image_change_from_v36": "Keep independent grain sites in every film frame, but replace the per-frame rotating 0.38-pixel numerical phase with one temporally fixed, low-discrepancy 45-class phase ensemble. Colour, H-D, diffuse 48-micrometre RMS, MTF, DIR, black, gamma and observers are frozen.",
+    "image_change_from_v37": "None; the display-linear observer image is frozen.",
+    "image_change_from_v38": "Move 5279 MTF, 2383 MTF and 2383 finite dye-cloud structure from display residuals into their measured density domains; calibrate 5279 stochastic dye yield before DIR transport; retain signed wide-gamut basis values until the three film-record exposures are formed.",
+    "image_change_from_v39": "Constrain 5279 RMS at the published post-process density boundary; integrate the visible high-frequency opponent response in each observer; withdraw the unsupported independent per-record 2383 Poisson term; retain density-domain 5279/2383 MTF and physical RAW record formation, sensitometry, colour and delivery; prevent the final V31 adapter from reintroducing already-integrated high-frequency opponent colour. Withdraw the unmeasured signed intermediate film-basis cancellation used by V39.",
+    "image_change_from_v40": "Apply a cross-group DKC-Pro chroma residual while preserving D65 neutral values, scene luminance and highlight headroom; replace the pre-record basis clip with record-positive signed transport only where every 5279 record exposure remains non-negative.",
+    "image_change_from_v41": "None; accepted V41 image-formation parameters are frozen.",
+    "image_change_from_v42": "Keep the V42 5279 density formation, colour, tone and both physical observer models and accepted scan-referenced normal-process monitor boundary; keep intrinsic 2383 grain withheld and make display-scale review sampling explicit.",
+    "image_change_from_v44": "Replace only the analytical 2383 observer's closed-form 20 nm CIE approximation with the official CIE 1931 2-degree 1 nm table and trapezoidal integration. All image-formation and delivery boundaries remain frozen at V44.",
+    "image_change_from_v45": "Remove record-dependent anisotropy caused by V37's fixed whole-field bilinear subpixel translations. Replace only their integration role with an isotropic second-moment site-position plus pixel-area model.",
+    "image_change_from_v48": "Remove the exact point mass created when microscopic formed density is clamped to the representative macro H-D maximum plus 0.12. Keep non-negative optical density and every other V48 stage unchanged.",
+    "image_change_from_v49": "Replace the coarse hand transcription of Kodak graph F002_0269AC with samples taken from the March 2003 PDF's embedded vector paths; remove the unplotted +1 logE sample and hold the last published endpoint outside the graph domain.",
+    "image_change_from_v50": "Replace coarse visual transcriptions of the 5279 net CMY separation curves and dashed D-min/orange-mask spectrum with values recovered from the March 2003 PDF's embedded vector paths at 20 nm intervals.",
+    "image_change_from_v51": "Replace the coarse H-D transcription inside Kodak's plotted domain with samples from the embedded vector paths; retain the unplotted shoulder only as an explicitly identified Archive-relative inference.",
+    "image_change_from_v52": "Replace the coarse 2026 2383 visual transcription with the union of all vector nodes in Kodak's March 2005 Status-A sensitometric graph; make the per-record D-min values internally consistent.",
+    "image_change_from_v53": "Replace the coarse 2383 C/M/Y log-sensitivity transcription with March 2005 vector-path samples, including the plotted short-wave cyan and magenta sensitivity lobes.",
+    "image_change_from_v54": "Replace the wavelength-shifted coarse 2383 formed-dye absorption table with March 2005 vector-path samples in the spectral projection observer.",
+    "image_change_from_v55": "Resolve H-61B's simultaneous integral 1.09/1.06/1.03 Status-A LAD triplet into analytical dye amounts and separated-curve principal densities before inverting the three 2383 H-D curves.",
+    "image_change_from_v58": "Restore the processed 2383 base/D-min spectral density omitted in V55 by subtracting the normalized C/M/Y dye sum from Kodak's fourth Visual Neutral curve.",
+    "image_change_from_v59": "Register V59's Visual Neutral residual spectrum to the independently vector-traced Status-A H-D minima, so zero dye amount maps exactly to each curve's D-min.",
+    "image_change_from_v60": "Replace the independent 690/550/450 nm Gaussian negative-density axes with ISO 5-3 Status-M spectral products and jointly solve all three integral readings through the complete 5279 D-min plus net dye/masking-coupler spectra.",
+    "image_structure_contract": "Kodak processed-stock R/G/B MTF and exposure-conditioned diffuse RMS granularity at a 48-micrometre aperture are validated jointly; absolute density is not itself sharpness",
+    "input_colour_authority": "provisional T003 DKC-Pro A/B evidence; not a final GH7 camera profile until uniform measured D65/tungsten and orientation-bracket controls",
+    "input_colour_residual": "Bradford D65-to-D50 diagnostic basis; average of disjoint synthetic-primary and natural-colour ridge fits; lambda 0.003; 12.5% conservative step; chroma only; no white balance, exposure, gamma or artistic saturation control",
+    "input_decode": "Apple extended-linear BT.2020 RGB float32 / D65",
+    "interimage_matrix_policy": "archive_cross_vendor_surrogate_unchanged",
+    "lad_coordinate_policy": "integral_spectral_inverse_v60",
+    "local_density_boundary": "nonnegative; no inferred macro-Dmax pixel clamp",
+    "luminance_constraint": "per-pixel Rec.709 luminance preserved exactly before output encoding",
+    "mean_colour_constraint": "V25 deterministic negative and observers unchanged",
+    "name": "V61 \u00b7 ISO Status-M joint negative analytical density",
+    "negative_analytical_density_policy": "joint_iso_status_m_v61",
+    "negative_change": "remove the duplicate deterministic V21 intralayer adjacency term; retain Kodak-processed-stock MTF, interimage transport, stochastic coupling, published H-D and 48-micrometre RMS constraints",
+    "negative_constraint": "5279 published H-D, dye spectra, exposure-conditioned 48-micrometre RMS, stochastic morphology and cross-record interimage are frozen; the published processed-stock MTF owns deterministic adjacency once",
+    "negative_grain_correlation_scale": 0.76,
+    "negative_granularity_calibration": "Kodak diffuse 48-micrometre RMS constrains the processed 5279 record-density residual after stochastic DIR/interimage coupling; it is not inverted into unmeasured pre-DIR speed-layer yields",
+    "negative_nps_boundary": "Kodak 48-micrometre diffuse RMS remains the amplitude authority; no public 5279-specific Wiener spectrum was recovered, so V44 does not claim a new intrinsic NPS or tune the master for appearance.",
+    "negative_status_m_policy": "iso5_3_spectral_products_1nm_v61",
+    "negative_status_m_table_sha256": "732313ea2103ded0673bf99dfe8b2c6b964afede553fcb8a112af6497f5176f3",
+    "negative_structure_domain": "processed 5279 record density; observer-visible opponent response integrated after physical scan/print formation",
+    "observer_boundary": "The analytical 2383 lightness/texture observer is retained, but its unvalidated direct colour fails native opponent-tail gates. The accepted V31 normal-process monitor boundary therefore supplies only low-frequency scan-referenced dye chroma; no new projection colour difference is invented without a measured print/projector reference.",
+    "outside_graph_high_policy": "new vector endpoint plus the Archive +0.5/+1.0 density increments; inferred, not published",
+    "outside_path_low_policy": "constant first drawn D-min value",
+    "outside_published_loge_domain": "constant endpoint via numpy.interp; no invented continuation",
+    "pipeline_change": "retain the validated V35 Production graph and Philox-u32 sampler; remove only frame-varying numerical subpixel phase from grain rasterization",
+    "print_characteristic_authority": "Kodak H-1-2383t, March 2005, F002_1254AC; 1/500 second, tungsten with Heat Absorbing Glass No. 2043 and Series 1700 filter, ECP-2D, Status A",
+    "print_characteristic_trace_sha256": "e7d7eba838222828df9e538f19805725369a163ed57ca037dd212fd6878430cd",
+    "print_dmin_spectral_policy": "vector_neutral_residual_dmin_registered_v60",
+    "print_dye_authority": "Kodak H-1-2383t, March 2005, F010_0294AC; process CP-2D; formed dye absorptions normalized to visual-neutral density 1.0 for xenon-arc viewing; C/M/Y curves described by Kodak as peak-normalized",
+    "print_dye_outside_graph_policy": "760/780 nm continue the final vector secant beyond the 750 nm graph border and clip at zero; all 380..740 nm runtime samples are within the drawn vector paths",
+    "print_dye_trace_sha256": "5f1fb8614716685c53da3191285ec33fe3d7040889159c35f5a53d274a103184",
+    "print_grain_boundary": "No intrinsic 2383 stochastic term until record covariance and NPS are measured; transferred 5279 density structure remains.",
+    "print_grain_model": "5279 density structure transferred through 2383 MTF; intrinsic 2383 stochastic grain withheld until record covariance/NPS is measured",
+    "print_outside_path_policy": "constant first/last vector density to the graph borders at logE -3/+3; explicitly classified as endpoint holds, not measured path",
+    "print_sensitivity_outside_path_policy": "log10 sensitivity -6 outside each drawn path; this is an explicit below-graph numerical floor, not a measured response",
+    "print_sensitivity_trace_sha256": "3451b5dda9a47ff834e6a4341372fe0ecd99b6338ec8af2bdcc67fa928be720f",
+    "print_structure_domain": "2383 Status-A density with measured MTF; no unmeasured stochastic print-population term",
+    "print_vector_axis_fit_rms_density": 0.0009894,
+    "print_visual_neutral_trace_sha256": "9bc1645f4afe79e01e917dc11c556d671eb2c3b367b884807e010d509bd1e90e",
+    "projection_change": "retain the accepted scan-referenced low-frequency dye colour and complete projection luminance; set the V31 adapter's unmeasured high-frequency opponent residual to zero after observer integration",
+    "projection_chroma_crossover_sigma_at_2k": 0.72,
+    "projection_chroma_grain_high_frequency_retention": 0.0,
+    "projection_chroma_grain_opponent_strength": 0.66,
+    "projection_chroma_grain_sigma_at_2k": 0.62,
+    "projection_colour_policy": "scan_referenced_v31",
+    "projection_constraint": "V26 projection branch unchanged",
+    "projection_grain_delta_observer": "accepted pointwise 5279-to-2383 observer for signed stochastic modulation only; analytical density observer owns deterministic mean",
+    "projection_grain_delta_observer_id": "archive_pointwise",
+    "projection_grain_luma_basis": "neutral Rec.709 luma axis",
+    "projection_lad_status_a_aim_rgb": [
+      1.09,
+      1.06,
+      1.03
+    ],
+    "projection_output": "Rec.709-D65 monitor rendering of the 48-nit gamma-2.6 cinema observer; Rec.709 OETF / 1-1-1",
+    "projection_physical_hue_weight": 0.0,
+    "projection_physical_saturation_weight": 0.0,
+    "projection_vendor_lut_strength": 0.0,
+    "quicktime_companion_encoding": "IEC 61966-2-1 sRGB transfer; Rec.709 primaries/matrix; 12-bit ProRes 4444; authoritative MOV 1-13-1 colour atom",
+    "raw_colour": "avfoundation_bt2020",
+    "raw_colour_transform": "Apple extended-linear BT.2020/D65 -> fused product of the historical XYZ/V-Gamut/XYZ/Rec.709 primary matrices; no camera LUT or new white balance",
+    "raw_record_boundary": "retain signed BT.2020-to-film-basis values only when the combined 5279 record exposures are all non-negative; otherwise use V40's non-negative basis fallback",
+    "reference_master_encoding": "inverse BT.1886 ideal-zero-black gamma 2.4; Rec.709 primaries/matrix; 12-bit ProRes 4444; 1-1-1 interchange signalling",
+    "release_boundary": "V42 identifies executable research conformance. It does not claim a new 5279 sensitometric, spectral, DIR, MTF, grain or colour measurement.",
+    "release_class": "evidence_corrected_5279_status_m_joint_inverse",
+    "review_sampling_policy": "linear_light_pixel_area_integration",
+    "scan_change": "density-dependent neutral-scale calibration after the period 2K observer",
+    "scan_constraint": "V29/V27 period 2K scan observer is unchanged",
+    "short_name": "V61",
+    "site_and_pixel_integration_variance_px2_at_5760": 0.16666666666666666,
+    "source_of_truth_fixes": "profile owns stable subpixel radius explicitly; active profile owns projection adapter crossover; Archive resets are idempotent",
+    "spectral_authority": "Kodak H-1-5279t, March 2003, Spectral Dye Density Curves; ECN-2; D-mins subtracted for cyan/magenta/yellow, dashed Minimum Density retained separately",
+    "spectral_resampling": "Kodak 2383 dye-density and xenon graph samples linearly interpolated from 20 nm to the official observer's 1 nm axis",
+    "temporal_contract": "every physical frame receives a new deterministic finite-site realization keyed by absolute source-frame index; segment boundaries cannot repeat or reset grain",
+    "trace_axis_fit_rms_pdf_points": 0.4596,
+    "trace_method": "embedded cubic Bezier paths sampled every 0.5 graph-logE unit; Sigma-D recovered from least-squares calibration of all twelve printed logarithmic axis ticks",
+    "unidentified_parameter_policy": "no change to NPS morphology, DIR coefficients, sub-emulsion recipe or period-scanner spectra without stock-specific measurement",
+    "v39_withdrawal_reason": "a pre-DIR inverse model was not identified by Kodak's post-process RMS data, while marginal-RMS-only gates omitted visible colour covariance and extreme-tail tests, allowing primary-colour speckles",
+    "vector_axis_fit_rms_density": 0.0019466,
+    "version_id": "v61",
+    "web_output": "sRGB IEC 61966-2-1 derived from decoded Rec.709 master light",
+    "white_balance_contract": "retain AVFoundation standard ProRes RAW conversion/as-shot metadata; do not apply a second creative or chromatic white balance"
+  }
+}

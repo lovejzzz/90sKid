@@ -1,0 +1,154 @@
+{
+  "audit": "V46 adaptive observer exact real-frame precision gate",
+  "profile": "V72 plus complete stochastic endpoint hold",
+  "sources": {
+    "T020": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+      "absolute_frame": 0,
+      "negative_formation_seconds": 13.2124676250005,
+      "mean": {
+        "sample_count": 6000,
+        "adaptive_seconds": 0.04618945899983373,
+        "exact_seconds": 7.625826624999718,
+        "active_mask_counts": {
+          "0": 516,
+          "1": 142,
+          "2": 221,
+          "3": 262,
+          "4": 107,
+          "5": 230,
+          "6": 459,
+          "7": 4063
+        },
+        "maximum_absolute_printer_density_error": 0.00023059546947479248,
+        "p99_absolute_printer_density_error": 3.2038986682891607e-06,
+        "rms_printer_density_error": 4.800092312790773e-06,
+        "worst_sample_index": 4182,
+        "worst_output_record": "red",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      },
+      "formed": {
+        "sample_count": 6000,
+        "adaptive_seconds": 0.02546733300005144,
+        "exact_seconds": 7.6401506669999435,
+        "active_mask_counts": {
+          "0": 299,
+          "1": 271,
+          "2": 289,
+          "3": 854,
+          "4": 179,
+          "5": 252,
+          "6": 221,
+          "7": 3635
+        },
+        "maximum_absolute_printer_density_error": 0.0005094408988952637,
+        "p99_absolute_printer_density_error": 2.2059679031371116e-06,
+        "rms_printer_density_error": 6.441503442014069e-06,
+        "worst_sample_index": 2277,
+        "worst_output_record": "green",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      }
+    },
+    "T032": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T032.MOV",
+      "absolute_frame": 0,
+      "negative_formation_seconds": 13.04557104199921,
+      "mean": {
+        "sample_count": 6000,
+        "adaptive_seconds": 0.01656825000009121,
+        "exact_seconds": 7.608390834000602,
+        "active_mask_counts": {
+          "0": 516,
+          "1": 80,
+          "2": 158,
+          "3": 384,
+          "4": 117,
+          "5": 278,
+          "6": 542,
+          "7": 3925
+        },
+        "maximum_absolute_printer_density_error": 0.00023706257343292236,
+        "p99_absolute_printer_density_error": 5.126446485519338e-06,
+        "rms_printer_density_error": 6.13725438057143e-06,
+        "worst_sample_index": 1676,
+        "worst_output_record": "red",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      },
+      "formed": {
+        "sample_count": 6000,
+        "adaptive_seconds": 0.015770499999234744,
+        "exact_seconds": 7.642907292000018,
+        "active_mask_counts": {
+          "0": 347,
+          "1": 316,
+          "2": 338,
+          "3": 423,
+          "4": 201,
+          "5": 262,
+          "6": 241,
+          "7": 3872
+        },
+        "maximum_absolute_printer_density_error": 0.0004681050777435303,
+        "p99_absolute_printer_density_error": 2.2949278354644537e-06,
+        "rms_printer_density_error": 7.676531552019376e-06,
+        "worst_sample_index": 5283,
+        "worst_output_record": "red",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      }
+    },
+    "T007": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T007.MOV",
+      "absolute_frame": 276,
+      "negative_formation_seconds": 13.208022832999632,
+      "mean": {
+        "sample_count": 5893,
+        "adaptive_seconds": 0.018760291000035068,
+        "exact_seconds": 7.512805666000531,
+        "active_mask_counts": {
+          "0": 216,
+          "1": 49,
+          "2": 529,
+          "3": 255,
+          "4": 55,
+          "5": 27,
+          "6": 580,
+          "7": 4182
+        },
+        "maximum_absolute_printer_density_error": 0.0002334117889404297,
+        "p99_absolute_printer_density_error": 5.019903182983468e-06,
+        "rms_printer_density_error": 7.057751941049735e-06,
+        "worst_sample_index": 1757,
+        "worst_output_record": "red",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      },
+      "formed": {
+        "sample_count": 6000,
+        "adaptive_seconds": 0.020364791999782028,
+        "exact_seconds": 7.641504999999597,
+        "active_mask_counts": {
+          "0": 223,
+          "1": 228,
+          "2": 294,
+          "3": 380,
+          "4": 156,
+          "5": 198,
+          "6": 393,
+          "7": 4128
+        },
+        "maximum_absolute_printer_density_error": 0.0003057122230529785,
+        "p99_absolute_printer_density_error": 4.410743713378906e-06,
+        "rms_printer_density_error": 8.227905498208835e-06,
+        "worst_sample_index": 4833,
+        "worst_output_record": "red",
+        "quality_gate_maximum_density_error": 0.001,
+        "quality_gate_pass": true
+      }
+    }
+  },
+  "all_quality_gates_pass": true
+}

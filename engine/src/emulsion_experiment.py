@@ -132,13 +132,15 @@ XYZ_D65_TO_P3_D65 = np.array(
     dtype=np.float32,
 )
 
-# Approximate visual digitization of the 5279 Status-M sensitometric plot.
-# Rows are red/green/blue records; densities include the plotted D-min offsets.
-SENSITO_LOG_EXPOSURE = np.array(
+# Archive visual digitization of the 5279 Status-M sensitometric plot.  Profiles
+# after V51 may replace it, so keep an immutable working-source copy just as we
+# do for the graph-backed granularity and spectral tables.  Rows are
+# red/green/blue records; densities include the plotted D-min offsets.
+SENSITO_LOG_EXPOSURE_ARCHIVE = np.array(
     [-4.0, -3.4, -3.1, -2.8, -2.4, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0],
     dtype=np.float32,
 )
-SENSITO_DENSITY_RGB = np.array(
+SENSITO_DENSITY_RGB_ARCHIVE = np.array(
     [
         [0.15, 0.16, 0.18, 0.27, 0.45, 0.67, 0.95, 1.20, 1.42, 1.58, 1.72, 1.80],
         [0.58, 0.59, 0.62, 0.72, 0.95, 1.20, 1.48, 1.75, 2.02, 2.23, 2.39, 2.48],
@@ -146,7 +148,9 @@ SENSITO_DENSITY_RGB = np.array(
     ],
     dtype=np.float32,
 )
-SENSITO_DMIN_RGB = SENSITO_DENSITY_RGB[:, 0]
+SENSITO_LOG_EXPOSURE = SENSITO_LOG_EXPOSURE_ARCHIVE.copy()
+SENSITO_DENSITY_RGB = SENSITO_DENSITY_RGB_ARCHIVE.copy()
+SENSITO_DMIN_RGB = SENSITO_DENSITY_RGB[:, 0].copy()
 
 # V14 negative-emulsion structure. Kodak's filmmaker reference says each colour
 # record may contain fast, medium and slow emulsion layers. A Kodak multilayer
@@ -190,13 +194,16 @@ SUBEMULSION_TRANSITION_WIDTH_RGB = np.array(
 # use the patent's silver coverage divided by approximate grain volume, anchored
 # to the previously validated fast-population count.
 SUBEMULSION_CLOUD_RADIUS_PX_5760_RGB = SUBEMULSION_ECD_UM_RGB.copy()
-SUBEMULSION_OPTICAL_SIGMA_PX_5760_RGB = np.array(
+SUBEMULSION_OPTICAL_SIGMA_BASE_PX_5760_RGB = np.array(
     [
         [0.59, 0.43, 0.34],
         [0.63, 0.41, 0.31],
         [0.54, 0.45, 0.37],
     ],
     dtype=np.float32,
+)
+SUBEMULSION_OPTICAL_SIGMA_PX_5760_RGB = (
+    SUBEMULSION_OPTICAL_SIGMA_BASE_PX_5760_RGB.copy()
 )
 SUBEMULSION_SITE_COUNT_PX_5760_RGB = np.array(
     [
@@ -248,10 +255,25 @@ GRAIN_SUBPIXEL_PHASE_RADIUS_PX = 0.38
 GRAIN_SUBPIXEL_PHASE_MODE = "frame_random"
 GRAIN_STABLE_PHASE_STEP = 0.6180339887498949
 GRAIN_STABLE_PHASE_OFFSET_RADIANS = 0.0
+# V37's fixed whole-field bilinear translations are retained as the Archive
+# default. Later profiles may replace that raster operator without changing the
+# finite-site activation law or Kodak 48 um amplitude authority.
+GRAIN_SITE_RASTERIZATION_MODE = "fixed_global_bilinear_phase"
 # V38 and earlier scale the fully combined density residual after stochastic
 # DIR.  V39 may instead calibrate the developed dye yield of every source
 # record before inhibitor coupling, so DIR sees the published-amplitude event.
 GRAIN_CALIBRATION_DOMAIN = "post_coupling_residual"
+# Archive profiles use a historical safety clamp derived from the representative
+# macro H-D maxima. That curve maximum is not a measured microscopic density
+# ceiling, so later profiles may remove only the upper guard while retaining
+# the physically necessary non-negative total-density boundary.
+GRAIN_LOCAL_DENSITY_BOUND_MODE = "legacy_macro_dmax_plus_0_12"
+# Historical profiles held only the published RMS ordinate outside Kodak's
+# drawn log-exposure domain while allowing the latent-site probabilities to
+# continue toward zero or one.  A V46 candidate may instead hold the complete
+# stochastic state at the nearest measured endpoint.  The deterministic H-D
+# mean is deliberately unaffected.
+GRAIN_STOCHASTIC_EXPOSURE_POLICY = "legacy_target_only_endpoint_hold"
 
 # V39 moved the realized negative into density space but accidentally bypassed
 # the observer-side integration of high-frequency opponent-colour modulation.
@@ -299,16 +321,17 @@ SUBEMULSION_DYE_RECORD_MIX = np.array(
     ],
     dtype=np.float32,
 )
+SUBEMULSION_DYE_RECORD_MIX_ARCHIVE = SUBEMULSION_DYE_RECORD_MIX.copy()
 
 # Visual digitization of 5279's published diffuse RMS granularity curves. The
 # data-sheet graph's 0..4 lux-second axis is the -4..0 log-exposure interval of
 # the sensitometric graph. Values are density sigma, not display-code noise, and
 # were measured by Kodak through a 48-micrometre microdensitometer aperture.
-GRANULARITY_LOG_EXPOSURE = np.array(
+GRANULARITY_LOG_EXPOSURE_ARCHIVE = np.array(
     [-4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 1.0],
     dtype=np.float32,
 )
-GRANULARITY_SIGMA_D_RGB = np.array(
+GRANULARITY_SIGMA_D_RGB_ARCHIVE = np.array(
     [
         [0.0060, 0.0070, 0.0140, 0.0090, 0.0063, 0.0060, 0.0060, 0.0058, 0.0055, 0.0045],
         [0.0110, 0.0120, 0.0180, 0.0140, 0.0100, 0.0080, 0.0070, 0.0060, 0.0055, 0.0045],
@@ -316,6 +339,8 @@ GRANULARITY_SIGMA_D_RGB = np.array(
     ],
     dtype=np.float32,
 )
+GRANULARITY_LOG_EXPOSURE = GRANULARITY_LOG_EXPOSURE_ARCHIVE.copy()
+GRANULARITY_SIGMA_D_RGB = GRANULARITY_SIGMA_D_RGB_ARCHIVE.copy()
 KODAK_GRANULARITY_APERTURE_DIAMETER_UM = 48.0
 
 # Broad spectral overlap of the red-, green- and blue-sensitive records.
@@ -390,7 +415,7 @@ SENSOR_NOISE_CHROMA_FLAT_REMOVAL = 0.70
 # The values below are a visual digitization of the peak-normalized 5279 graph.
 # Columns are cyan, magenta and yellow record changes at 20 nm spacing.
 NEGATIVE_DYE_WAVELENGTHS_NM = np.arange(380.0, 781.0, 20.0, dtype=np.float32)
-NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY = np.array(
+NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE = np.array(
     [
         [0.27, 0.27, 0.30],
         [0.20, 0.20, 0.43],
@@ -416,19 +441,72 @@ NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY = np.array(
     ],
     dtype=np.float32,
 )
+NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY = (
+    NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE.copy()
+)
 NEGATIVE_5279_MAX_RECORD_DENSITY = 2.80
 
 # Full wavelength-dependent minimum density/orange mask, visually digitized
 # from the dashed Minimum Density curve in H-1-5279t. The former print path
 # added three Status-M D-min numbers after spectral integration, which cannot
 # reproduce the way the mask reweights each broad 2383 sensitivity band.
-NEGATIVE_5279_DMIN_SPECTRAL_DENSITY = np.array(
+NEGATIVE_5279_DMIN_SPECTRAL_DENSITY_ARCHIVE = np.array(
     [
         0.28, 0.32, 0.62, 0.88, 0.82, 0.72, 0.74,
         0.78, 0.70, 0.52, 0.36, 0.28, 0.24, 0.22,
         0.20, 0.17, 0.14, 0.11, 0.08, 0.05, 0.03,
     ],
     dtype=np.float32,
+)
+NEGATIVE_5279_DMIN_SPECTRAL_DENSITY = (
+    NEGATIVE_5279_DMIN_SPECTRAL_DENSITY_ARCHIVE.copy()
+)
+
+# Archive builds approximated ISO Status-M with three hand-fitted Gaussians.
+# Keep that coordinate explicit so V42--V60 remain reproducible. Evidence
+# profiles can replace both the wavelength axis and weights with the actual
+# ISO spectral products without changing the older releases.
+NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM_ARCHIVE = (
+    NEGATIVE_DYE_WAVELENGTHS_NM.copy()
+)
+_negative_5279_status_m_archive_centres = np.array(
+    [690.0, 550.0, 450.0], dtype=np.float32
+)[None, :]
+_negative_5279_status_m_archive_sigmas = np.array(
+    [22.0, 19.0, 17.0], dtype=np.float32
+)[None, :]
+NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE = np.exp(
+    -0.5
+    * np.square(
+        (
+            NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM_ARCHIVE[:, None]
+            - _negative_5279_status_m_archive_centres
+        )
+        / _negative_5279_status_m_archive_sigmas
+    )
+).astype(np.float32)
+NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE /= np.sum(
+    NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE, axis=0, keepdims=True
+)
+NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM = (
+    NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM_ARCHIVE.copy()
+)
+NEGATIVE_5279_STATUS_M_RGB_WEIGHTS = (
+    NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE.copy()
+)
+NEGATIVE_5279_STATUS_M_POLICY_ARCHIVE = "gaussian_approximation_archive"
+NEGATIVE_5279_STATUS_M_POLICY = NEGATIVE_5279_STATUS_M_POLICY_ARCHIVE
+NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE = (
+    "independent_status_m_axes_archive"
+)
+NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY = (
+    NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE
+)
+NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY_ARCHIVE = (
+    "legacy_29_cube_trilinear"
+)
+NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY = (
+    NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY_ARCHIVE
 )
 
 # The Spirit 2K data sheet lists both optical film matching and RGB primary
@@ -442,6 +520,10 @@ SPIRIT_PERIOD_OBSERVER_SIGMAS_NM = np.array(
     [52.0, 44.0, 38.0], dtype=np.float32
 )
 SPIRIT_PRIMARY_CORRECTION_STRENGTH = 0.82
+SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE = (
+    "partial_status_m_records_archive"
+)
+SPIRIT_PRIMARY_CORRECTION_TARGET = SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE
 # A Spirit's optical film match removes scanner/dye cross-talk but should not
 # force the dense shoulder to behave like three perfectly independent linear
 # records. Release only a small part of that correction at high negative density
@@ -469,11 +551,12 @@ PROJECTION_CHROMA_GRAIN_OPPONENT_STRENGTH = 1.0
 # plot (Kodak H-1-2383, revised 3-26). Rows are the red-, green- and
 # blue-sensitive print records. Unlike the former synthetic `print` branch,
 # these are the actual second set of photographic characteristic curves.
-PRINT_2383_LOG_EXPOSURE = np.array(
+PRINT_2383_LOG_EXPOSURE_ARCHIVE = np.array(
     [-1.0, -0.5, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.3],
     dtype=np.float32,
 )
-PRINT_2383_DENSITY_RGB = np.array(
+PRINT_2383_LOG_EXPOSURE = PRINT_2383_LOG_EXPOSURE_ARCHIVE.copy()
+PRINT_2383_DENSITY_RGB_ARCHIVE = np.array(
     [
         [0.01, 0.01, 0.01, 0.02, 0.03, 0.06, 0.14, 0.35, 0.82, 1.58, 2.48, 3.28, 3.78, 4.02, 4.10],
         [0.01, 0.01, 0.02, 0.03, 0.06, 0.14, 0.36, 0.84, 1.62, 2.52, 3.30, 3.78, 4.02, 4.09, 4.10],
@@ -481,7 +564,9 @@ PRINT_2383_DENSITY_RGB = np.array(
     ],
     dtype=np.float32,
 )
-PRINT_2383_DMAX = 4.10
+PRINT_2383_DENSITY_RGB = PRINT_2383_DENSITY_RGB_ARCHIVE.copy()
+PRINT_2383_DMAX_ARCHIVE = 4.10
+PRINT_2383_DMAX = PRINT_2383_DMAX_ARCHIVE
 PRINT_2383_LAD_DENSITY = 1.0
 # Legacy V29 and earlier used one scalar Status-A LAD aim.  Keep that public
 # constant for archive manifests, but route the print exposure through an RGB
@@ -489,15 +574,29 @@ PRINT_2383_LAD_DENSITY = 1.0
 PRINT_2383_LAD_STATUS_A_AIM_RGB = np.full(
     3, PRINT_2383_LAD_DENSITY, dtype=np.float32
 )
+# Archive profiles treated the three readings of the processed LAD patch as if
+# they were the principal densities of three independent separation curves.
+# Keep that historical coordinate explicit so old releases remain bit exact.
+# Evidence-corrected profiles can instead solve the three integral Status-A
+# readings through the complete dye set and store the corresponding principal
+# separated-curve densities here.
+PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB = (
+    PRINT_2383_LAD_STATUS_A_AIM_RGB.copy()
+)
+PRINT_2383_LAD_PRINCIPAL_POLICY_ARCHIVE = "status_a_channels_archive"
+PRINT_2383_LAD_PRINCIPAL_POLICY = PRINT_2383_LAD_PRINCIPAL_POLICY_ARCHIVE
 
 # Status-A is an integral density measurement, not an analytical CMY dye
 # amount.  These are the archived 2383 separated-curve minima used by the exact
 # ISO spectral inverse below.  In particular the blue minimum is materially
 # above zero; treating all three minima as 0.01 double-counted unwanted dye
 # absorption when the published spectra were subsequently applied.
-PRINT_2383_STATUS_A_DMIN_RGB = np.array(
+PRINT_2383_STATUS_A_DMIN_RGB_ARCHIVE = np.array(
     [0.04356047, 0.04749392, 0.10272470], dtype=np.float32
 )
+PRINT_2383_STATUS_A_DMIN_RGB = PRINT_2383_STATUS_A_DMIN_RGB_ARCHIVE.copy()
+PRINT_2383_DMIN_SPECTRAL_POLICY_ARCHIVE = "scalar_status_a_archive"
+PRINT_2383_DMIN_SPECTRAL_POLICY = PRINT_2383_DMIN_SPECTRAL_POLICY_ARCHIVE
 
 # LAD-anchored log-print-exposure interimage array.  Placement follows the
 # measured-film preview model in US 8,654,192: M * (captured - LAD) + LAD before
@@ -505,7 +604,7 @@ PRINT_2383_STATUS_A_DMIN_RGB = np.array(
 # against the cross-vendor 2383 local response and validated on held-out finite
 # colours and four brightness levels; they are not claimed as a Kodak factory
 # matrix.
-PRINT_2383_INTERIMAGE_MATRIX = np.array(
+PRINT_2383_INTERIMAGE_MATRIX_ARCHIVE = np.array(
     [
         [1.4105, -0.9566, 0.9152],
         [0.4127, 0.6943, -0.2324],
@@ -513,6 +612,33 @@ PRINT_2383_INTERIMAGE_MATRIX = np.array(
     ],
     dtype=np.float32,
 )
+PRINT_2383_INTERIMAGE_MATRIX = PRINT_2383_INTERIMAGE_MATRIX_ARCHIVE.copy()
+PRINT_2383_INTERIMAGE_POLICY_ARCHIVE = (
+    "cross_vendor_finished_look_surrogate_archive"
+)
+PRINT_2383_INTERIMAGE_POLICY = PRINT_2383_INTERIMAGE_POLICY_ARCHIVE
+
+# The Archive view-neutral table was built from equal principal Status-A
+# triplets.  That coordinate predates the V58 simultaneous-LAD correction and
+# is not the neutral trajectory produced by a 5279 negative printed to 2383.
+# Later evidence profiles may instead derive the display-neutral factors from
+# the complete neutral negative -> print trajectory.  Keep the policy explicit
+# so historical profiles remain reproducible.
+PRINT_2383_VIEW_NEUTRAL_POLICY_ARCHIVE = (
+    "equal_principal_status_a_axis_archive"
+)
+PRINT_2383_VIEW_NEUTRAL_POLICY = PRINT_2383_VIEW_NEUTRAL_POLICY_ARCHIVE
+
+# Historical profiles reshape the three measured separated Status-A H-D curves
+# toward one continuous principal-density mean. H-61B supplies a six-patch
+# visual-neutral criterion but no off-LAD density triplets from which that
+# shaper can be identified. Evidence profiles may therefore retain the
+# published curves directly and leave the explicitly modeled projection-view
+# neutral trajectory to own visual gray calibration.
+PRINT_2383_DENSITY_NEUTRAL_POLICY_ARCHIVE = (
+    "continuous_principal_mean_shaper_archive"
+)
+PRINT_2383_DENSITY_NEUTRAL_POLICY = PRINT_2383_DENSITY_NEUTRAL_POLICY_ARCHIVE
 
 # ISO 5-3:2009 Table 9 abridged Status-A weighting factors.  The standard lists
 # B/G/R; this table is stored in R/G/B order and sums to approximately 100 per
@@ -550,7 +676,7 @@ PRINT_STATUS_A_RGB_WEIGHTS = np.array(
 # yellow-forming 2383 records, visually digitized from H-1-2383 at the same
 # 20 nm samples as the 5279 dye curves. Only within-record shape matters here;
 # neutral printer lights set the absolute speed of each record at LAD.
-PRINT_2383_LOG_SENSITIVITY_CMY = np.array(
+PRINT_2383_LOG_SENSITIVITY_CMY_ARCHIVE = np.array(
     [
         [-6.0, -6.0, -0.8],
         [-6.0, -6.0, -0.3],
@@ -576,6 +702,9 @@ PRINT_2383_LOG_SENSITIVITY_CMY = np.array(
     ],
     dtype=np.float32,
 )
+PRINT_2383_LOG_SENSITIVITY_CMY = (
+    PRINT_2383_LOG_SENSITIVITY_CMY_ARCHIVE.copy()
+)
 
 # The 5279 Status-M minima include the orange mask/base density. They must be
 # retained when the negative is optically printed; subtracting them is correct
@@ -585,6 +714,12 @@ NEGATIVE_5279_BASE_DENSITY_RGB = SENSITO_DMIN_RGB.copy()
 # 2383 peak-normalized spectral dye densities, sampled by eye from the Kodak
 # xenon-arc graph. Columns are cyan, magenta and yellow dye absorptions.
 PRINT_DYE_WAVELENGTHS_NM = np.arange(380.0, 781.0, 20.0, dtype=np.float32)
+PRINT_2383_DMIN_SPECTRAL_DENSITY_ARCHIVE = np.zeros(
+    PRINT_DYE_WAVELENGTHS_NM.size, dtype=np.float32
+)
+PRINT_2383_DMIN_SPECTRAL_DENSITY = (
+    PRINT_2383_DMIN_SPECTRAL_DENSITY_ARCHIVE.copy()
+)
 # V44 and earlier used a closed-form CMF approximation sampled on the 20 nm
 # Kodak graph. A profile may opt into the official CIE table without changing
 # the published dye graph or any negative/print sensitometry.
@@ -593,7 +728,7 @@ CIE_1931_2DEG_1NM_PATH = (
     Path(__file__).resolve().parents[1]
     / "references/cie/CIE_xyz_1931_2deg.csv"
 )
-PRINT_DYE_CMY_SPECTRAL_DENSITY = np.array(
+PRINT_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE = np.array(
     [
         [0.23, 0.18, 0.25, 0.29, 0.24, 0.12, 0.04, 0.01, 0.00, 0.01, 0.05, 0.15, 0.35, 0.58, 0.78, 0.96, 1.09, 1.16, 1.20, 1.17, 1.05],
         [0.05, 0.02, 0.03, 0.06, 0.04, 0.08, 0.18, 0.40, 0.62, 0.78, 0.88, 0.80, 0.50, 0.20, 0.06, 0.02, 0.01, 0.00, 0.00, 0.00, 0.00],
@@ -601,23 +736,32 @@ PRINT_DYE_CMY_SPECTRAL_DENSITY = np.array(
     ],
     dtype=np.float32,
 ).T
+PRINT_DYE_CMY_SPECTRAL_DENSITY = (
+    PRINT_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE.copy()
+)
 # Keep the published graph's relative peak heights. Earlier versions applied a
 # second empirical per-dye scale here, then corrected the resulting gray drift
 # again downstream. That double calibration preserved neutrals but distorted
 # RGB patches. Printer lights and the projected neutral strip are the proper
 # places to set balance; the spectral curves should retain their plotted shape.
 
-# Kodak's reference guide plots a real xenon projector spectrum with smooth but
-# visible structure; it is not a Planck radiator. Values are visually digitized
-# at the same 20 nm samples as the 2383 dye curves. The 380 and 720-780 nm tails
-# are conservative continuations outside the plotted 400-700 nm range.
-KODAK_XENON_PROJECTOR_RELATIVE_SPD = np.array(
+# Kodak's Essential Reference Guide plots a generic xenon-lamp relative-energy
+# curve with smooth but visible structure; it is not a Planck radiator. Values
+# are visually digitized at the same 20 nm samples as the 2383 dye curves. This
+# is *not* a measurement of a projector lamp + heat glass + lens + screen, so it
+# remains an observer bracket rather than a uniquely identified theatre SPD.
+# The 380 and 720-780 nm tails are conservative continuations outside the
+# plotted 400-700 nm range.
+KODAK_XENON_PROJECTOR_RELATIVE_SPD_ARCHIVE = np.array(
     [
         0.78, 0.82, 0.86, 0.79, 0.94, 0.99, 0.76,
         0.75, 0.76, 0.76, 0.77, 0.72, 0.75, 0.70,
         0.69, 0.76, 0.67, 0.65, 0.63, 0.61, 0.59,
     ],
     dtype=np.float32,
+)
+KODAK_XENON_PROJECTOR_RELATIVE_SPD = (
+    KODAK_XENON_PROJECTOR_RELATIVE_SPD_ARCHIVE.copy()
 )
 PRINT_2383_VIEWING_CCT_K = 5400
 PRINT_2383_CALLIER_GAIN_RGB = np.array([0.012, 0.010, 0.014], dtype=np.float32)
@@ -653,6 +797,8 @@ PRINT_H61_REFERENCE_HUE_WEIGHT = 0.87
 PRINT_H61_REFERENCE_SATURATION_WEIGHT = 0.40
 PRINT_MONITOR_PHYSICAL_HUE_WEIGHT = 1.00
 PRINT_MONITOR_PHYSICAL_SATURATION_WEIGHT = 0.60
+PRINT_MONITOR_COLOUR_AUTHORITY_ARCHIVE = "scan_referenced_v31"
+PRINT_MONITOR_COLOUR_AUTHORITY = PRINT_MONITOR_COLOUR_AUTHORITY_ARCHIVE
 # How the Rec.709 projection observer carries colour through its neutral-scale
 # contrast adaptation.  Archive profiles preserve the historical
 # constant-saturation rule.  Evidence-gated profiles can instead retain
@@ -698,6 +844,8 @@ _PRINT_2383_MONITOR_OUTPUT_LUT: np.ndarray | None = None
 _PANASONIC_RAW_TO_VGAMUT_LUT: np.ndarray | None = None
 _NEGATIVE_5279_NET_DENSITY_LUT: np.ndarray | None = None
 _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT: np.ndarray | None = None
+_V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER = None
+_NEGATIVE_5279_ANALYTICAL_CMY_LUTS: dict[int, np.ndarray] = {}
 _SPIRIT_NEUTRAL_SCALE_TABLE: tuple[np.ndarray, np.ndarray] | None = None
 
 # V25 exact-distribution acceleration.  A fixed stripe count makes a V25 grain
@@ -1206,12 +1354,159 @@ def record_densities_from_log_exposure(log_exposure: np.ndarray) -> np.ndarray:
 
 
 def _negative_5279_status_m_weights() -> np.ndarray:
-    """Narrow Status-M-like bands used only for Kodak density calibration."""
-    wavelength = NEGATIVE_DYE_WAVELENGTHS_NM[:, None]
-    centres = np.array([690.0, 550.0, 450.0], dtype=np.float32)[None, :]
-    sigmas = np.array([22.0, 19.0, 17.0], dtype=np.float32)[None, :]
-    weights = np.exp(-0.5 * np.square((wavelength - centres) / sigmas))
-    return (weights / np.sum(weights, axis=0, keepdims=True)).astype(np.float32)
+    """Return the selected Status-M RGB spectral weighting factors."""
+    weights = np.asarray(NEGATIVE_5279_STATUS_M_RGB_WEIGHTS, dtype=np.float32)
+    wavelengths = np.asarray(
+        NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM, dtype=np.float32
+    )
+    if weights.shape != (wavelengths.size, 3):
+        raise ValueError("5279 Status-M wavelength/weight shape mismatch")
+    if not np.all(np.diff(wavelengths) > 0.0):
+        raise ValueError("5279 Status-M wavelengths must be increasing")
+    column_sums = np.sum(weights, axis=0, keepdims=True)
+    if np.any(column_sums <= 0.0):
+        raise ValueError("5279 Status-M weights must have positive sums")
+    if not np.allclose(column_sums, 1.0, atol=2e-6, rtol=0.0):
+        raise ValueError("5279 Status-M weights must be normalized")
+    return weights.copy()
+
+
+def _negative_5279_status_m_model_spectra() -> tuple[np.ndarray, np.ndarray]:
+    """Resample Kodak's 5279 spectra to the selected Status-M grid."""
+    wavelengths = np.asarray(
+        NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM, dtype=np.float32
+    )
+    dmin = np.interp(
+        wavelengths,
+        NEGATIVE_DYE_WAVELENGTHS_NM,
+        NEGATIVE_5279_DMIN_SPECTRAL_DENSITY,
+    ).astype(np.float32)
+    spectra = np.column_stack(
+        [
+            np.interp(
+                wavelengths,
+                NEGATIVE_DYE_WAVELENGTHS_NM,
+                NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY[:, channel],
+            )
+            for channel in range(3)
+        ]
+    ).astype(np.float32)
+    return dmin, spectra
+
+
+def negative_5279_status_m_net_density_from_analytical_cmy(
+    analytical_cmy: np.ndarray,
+) -> np.ndarray:
+    """Forward ISO Status-M integral above the 5279 spectral D-min.
+
+    The analytical coefficients multiply Kodak's peak-normalized net dye
+    curves. Density is integrated in transmittance space and registered to the
+    H-D origin by subtracting the integral density of the same D-min spectrum.
+    """
+    source = np.asarray(analytical_cmy, dtype=np.float64)
+    original_shape = source.shape
+    flat = source.reshape(-1, 3)
+    weights = _negative_5279_status_m_weights().astype(np.float64)
+    dmin, spectra = _negative_5279_status_m_model_spectra()
+    dmin = dmin.astype(np.float64)
+    spectra = spectra.astype(np.float64)
+    with np.errstate(all="ignore"):
+        base_transmission = np.power(10.0, -dmin) @ weights
+        spectral_density = dmin[None, :] + flat @ spectra.T
+        transmission = np.power(10.0, -spectral_density)
+        integrated = transmission @ weights
+        density = -np.log10(np.maximum(integrated, 1e-30))
+        base_density = -np.log10(np.maximum(base_transmission, 1e-30))
+    return (density - base_density).reshape(original_shape).astype(np.float32)
+
+
+def solve_5279_analytical_cmy_from_status_m_net_density(
+    status_m_net_density: np.ndarray,
+    iterations: int = 24,
+) -> np.ndarray:
+    """Jointly invert three Status-M readings to nonnegative CMY amounts.
+
+    Independent per-channel inversion is invalid for a masked colour negative:
+    every Status-M receiver sees the complete D-min plus all three net dye
+    spectra. A bounded projected Gauss-Newton solve preserves exact reachable
+    colours and maps an impossible triplet to the nearest physical nonnegative
+    analytical mixture rather than inventing negative dye.
+    """
+    target_source = np.asarray(status_m_net_density, dtype=np.float64)
+    original_shape = target_source.shape
+    target = np.maximum(target_source.reshape(-1, 3), 0.0)
+    weights = _negative_5279_status_m_weights().astype(np.float64)
+    dmin, spectra = _negative_5279_status_m_model_spectra()
+    dmin = dmin.astype(np.float64)
+    spectra = spectra.astype(np.float64)
+
+    with np.errstate(all="ignore"):
+        base_transmission = np.power(10.0, -dmin) @ weights
+        base_density = -np.log10(np.maximum(base_transmission, 1e-30))
+
+    def forward_and_jacobian(
+        coefficients: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        with np.errstate(all="ignore"):
+            spectral_density = dmin[None, :] + coefficients @ spectra.T
+            transmission = np.power(10.0, -spectral_density)
+            integrated = np.maximum(transmission @ weights, 1e-30)
+            density = -np.log10(integrated) - base_density
+            jacobian = np.einsum(
+                "nl,lj,lk->njk", transmission, weights, spectra
+            ) / integrated[:, :, None]
+        return density, jacobian
+
+    _, origin_jacobian = forward_and_jacobian(np.zeros((1, 3)))
+    with np.errstate(all="ignore"):
+        coefficients = np.maximum(
+            target @ np.linalg.inv(origin_jacobian[0]).T, 0.0
+        )
+    diagonal = np.arange(3)
+    for _ in range(iterations):
+        density, jacobian = forward_and_jacobian(coefficients)
+        residual = density - target
+        normal = np.einsum("nji,njk->nik", jacobian, jacobian)
+        gradient = np.einsum("nji,nj->ni", jacobian, residual)
+        normal[:, diagonal, diagonal] += 1e-8
+        step = -np.linalg.solve(normal, gradient)
+        damping = np.maximum(
+            1.0, np.max(np.abs(step), axis=1, keepdims=True) / 0.5
+        )
+        coefficients = np.clip(coefficients + step / damping, 0.0, 12.0)
+    return coefficients.reshape(original_shape).astype(np.float32)
+
+
+def build_5279_analytical_cmy_lut(size: int = 29) -> np.ndarray:
+    """Build the selected Status-M-to-analytical-density coordinate."""
+    global _NEGATIVE_5279_ANALYTICAL_CMY_LUTS
+    if size in _NEGATIVE_5279_ANALYTICAL_CMY_LUTS:
+        return _NEGATIVE_5279_ANALYTICAL_CMY_LUTS[size]
+
+    axis = np.linspace(
+        0.0, NEGATIVE_5279_MAX_RECORD_DENSITY, size, dtype=np.float32
+    )
+    if (
+        NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY
+        == NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE
+    ):
+        _, _, coefficient_axes = _negative_5279_spectral_amount_axes(size)
+        cyan, magenta, yellow = np.meshgrid(
+            coefficient_axes[0], coefficient_axes[1], coefficient_axes[2],
+            indexing="ij",
+        )
+        lattice = np.stack([cyan, magenta, yellow], axis=-1).astype(np.float32)
+    elif NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY == "joint_iso_status_m_v61":
+        red, green, blue = np.meshgrid(axis, axis, axis, indexing="ij")
+        target = np.stack([red, green, blue], axis=-1)
+        lattice = solve_5279_analytical_cmy_from_status_m_net_density(target)
+    else:
+        raise ValueError(
+            "unknown 5279 analytical-density policy: "
+            f"{NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY}"
+        )
+    _NEGATIVE_5279_ANALYTICAL_CMY_LUTS[size] = lattice
+    return lattice
 
 
 def _negative_5279_period_telecine_weights() -> np.ndarray:
@@ -1274,13 +1569,14 @@ def build_5279_net_density_lut(size: int = 29) -> np.ndarray:
     correction instead of conflating measurement with acquisition.
     """
     weights = _negative_5279_period_telecine_weights()
-    _, spectra, coefficient_axes = _negative_5279_spectral_amount_axes(size)
-
-    cyan, magenta, yellow = np.meshgrid(
-        coefficient_axes[0], coefficient_axes[1], coefficient_axes[2],
-        indexing="ij",
-    )
-    cmy = np.stack([cyan, magenta, yellow], axis=-1).reshape(-1, 3)
+    if (
+        NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY
+        == NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE
+    ):
+        _, spectra, _ = _negative_5279_spectral_amount_axes(size)
+    else:
+        spectra = NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY.copy()
+    cmy = build_5279_analytical_cmy_lut(size).reshape(-1, 3)
     with np.errstate(all="ignore"):
         spectral_density = np.clip(cmy @ spectra.T, -2.0, 16.0)
         transmission = np.power(10.0, -spectral_density)
@@ -1299,12 +1595,14 @@ def build_5279_to_2383_printer_density_lut(size: int = 29) -> np.ndarray:
     lights subsequently place an 18% negative on LAD, so only the spectral
     shape—not an invented absolute print speed—is required here.
     """
-    _, spectra, coefficient_axes = _negative_5279_spectral_amount_axes(size)
-    cyan, magenta, yellow = np.meshgrid(
-        coefficient_axes[0], coefficient_axes[1], coefficient_axes[2],
-        indexing="ij",
-    )
-    cmy = np.stack([cyan, magenta, yellow], axis=-1).reshape(-1, 3)
+    if (
+        NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY
+        == NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE
+    ):
+        _, spectra, _ = _negative_5279_spectral_amount_axes(size)
+    else:
+        spectra = NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY.copy()
+    cmy = build_5279_analytical_cmy_lut(size).reshape(-1, 3)
 
     lamp = _blackbody_spd(NEGATIVE_DYE_WAVELENGTHS_NM, 3200.0)
     sensitivity = np.power(10.0, PRINT_2383_LOG_SENSITIVITY_CMY)
@@ -1367,6 +1665,37 @@ def apply_5279_to_2383_printer_density_lut(
     net_record_density: np.ndarray,
 ) -> np.ndarray:
     """Sample effective 2383-record densities through the full 5279 spectrum."""
+    global _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER
+    if NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY == (
+        "adaptive_active_set_129_plus_5cube_v46"
+    ):
+        if _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER is None:
+            from v46_adaptive_spectral import AdaptivePrinterDensityObserver
+
+            prefix = (
+                Path(__file__).resolve().parents[1]
+                / "cache"
+                / "v46_adaptive_129_power2"
+            )
+            _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER = (
+                AdaptivePrinterDensityObserver(
+                    prefix.with_name(prefix.name + "_base.npy"),
+                    prefix.with_name(prefix.name + "_active_risk.npy"),
+                    prefix.with_name(prefix.name + "_axis.npy"),
+                    prefix.with_name(prefix.name + "_cells.npy"),
+                    prefix.with_name(prefix.name + "_blocks.npy"),
+                )
+            )
+        return _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER.sample(
+            net_record_density
+        ).astype(np.float32, copy=False)
+    if NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY != (
+        NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY_ARCHIVE
+    ):
+        raise ValueError(
+            "unknown 5279 printer-density observer policy: "
+            f"{NEGATIVE_5279_PRINTER_DENSITY_OBSERVER_POLICY}"
+        )
     global _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT
     if _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT is None:
         _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = (
@@ -1412,7 +1741,32 @@ def scanner_density_from_film_rgb(film_rgb: np.ndarray) -> np.ndarray:
 def scanner_density_from_total_record_density(
     total_density: np.ndarray,
 ) -> np.ndarray:
-    """Convert already formed 5279 record density to a Spirit-like RGB scan."""
+    """Convert formed 5279 density to the selected calibrated scan coordinate.
+
+    The archive branch is a device-observer hypothesis: broad Spirit-like
+    optical receivers are partially corrected toward independent Status-M
+    records.  The V66 branch instead implements the Kodak Cineon data contract:
+    each output channel is printing density above calibrated D-min.  It is a
+    data-coordinate correction, not a claim that the proprietary Spirit lamp,
+    filters, CCDs or internal matrices have been measured.
+    """
+    if SPIRIT_PRIMARY_CORRECTION_TARGET == (
+        "active_2383_printing_density_v66"
+    ):
+        source = np.asarray(total_density, dtype=np.float32)
+        base = negative_total_printer_density_from_record_density(
+            SENSITO_DMIN_RGB
+        )
+        return (
+            negative_total_printer_density_from_record_density(source) - base
+        ).astype(np.float32)
+    if SPIRIT_PRIMARY_CORRECTION_TARGET != (
+        SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE
+    ):
+        raise ValueError(
+            "unknown Spirit/Cineon calibration target: "
+            f"{SPIRIT_PRIMARY_CORRECTION_TARGET}"
+        )
     # D-min is a calibrated field average. Microscopic base/fog fluctuations can
     # legitimately fall slightly below it; AutoDmin removes the mean, not those
     # local negative deviations. The spectral LUT handles formed positive dye,
@@ -1490,10 +1844,11 @@ def _raw_print_2383_density_from_negative(
     neutral_negative = negative_total_printer_density(
         np.array([0.18, 0.18, 0.18], dtype=np.float32)
     )
+    principal_lad_density = _active_2383_lad_principal_density_rgb()
     aim_log_exposure = np.array(
         [
             _inverse_2383_density(
-                channel, float(PRINT_2383_LAD_STATUS_A_AIM_RGB[channel])
+                channel, float(principal_lad_density[channel])
             )
             for channel in range(3)
         ],
@@ -1541,9 +1896,7 @@ def _build_2383_neutral_shapers() -> tuple[list[np.ndarray], list[np.ndarray]]:
     # record placement while correcting graph-digitization crossover along the
     # scale.  Legacy equal-aim profiles reduce exactly to the former mean curve.
     aim_mean = np.mean(raw, axis=1)
-    lad_aim = np.asarray(
-        PRINT_2383_LAD_STATUS_A_AIM_RGB, dtype=np.float32
-    )
+    lad_aim = _active_2383_lad_principal_density_rgb()
     aim = aim_mean[:, None] + (lad_aim - np.mean(lad_aim))[None, :]
     x_tables = []
     y_tables = []
@@ -1562,6 +1915,17 @@ def print_2383_density_from_negative(
     negative_density_rgb: np.ndarray,
 ) -> np.ndarray:
     """Return gray-scale calibrated 2383 Status-A densities."""
+    if PRINT_2383_DENSITY_NEUTRAL_POLICY == (
+        "published_separated_status_a_curves_unshaped_v64"
+    ):
+        return _raw_print_2383_density_from_negative(negative_density_rgb)
+    if PRINT_2383_DENSITY_NEUTRAL_POLICY != (
+        "continuous_principal_mean_shaper_archive"
+    ):
+        raise ValueError(
+            "unknown 2383 density-neutral policy: "
+            f"{PRINT_2383_DENSITY_NEUTRAL_POLICY}"
+        )
     global _PRINT_2383_NEUTRAL_SHAPERS
     if _PRINT_2383_NEUTRAL_SHAPERS is None:
         _PRINT_2383_NEUTRAL_SHAPERS = _build_2383_neutral_shapers()
@@ -1617,7 +1981,7 @@ def _cie_1931_xyz_official_1nm() -> tuple[np.ndarray, np.ndarray]:
 
 
 def _blackbody_spd(wavelength_nm: np.ndarray, temperature_k: float) -> np.ndarray:
-    """Relative Planck spectrum for a xenon-projection white approximation."""
+    """Relative Planck spectrum used only as an illuminant bracket."""
     wavelength_m = wavelength_nm.astype(np.float64) * 1e-9
     c2 = 1.438776877e-2
     spd = 1.0 / (
@@ -1651,10 +2015,25 @@ def _print_2383_analytical_amount_axes(
     ).astype(np.float64)
     weights = PRINT_STATUS_A_RGB_WEIGHTS.astype(np.float64)
     weight_sums = np.sum(weights, axis=0)
+    base = np.interp(
+        PRINT_STATUS_A_WAVELENGTHS_NM,
+        PRINT_DYE_WAVELENGTHS_NM,
+        PRINT_2383_DMIN_SPECTRAL_DENSITY,
+    ).astype(np.float64)
     amount_axis = np.linspace(0.0, 14.0, 28001, dtype=np.float64)
     result: list[np.ndarray] = []
     for channel in range(3):
         spectral_density = amount_axis[:, None] * dye_spectra[None, :, channel]
+        if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+            "vector_neutral_residual_v59",
+            "vector_neutral_residual_dmin_registered_v60",
+        }:
+            spectral_density = spectral_density + base[None, :]
+        elif PRINT_2383_DMIN_SPECTRAL_POLICY != "scalar_status_a_archive":
+            raise ValueError(
+                "unknown 2383 D-min spectral policy: "
+                f"{PRINT_2383_DMIN_SPECTRAL_POLICY}"
+            )
         transmission = np.power(10.0, -np.clip(spectral_density, 0.0, 20.0))
         measured = np.einsum(
             "...w,w->...", transmission, weights[:, channel]
@@ -1662,18 +2041,307 @@ def _print_2383_analytical_amount_axes(
         principal_density = -np.log10(
             np.maximum(measured / weight_sums[channel], 1e-12)
         )
+        target_density = np.asarray(status_a_axis, dtype=np.float64)
+        if PRINT_2383_DMIN_SPECTRAL_POLICY == "scalar_status_a_archive":
+            target_density = np.maximum(
+                target_density
+                - float(PRINT_2383_STATUS_A_DMIN_RGB[channel]),
+                0.0,
+            )
+        elif (
+            PRINT_2383_DMIN_SPECTRAL_POLICY
+            == "vector_neutral_residual_dmin_registered_v60"
+        ):
+            base_transmission = np.power(
+                10.0, -np.clip(base, 0.0, 20.0)
+            )
+            base_density = -np.log10(
+                max(
+                    np.sum(base_transmission * weights[:, channel])
+                    / weight_sums[channel],
+                    1e-12,
+                )
+            )
+            principal_density = (
+                principal_density
+                - base_density
+                + float(PRINT_2383_STATUS_A_DMIN_RGB[channel])
+            )
         result.append(
-            np.interp(
-                np.maximum(
-                    np.asarray(status_a_axis, dtype=np.float64)
-                    - float(PRINT_2383_STATUS_A_DMIN_RGB[channel]),
-                    0.0,
-                ),
-                principal_density,
-                amount_axis,
-            ).astype(np.float32)
+            np.interp(target_density, principal_density, amount_axis).astype(
+                np.float32
+            )
         )
     return result
+
+
+def solve_2383_lad_principal_density_rgb(
+    integral_status_a_target_rgb: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Resolve a processed neutral LAD reading into separation coordinates.
+
+    Kodak H-61B's ``1.09 / 1.06 / 1.03`` values are three simultaneous
+    integral Status-A readings of one developed neutral patch.  They are not
+    the principal densities produced by red-, green- and blue-only exposure.
+    This routine first solves the analytical CMY dye amounts whose combined
+    spectra reproduce the integral target, then computes the principal density
+    each amount would have produced in its own Status-A channel.  The latter is
+    the coordinate required to invert the three published separation H-D
+    curves.
+
+    Archive profiles retain the three measured curve minima as additive
+    Status-A constants. V59 instead integrates the D-min/base spectrum derived
+    from Kodak's plotted Visual Neutral curve. The returned residual makes the
+    active approximation falsifiable.
+    """
+    target = np.asarray(integral_status_a_target_rgb, dtype=np.float64)
+    if target.shape != (3,) or not np.all(np.isfinite(target)):
+        raise ValueError("2383 LAD Status-A target must be one finite RGB triplet")
+
+    dye_spectra = np.stack(
+        [
+            np.interp(
+                PRINT_STATUS_A_WAVELENGTHS_NM,
+                PRINT_DYE_WAVELENGTHS_NM,
+                PRINT_DYE_CMY_SPECTRAL_DENSITY[:, channel],
+            )
+            for channel in range(3)
+        ],
+        axis=1,
+    ).astype(np.float64)
+    weights = PRINT_STATUS_A_RGB_WEIGHTS.astype(np.float64)
+    weight_sums = np.sum(weights, axis=0)
+    dmin = PRINT_2383_STATUS_A_DMIN_RGB.astype(np.float64)
+    base = np.interp(
+        PRINT_STATUS_A_WAVELENGTHS_NM,
+        PRINT_DYE_WAVELENGTHS_NM,
+        PRINT_2383_DMIN_SPECTRAL_DENSITY,
+    ).astype(np.float64)
+
+    amounts = np.ones(3, dtype=np.float64)
+    for _ in range(16):
+        spectral_density = dye_spectra @ amounts
+        if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+            "vector_neutral_residual_v59",
+            "vector_neutral_residual_dmin_registered_v60",
+        }:
+            spectral_density = spectral_density + base
+        elif PRINT_2383_DMIN_SPECTRAL_POLICY != "scalar_status_a_archive":
+            raise ValueError(
+                "unknown 2383 D-min spectral policy: "
+                f"{PRINT_2383_DMIN_SPECTRAL_POLICY}"
+            )
+        transmission = np.power(10.0, -np.clip(spectral_density, 0.0, 20.0))
+        weighted_transmission = transmission[:, None] * weights
+        denominators = np.sum(weighted_transmission, axis=0)
+        status_a = -np.log10(
+            np.maximum(denominators / weight_sums, 1e-12)
+        )
+        if PRINT_2383_DMIN_SPECTRAL_POLICY == "scalar_status_a_archive":
+            status_a = status_a + dmin
+        elif (
+            PRINT_2383_DMIN_SPECTRAL_POLICY
+            == "vector_neutral_residual_dmin_registered_v60"
+        ):
+            base_transmission = np.power(
+                10.0, -np.clip(base, 0.0, 20.0)
+            )
+            base_status_a = -np.log10(
+                np.maximum(
+                    np.sum(base_transmission[:, None] * weights, axis=0)
+                    / weight_sums,
+                    1e-12,
+                )
+            )
+            status_a = status_a - base_status_a + dmin
+        residual = target - status_a
+        if np.max(np.abs(residual)) < 1e-10:
+            break
+        # d(Status-A channel k) / d(dye amount j).  The ln(10) factors
+        # cancel analytically, avoiding finite-difference instability.
+        jacobian = np.empty((3, 3), dtype=np.float64)
+        for channel in range(3):
+            jacobian[channel] = (
+                weighted_transmission[:, channel] @ dye_spectra
+            ) / max(denominators[channel], 1e-12)
+        step = np.linalg.solve(jacobian, residual)
+        amounts = np.clip(amounts + step, 0.0, 14.0)
+    else:
+        raise RuntimeError("2383 integral LAD spectral inverse did not converge")
+
+    spectral_density = dye_spectra @ amounts
+    if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+        "vector_neutral_residual_v59",
+        "vector_neutral_residual_dmin_registered_v60",
+    }:
+        spectral_density = spectral_density + base
+    transmission = np.power(10.0, -np.clip(spectral_density, 0.0, 20.0))
+    reconstructed = -np.log10(
+        np.maximum(
+            np.sum(transmission[:, None] * weights, axis=0) / weight_sums,
+            1e-12,
+        )
+    )
+    if PRINT_2383_DMIN_SPECTRAL_POLICY == "scalar_status_a_archive":
+        reconstructed = reconstructed + dmin
+    elif (
+        PRINT_2383_DMIN_SPECTRAL_POLICY
+        == "vector_neutral_residual_dmin_registered_v60"
+    ):
+        base_transmission = np.power(10.0, -np.clip(base, 0.0, 20.0))
+        base_status_a = -np.log10(
+            np.maximum(
+                np.sum(base_transmission[:, None] * weights, axis=0)
+                / weight_sums,
+                1e-12,
+            )
+        )
+        reconstructed = reconstructed - base_status_a + dmin
+    residual = reconstructed - target
+    if np.max(np.abs(residual)) > 1e-7:
+        raise RuntimeError(
+            "2383 integral LAD inverse residual exceeds evidence tolerance"
+        )
+
+    principal = np.empty(3, dtype=np.float64)
+    for channel in range(3):
+        single_density = amounts[channel] * dye_spectra[:, channel]
+        if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+            "vector_neutral_residual_v59",
+            "vector_neutral_residual_dmin_registered_v60",
+        }:
+            single_density = single_density + base
+        single_transmission = np.power(
+            10.0, -np.clip(single_density, 0.0, 20.0)
+        )
+        principal[channel] = -np.log10(
+            max(
+                np.sum(single_transmission * weights[:, channel])
+                / weight_sums[channel],
+                1e-12,
+            )
+        )
+        if PRINT_2383_DMIN_SPECTRAL_POLICY == "scalar_status_a_archive":
+            principal[channel] += dmin[channel]
+        elif (
+            PRINT_2383_DMIN_SPECTRAL_POLICY
+            == "vector_neutral_residual_dmin_registered_v60"
+        ):
+            base_transmission = np.power(
+                10.0, -np.clip(base, 0.0, 20.0)
+            )
+            base_density = -np.log10(
+                max(
+                    np.sum(base_transmission * weights[:, channel])
+                    / weight_sums[channel],
+                    1e-12,
+                )
+            )
+            principal[channel] = (
+                principal[channel] - base_density + dmin[channel]
+            )
+    return (
+        principal.astype(np.float32),
+        amounts.astype(np.float32),
+        residual.astype(np.float32),
+    )
+
+
+def integral_status_a_from_2383_principal_density_rgb(
+    principal_density_rgb: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Forward one separation-density triplet to combined integral Status-A."""
+    principal = np.asarray(principal_density_rgb, dtype=np.float32)
+    if principal.shape != (3,) or not np.all(np.isfinite(principal)):
+        raise ValueError("2383 principal density must be one finite RGB triplet")
+    amounts = np.asarray(
+        [
+            _print_2383_analytical_amount_axes(
+                np.asarray([principal[channel]], dtype=np.float32)
+            )[channel][0]
+            for channel in range(3)
+        ],
+        dtype=np.float64,
+    )
+    dye_spectra = np.stack(
+        [
+            np.interp(
+                PRINT_STATUS_A_WAVELENGTHS_NM,
+                PRINT_DYE_WAVELENGTHS_NM,
+                PRINT_DYE_CMY_SPECTRAL_DENSITY[:, channel],
+            )
+            for channel in range(3)
+        ],
+        axis=1,
+    ).astype(np.float64)
+    weights = PRINT_STATUS_A_RGB_WEIGHTS.astype(np.float64)
+    combined_density = dye_spectra @ amounts
+    if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+        "vector_neutral_residual_v59",
+        "vector_neutral_residual_dmin_registered_v60",
+    }:
+        combined_density = combined_density + np.interp(
+            PRINT_STATUS_A_WAVELENGTHS_NM,
+            PRINT_DYE_WAVELENGTHS_NM,
+            PRINT_2383_DMIN_SPECTRAL_DENSITY,
+        )
+    transmission = np.power(10.0, -np.clip(combined_density, 0.0, 20.0))
+    status_a = -np.log10(
+        np.maximum(
+            np.sum(transmission[:, None] * weights, axis=0)
+            / np.sum(weights, axis=0),
+            1e-12,
+        )
+    )
+    if PRINT_2383_DMIN_SPECTRAL_POLICY == "scalar_status_a_archive":
+        status_a = status_a + PRINT_2383_STATUS_A_DMIN_RGB.astype(np.float64)
+    elif (
+        PRINT_2383_DMIN_SPECTRAL_POLICY
+        == "vector_neutral_residual_dmin_registered_v60"
+    ):
+        base = np.interp(
+            PRINT_STATUS_A_WAVELENGTHS_NM,
+            PRINT_DYE_WAVELENGTHS_NM,
+            PRINT_2383_DMIN_SPECTRAL_DENSITY,
+        )
+        base_transmission = np.power(10.0, -np.clip(base, 0.0, 20.0))
+        base_status_a = -np.log10(
+            np.maximum(
+                np.sum(base_transmission[:, None] * weights, axis=0)
+                / np.sum(weights, axis=0),
+                1e-12,
+            )
+        )
+        status_a = (
+            status_a
+            - base_status_a
+            + PRINT_2383_STATUS_A_DMIN_RGB.astype(np.float64)
+        )
+    return status_a.astype(np.float32), amounts.astype(np.float32)
+
+
+def _active_2383_lad_principal_density_rgb() -> np.ndarray:
+    """Return the LAD target expressed in the active H-D curve coordinate."""
+    if PRINT_2383_LAD_PRINCIPAL_POLICY == "status_a_channels_archive":
+        return np.asarray(
+            PRINT_2383_LAD_STATUS_A_AIM_RGB, dtype=np.float32
+        )
+    if PRINT_2383_LAD_PRINCIPAL_POLICY == "integral_spectral_inverse_v58":
+        return np.asarray(
+            PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB, dtype=np.float32
+        )
+    if PRINT_2383_LAD_PRINCIPAL_POLICY == "integral_spectral_inverse_v59":
+        return np.asarray(
+            PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB, dtype=np.float32
+        )
+    if PRINT_2383_LAD_PRINCIPAL_POLICY == "integral_spectral_inverse_v60":
+        return np.asarray(
+            PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB, dtype=np.float32
+        )
+    raise ValueError(
+        "unknown 2383 LAD principal-density policy: "
+        f"{PRINT_2383_LAD_PRINCIPAL_POLICY}"
+    )
 
 
 def build_2383_projection_lut(size: int = 25) -> np.ndarray:
@@ -1706,11 +2374,17 @@ def build_2383_projection_lut(size: int = 25) -> np.ndarray:
         integration_weights = np.ones(integration_wavelengths.size, dtype=np.float64)
         integration_weights[[0, -1]] = 0.5
         weighted_cmf = illuminant[:, None] * cmf * integration_weights[:, None]
+        base_spectrum = np.interp(
+            integration_wavelengths,
+            PRINT_DYE_WAVELENGTHS_NM,
+            PRINT_2383_DMIN_SPECTRAL_DENSITY,
+        )
     elif PRINT_2383_CMF_MODE == "analytic_20nm":
         dye_spectra = PRINT_DYE_CMY_SPECTRAL_DENSITY
         cmf = _cie_1931_xyz_approx(PRINT_DYE_WAVELENGTHS_NM)
         illuminant = KODAK_XENON_PROJECTOR_RELATIVE_SPD
         weighted_cmf = illuminant[:, None] * cmf
+        base_spectrum = PRINT_2383_DMIN_SPECTRAL_DENSITY
     else:
         raise ValueError(f"unknown 2383 CMF integration mode: {PRINT_2383_CMF_MODE}")
     white_xyz = np.sum(weighted_cmf, axis=0)
@@ -1740,9 +2414,13 @@ def build_2383_projection_lut(size: int = 25) -> np.ndarray:
     # Some accelerated BLAS builds emit spurious floating-point status warnings
     # for these finite float32 matrices; the values are explicitly bounded.
     with np.errstate(all="ignore"):
-        spectral_density = np.clip(
-            cmy @ dye_spectra.T, 0.0, 16.0
-        )
+        spectral_density = cmy @ dye_spectra.T
+        if PRINT_2383_DMIN_SPECTRAL_POLICY in {
+            "vector_neutral_residual_v59",
+            "vector_neutral_residual_dmin_registered_v60",
+        }:
+            spectral_density = spectral_density + base_spectrum[None, :]
+        spectral_density = np.clip(spectral_density, 0.0, 16.0)
         transmission = np.power(10.0, -spectral_density)
         xyz = transmission @ weighted_cmf
         xyz /= white_xyz[1]
@@ -1894,20 +2572,77 @@ def neutralize_2383_projected_gray_scale(projected: np.ndarray) -> np.ndarray:
     """
     global _PRINT_2383_VIEW_NEUTRAL_TABLE
     if _PRINT_2383_VIEW_NEUTRAL_TABLE is None:
-        densities = np.linspace(0.0, PRINT_2383_DMAX, 257, dtype=np.float32)
-        neutral_density = np.repeat(densities[:, None], 3, axis=1)[None, ...]
-        neutral_density = apply_2383_callier_density(neutral_density)
-        neutral_rgb = apply_2383_projection_lut(neutral_density)[0]
+        if PRINT_2383_VIEW_NEUTRAL_POLICY == (
+            "equal_principal_status_a_axis_archive"
+        ):
+            densities = np.linspace(
+                0.0, PRINT_2383_DMAX, 257, dtype=np.float32
+            )
+            neutral_density = np.repeat(
+                densities[:, None], 3, axis=1
+            )[None, ...]
+            neutral_density = apply_2383_callier_density(neutral_density)
+            neutral_rgb = apply_2383_projection_lut(neutral_density)[0]
+        elif PRINT_2383_VIEW_NEUTRAL_POLICY == (
+            "actual_5279_to_2383_neutral_trajectory_v63"
+        ):
+            # H-61B requires the six gray patches of a normally balanced print
+            # to appear neutral.  Build that invariant in the coordinate the
+            # engine actually uses: a neutral scene exposure, V61's joint
+            # Status-M negative, V62's spectral printer path and the corrected
+            # 2383 principal H-D/LAD model.  No colour patch or scan reference
+            # enters this table.
+            stops = np.linspace(-12.0, 9.0, 337, dtype=np.float32)
+            levels = 0.18 * np.power(2.0, stops)
+            neutral_scene = np.repeat(levels[:, None], 3, axis=1)
+            neutral_film = vgamut_to_balanced_film_rgb(
+                bt2020_to_panasonic_vgamut(neutral_scene)
+            )
+            neutral_negative_records = develop_5279_record_density(
+                film_records_from_rgb(neutral_film)
+            )
+            neutral_printer_density = (
+                negative_total_printer_density_from_record_density(
+                    neutral_negative_records
+                )
+            )
+            neutral_print_density = print_2383_density_from_negative(
+                neutral_printer_density
+            )
+            neutral_rgb = apply_2383_projection_lut(
+                apply_2383_callier_density(neutral_print_density)
+            )
+        else:
+            raise ValueError(
+                "unknown 2383 view-neutral policy: "
+                f"{PRINT_2383_VIEW_NEUTRAL_POLICY}"
+            )
         neutral_rgb = np.maximum(neutral_rgb, 1e-8)
         neutral_luma = np.einsum(
             "...c,c->...", neutral_rgb, [0.2126, 0.7152, 0.0722]
         )
         factors = neutral_luma[:, None] / neutral_rgb
         order = np.argsort(neutral_luma)
-        _PRINT_2383_VIEW_NEUTRAL_TABLE = (
-            neutral_luma[order].astype(np.float32),
-            np.clip(factors[order], 0.35, 2.50).astype(np.float32),
-        )
+        neutral_luma = neutral_luma[order]
+        factors = factors[order]
+        if PRINT_2383_VIEW_NEUTRAL_POLICY == (
+            "equal_principal_status_a_axis_archive"
+        ):
+            # Preserve the historical table construction byte-for-byte.  The
+            # equal-density axis was already monotonic and old profiles must
+            # not acquire V63's defensive duplicate handling.
+            _PRINT_2383_VIEW_NEUTRAL_TABLE = (
+                neutral_luma.astype(np.float32),
+                np.clip(factors, 0.35, 2.50).astype(np.float32),
+            )
+        else:
+            neutral_luma, unique = np.unique(
+                neutral_luma, return_index=True
+            )
+            _PRINT_2383_VIEW_NEUTRAL_TABLE = (
+                neutral_luma.astype(np.float32),
+                np.clip(factors[unique], 0.35, 2.50).astype(np.float32),
+            )
     luma_axis, factor_table = _PRINT_2383_VIEW_NEUTRAL_TABLE
     luma = np.einsum("...c,c->...", np.maximum(projected, 0.0), [0.2126, 0.7152, 0.0722])
     corrected = np.empty_like(projected)
@@ -2020,9 +2755,7 @@ def _render_2383_projection_uncalibrated_from_print_density(
     # raised 2383 D-max far above its physical black; this rational curve has a
     # finite shadow slope and still maps clear film to the chosen peak.
     peak = 0.965
-    lad_density = np.asarray(
-        PRINT_2383_LAD_STATUS_A_AIM_RGB, dtype=np.float32
-    )[None, None, :]
+    lad_density = _active_2383_lad_principal_density_rgb()[None, None, :]
     lad_projected = neutralize_2383_projected_gray_scale(
         np.maximum(
             apply_2383_projection_lut(apply_2383_callier_density(lad_density)),
@@ -2460,6 +3193,17 @@ def _render_2383_monitor_projection_base_from_record_density(
         hybrid = compress_oklab_chroma_to_rec709(
             oklab_to_linear_rec709(hybrid_lab)
         )
+        if PRINT_MONITOR_COLOUR_AUTHORITY == "physical_spectral_v56":
+            # V56 evidence experiment: the newly vector-traced 2383 spectra
+            # own delivered hue/chroma. Retain the established neutral display
+            # curve and highlight guard, but do not replace film colour with
+            # the Spirit/Cineon branch after spectral projection.
+            hybrid = physical_view
+        elif PRINT_MONITOR_COLOUR_AUTHORITY != "scan_referenced_v31":
+            raise ValueError(
+                "unknown projection-monitor colour authority: "
+                f"{PRINT_MONITOR_COLOUR_AUTHORITY}"
+            )
 
         _reference_lab, target_neutral, scan_relative_chroma = scan_metrics
         neutral_highlight_weight = (
@@ -2490,6 +3234,21 @@ def continuous_cineon_code_from_scanner_density(
     return (
         (95.0 + np.asarray(scanner_density) * gain / 0.002) / 1023.0
     ).astype(np.float32)
+
+
+def quantized_cineon_code_from_scanner_density(
+    scanner_density: np.ndarray,
+) -> np.ndarray:
+    """Return the exact unsigned 10-bit printing-density code used by the view.
+
+    The internal scanner signal is Dmin-referenced and balanced so the neutral
+    mid aim lands at code 445.  Adding Kodak's code-95 reference-black aim then
+    places it in the conventional 0.002 printing-density-per-code coordinate.
+    The returned uint16 container carries only 10 significant bits.
+    """
+    gain = 0.700 / np.maximum(NEUTRAL_MID_SCANNER_DENSITY, 1e-6)
+    code = 95.0 + np.asarray(scanner_density) * gain / 0.002
+    return np.clip(np.rint(code), 0.0, 1023.0).astype(np.uint16)
 
 
 def load_2383_d60_relative_chroma_delta_lut() -> np.ndarray:
@@ -2700,13 +3459,41 @@ def render_cineon_scan_master_from_scanner_density(
     scanner_density: np.ndarray,
 ) -> np.ndarray:
     """Map an optically sampled Spirit RGB density signal through Cineon."""
+    cineon_code = quantized_cineon_code_from_scanner_density(
+        scanner_density
+    )
+    return _render_cineon_open_display_from_valid_code(cineon_code)
+
+
+def render_cineon_open_display_from_code(
+    cineon_code: np.ndarray,
+) -> np.ndarray:
+    """Apply only the named open-monitor policy to Cineon exchange codes.
+
+    This function consumes printing-density code values directly. It does not
+    need the scene exposure, mean negative, stochastic site fields or a second
+    scanner traversal, which makes the data/view boundary mechanically
+    auditable. The curve itself remains the provisional V66 display policy.
+    """
+    code = np.asarray(cineon_code)
+    if code.ndim < 1 or code.shape[-1] != 3:
+        raise ValueError("Cineon view input must end in RGB components")
+    if not np.all(np.isfinite(code)):
+        raise ValueError("Cineon view input contains non-finite code values")
+    if np.any(code < 0) or np.any(code > 1023):
+        raise ValueError("Cineon view input lies outside the 10-bit code range")
+    return _render_cineon_open_display_from_valid_code(code)
+
+
+def _render_cineon_open_display_from_valid_code(
+    cineon_code: np.ndarray,
+) -> np.ndarray:
+    """Internal pointwise view after code validation/quantization."""
+    code = np.asarray(cineon_code)
+    code = code.astype(np.float32, copy=False)
     cineon_mid_density = 0.700
     gain = cineon_mid_density / np.maximum(NEUTRAL_MID_SCANNER_DENSITY, 1e-6)
-    matched_density = scanner_density * gain
-    cineon_code = np.clip(
-        np.rint(95.0 + matched_density / 0.002), 0.0, 1023.0
-    )
-    decoded_density = (cineon_code - 95.0) * 0.002
+    decoded_density = (code - 95.0) * 0.002
     # Code 95 is a reference-black aim, not the minimum legal Cineon code.
     # Preserve the small amount of sub-reference toe with a smooth positive
     # density rather than clipping every value from 0 through 94 to one black.
@@ -2932,6 +3719,59 @@ NEUTRAL_HIGH_SCANNER_DENSITY = scanner_density_from_total_record_density(
         film_records_from_rgb(np.array([10.0, 10.0, 10.0], dtype=np.float32))
     )
 )
+
+
+def refresh_5279_spectral_observer_caches() -> None:
+    """Invalidate products derived from 5279 or 2383 sensitometry/spectra.
+
+    Profiles are mutable modules for Archive compatibility. A sensitometric or
+    spectral profile must therefore clear the direct negative LUTs and every
+    downstream neutral/monitor product before a release lattice is installed.
+    """
+    global _NEGATIVE_5279_NET_DENSITY_LUT
+    global _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT
+    global _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER
+    global _NEGATIVE_5279_ANALYTICAL_CMY_LUTS
+    global _PRINT_2383_PROJECTION_LUT
+    global _PRINT_2383_NEUTRAL_SHAPERS
+    global _PRINT_2383_VIEW_NEUTRAL_TABLE
+    global _PRINT_2383_H61_COLOUR_DELTA_LUTS
+    global _PRINT_2383_MONITOR_DELTA_LUT
+    global _PRINT_2383_MONITOR_NEUTRAL_CURVE
+    global _PRINT_2383_D60_RELATIVE_CHROMA_DELTA_LUT
+    global _PRINT_2383_MONITOR_OUTPUT_LUT
+    global _SPIRIT_NEUTRAL_SCALE_TABLE
+    global NEUTRAL_MID_SCANNER_DENSITY
+    global NEUTRAL_HIGH_SCANNER_DENSITY
+
+    _NEGATIVE_5279_NET_DENSITY_LUT = None
+    _NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = None
+    _V46_ADAPTIVE_PRINTER_DENSITY_OBSERVER = None
+    _NEGATIVE_5279_ANALYTICAL_CMY_LUTS = {}
+    _PRINT_2383_PROJECTION_LUT = None
+    _PRINT_2383_NEUTRAL_SHAPERS = None
+    _PRINT_2383_VIEW_NEUTRAL_TABLE = None
+    _PRINT_2383_H61_COLOUR_DELTA_LUTS = {}
+    _PRINT_2383_MONITOR_DELTA_LUT = None
+    _PRINT_2383_MONITOR_NEUTRAL_CURVE = None
+    _PRINT_2383_D60_RELATIVE_CHROMA_DELTA_LUT = None
+    _PRINT_2383_MONITOR_OUTPUT_LUT = None
+    _SPIRIT_NEUTRAL_SCALE_TABLE = None
+
+    NEUTRAL_MID_SCANNER_DENSITY = scanner_density_from_total_record_density(
+        record_densities(
+            film_records_from_rgb(
+                np.array([0.18, 0.18, 0.18], dtype=np.float32)
+            )
+        )
+    )
+    NEUTRAL_HIGH_SCANNER_DENSITY = scanner_density_from_total_record_density(
+        record_densities(
+            film_records_from_rgb(
+                np.array([10.0, 10.0, 10.0], dtype=np.float32)
+            )
+        )
+    )
 
 
 def compress_unit_gamut(rgb: np.ndarray) -> np.ndarray:
@@ -3654,6 +4494,44 @@ def form_5279_multilayer_record_density(
     )
     if activations.shape != work_log_exposure.shape + (3,):
         raise ValueError("precomputed activations must match working exposure")
+    stochastic_exposure_started = time.perf_counter()
+    if (
+        GRAIN_STOCHASTIC_EXPOSURE_POLICY
+        == "full_stochastic_state_endpoint_hold"
+    ):
+        lower_exposure = np.full(
+            (1, 1, 3), float(GRANULARITY_LOG_EXPOSURE[0]), dtype=np.float32
+        )
+        upper_exposure = np.full(
+            (1, 1, 3), float(GRANULARITY_LOG_EXPOSURE[-1]), dtype=np.float32
+        )
+        lower_activation = subemulsion_activation_probabilities(lower_exposure)[
+            0, 0
+        ]
+        upper_activation = subemulsion_activation_probabilities(upper_exposure)[
+            0, 0
+        ]
+        # The precomputed deterministic mean has already consumed activations.
+        # The stochastic coupling path historically mutates this tensor in
+        # place, so clipping here adds no image-sized allocation.
+        np.clip(
+            activations,
+            lower_activation[None, None, ...],
+            upper_activation[None, None, ...],
+            out=activations,
+        )
+    elif (
+        GRAIN_STOCHASTIC_EXPOSURE_POLICY
+        != "legacy_target_only_endpoint_hold"
+    ):
+        raise ValueError(
+            "unknown stochastic grain exposure policy: "
+            f"{GRAIN_STOCHASTIC_EXPOSURE_POLICY}"
+        )
+    record_operator(
+        "outer_stochastic_exposure_endpoint_policy",
+        stochastic_exposure_started,
+    )
     record_operator("outer_activation_probabilities", activation_started)
     sigma_started = time.perf_counter()
     target_sigma = published_5279_granularity_sigma(work_log_exposure)
@@ -3950,8 +4828,16 @@ def form_5279_multilayer_record_density(
         raise ValueError(
             f"unknown grain calibration domain: {GRAIN_CALIBRATION_DOMAIN}"
         )
-    upper = SENSITO_DENSITY_RGB[:, -1] + 0.12
-    formed = np.minimum(np.maximum(formed, 0.0), upper)
+    if GRAIN_LOCAL_DENSITY_BOUND_MODE == "legacy_macro_dmax_plus_0_12":
+        upper = SENSITO_DENSITY_RGB[:, -1] + 0.12
+        formed = np.minimum(np.maximum(formed, 0.0), upper)
+    elif GRAIN_LOCAL_DENSITY_BOUND_MODE == "nonnegative_microscopic_density":
+        formed = np.maximum(formed, 0.0)
+    else:
+        raise ValueError(
+            "unknown local grain-density bound mode: "
+            f"{GRAIN_LOCAL_DENSITY_BOUND_MODE}"
+        )
     record_operator("outer_calibration_and_clip", calibration_started)
 
     if oversample != 1:
@@ -4651,6 +5537,7 @@ def reconstruct_density_pair_to_dual_display_v39(
     grain_scale: float,
     output_encoding: str = "linear_rec709",
     return_mean_pair: bool = False,
+    return_cineon_code: bool = False,
     branch_executor: concurrent.futures.Executor | None = None,
 ) -> tuple[np.ndarray, ...]:
     """Render V39 projection and scan while sharing physical intermediates.
@@ -4670,17 +5557,56 @@ def reconstruct_density_pair_to_dual_display_v39(
         + np.asarray(formed_density, dtype=np.float32)
         - np.asarray(mean_density, dtype=np.float32)
     ).astype(np.float32)
-    scanner_density = scanner_density_from_total_record_density(negative_formed)
-    if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        mean_scanner_density = scanner_density_from_total_record_density(
-            negative_mean
+    shared_negative_printer_mean = None
+    if SPIRIT_PRIMARY_CORRECTION_TARGET == "active_2383_printing_density_v66":
+        # V66+ defines Cineon scanner density as the same spectrally integrated
+        # 2383 printing density with calibrated D-min removed.  Compute that
+        # physical observation once, then derive both coordinates so the
+        # projection receives the exact same float32 value rather than a
+        # subtract/re-add reconstruction.
+        base_printing_density = (
+            negative_total_printer_density_from_record_density(
+                SENSITO_DMIN_RGB
+            )
         )
+        formed_negative_printer = (
+            negative_total_printer_density_from_record_density(negative_formed)
+        )
+        scanner_density = (
+            formed_negative_printer - base_printing_density
+        ).astype(np.float32)
+        if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            shared_negative_printer_mean = (
+                negative_total_printer_density_from_record_density(negative_mean)
+            )
+            mean_scanner_density = (
+                shared_negative_printer_mean - base_printing_density
+            ).astype(np.float32)
+        else:
+            mean_scanner_density = None
     else:
-        mean_scanner_density = None
+        scanner_density = scanner_density_from_total_record_density(
+            negative_formed
+        )
+        mean_scanner_density = (
+            scanner_density_from_total_record_density(negative_mean)
+            if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT
+            else None
+        )
 
-    def render_scan_branch() -> tuple[np.ndarray, np.ndarray | None]:
+    def render_scan_branch() -> tuple[
+        np.ndarray, np.ndarray | None, np.ndarray | None
+    ]:
+        sampled_scanner_density = apply_spirit_2k_scan_aperture_to_density(
+            scanner_density
+        )
         formed_scan = render_cineon_scan_master_from_scanner_density(
-            apply_spirit_2k_scan_aperture_to_density(scanner_density)
+            sampled_scanner_density
+        )
+        cineon_code = (
+            quantized_cineon_code_from_scanner_density(sampled_scanner_density)
+            if return_cineon_code
+            else None
         )
         formed_scan = finish_cineon_scan_for_bluray(formed_scan)
         if FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
@@ -4698,11 +5624,15 @@ def reconstruct_density_pair_to_dual_display_v39(
         scan = compress_oklab_chroma_to_rec709(scan)
         if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
             scan = neutralize_spirit_finished_gray_scale(scan)
-        return scan, mean_scan
+        return scan, mean_scan, cineon_code
 
     def render_projection_branch() -> tuple[np.ndarray, np.ndarray | None]:
         negative_printer_mean = (
-            negative_total_printer_density_from_record_density(negative_mean)
+            shared_negative_printer_mean
+            if shared_negative_printer_mean is not None
+            else negative_total_printer_density_from_record_density(
+                negative_mean
+            )
         )
         print_mean = print_2383_density_from_negative(negative_printer_mean)
         print_mean_mtf = apply_2383_mtf_to_print_density(
@@ -4799,12 +5729,12 @@ def reconstruct_density_pair_to_dual_display_v39(
         return projection, mean_projection
 
     if branch_executor is None:
-        scan, mean_scan = render_scan_branch()
+        scan, mean_scan, cineon_code = render_scan_branch()
         projection, mean_projection = render_projection_branch()
     else:
         scan_future = branch_executor.submit(render_scan_branch)
         projection_future = branch_executor.submit(render_projection_branch)
-        scan, mean_scan = scan_future.result()
+        scan, mean_scan, cineon_code = scan_future.result()
         projection, mean_projection = projection_future.result()
 
     def encode(image: np.ndarray) -> np.ndarray:
@@ -4819,25 +5749,28 @@ def reconstruct_density_pair_to_dual_display_v39(
         raise ValueError(f"unknown output encoding: {output_encoding}")
 
     result = (encode(projection), encode(scan))
-    if not return_mean_pair:
-        return result
-    if not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
-        raise ValueError("mean observer pair requires managed formed density")
-    assert mean_scan is not None
-    assert mean_projection is not None
-    deterministic_scan = compress_oklab_chroma_to_rec709(mean_scan)
-    if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
-        deterministic_scan = neutralize_spirit_finished_gray_scale(
-            deterministic_scan
+    if return_mean_pair:
+        if not FORMED_DENSITY_OBSERVER_GRAIN_MANAGEMENT:
+            raise ValueError("mean observer pair requires managed formed density")
+        assert mean_scan is not None
+        assert mean_projection is not None
+        deterministic_scan = compress_oklab_chroma_to_rec709(mean_scan)
+        if SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
+            deterministic_scan = neutralize_spirit_finished_gray_scale(
+                deterministic_scan
+            )
+        deterministic_projection = preserve_perceptual_grain_mean(
+            mean_projection, mean_projection
         )
-    deterministic_projection = preserve_perceptual_grain_mean(
-        mean_projection, mean_projection
-    )
-    return (
-        *result,
-        encode(deterministic_projection),
-        encode(deterministic_scan),
-    )
+        result = (
+            *result,
+            encode(deterministic_projection),
+            encode(deterministic_scan),
+        )
+    if return_cineon_code:
+        assert cineon_code is not None
+        result = (*result, cineon_code)
+    return result
 
 
 def label_panel(image: np.ndarray, text: str) -> np.ndarray:
@@ -5328,6 +6261,13 @@ def main() -> None:
         "subemulsion_representative_ecd_um_rgb": SUBEMULSION_ECD_UM_RGB.tolist(),
         "subemulsion_cloud_radius_px_5760_rgb": SUBEMULSION_CLOUD_RADIUS_PX_5760_RGB.tolist(),
         "subemulsion_optical_sigma_px_5760_rgb": SUBEMULSION_OPTICAL_SIGMA_PX_5760_RGB.tolist(),
+        "grain_site_rasterization_mode": GRAIN_SITE_RASTERIZATION_MODE,
+        "grain_local_density_bound_mode": GRAIN_LOCAL_DENSITY_BOUND_MODE,
+        "grain_stochastic_exposure_policy": GRAIN_STOCHASTIC_EXPOSURE_POLICY,
+        "granularity_log_exposure": GRANULARITY_LOG_EXPOSURE.tolist(),
+        "granularity_sigma_d_rgb": GRANULARITY_SIGMA_D_RGB.tolist(),
+        "negative_5279_net_dye_cmy_spectral_density": NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY.tolist(),
+        "negative_5279_dmin_spectral_density": NEGATIVE_5279_DMIN_SPECTRAL_DENSITY.tolist(),
         "subemulsion_effective_site_counts_at_5760_rgb": SUBEMULSION_SITE_COUNT_PX_5760_RGB.tolist(),
         "negative_grain_correlation_scale": NEGATIVE_GRAIN_CORRELATION_SCALE,
         "grain_size_class_fractions": GRAIN_SIZE_CLASS_FRACTIONS.tolist(),
@@ -5367,7 +6307,7 @@ def main() -> None:
             )
         ),
         "print_lad_density": PRINT_2383_LAD_DENSITY if args.look in PRINT_LOOKS else None,
-        "projection_illuminant": "Kodak reference-guide xenon SPD; 2383 visual-density calibration at 5400 K" if args.look in PRINT_LOOKS else None,
+        "projection_illuminant": "Kodak reference-guide generic xenon-lamp SPD bracket (not a measured projector/lens/screen chain); 2383 visual-density reference at 5400 K" if args.look in PRINT_LOOKS else None,
         "projection_callier_effect": "subtle 1.0-1.4% density-domain scatter correction" if args.look in PRINT_LOOKS else None,
         "projection_flare": (
             TYPICAL_CINEMA_PROJECTION_FLARE

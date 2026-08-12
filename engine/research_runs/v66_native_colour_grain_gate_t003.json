@@ -1,0 +1,111 @@
+{
+  "audit": "V66 every-frame native-resolution delivered colour-grain gate",
+  "valid_domain": "two-pixel perimeter excluded: radius-1 median plus radius-1 isolation neighbourhood has no valid support there",
+  "scenes": {
+    "T003_frame160": {
+      "projection": {
+        "path": "outputs/native_5k_v66_cineon_printing_density_1f/T003_frame160/projection/06_quicktime_preview_srgb_prores4444.mov",
+        "frames": [
+          {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 17553965,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.11290287226438522,
+            "luma_p99": 0.8559890389442444,
+            "luma_p999": 0.9245100083947182,
+            "display_black_fraction": 0.04750150707067324,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.03972587942481026,
+            "dark_spikes_gt_0_04_per_million": 92.62864543708501,
+            "dark_spikes_gt_0_05_per_million": 5.354915541873304,
+            "visible_chroma_to_luma_highpass_rms": 0.13136358771439915,
+            "median_opponent_p9999": 0.049912262707948685,
+            "isolated_impulses_gt_0.06_count": 193,
+            "isolated_impulses_gt_0.06_per_million": 10.994667016824975,
+            "isolated_impulses_gt_0.08_count": 0,
+            "isolated_impulses_gt_0.08_per_million": 0.0,
+            "frame": 0
+          }
+        ],
+        "worst": {
+          "luma_p001": 0.0,
+          "luma_p01": 0.0,
+          "luma_p50": 0.11290287226438522,
+          "luma_p99": 0.8559890389442444,
+          "luma_p999": 0.9245100083947182,
+          "display_black_fraction": 0.04750150707067324,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.03972587942481026,
+          "dark_spikes_gt_0_04_per_million": 92.62864543708501,
+          "dark_spikes_gt_0_05_per_million": 5.354915541873304,
+          "visible_chroma_to_luma_highpass_rms": 0.13136358771439915,
+          "median_opponent_p9999": 0.049912262707948685,
+          "isolated_impulses_gt_0.06_count": 193.0,
+          "isolated_impulses_gt_0.06_per_million": 10.994667016824975,
+          "isolated_impulses_gt_0.08_count": 0.0,
+          "isolated_impulses_gt_0.08_per_million": 0.0
+        },
+        "gates": {
+          "dark_p9999_le_0_035": false,
+          "opponent_to_luma_le_0_20": true,
+          "median_p9999_le_0_05": true,
+          "isolated_gt_0_06_count_le_ceil_5_per_million": false,
+          "isolated_gt_0_08_count_le_ceil_1_per_million": true
+        },
+        "pass": false
+      },
+      "scan": {
+        "path": "outputs/native_5k_v66_cineon_printing_density_1f/T003_frame160/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+        "frames": [
+          {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 16124901,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0,
+            "luma_p50": 0.11287076398730278,
+            "luma_p99": 0.7618961334228516,
+            "luma_p999": 0.8827142119407654,
+            "display_black_fraction": 0.05579691675237863,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.034312127381562224,
+            "dark_spikes_gt_0_04_per_million": 14.945828194542093,
+            "dark_spikes_gt_0_05_per_million": 0.43411119237259194,
+            "visible_chroma_to_luma_highpass_rms": 0.7610309721823918,
+            "median_opponent_p9999": 0.038757920265197754,
+            "isolated_impulses_gt_0.06_count": 7,
+            "isolated_impulses_gt_0.06_per_million": 0.43411119237259194,
+            "isolated_impulses_gt_0.08_count": 0,
+            "isolated_impulses_gt_0.08_per_million": 0.0,
+            "frame": 0
+          }
+        ],
+        "worst": {
+          "luma_p001": 0.0,
+          "luma_p01": 0.0,
+          "luma_p50": 0.11287076398730278,
+          "luma_p99": 0.7618961334228516,
+          "luma_p999": 0.8827142119407654,
+          "display_black_fraction": 0.05579691675237863,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.034312127381562224,
+          "dark_spikes_gt_0_04_per_million": 14.945828194542093,
+          "dark_spikes_gt_0_05_per_million": 0.43411119237259194,
+          "visible_chroma_to_luma_highpass_rms": 0.7610309721823918,
+          "median_opponent_p9999": 0.038757920265197754,
+          "isolated_impulses_gt_0.06_count": 7.0,
+          "isolated_impulses_gt_0.06_per_million": 0.43411119237259194,
+          "isolated_impulses_gt_0.08_count": 0.0,
+          "isolated_impulses_gt_0.08_per_million": 0.0
+        },
+        "gates": {
+          "median_p9999_le_0_05": true,
+          "isolated_gt_0_06_count_le_ceil_5_per_million": true,
+          "isolated_gt_0_08_count_le_ceil_1_per_million": true
+        },
+        "pass": true
+      }
+    }
+  },
+  "all_gates_pass": false
+}

@@ -1,0 +1,44 @@
+{
+  "policy": "129_power2_combined_cubic_plus_local_exact_subdivision",
+  "point_count": 16000,
+  "flagged_point_fraction": 0.0821875,
+  "unique_refined_parent_cells": 639,
+  "subdivisions_per_axis": 4,
+  "solver_iterations": 6,
+  "restricted_kkt_enabled": true,
+  "restricted_kkt_audit": {
+    "point_count": 79875,
+    "restricted_branch_point_solves": 154375,
+    "mean_restricted_masks_per_point": 1.9327073552425664,
+    "kkt_fallback_point_count": 15,
+    "kkt_fallback_fraction": 0.00018779342723004695
+  },
+  "refined_node_count_with_duplicates": 79875,
+  "refined_node_active_mask_counts": {
+    "0": 1,
+    "1": 3796,
+    "2": 4079,
+    "3": 7868,
+    "4": 5089,
+    "5": 12039,
+    "6": 19839,
+    "7": 27164
+  },
+  "refined_winner_covered_by_parent_corner_masks_fraction": 0.9998122065727699,
+  "refined_winner_outside_parent_corner_masks_count": 15,
+  "refined_winner_covered_by_corner_plus_hamming1_fraction": 1.0,
+  "refined_winner_outside_corner_plus_hamming1_count": 0,
+  "refinement_build_seconds": 8.282400000000052,
+  "maximum_absolute_printer_density_error": 0.0007227365860322799,
+  "p99_absolute_printer_density_error": 3.715567363633951e-05,
+  "rms_printer_density_error": 1.3970149644802789e-05,
+  "worst_status_m_net_density": [
+    0.3563125729560852,
+    1.1495654582977295,
+    0.7622293829917908
+  ],
+  "worst_output_record": "red",
+  "worst_exact_mask": 6,
+  "quality_gate": 0.001,
+  "quality_gate_pass": true
+}

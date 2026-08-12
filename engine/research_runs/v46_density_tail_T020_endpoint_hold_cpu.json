@@ -1,0 +1,1002 @@
+{
+  "audit": "V46 real-frame microscopic density tail",
+  "profile": "v72",
+  "execution_mode": "archive_cpu",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "absolute_frame": 0,
+  "shape": [
+    4320,
+    5760,
+    3
+  ],
+  "negative_formation_seconds": 19.82933958400008,
+  "grain_calibration_domain": "post_coupling_residual",
+  "local_density_bound_mode": "nonnegative_microscopic_density",
+  "stochastic_exposure_policy": "full_stochastic_state_endpoint_hold",
+  "mean_density": {
+    "minimum_rgb": [
+      0.15896640717983246,
+      0.5950253009796143,
+      0.9253014922142029
+    ],
+    "maximum_rgb": [
+      1.256369948387146,
+      1.862257719039917,
+      2.20762038230896
+    ],
+    "percentile_99_999_rgb": [
+      1.2403343191671379,
+      1.8517769576609155,
+      2.197813356432915
+    ],
+    "nonfinite_count": 0
+  },
+  "formed_density": {
+    "minimum_rgb": [
+      0.0,
+      0.2297097146511078,
+      0.08414030075073242
+    ],
+    "maximum_rgb": [
+      1.4012044668197632,
+      2.0655646324157715,
+      2.722893238067627
+    ],
+    "percentile_99_999_rgb": [
+      1.3536789072191824,
+      1.991442303812506,
+      2.567958540456302
+    ],
+    "nonfinite_count": 0
+  },
+  "comparison_microscopic_limit_rgb": [
+    1.935791015625,
+    2.6137468814849854,
+    2.873138666152954
+  ],
+  "formed_above_comparison_limit_count_rgb": [
+    0,
+    0,
+    0
+  ],
+  "formed_at_zero_count_rgb": [
+    177,
+    0,
+    0
+  ],
+  "worst_pixels": [
+    {
+      "pixel_xy": [
+        2158,
+        428
+      ],
+      "formed_density_rgb": [
+        1.2124816179275513,
+        1.6920477151870728,
+        2.722893238067627
+      ],
+      "mean_density_rgb": [
+        1.195412039756775,
+        1.7999920845031738,
+        2.143890380859375
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -1.001268982887268,
+          -0.9474409818649292,
+          -0.9299383163452148
+        ],
+        "stochastic_log_exposure_rgb": [
+          -1.001268982887268,
+          -0.9474409818649292,
+          -0.9299383163452148
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8673458099365234,
+            0.7248407006263733,
+            0.38084959983825684
+          ],
+          [
+            0.866644024848938,
+            0.7305629253387451,
+            0.4010431468486786
+          ],
+          [
+            0.9047837853431702,
+            0.785694420337677,
+            0.4440739154815674
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.00689628254622221,
+          0.008241073228418827,
+          0.0183748509734869
+        ],
+        "predicted_48um_variance_rgb": [
+          3.440131935207189e-05,
+          4.339052733651234e-05,
+          3.581170227450858e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1757838676233747,
+          1.251083536498577,
+          3.070515845072146
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        2130,
+        325
+      ],
+      "formed_density_rgb": [
+        1.1482031345367432,
+        1.8714978694915771,
+        2.7104098796844482
+      ],
+      "mean_density_rgb": [
+        1.185256004333496,
+        1.8180885314941406,
+        2.1556620597839355
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -1.0215495824813843,
+          -0.9134578704833984,
+          -0.9078287482261658
+        ],
+        "stochastic_log_exposure_rgb": [
+          -1.0215495824813843,
+          -0.9134578704833984,
+          -0.9078287482261658
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8630455136299133,
+            0.7174257040023804,
+            0.37219366431236267
+          ],
+          [
+            0.8733620047569275,
+            0.7420960664749146,
+            0.41539427638053894
+          ],
+          [
+            0.9083505272865295,
+            0.7927001118659973,
+            0.45449358224868774
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.00690240366384387,
+          0.008184287697076797,
+          0.018242768943309784
+        ],
+        "predicted_48um_variance_rgb": [
+          3.4842412304341686e-05,
+          4.2394594709889754e-05,
+          3.528569580349308e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1693546477052377,
+          1.2569721157731517,
+          3.071082014840911
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        1950,
+        370
+      ],
+      "formed_density_rgb": [
+        1.1500226259231567,
+        1.8610635995864868,
+        2.7018747329711914
+      ],
+      "mean_density_rgb": [
+        1.1856869459152222,
+        1.8068170547485352,
+        2.1561264991760254
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -1.0206938982009888,
+          -0.934622585773468,
+          -0.9069551825523376
+        ],
+        "stochastic_log_exposure_rgb": [
+          -1.0206938982009888,
+          -0.934622585773468,
+          -0.9069551825523376
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8632293343544006,
+            0.7177410125732422,
+            0.37255725264549255
+          ],
+          [
+            0.8692127466201782,
+            0.7349511981010437,
+            0.40643784403800964
+          ],
+          [
+            0.908488929271698,
+            0.7929733991622925,
+            0.4549061059951782
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.006902145221829414,
+          0.008219653740525246,
+          0.01823754981160164
+        ],
+        "predicted_48um_variance_rgb": [
+          3.4823860780078185e-05,
+          4.3015623384240896e-05,
+          3.526482042444658e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1696222831636218,
+          1.2532577888291845,
+          3.0711119842877945
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        2075,
+        361
+      ],
+      "formed_density_rgb": [
+        1.1595112085342407,
+        1.8212015628814697,
+        2.686368465423584
+      ],
+      "mean_density_rgb": [
+        1.193715214729309,
+        1.8041226863861084,
+        2.146815299987793
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -1.0046542882919312,
+          -0.9396876692771912,
+          -0.9244419932365417
+        ],
+        "stochastic_log_exposure_rgb": [
+          -1.0046542882919312,
+          -0.9396876692771912,
+          -0.9244419932365417
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8666360378265381,
+            0.7236113548278809,
+            0.37939929962158203
+          ],
+          [
+            0.8682028651237488,
+            0.7332227230072021,
+            0.4043034017086029
+          ],
+          [
+            0.9056819081306458,
+            0.787451982498169,
+            0.44665995240211487
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.00689730467274785,
+          0.008228117600083351,
+          0.018342016264796257
+        ],
+        "predicted_48um_variance_rgb": [
+          3.4475159475251795e-05,
+          4.316387123933482e-05,
+          3.568137431928572e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.174698105864704,
+          1.2523920324665698,
+          3.0706215071767664
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        1322,
+        75
+      ],
+      "formed_density_rgb": [
+        1.3970248699188232,
+        1.852663516998291,
+        2.4040422439575195
+      ],
+      "mean_density_rgb": [
+        1.2330536842346191,
+        1.8447413444519043,
+        2.1900079250335693
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -0.9207939505577087,
+          -0.8633993268013,
+          -0.8433231115341187
+        ],
+        "stochastic_log_exposure_rgb": [
+          -0.9207939505577087,
+          -0.8633993268013,
+          -0.8433231115341187
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8832950592041016,
+            0.7530452013015747,
+            0.41590049862861633
+          ],
+          [
+            0.882729172706604,
+            0.7584878206253052,
+            0.4367912709712982
+          ],
+          [
+            0.9180790185928345,
+            0.8121660351753235,
+            0.4850887060165405
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.006872502155601978,
+          0.008100640028715134,
+          0.01785741187632084
+        ],
+        "predicted_48um_variance_rgb": [
+          3.262462360170714e-05,
+          4.091780492065612e-05,
+          3.372599844400994e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.2032119313128136,
+          1.2663774540201682,
+          3.0749361894708986
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        2012,
+        106
+      ],
+      "formed_density_rgb": [
+        1.4006987810134888,
+        1.9266823530197144,
+        2.309839963912964
+      ],
+      "mean_density_rgb": [
+        1.2133647203445435,
+        1.8274255990982056,
+        2.176206350326538
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -0.9629379510879517,
+          -0.8959172964096069,
+          -0.8692439198493958
+        ],
+        "stochastic_log_exposure_rgb": [
+          -0.9629379510879517,
+          -0.8959172964096069,
+          -0.8692439198493958
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8751612901687622,
+            0.7385208010673523,
+            0.3974142074584961
+          ],
+          [
+            0.8767150044441223,
+            0.7479214072227478,
+            0.42285987734794617
+          ],
+          [
+            0.9142881035804749,
+            0.8045178055763245,
+            0.47276797890663147
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.006884951610118151,
+          0.008154978044331074,
+          0.018012262880802155
+        ],
+        "predicted_48um_variance_rgb": [
+          3.3559829086620574e-05,
+          4.187824904781665e-05,
+          3.435699208433991e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1884776583410468,
+          1.260168264883399,
+          3.0729869026007663
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        2058,
+        662
+      ],
+      "formed_density_rgb": [
+        1.172227144241333,
+        2.0546934604644775,
+        2.3026537895202637
+      ],
+      "mean_density_rgb": [
+        1.1934024095535278,
+        1.7832555770874023,
+        2.1348116397857666
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -1.0052859783172607,
+          -0.9788713455200195,
+          -0.946990430355072
+        ],
+        "stochastic_log_exposure_rgb": [
+          -1.0052859783172607,
+          -0.9788713455200195,
+          -0.946990430355072
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8665032982826233,
+            0.7233815789222717,
+            0.3791288733482361
+          ],
+          [
+            0.8601646423339844,
+            0.7196109294891357,
+            0.3879188299179077
+          ],
+          [
+            0.9019485712051392,
+            0.780174732208252,
+            0.43607068061828613
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.006897495128214359,
+          0.008293594233691692,
+          0.01847672089934349
+        ],
+        "predicted_48um_variance_rgb": [
+          3.4488923414731994e-05,
+          4.4305252967094656e-05,
+          3.62141281864241e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1744961120103572,
+          1.24599176871552,
+          3.0703358343574565
+        ]
+      }
+    },
+    {
+      "pixel_xy": [
+        2645,
+        0
+      ],
+      "formed_density_rgb": [
+        1.1950963735580444,
+        2.0577499866485596,
+        2.2736246585845947
+      ],
+      "mean_density_rgb": [
+        1.215073823928833,
+        1.8372108936309814,
+        2.168895721435547
+      ],
+      "local_calibration": {
+        "log_exposure_rgb": [
+          -0.9592722654342651,
+          -0.8775498270988464,
+          -0.8829655647277832
+        ],
+        "stochastic_log_exposure_rgb": [
+          -0.9592722654342651,
+          -0.8775498270988464,
+          -0.8829655647277832
+        ],
+        "activation_probability_by_record_population": [
+          [
+            0.8758876323699951,
+            0.7398057579994202,
+            0.39901140332221985
+          ],
+          [
+            0.880143940448761,
+            0.7539271116256714,
+            0.43071532249450684
+          ],
+          [
+            0.9122176170349121,
+            0.8003745675086975,
+            0.4662582576274872
+          ]
+        ],
+        "target_48um_sigma_d_rgb": [
+          0.00688386894762516,
+          0.008124285377562046,
+          0.01809423603117466
+        ],
+        "predicted_48um_variance_rgb": [
+          3.347887367712016e-05,
+          4.133620801038149e-05,
+          3.468876157182813e-05
+        ],
+        "post_process_calibration_rgb": [
+          1.1897266076161674,
+          1.2636297825091638,
+          3.0721743124120864
+        ]
+      }
+    }
+  ],
+  "finite_site_class_calls": [
+    {
+      "call": 0,
+      "sample_seed": 30000000,
+      "site_count": 2,
+      "probability_minimum": 0.027263998985290527,
+      "probability_maximum": 0.8923273682594299,
+      "deviation_minimum": -0.7508939504623413,
+      "deviation_maximum": 0.7590838074684143,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 1,
+      "sample_seed": 30000001,
+      "site_count": 5,
+      "probability_minimum": 0.027263998985290527,
+      "probability_maximum": 0.8923273682594299,
+      "deviation_minimum": -0.5181136131286621,
+      "deviation_maximum": 0.5281078815460205,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 2,
+      "sample_seed": 30000002,
+      "site_count": 6,
+      "probability_minimum": 0.027263998985290527,
+      "probability_maximum": 0.8923273682594299,
+      "deviation_minimum": -0.45226266980171204,
+      "deviation_maximum": 0.41780710220336914,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 3,
+      "sample_seed": 30000003,
+      "site_count": 3,
+      "probability_minimum": 0.027263998985290527,
+      "probability_maximum": 0.8923273682594299,
+      "deviation_minimum": -0.40057915449142456,
+      "deviation_maximum": 0.43246591091156006,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 4,
+      "sample_seed": 30000004,
+      "site_count": 1,
+      "probability_minimum": 0.027263998985290527,
+      "probability_maximum": 0.8923273682594299,
+      "deviation_minimum": -0.6294928193092346,
+      "deviation_maximum": 0.5831911563873291,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 5,
+      "sample_seed": 30000100,
+      "site_count": 10,
+      "probability_minimum": 0.011166183277964592,
+      "probability_maximum": 0.7695277333259583,
+      "deviation_minimum": -0.595355212688446,
+      "deviation_maximum": 0.6604537963867188,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 6,
+      "sample_seed": 30000101,
+      "site_count": 18,
+      "probability_minimum": 0.011166183277964592,
+      "probability_maximum": 0.7695277333259583,
+      "deviation_minimum": -0.3905966579914093,
+      "deviation_maximum": 0.3930601179599762,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 7,
+      "sample_seed": 30000102,
+      "site_count": 19,
+      "probability_minimum": 0.011166183277964592,
+      "probability_maximum": 0.7695277333259583,
+      "deviation_minimum": -0.31574276089668274,
+      "deviation_maximum": 0.31592196226119995,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 8,
+      "sample_seed": 30000103,
+      "site_count": 10,
+      "probability_minimum": 0.011166183277964592,
+      "probability_maximum": 0.7695277333259583,
+      "deviation_minimum": -0.3700007498264313,
+      "deviation_maximum": 0.3696296215057373,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 9,
+      "sample_seed": 30000104,
+      "site_count": 3,
+      "probability_minimum": 0.011166183277964592,
+      "probability_maximum": 0.7695277333259583,
+      "deviation_minimum": -0.5468959212303162,
+      "deviation_maximum": 0.5425629615783691,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 10,
+      "sample_seed": 30000200,
+      "site_count": 17,
+      "probability_minimum": 0.002629884984344244,
+      "probability_maximum": 0.4380945861339569,
+      "deviation_minimum": -0.38608065247535706,
+      "deviation_maximum": 0.541681170463562,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 11,
+      "sample_seed": 30000201,
+      "site_count": 27,
+      "probability_minimum": 0.002629884984344244,
+      "probability_maximum": 0.4380945861339569,
+      "deviation_minimum": -0.2983512878417969,
+      "deviation_maximum": 0.39116936922073364,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 12,
+      "sample_seed": 30000202,
+      "site_count": 23,
+      "probability_minimum": 0.002629884984344244,
+      "probability_maximum": 0.4380945861339569,
+      "deviation_minimum": -0.2738616466522217,
+      "deviation_maximum": 0.3339024484157562,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 13,
+      "sample_seed": 30000203,
+      "site_count": 10,
+      "probability_minimum": 0.002629884984344244,
+      "probability_maximum": 0.4380945861339569,
+      "deviation_minimum": -0.3131677508354187,
+      "deviation_maximum": 0.40245550870895386,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 14,
+      "sample_seed": 30000204,
+      "site_count": 2,
+      "probability_minimum": 0.002629884984344244,
+      "probability_maximum": 0.4380945861339569,
+      "deviation_minimum": -0.4092343747615814,
+      "deviation_maximum": 0.6451429724693298,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 15,
+      "sample_seed": 30001000,
+      "site_count": 2,
+      "probability_minimum": 0.030323633924126625,
+      "probability_maximum": 0.888550877571106,
+      "deviation_minimum": -0.7328935265541077,
+      "deviation_maximum": 0.7326483726501465,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 16,
+      "sample_seed": 30001001,
+      "site_count": 4,
+      "probability_minimum": 0.030323633924126625,
+      "probability_maximum": 0.888550877571106,
+      "deviation_minimum": -0.5370311141014099,
+      "deviation_maximum": 0.573246955871582,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 17,
+      "sample_seed": 30001002,
+      "site_count": 6,
+      "probability_minimum": 0.030323633924126625,
+      "probability_maximum": 0.888550877571106,
+      "deviation_minimum": -0.41377902030944824,
+      "deviation_maximum": 0.43466776609420776,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 18,
+      "sample_seed": 30001003,
+      "site_count": 3,
+      "probability_minimum": 0.030323633924126625,
+      "probability_maximum": 0.888550877571106,
+      "deviation_minimum": -0.39080947637557983,
+      "deviation_maximum": 0.4007413685321808,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 19,
+      "sample_seed": 30001004,
+      "site_count": 1,
+      "probability_minimum": 0.030323633924126625,
+      "probability_maximum": 0.888550877571106,
+      "deviation_minimum": -0.5821921825408936,
+      "deviation_maximum": 0.5881868600845337,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 20,
+      "sample_seed": 30001100,
+      "site_count": 10,
+      "probability_minimum": 0.012879427522420883,
+      "probability_maximum": 0.768862247467041,
+      "deviation_minimum": -0.6306118369102478,
+      "deviation_maximum": 0.6675004959106445,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 21,
+      "sample_seed": 30001101,
+      "site_count": 19,
+      "probability_minimum": 0.012879427522420883,
+      "probability_maximum": 0.768862247467041,
+      "deviation_minimum": -0.3928234577178955,
+      "deviation_maximum": 0.418805330991745,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 22,
+      "sample_seed": 30001102,
+      "site_count": 21,
+      "probability_minimum": 0.012879427522420883,
+      "probability_maximum": 0.768862247467041,
+      "deviation_minimum": -0.30143973231315613,
+      "deviation_maximum": 0.31721219420433044,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 23,
+      "sample_seed": 30001103,
+      "site_count": 11,
+      "probability_minimum": 0.012879427522420883,
+      "probability_maximum": 0.768862247467041,
+      "deviation_minimum": -0.38080281019210815,
+      "deviation_maximum": 0.3912915885448456,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 24,
+      "sample_seed": 30001104,
+      "site_count": 3,
+      "probability_minimum": 0.012879427522420883,
+      "probability_maximum": 0.768862247467041,
+      "deviation_minimum": -0.520024299621582,
+      "deviation_maximum": 0.590986967086792,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 25,
+      "sample_seed": 30001200,
+      "site_count": 19,
+      "probability_minimum": 0.003211623290553689,
+      "probability_maximum": 0.4509821832180023,
+      "deviation_minimum": -0.39877092838287354,
+      "deviation_maximum": 0.5447372198104858,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 26,
+      "sample_seed": 30001201,
+      "site_count": 30,
+      "probability_minimum": 0.003211623290553689,
+      "probability_maximum": 0.4509821832180023,
+      "deviation_minimum": -0.33703047037124634,
+      "deviation_maximum": 0.378147155046463,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 27,
+      "sample_seed": 30001202,
+      "site_count": 25,
+      "probability_minimum": 0.003211623290553689,
+      "probability_maximum": 0.4509821832180023,
+      "deviation_minimum": -0.2936946153640747,
+      "deviation_maximum": 0.3565174341201782,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 28,
+      "sample_seed": 30001203,
+      "site_count": 11,
+      "probability_minimum": 0.003211623290553689,
+      "probability_maximum": 0.4509821832180023,
+      "deviation_minimum": -0.3282952904701233,
+      "deviation_maximum": 0.417758584022522,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 29,
+      "sample_seed": 30001204,
+      "site_count": 3,
+      "probability_minimum": 0.003211623290553689,
+      "probability_maximum": 0.4509821832180023,
+      "deviation_minimum": -0.4203731417655945,
+      "deviation_maximum": 0.6047120094299316,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 30,
+      "sample_seed": 30002000,
+      "site_count": 3,
+      "probability_minimum": 0.026695791631937027,
+      "probability_maximum": 0.9226946234703064,
+      "deviation_minimum": -0.7248272895812988,
+      "deviation_maximum": 0.7403454780578613,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 31,
+      "sample_seed": 30002001,
+      "site_count": 6,
+      "probability_minimum": 0.026695791631937027,
+      "probability_maximum": 0.9226946234703064,
+      "deviation_minimum": -0.4924381971359253,
+      "deviation_maximum": 0.5229421257972717,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 32,
+      "sample_seed": 30002002,
+      "site_count": 7,
+      "probability_minimum": 0.026695791631937027,
+      "probability_maximum": 0.9226946234703064,
+      "deviation_minimum": -0.4243810772895813,
+      "deviation_maximum": 0.43655744194984436,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 33,
+      "sample_seed": 30002003,
+      "site_count": 4,
+      "probability_minimum": 0.026695791631937027,
+      "probability_maximum": 0.9226946234703064,
+      "deviation_minimum": -0.4634680151939392,
+      "deviation_maximum": 0.48150303959846497,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 34,
+      "sample_seed": 30002004,
+      "site_count": 2,
+      "probability_minimum": 0.026695791631937027,
+      "probability_maximum": 0.9226946234703064,
+      "deviation_minimum": -0.46481356024742126,
+      "deviation_maximum": 0.4591953456401825,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 35,
+      "sample_seed": 30002100,
+      "site_count": 9,
+      "probability_minimum": 0.010471496731042862,
+      "probability_maximum": 0.8215894103050232,
+      "deviation_minimum": -0.6515395641326904,
+      "deviation_maximum": 0.6252933740615845,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 36,
+      "sample_seed": 30002101,
+      "site_count": 16,
+      "probability_minimum": 0.010471496731042862,
+      "probability_maximum": 0.8215894103050232,
+      "deviation_minimum": -0.37865692377090454,
+      "deviation_maximum": 0.4520060420036316,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 37,
+      "sample_seed": 30002102,
+      "site_count": 18,
+      "probability_minimum": 0.010471496731042862,
+      "probability_maximum": 0.8215894103050232,
+      "deviation_minimum": -0.30133432149887085,
+      "deviation_maximum": 0.316927969455719,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 38,
+      "sample_seed": 30002103,
+      "site_count": 9,
+      "probability_minimum": 0.010471496731042862,
+      "probability_maximum": 0.8215894103050232,
+      "deviation_minimum": -0.3441241383552551,
+      "deviation_maximum": 0.39371269941329956,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 39,
+      "sample_seed": 30002104,
+      "site_count": 3,
+      "probability_minimum": 0.010471496731042862,
+      "probability_maximum": 0.8215894103050232,
+      "deviation_minimum": -0.5334866046905518,
+      "deviation_maximum": 0.5308273434638977,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 40,
+      "sample_seed": 30002200,
+      "site_count": 16,
+      "probability_minimum": 0.002300372812896967,
+      "probability_maximum": 0.5008358955383301,
+      "deviation_minimum": -0.43818414211273193,
+      "deviation_maximum": 0.5213022232055664,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 41,
+      "sample_seed": 30002201,
+      "site_count": 24,
+      "probability_minimum": 0.002300372812896967,
+      "probability_maximum": 0.5008358955383301,
+      "deviation_minimum": -0.3343786597251892,
+      "deviation_maximum": 0.36905238032341003,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 42,
+      "sample_seed": 30002202,
+      "site_count": 20,
+      "probability_minimum": 0.002300372812896967,
+      "probability_maximum": 0.5008358955383301,
+      "deviation_minimum": -0.2977713942527771,
+      "deviation_maximum": 0.325133740901947,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 43,
+      "sample_seed": 30002203,
+      "site_count": 8,
+      "probability_minimum": 0.002300372812896967,
+      "probability_maximum": 0.5008358955383301,
+      "deviation_minimum": -0.33632510900497437,
+      "deviation_maximum": 0.4106482267379761,
+      "nonfinite_count": 0
+    },
+    {
+      "call": 44,
+      "sample_seed": 30002204,
+      "site_count": 2,
+      "probability_minimum": 0.002300372812896967,
+      "probability_maximum": 0.5008358955383301,
+      "deviation_minimum": -0.4617869257926941,
+      "deviation_maximum": 0.6360156536102295,
+      "nonfinite_count": 0
+    }
+  ],
+  "finite_site_class_maximum_absolute_deviation": 0.7590838074684143
+}

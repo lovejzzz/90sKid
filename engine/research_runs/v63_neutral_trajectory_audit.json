@@ -1,0 +1,144 @@
+{
+  "archive_compatibility": {
+    "exactly_equal": true,
+    "maximum_absolute_difference": 0.0,
+    "mean_absolute_difference": 0.0,
+    "sampled_native_nodes": 128,
+    "v62_lattice_sha256": "b26660989bc9d5baaa4719e21e9f41a1b9b9d85729ab228316a15914de75b22e",
+    "v63_lattice_sha256": "ef861a38d840b30fa0dd2b9a6f01b41c8122600daea13e43dcb6ee49bfa67024"
+  },
+  "audit": "V63 actual 5279-to-2383 neutral trajectory coordinate audit",
+  "decision": {
+    "accepted": "Replace only the obsolete equal-principal-density projected-gray coordinate with the complete neutral 5279-to-2383 trajectory.",
+    "frozen": "Keep scan-referenced off-neutral colour; the physical spectral branch is not validated by the uncontrolled T003 chart.",
+    "still_unidentified": "six off-LAD Status-A gray triplets, 5279-to-2383 separated-exposure interimage coefficients, and a measured theatre appearance target"
+  },
+  "density_neutral_shaper": {
+    "classification": "H-61-inspired continuous neutral-scale inference; not six measured off-LAD Status-A triplets",
+    "maximum_absolute_density_change_D_rgb": [
+      0.11394405364990234,
+      0.07212591171264648,
+      0.10395705699920654
+    ],
+    "rms_density_change_D_rgb": [
+      0.06908106058835983,
+      0.044546615332365036,
+      0.07321012765169144
+    ]
+  },
+  "neutral_trajectory": {
+    "v62_physical_spectral": {
+      "authority": "physical_spectral_v56",
+      "linear_rgb_channel_spread_maximum": 0.30217480659484863,
+      "linear_rgb_channel_spread_p95": 0.24278841316699992,
+      "oklab_chroma_maximum": 0.03636994585394859,
+      "oklab_chroma_median": 0.012714816257357597,
+      "oklab_chroma_p95": 0.02954094521701336,
+      "policy": "equal_principal_status_a_axis_archive",
+      "usable_stop_range": [
+        -12.0,
+        6.6875
+      ]
+    },
+    "v62_scan_referenced": {
+      "authority": "scan_referenced_v31",
+      "linear_rgb_channel_spread_maximum": 0.005269169807434082,
+      "linear_rgb_channel_spread_p95": 0.003302228450775145,
+      "oklab_chroma_maximum": 0.00452674413099885,
+      "oklab_chroma_median": 0.0002674154529813677,
+      "oklab_chroma_p95": 0.002914616721682249,
+      "policy": "equal_principal_status_a_axis_archive",
+      "usable_stop_range": [
+        -12.0,
+        6.625
+      ]
+    },
+    "v63_physical_spectral": {
+      "authority": "physical_spectral_v56",
+      "linear_rgb_channel_spread_maximum": 1.8477439880371094e-06,
+      "linear_rgb_channel_spread_p95": 7.748603820800781e-07,
+      "oklab_chroma_maximum": 5.066394805908203e-07,
+      "oklab_chroma_median": 2.686345013103164e-08,
+      "oklab_chroma_p95": 2.1490760104825313e-07,
+      "policy": "actual_5279_to_2383_neutral_trajectory_v63",
+      "usable_stop_range": [
+        -12.0,
+        6.625
+      ]
+    },
+    "v63_scan_referenced": {
+      "authority": "scan_referenced_v31",
+      "linear_rgb_channel_spread_maximum": 0.005270540714263916,
+      "linear_rgb_channel_spread_p95": 0.0033015161752700793,
+      "oklab_chroma_maximum": 0.004526752978563309,
+      "oklab_chroma_median": 0.0002676135045476258,
+      "oklab_chroma_p95": 0.0029146160231903182,
+      "policy": "actual_5279_to_2383_neutral_trajectory_v63",
+      "usable_stop_range": [
+        -12.0,
+        6.625
+      ]
+    }
+  },
+  "real_frame": {
+    "frame": 0,
+    "projection_v62_vs_v63": {
+      "changed_12bit_component_fraction": 0.06255508401920438,
+      "linear_rgb_mae": 0.00020321433839853853,
+      "linear_rgb_maximum_absolute": 0.02749231457710266,
+      "linear_rgb_p95_absolute": 0.002337157726287842,
+      "linear_rgb_p99_absolute": 0.004284024238586426,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0011945366917643697,
+      "oklab_delta_p99": 0.0019429326057434082
+    },
+    "scan_v62_vs_v63": {
+      "changed_12bit_component_fraction": 0.0,
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0
+    },
+    "seconds": 38.09438450000016,
+    "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+    "working_dimensions": [
+      1440,
+      1080
+    ]
+  },
+  "t003_chart_authority_experiment": {
+    "decision_rule": "Do not promote physical off-neutral colour unless it improves both synthetic and natural groups under a controlled, documented target.",
+    "observers": {
+      "physical_spectral": {
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified",
+        "natural_colours_13_to_18": {
+          "maximum_absolute_hue_error_degrees": 15.806732882346807,
+          "median_absolute_hue_error_degrees": 11.834612282647868,
+          "median_chroma_ratio": 0.6264175023727665
+        },
+        "synthetic_primaries_7_to_12": {
+          "maximum_absolute_hue_error_degrees": 18.875851158581384,
+          "median_absolute_hue_error_degrees": 12.003802586938065,
+          "median_chroma_ratio": 0.3466499284072456
+        }
+      },
+      "scan_referenced": {
+        "assumption": "D50/Bradford diagnostic only; the outdoor scene SPD and the DGK manufacturer Lab illuminant/observer are not identified",
+        "natural_colours_13_to_18": {
+          "maximum_absolute_hue_error_degrees": 23.321796799286943,
+          "median_absolute_hue_error_degrees": 11.681749732631346,
+          "median_chroma_ratio": 0.57372732459793
+        },
+        "synthetic_primaries_7_to_12": {
+          "maximum_absolute_hue_error_degrees": 11.850510066871209,
+          "median_absolute_hue_error_degrees": 7.957353329658346,
+          "median_chroma_ratio": 0.40518961727554115
+        }
+      }
+    },
+    "source": "/Users/tianxing/.codex/.chatgpt-projects/g-p-6a62e1cf2144819190c9fd2993c3799b/90sKid/engine/research_runs/2026-08-06_t003_colorchecker/frame160_audit/t003_dkc_pro_audit.json"
+  }
+}

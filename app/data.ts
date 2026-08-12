@@ -2315,6 +2315,77 @@ versions.push({
   parameters: v45Parameters,
 });
 
+const v46Parameters: ParameterGroup[] = [
+  {
+    title: "5279随机形成修正", titleEn: "5279 STOCHASTIC-FORMATION CORRECTION", items: [
+      { label: "公开颗粒测量域", labelEn: "Published granularity domain", value: "Kodak 48 µm RMS · 三记录边缘", valueEn: "Kodak 48 µm RMS · three record marginals" },
+      { label: "测量域以外", labelEn: "Outside measured support", value: "完整随机状态端点保持", valueEn: "Hold the complete stochastic state at the endpoint", note: "不再让激活概率趋零而维持固定RMS", noteEn: "No fixed-RMS extrapolation while activation probability tends to zero" },
+      { label: "记录间协方差", labelEn: "Cross-record covariance", value: "不假定 · 恒等记录形成", valueEn: "Not assumed · identity record formation" },
+      { label: "投影综合色管理", labelEn: "Projection opponent management", value: "冻结V66/V79缺陷抑制边界", valueEn: "Frozen V66/V79 defect-containment boundary", note: "明确不是5279/2383实测物理", noteEn: "Explicitly not represented as measured 5279/2383 physics" },
+    ],
+  },
+  {
+    title: "光谱逆解", titleEn: "SPECTRAL INVERSE", items: [
+      { label: "Status-M → 染料", labelEn: "Status-M → dye", value: "精确非负主动集 / KKT", valueEn: "Exact nonnegative active set / KKT" },
+      { label: "基础晶格", labelEn: "Base lattice", value: "129³ · power-2坐标", valueEn: "129³ · power-2 coordinate" },
+      { label: "风险区域", labelEn: "Risk regions", value: "主动集边界 + 三次/线性分歧", valueEn: "Active-set boundary + cubic/linear disagreement" },
+      { label: "局部细化", labelEn: "Local refinement", value: "5³ microbrick · 精确解", valueEn: "5³ microbrick · exact solution" },
+      { label: "真实帧最大密度误差", labelEn: "Real-frame maximum density error", value: "0.0005094 D", valueEn: "0.0005094 D", note: "T020/T032/T007均低于0.001 D发布门槛", noteEn: "T020/T032/T007 all pass the 0.001 D release gate" },
+      { label: "运行时", labelEn: "Runtime", value: "Numba并行 · fast-math关闭", valueEn: "Numba parallel · fast-math disabled", note: "与NumPy参考逐位一致，风险点约11.5×加速", noteEn: "Bit-identical to NumPy reference; about 11.5× faster on risk points" },
+    ],
+  },
+  {
+    title: "发布门禁", titleEn: "RELEASE GATES", items: [
+      { label: "完整管线缓存覆盖", labelEn: "Full-pipeline cache coverage", value: "3素材 × 前/后MTF × 平均/形成：0缺失", valueEn: "3 clips × pre/post MTF × mean/formed: zero missing" },
+      { label: "48 µm孔径RMS", labelEn: "48 µm aperture RMS", value: "端点保持后通过", valueEn: "Pass after endpoint hold" },
+      { label: "测试素材", labelEn: "Validation sources", value: "T020 · T032 · T007，各24帧", valueEn: "T020 · T032 · T007, 24 frames each" },
+      { label: "T020 / T032 / T007墙钟", labelEn: "T020 / T032 / T007 wall time", value: "1237.40 / 1196.61 / 1230.10秒", valueEn: "1,237.40 / 1,196.61 / 1,230.10 s", note: "Production Philox Metal；分别46.09 / 44.86 / 45.04算法秒/帧，另含来源封装", noteEn: "Production Philox Metal; 46.09 / 44.86 / 45.04 algorithm seconds per frame, plus source finalization" },
+      { label: "专业母版", labelEn: "Professional master", value: "5760×4320 · 12-bit ProRes 4444", valueEn: "5760×4320 · 12-bit ProRes 4444" },
+    ],
+  },
+];
+
+const v46Branch = (scene: string, branch: string, label: string): BranchImage => ({
+  src: `/versions/v46-${scene}-${branch}.jpg`,
+  videoSrc: `/versions/v46-${scene}-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V46",
+  year: "经认证的光谱逆解",
+  title: "让有限银盐事件与光谱密度在各自可测的边界内成立",
+  status: "current",
+  projection: v46Branch("t020", "projection", "T020 · V46端点稳定5279 → 2383氙灯放映"),
+  bluray: v46Branch("t020", "bluray", "T020 · V46同一负片 → Period 2K / Cineon扫描"),
+  fsd: { ...v43hBranch("t020", "fsd", "T020 · 独立FSD有限密度对照 · 不并入V46"), inherited: true },
+  camera: { ...v43hBranch("t020", "camera", "T020 · Panasonic官方V-709原始观察 · 无胶片管线"), inherited: true },
+  summary: "V46是数据丢失后重建工作的第一次完整收束，也是一项真正改变像素的数值修正。过去的模型在Kodak公开颗粒曲线之外继续维持目标RMS，同时让有限位点激活概率趋近零，因而会制造极少但巨大的染料密度脉冲；V46把完整随机状态保持在已测端点。与此同时，Status-M到负片染料密度的旧截断迭代被精确非负主动集逆解替换，并由129³基础晶格与局部5³精确microbrick在真实帧上把最大印片密度误差压到0.0005094 D。它吸收V46—V86内部研究的可靠结论，但那些编号仍保留为历史实验ID，不被改写成公开成片版本。",
+  changes: ["在Kodak颗粒测量范围外保持完整随机状态，消除激活概率趋零时的灾难性密度尾部", "以精确非负主动集/KKT求解替换Status-M光谱逆解的截断投影迭代", "建立129³ power-2基础晶格，并只在主动集边界和插值分歧区域加载5³精确microbrick", "用T020、T032、T007的前/后MTF、平均/已形成密度逐像素发现缓存需求，最终25,333个风险单元零缺失", "将自适应观察器编译为并行CPU核，关闭fast-math并保持与NumPy参考逐位一致", "扫描与放映共享一次负片印片密度观察，去除同一光谱逆解的重复计算", "保留证据最小的恒等记录形成；不从48 µm三条边缘曲线虚构RGB交叉协方差", "三段素材各生成24帧、5760×4320、12-bit ProRes 4444母版及尺度诚实网页审看件"],
+  errors: ["旧模型在公开曝光端点外同时维持固定RMS并让激活概率趋零，校准幅度会发散，形成像坏电视彩点一样的罕见巨密度事件", "旧Status-M逆解只是投影迭代后裁零，不保证非负最小二乘的KKT最优性；阴影最坏误差曾达到约0.01399 D", "只在晶格单元内做固定27点探测会漏掉真实像素触发的主动集边界；V46改用运行时完全相同的逐像素风险谓词", "把内部V46—V86逐条审计当作几十个视觉版本会混淆研究证据与真正成片；网站保留其历史ID但合并为主题章节", "V46仍没有同批5279、同批2383、实测印片光源与已表征扫描器组成的闭环，不能被宣称为绝对色彩复刻"],
+  discoveries: ["颗粒曲线端点不仅限制平均RMS，还必须限制完整有限事件状态；否则数学上满足宏观RMS也可能产生不物理的微观尾部", "真实帧风险不能由稀疏合成探针代表：最终缓存必须覆盖MTF前后及平均/形成两种密度状态", "精确主动集的局部结构高度稀疏，适合基础晶格加风险microbrick，而不需要把每个像素都送入昂贵求解器", "共享一次负片印片密度足以派生扫描坐标和放映输入；两条观察链的区别应发生在负片之后，而不是重复形成同一负片", "V70—V85确认共享记录事件会用更强亮度颗粒换取较弱综合色，而不是免费去彩噪；没有交叉频谱实测前恒等记录形成最诚实", "V46改进的是数值正确性和证据所有权，不加入艺术调色，也不为了让放映和扫描看起来更不同而夸张色相"],
+  refs: ["R1", "R4", "R21", "R25", "R27", "R48", "R68", "R69"],
+  additionalTrials: [
+    {
+      name: "NJARAW_S001_S001_T032 · Frame 0–23",
+      note: "雨天青绿、暗柱与低反差纹理：检查端点外密度尾部、阴影色相与自适应光谱逆解。",
+      projection: v46Branch("t032", "projection", "T032 · V46经认证光谱逆解 · 2383放映"),
+      bluray: v46Branch("t032", "bluray", "T032 · 同一V46负片 · Period 2K / Cineon扫描"),
+      fsd: { ...v43hBranch("t032", "fsd", "T032 · FSD有限密度"), inherited: true },
+      camera: { ...v43hBranch("t032", "camera", "T032 · Panasonic官方V-709原图"), inherited: true },
+    },
+    {
+      name: "NJARAW_S001_S001_T007 · Frame 276–299",
+      note: "水面、绿色细节与局部饱和：检查综合色尾部、颗粒/锐度关系和主动集边界稳定性。",
+      projection: v46Branch("t007", "projection", "T007 · V46经认证光谱逆解 · 2383放映"),
+      bluray: v46Branch("t007", "bluray", "T007 · 同一V46负片 · Period 2K / Cineon扫描"),
+      fsd: { ...v43hBranch("t007", "fsd", "T007 · FSD有限密度"), inherited: true },
+      camera: { ...v43hBranch("t007", "camera", "T007 · Panasonic官方V-709原图"), inherited: true },
+    },
+  ],
+  parameters: v46Parameters,
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);
@@ -2420,6 +2491,9 @@ export const references = [
   { id: "R67", title: "How Hollywood Fakes the 90s Film Look Today — Walter Volpatto interview", type: "调色师实践证词（观察器边界，不是5279测量）", url: "https://www.youtube.com/watch?v=rSKAV2AQ4I4" },
   { id: "R68", title: "CIE 1931 colour-matching functions, 2 degree observer — 1 nm data table", type: "CIE官方标准观察者数据", url: "https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer" },
   { id: "R69", title: "KODAK VISION Color Print Film 2383 / 3383 Technical Data, 2005", type: "Kodak同期2383历史数据表", url: "https://125px.com/docs/motionpicture/kodak/lab/lab_h12383t.pdf" },
+  { id: "R70", title: "ISO 10505:2009 — Root mean square granularity of photographic films", type: "ISO颗粒测量标准", url: "https://www.iso.org/standard/50747.html" },
+  { id: "R71", title: "KODAK VISION Color Intermediate Film 5242 / 2242 / 3242 — RMS granularity method", type: "Kodak官方微密度计方法说明", url: "https://www.kodak.com/content/products-brochures/motion-picture/KODAK-VISION-2242-3242-5242-technical-information.pdf" },
+  { id: "R72", title: "Simulating Film Grain using the Noise-Power Spectrum", type: "Eurographics同行评审NPS研究（形态例证，非5279参数）", url: "https://diglib.eg.org/bitstreams/372ec0ad-ff80-497b-81b0-2dd8d7021e48/download" },
 ];
 
 export const refMap = Object.fromEntries(references.map((ref) => [ref.id, ref]));

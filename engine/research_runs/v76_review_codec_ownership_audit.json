@@ -1,0 +1,355 @@
+{
+  "audit": "V76 scale-integrated review codec ownership",
+  "profile": "V72 \u00b7 Evidence-minimal record formation",
+  "image_change": "none",
+  "root": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020",
+  "branches": {
+    "projection": {
+      "source_master": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/05_emulsion_master_prores4444.mov",
+      "frame": 0,
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "reference": "exact 3x3 linear-light integration, sRGB, RGB16 quantized",
+      "encodings": {
+        "existing_scale_integrated_review": {
+          "file": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2910788,
+          "comparison": {
+            "code_mae": 0.0024708118843069808,
+            "code_p99_absolute": 0.00947585329413414,
+            "code_maximum_absolute": 0.039078354835510254,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0010143871186301112,
+              "linear_rgb_p95_absolute": 0.003888070583343506,
+              "linear_rgb_p99_absolute": 0.006815433800220483,
+              "linear_rgb_maximum_absolute": 0.037340909242630005,
+              "oklab_delta_median": 0.002349098213016987,
+              "oklab_delta_p95": 0.006188749917782843,
+              "oklab_delta_p99": 0.011796670835465154,
+              "changed_12bit_component_fraction": 0.8392258632330247
+            },
+            "highpass_luma_retention": 0.9481665168261667,
+            "highpass_opponent_retention": 0.8990477539396011
+          }
+        },
+        "prores_ks_xq": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2885577,
+          "comparison": {
+            "code_mae": 0.002470802498182764,
+            "code_p99_absolute": 0.00947585329413414,
+            "code_maximum_absolute": 0.039078354835510254,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0010143790859729052,
+              "linear_rgb_p95_absolute": 0.0038880109786987305,
+              "linear_rgb_p99_absolute": 0.006815314292907715,
+              "linear_rgb_maximum_absolute": 0.037340909242630005,
+              "oklab_delta_median": 0.0023490823805332184,
+              "oklab_delta_p95": 0.006188716623000794,
+              "oklab_delta_p99": 0.011796670835465154,
+              "changed_12bit_component_fraction": 0.8392264660493827
+            },
+            "highpass_luma_retention": 0.9481671732748929,
+            "highpass_opponent_retention": 0.8990451544586964
+          }
+        },
+        "prores_ks_xq_8192": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 5154487,
+          "comparison": {
+            "code_mae": 0.0008315026548633976,
+            "code_p99_absolute": 0.0029602348804473877,
+            "code_maximum_absolute": 0.00788891315460205,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.00035948920412920415,
+              "linear_rgb_p95_absolute": 0.0014259221032261842,
+              "linear_rgb_p99_absolute": 0.00261572003364563,
+              "linear_rgb_maximum_absolute": 0.008926928043365479,
+              "oklab_delta_median": 0.0008104183943942189,
+              "oklab_delta_p95": 0.0019714883994311084,
+              "oklab_delta_p99": 0.004706742898561046,
+              "changed_12bit_component_fraction": 0.6266941550925926
+            },
+            "highpass_luma_retention": 0.9860401072666394,
+            "highpass_opponent_retention": 0.9677053138518399
+          }
+        },
+        "prores_videotoolbox_xq": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2730294,
+          "comparison": {
+            "code_mae": 0.002170874840065849,
+            "code_p99_absolute": 0.008316166698932648,
+            "code_maximum_absolute": 0.020141907036304474,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0009077480644918978,
+              "linear_rgb_p95_absolute": 0.00355568528175354,
+              "linear_rgb_p99_absolute": 0.0066883862018585205,
+              "linear_rgb_maximum_absolute": 0.023845374584197998,
+              "oklab_delta_median": 0.0020791173446923494,
+              "oklab_delta_p95": 0.00512213006149977,
+              "oklab_delta_p99": 0.01174366920255123,
+              "changed_12bit_component_fraction": 0.8182373649691358
+            },
+            "highpass_luma_retention": 1.001123037892992,
+            "highpass_opponent_retention": 1.0345641734904796
+          }
+        },
+        "ffv1_lossless": {
+          "available": true,
+          "metadata": {
+            "codec_name": "ffv1",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "gbrp16le",
+            "color_range": "pc",
+            "color_space": "gbr",
+            "bits_per_raw_sample": "16"
+          },
+          "bytes": 12183429,
+          "comparison": {
+            "code_mae": 0.0,
+            "code_p99_absolute": 0.0,
+            "code_maximum_absolute": 0.0,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0,
+              "linear_rgb_p95_absolute": 0.0,
+              "linear_rgb_p99_absolute": 0.0,
+              "linear_rgb_maximum_absolute": 0.0,
+              "oklab_delta_median": 0.0,
+              "oklab_delta_p95": 0.0,
+              "oklab_delta_p99": 0.0,
+              "changed_12bit_component_fraction": 0.0
+            },
+            "highpass_luma_retention": 1.0,
+            "highpass_opponent_retention": 1.0
+          }
+        }
+      }
+    },
+    "bluray_scan": {
+      "source_master": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+      "frame": 0,
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "reference": "exact 3x3 linear-light integration, sRGB, RGB16 quantized",
+      "encodings": {
+        "existing_scale_integrated_review": {
+          "file": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2913985,
+          "comparison": {
+            "code_mae": 0.003552968590953708,
+            "code_p99_absolute": 0.014892803505063057,
+            "code_maximum_absolute": 0.04499885439872742,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0014035505009815097,
+              "linear_rgb_p95_absolute": 0.004902929440140723,
+              "linear_rgb_p99_absolute": 0.008082702904939648,
+              "linear_rgb_maximum_absolute": 0.03236269950866699,
+              "oklab_delta_median": 0.0035581733100116253,
+              "oklab_delta_p95": 0.010351651813834904,
+              "oklab_delta_p99": 0.019130467716604444,
+              "changed_12bit_component_fraction": 0.8719322675540123
+            },
+            "highpass_luma_retention": 0.92510077063543,
+            "highpass_opponent_retention": 0.8514014361590911
+          }
+        },
+        "prores_ks_xq": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2888766,
+          "comparison": {
+            "code_mae": 0.003552980006000039,
+            "code_p99_absolute": 0.014892803505063057,
+            "code_maximum_absolute": 0.04499885439872742,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.001403561094775796,
+              "linear_rgb_p95_absolute": 0.004902958869934082,
+              "linear_rgb_p99_absolute": 0.008082956261932846,
+              "linear_rgb_maximum_absolute": 0.03236269950866699,
+              "oklab_delta_median": 0.0035582217387855053,
+              "oklab_delta_p95": 0.010351651813834904,
+              "oklab_delta_p99": 0.019130467716604444,
+              "changed_12bit_component_fraction": 0.8719339554398148
+            },
+            "highpass_luma_retention": 0.9251005411157046,
+            "highpass_opponent_retention": 0.851400019309634
+          }
+        },
+        "prores_ks_xq_8192": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 6143199,
+          "comparison": {
+            "code_mae": 0.0008945167900263322,
+            "code_p99_absolute": 0.0033112093806266785,
+            "code_maximum_absolute": 0.00941481627523899,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.00038389896508306265,
+              "linear_rgb_p95_absolute": 0.0014242231845855713,
+              "linear_rgb_p99_absolute": 0.0025394558906555176,
+              "linear_rgb_maximum_absolute": 0.009399473667144775,
+              "oklab_delta_median": 0.0009019918506965041,
+              "oklab_delta_p95": 0.003459813620429482,
+              "oklab_delta_p99": 0.010698652639985047,
+              "changed_12bit_component_fraction": 0.6494385368441358
+            },
+            "highpass_luma_retention": 0.9829822599613856,
+            "highpass_opponent_retention": 0.9638078962639501
+          }
+        },
+        "prores_videotoolbox_xq": {
+          "available": true,
+          "metadata": {
+            "codec_name": "prores",
+            "profile": "XQ",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "yuv444p12le",
+            "color_range": "tv",
+            "color_space": "bt709",
+            "color_transfer": "iec61966-2-1",
+            "color_primaries": "bt709",
+            "bits_per_raw_sample": "12"
+          },
+          "bytes": 2743590,
+          "comparison": {
+            "code_mae": 0.003224518450300102,
+            "code_p99_absolute": 0.01271076500415802,
+            "code_maximum_absolute": 0.02887006103992462,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0013621686957776546,
+              "linear_rgb_p95_absolute": 0.0050726093351840945,
+              "linear_rgb_p99_absolute": 0.009139463305473328,
+              "linear_rgb_maximum_absolute": 0.03343838453292847,
+              "oklab_delta_median": 0.0032324192579835653,
+              "oklab_delta_p95": 0.010288630891591299,
+              "oklab_delta_p99": 0.021199078503996067,
+              "changed_12bit_component_fraction": 0.8583177806712963
+            },
+            "highpass_luma_retention": 1.0096390251470992,
+            "highpass_opponent_retention": 1.0419344933822
+          }
+        },
+        "ffv1_lossless": {
+          "available": true,
+          "metadata": {
+            "codec_name": "ffv1",
+            "width": 1920,
+            "height": 1440,
+            "pix_fmt": "gbrp16le",
+            "color_range": "pc",
+            "color_space": "gbr",
+            "bits_per_raw_sample": "16"
+          },
+          "bytes": 12886797,
+          "comparison": {
+            "code_mae": 0.0,
+            "code_p99_absolute": 0.0,
+            "code_maximum_absolute": 0.0,
+            "linear_light_difference": {
+              "linear_rgb_mae": 0.0,
+              "linear_rgb_p95_absolute": 0.0,
+              "linear_rgb_p99_absolute": 0.0,
+              "linear_rgb_maximum_absolute": 0.0,
+              "oklab_delta_median": 0.0,
+              "oklab_delta_p95": 0.0,
+              "oklab_delta_p99": 0.0,
+              "changed_12bit_component_fraction": 0.0
+            },
+            "highpass_luma_retention": 1.0,
+            "highpass_opponent_retention": 1.0
+          }
+        }
+      }
+    }
+  },
+  "decision_rule": "A codec may improve the declared review only if decoded colour, luma structure and opponent structure are all no worse than the current encoder. Codec substitution must not alter the native master or any film-formation parameter."
+}

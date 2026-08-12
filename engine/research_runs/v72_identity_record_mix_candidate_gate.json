@@ -1,0 +1,896 @@
+{
+  "audit": "V72 identity direct-record-mix native scene and chart gate",
+  "reference_profile": "V66",
+  "candidate_profile": "V72",
+  "single_variable_change": "replace the unidentified direct speed-population record-mix matrix with exact identity; retain sensitivity overlap, DIR, net dye/mask spectra, 2383 spectral printing and both delivery branches",
+  "scenes": {
+    "T020": {
+      "projection": {
+        "reference": "outputs/native_5k_v66_cineon_printing_density_1f/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "candidate": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "image_change": {
+          "linear_rgb_mae": 0.0008475383028098674,
+          "linear_rgb_p95_absolute": 0.003335714340209961,
+          "linear_rgb_p99_absolute": 0.005500435829162598,
+          "linear_rgb_maximum_absolute": 0.019892990589141846,
+          "oklab_delta_median": 0.0020770856644958258,
+          "oklab_delta_p95": 0.005127357738092537,
+          "oklab_delta_p99": 0.008332542451098471,
+          "luma": {
+            "reference_median": 0.02760609939051792,
+            "candidate_median": 0.027772367519792167,
+            "median_ratio": 1.006022876572391,
+            "median_absolute_difference": 0.00036334132356568606,
+            "p95_absolute_difference": 0.0032019263014942444,
+            "midtone_pixel_count": 589986,
+            "midtone_median_ratio": 1.008414196927815,
+            "reference_p99": 0.6638435553578139,
+            "candidate_p99": 0.6638334898381233,
+            "reference_black_fraction": 0.0002318431712962963,
+            "candidate_black_fraction": 0.0002394386574074074,
+            "reference_white_fraction": 0.0,
+            "candidate_white_fraction": 0.0
+          }
+        }
+      },
+      "bluray_scan": {
+        "reference": "outputs/native_5k_v66_cineon_printing_density_1f/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+        "candidate": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+        "image_change": {
+          "linear_rgb_mae": 0.0009377698123959758,
+          "linear_rgb_p95_absolute": 0.0033133327960968018,
+          "linear_rgb_p99_absolute": 0.005316898375749585,
+          "linear_rgb_maximum_absolute": 0.023657888174057007,
+          "oklab_delta_median": 0.002451095264405012,
+          "oklab_delta_p95": 0.006552446051500736,
+          "oklab_delta_p99": 0.013329532053321578,
+          "luma": {
+            "reference_median": 0.03849775329278782,
+            "candidate_median": 0.03878867971152067,
+            "median_ratio": 1.0075569713515555,
+            "median_absolute_difference": 0.0004118193697126094,
+            "p95_absolute_difference": 0.0025907322585582843,
+            "midtone_pixel_count": 825347,
+            "midtone_median_ratio": 1.0048118972971107,
+            "reference_p99": 0.503780831972599,
+            "candidate_p99": 0.5037446907556649,
+            "reference_black_fraction": 0.0008326099537037037,
+            "candidate_black_fraction": 0.0007505063657407407,
+            "reference_white_fraction": 0.0,
+            "candidate_white_fraction": 0.0
+          }
+        }
+      }
+    },
+    "T003_frame160": {
+      "projection": {
+        "reference": "outputs/native_5k_v66_cineon_printing_density_1f/T003_frame160/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "candidate": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T003_frame160/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "image_change": {
+          "linear_rgb_mae": 0.0006657259615433567,
+          "linear_rgb_p95_absolute": 0.003022223711013794,
+          "linear_rgb_p99_absolute": 0.006045759022235864,
+          "linear_rgb_maximum_absolute": 0.047700000926852226,
+          "oklab_delta_median": 0.0024662897922098637,
+          "oklab_delta_p95": 0.006438114470802246,
+          "oklab_delta_p99": 0.01255829818546772,
+          "luma": {
+            "reference_median": 0.013094568180455825,
+            "candidate_median": 0.013258570213452912,
+            "median_ratio": 1.0125244323246847,
+            "median_absolute_difference": 0.00023977700677933148,
+            "p95_absolute_difference": 0.0025397860074043255,
+            "midtone_pixel_count": 302233,
+            "midtone_median_ratio": 1.0057938320723687,
+            "reference_p99": 0.6982887345238923,
+            "candidate_p99": 0.6982697119327781,
+            "reference_black_fraction": 0.0011541521990740742,
+            "candidate_black_fraction": 0.0011046006944444445,
+            "reference_white_fraction": 0.0,
+            "candidate_white_fraction": 0.0
+          }
+        },
+        "chart": {
+          "patches": [
+            {
+              "patch": 1,
+              "name": "white",
+              "reference_linear_rgb": [
+                0.9003778696060181,
+                0.8433804512023926,
+                0.7899965643882751
+              ],
+              "candidate_linear_rgb": [
+                0.9010965824127197,
+                0.8435062170028687,
+                0.788998544216156
+              ],
+              "oklab_delta": 0.00021507966448552907,
+              "hue_delta_degrees": 0.305694580078125,
+              "chroma_ratio": 1.0166828632354736,
+              "luma_ratio": 1.0002004229815786
+            },
+            {
+              "patch": 2,
+              "name": "gray_73",
+              "reference_linear_rgb": [
+                0.8361073732376099,
+                0.7683298587799072,
+                0.7093982696533203
+              ],
+              "candidate_linear_rgb": [
+                0.8370770215988159,
+                0.7680321931838989,
+                0.7074394226074219
+              ],
+              "oklab_delta": 0.00035731791285797954,
+              "hue_delta_degrees": 0.289520263671875,
+              "chroma_ratio": 1.024346947669983,
+              "luma_ratio": 0.9998096661528394
+            },
+            {
+              "patch": 3,
+              "name": "gray_62",
+              "reference_linear_rgb": [
+                0.7768704891204834,
+                0.706106960773468,
+                0.6462274193763733
+              ],
+              "candidate_linear_rgb": [
+                0.7773798704147339,
+                0.7057669758796692,
+                0.6462274193763733
+              ],
+              "oklab_delta": 0.0001442338980268687,
+              "hue_delta_degrees": -0.4930534362792969,
+              "chroma_ratio": 1.0025732517242432,
+              "luma_ratio": 0.9998118617912589
+            },
+            {
+              "patch": 4,
+              "name": "gray_50",
+              "reference_linear_rgb": [
+                0.6756974458694458,
+                0.6120585203170776,
+                0.5467002987861633
+              ],
+              "candidate_linear_rgb": [
+                0.6769960522651672,
+                0.612006425857544,
+                0.5463098287582397
+              ],
+              "oklab_delta": 0.0002556606486905366,
+              "hue_delta_degrees": -0.41626739501953125,
+              "chroma_ratio": 1.0109580755233765,
+              "luma_ratio": 1.0003392563118674
+            },
+            {
+              "patch": 5,
+              "name": "gray_38",
+              "reference_linear_rgb": [
+                0.49859681725502014,
+                0.43629029393196106,
+                0.3831484317779541
+              ],
+              "candidate_linear_rgb": [
+                0.5003563761711121,
+                0.4366113245487213,
+                0.38174155354499817
+              ],
+              "oklab_delta": 0.0006156798917800188,
+              "hue_delta_degrees": 0.3097686767578125,
+              "chroma_ratio": 1.02801513671875,
+              "luma_ratio": 1.0011265580410498
+            },
+            {
+              "patch": 6,
+              "name": "black",
+              "reference_linear_rgb": [
+                0.18778149783611298,
+                0.15622015297412872,
+                0.12155922502279282
+              ],
+              "candidate_linear_rgb": [
+                0.18851511180400848,
+                0.15670247375965118,
+                0.1210724338889122
+              ],
+              "oklab_delta": 0.0007250297348946333,
+              "hue_delta_degrees": 0.5694732666015625,
+              "chroma_ratio": 1.0205905437469482,
+              "luma_ratio": 1.002903340232621
+            },
+            {
+              "patch": 7,
+              "name": "red",
+              "reference_linear_rgb": [
+                0.923734724521637,
+                0.33987632393836975,
+                0.24028189480304718
+              ],
+              "candidate_linear_rgb": [
+                0.9334418773651123,
+                0.33898913860321045,
+                0.23770634829998016
+              ],
+              "oklab_delta": 0.0019313804805278778,
+              "hue_delta_degrees": 0.09099960327148438,
+              "chroma_ratio": 1.0153369903564453,
+              "luma_ratio": 1.0027216143806676
+            },
+            {
+              "patch": 8,
+              "name": "yellow",
+              "reference_linear_rgb": [
+                0.9136254191398621,
+                0.752530574798584,
+                0.4857420325279236
+              ],
+              "candidate_linear_rgb": [
+                0.9154046177864075,
+                0.7528835535049438,
+                0.4817197620868683
+              ],
+              "oklab_delta": 0.0009458698332309723,
+              "hue_delta_degrees": 0.208587646484375,
+              "chroma_ratio": 1.0161821842193604,
+              "luma_ratio": 1.0004433777830128
+            },
+            {
+              "patch": 9,
+              "name": "green",
+              "reference_linear_rgb": [
+                0.587967038154602,
+                0.7097392678260803,
+                0.5339261889457703
+              ],
+              "candidate_linear_rgb": [
+                0.586542010307312,
+                0.7109335660934448,
+                0.5326993465423584
+              ],
+              "oklab_delta": 0.00064805056899786,
+              "hue_delta_degrees": 0.180755615234375,
+              "chroma_ratio": 1.0155340433120728,
+              "luma_ratio": 1.0006892922601291
+            },
+            {
+              "patch": 10,
+              "name": "cyan",
+              "reference_linear_rgb": [
+                0.15439288318157196,
+                0.7067587971687317,
+                0.7066454887390137
+              ],
+              "candidate_linear_rgb": [
+                0.15063777565956116,
+                0.713724672794342,
+                0.7085462808609009
+              ],
+              "oklab_delta": 0.0025810301303863525,
+              "hue_delta_degrees": -0.564178466796875,
+              "chroma_ratio": 1.0153288841247559,
+              "luma_ratio": 1.007332031846529
+            },
+            {
+              "patch": 11,
+              "name": "blue",
+              "reference_linear_rgb": [
+                0.22870893776416779,
+                0.263285368680954,
+                0.27782416343688965
+              ],
+              "candidate_linear_rgb": [
+                0.22854749858379364,
+                0.2638275921344757,
+                0.27896028757095337
+              ],
+              "oklab_delta": 0.00044834366417489946,
+              "hue_delta_degrees": 0.4286956787109375,
+              "chroma_ratio": 1.023499846458435,
+              "luma_ratio": 1.001694674386608
+            },
+            {
+              "patch": 12,
+              "name": "magenta",
+              "reference_linear_rgb": [
+                0.9089891910552979,
+                0.4532322585582733,
+                0.4722980558872223
+              ],
+              "candidate_linear_rgb": [
+                0.9156684875488281,
+                0.4512875974178314,
+                0.4703730344772339
+              ],
+              "oklab_delta": 0.001375243766233325,
+              "hue_delta_degrees": 0.08337783813476562,
+              "chroma_ratio": 1.0179592370986938,
+              "luma_ratio": 0.9998009261743298
+            },
+            {
+              "patch": 13,
+              "name": "CIE_TSC_01",
+              "reference_linear_rgb": [
+                0.696708083152771,
+                0.18322131037712097,
+                0.14085358381271362
+              ],
+              "candidate_linear_rgb": [
+                0.7059086561203003,
+                0.18161305785179138,
+                0.13959552347660065
+              ],
+              "oklab_delta": 0.002297990256920457,
+              "hue_delta_degrees": -0.11348724365234375,
+              "chroma_ratio": 1.0169612169265747,
+              "luma_ratio": 1.0024711869469294
+            },
+            {
+              "patch": 14,
+              "name": "CIE_TSC_02",
+              "reference_linear_rgb": [
+                0.8474089503288269,
+                0.5323387980461121,
+                0.2819364368915558
+              ],
+              "candidate_linear_rgb": [
+                0.8528717160224915,
+                0.533661425113678,
+                0.2770847678184509
+              ],
+              "oklab_delta": 0.0019029212417080998,
+              "hue_delta_degrees": 0.449249267578125,
+              "chroma_ratio": 1.0195529460906982,
+              "luma_ratio": 1.0030228912126722
+            },
+            {
+              "patch": 15,
+              "name": "CIE_TSC_06",
+              "reference_linear_rgb": [
+                0.26873648166656494,
+                0.5713001489639282,
+                0.5754405856132507
+              ],
+              "candidate_linear_rgb": [
+                0.2643384039402008,
+                0.5740083456039429,
+                0.5768499970436096
+              ],
+              "oklab_delta": 0.0014525395818054676,
+              "hue_delta_degrees": -0.3133697509765625,
+              "chroma_ratio": 1.0229121446609497,
+              "luma_ratio": 1.0021756098334706
+            },
+            {
+              "patch": 16,
+              "name": "CIE_TSC_08",
+              "reference_linear_rgb": [
+                0.810602068901062,
+                0.4319380223751068,
+                0.4773334860801697
+              ],
+              "candidate_linear_rgb": [
+                0.8152779936790466,
+                0.4298987090587616,
+                0.47717562317848206
+              ],
+              "oklab_delta": 0.0012352019548416138,
+              "hue_delta_degrees": -0.20253849029541016,
+              "chroma_ratio": 1.0179998874664307,
+              "luma_ratio": 0.9990773803775811
+            },
+            {
+              "patch": 17,
+              "name": "CIE_TSC_09",
+              "reference_linear_rgb": [
+                0.8097731471061707,
+                0.634371280670166,
+                0.5309221148490906
+              ],
+              "candidate_linear_rgb": [
+                0.8109091520309448,
+                0.6343180537223816,
+                0.5289567708969116
+              ],
+              "oklab_delta": 0.0004491971340030432,
+              "hue_delta_degrees": 0.3542289733886719,
+              "chroma_ratio": 1.0114593505859375,
+              "luma_ratio": 1.0000926672360957
+            },
+            {
+              "patch": 18,
+              "name": "CIE_TSC_10",
+              "reference_linear_rgb": [
+                0.7590459585189819,
+                0.5876870155334473,
+                0.47954633831977844
+              ],
+              "candidate_linear_rgb": [
+                0.7620938420295715,
+                0.5889352560043335,
+                0.477107971906662
+              ],
+              "oklab_delta": 0.0010464725783094764,
+              "hue_delta_degrees": 0.71038818359375,
+              "chroma_ratio": 1.0194907188415527,
+              "luma_ratio": 1.0022142609853173
+            }
+          ],
+          "neutral_patches_2_to_6": {
+            "maximum_oklab_delta": 0.0007250297348946333,
+            "median_luma_ratio": 1.0003392563118674,
+            "maximum_absolute_luma_ratio_delta": 0.0029033402326210656
+          },
+          "colour_patches_7_to_18": {
+            "median_absolute_hue_delta_degrees": 0.26097869873046875,
+            "maximum_absolute_hue_delta_degrees": 0.71038818359375,
+            "median_chroma_ratio": 1.0174602270126343,
+            "minimum_chroma_ratio": 1.0114593505859375,
+            "maximum_chroma_ratio": 1.023499846458435
+          },
+          "authority": "paired V66/V72 transport diagnostic only; outdoor illumination and the manufacturer's Lab measurement illuminant remain unidentified"
+        }
+      },
+      "bluray_scan": {
+        "reference": "outputs/native_5k_v66_cineon_printing_density_1f/T003_frame160/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+        "candidate": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T003_frame160/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+        "image_change": {
+          "linear_rgb_mae": 0.000716991103873258,
+          "linear_rgb_p95_absolute": 0.003078248538076877,
+          "linear_rgb_p99_absolute": 0.005844280570745458,
+          "linear_rgb_maximum_absolute": 0.025937378406524658,
+          "oklab_delta_median": 0.002883903682231903,
+          "oklab_delta_p95": 0.0075963641982525485,
+          "oklab_delta_p99": 0.0148155413009225,
+          "luma": {
+            "reference_median": 0.013285123349528293,
+            "candidate_median": 0.013623035846208224,
+            "median_ratio": 1.025435405286766,
+            "median_absolute_difference": 0.00025724281913426343,
+            "p95_absolute_difference": 0.002281212732950223,
+            "midtone_pixel_count": 410540,
+            "midtone_median_ratio": 1.0038382873622427,
+            "reference_p99": 0.5415800239948021,
+            "candidate_p99": 0.5417227042182683,
+            "reference_black_fraction": 0.018228081597222223,
+            "candidate_black_fraction": 0.01749095775462963,
+            "reference_white_fraction": 0.0,
+            "candidate_white_fraction": 0.0
+          }
+        },
+        "chart": {
+          "patches": [
+            {
+              "patch": 1,
+              "name": "white",
+              "reference_linear_rgb": [
+                0.8181465864181519,
+                0.7661586999893188,
+                0.7144091129302979
+              ],
+              "candidate_linear_rgb": [
+                0.8187334537506104,
+                0.7663072943687439,
+                0.714608907699585
+              ],
+              "oklab_delta": 0.00012076996790710837,
+              "hue_delta_degrees": -0.2557830810546875,
+              "chroma_ratio": 1.0024410486221313,
+              "luma_ratio": 1.000317357220302
+            },
+            {
+              "patch": 2,
+              "name": "gray_73",
+              "reference_linear_rgb": [
+                0.7051154971122742,
+                0.6451784372329712,
+                0.5908743143081665
+              ],
+              "candidate_linear_rgb": [
+                0.7071841359138489,
+                0.6448827981948853,
+                0.589674711227417
+              ],
+              "oklab_delta": 0.0004230010963510722,
+              "hue_delta_degrees": -0.5873489379882812,
+              "chroma_ratio": 1.0265040397644043,
+              "luma_ratio": 1.0002167280765364
+            },
+            {
+              "patch": 3,
+              "name": "gray_62",
+              "reference_linear_rgb": [
+                0.6206701993942261,
+                0.5602201819419861,
+                0.509982168674469
+              ],
+              "candidate_linear_rgb": [
+                0.6215377449989319,
+                0.5591315031051636,
+                0.5085537433624268
+              ],
+              "oklab_delta": 0.00046456820564344525,
+              "hue_delta_degrees": -0.6813201904296875,
+              "chroma_ratio": 1.0197545289993286,
+              "luma_ratio": 0.9987754469372341
+            },
+            {
+              "patch": 4,
+              "name": "gray_50",
+              "reference_linear_rgb": [
+                0.5047481656074524,
+                0.45076408982276917,
+                0.40046998858451843
+              ],
+              "candidate_linear_rgb": [
+                0.5055405497550964,
+                0.4503498077392578,
+                0.4003681540489197
+              ],
+              "oklab_delta": 0.0002531672071199864,
+              "hue_delta_degrees": -0.7803115844726562,
+              "chroma_ratio": 1.0057334899902344,
+              "luma_ratio": 0.9997052262967171
+            },
+            {
+              "patch": 5,
+              "name": "gray_38",
+              "reference_linear_rgb": [
+                0.366136759519577,
+                0.31529730558395386,
+                0.2719247043132782
+              ],
+              "candidate_linear_rgb": [
+                0.36694857478141785,
+                0.31604132056236267,
+                0.27166497707366943
+              ],
+              "oklab_delta": 0.0005679411115124822,
+              "hue_delta_degrees": 0.630218505859375,
+              "chroma_ratio": 1.012374997138977,
+              "luma_ratio": 1.0021238816545965
+            },
+            {
+              "patch": 6,
+              "name": "black",
+              "reference_linear_rgb": [
+                0.18831844627857208,
+                0.1571502834558487,
+                0.12274035811424255
+              ],
+              "candidate_linear_rgb": [
+                0.18889570236206055,
+                0.15782339870929718,
+                0.12213879823684692
+              ],
+              "oklab_delta": 0.0008927863673307002,
+              "hue_delta_degrees": 1.0855789184570312,
+              "chroma_ratio": 1.023300290107727,
+              "luma_ratio": 1.0034763238176174
+            },
+            {
+              "patch": 7,
+              "name": "red",
+              "reference_linear_rgb": [
+                0.7088301777839661,
+                0.2316855788230896,
+                0.15548072755336761
+              ],
+              "candidate_linear_rgb": [
+                0.7163791656494141,
+                0.2308139055967331,
+                0.15176790952682495
+              ],
+              "oklab_delta": 0.0021539940498769283,
+              "hue_delta_degrees": 0.4236106872558594,
+              "chroma_ratio": 1.016657829284668,
+              "luma_ratio": 1.0021775801297093
+            },
+            {
+              "patch": 8,
+              "name": "yellow",
+              "reference_linear_rgb": [
+                0.7660695910453796,
+                0.6231962442398071,
+                0.3895866274833679
+              ],
+              "candidate_linear_rgb": [
+                0.7690741419792175,
+                0.6237232089042664,
+                0.3857521116733551
+              ],
+              "oklab_delta": 0.001143932226113975,
+              "hue_delta_degrees": 0.09845733642578125,
+              "chroma_ratio": 1.0192879438400269,
+              "luma_ratio": 1.0011603508551918
+            },
+            {
+              "patch": 9,
+              "name": "green",
+              "reference_linear_rgb": [
+                0.4431687593460083,
+                0.5435084104537964,
+                0.39671486616134644
+              ],
+              "candidate_linear_rgb": [
+                0.44196048378944397,
+                0.544701099395752,
+                0.3955618739128113
+              ],
+              "oklab_delta": 0.0007447080570273101,
+              "hue_delta_degrees": 0.1822662353515625,
+              "chroma_ratio": 1.0176730155944824,
+              "luma_ratio": 1.0010025567980567
+            },
+            {
+              "patch": 10,
+              "name": "cyan",
+              "reference_linear_rgb": [
+                0.07795998454093933,
+                0.5244669318199158,
+                0.5262793898582458
+              ],
+              "candidate_linear_rgb": [
+                0.07486238330602646,
+                0.5313300490379333,
+                0.5294117331504822
+              ],
+              "oklab_delta": 0.0030266419053077698,
+              "hue_delta_degrees": -0.5124969482421875,
+              "chroma_ratio": 1.0162043571472168,
+              "luma_ratio": 1.0104175350420348
+            },
+            {
+              "patch": 11,
+              "name": "blue",
+              "reference_linear_rgb": [
+                0.19149275124073029,
+                0.22076095640659332,
+                0.23725615441799164
+              ],
+              "candidate_linear_rgb": [
+                0.19068637490272522,
+                0.22073215246200562,
+                0.23799170553684235
+              ],
+              "oklab_delta": 0.0004300152650102973,
+              "hue_delta_degrees": 0.4540557861328125,
+              "chroma_ratio": 1.0331811904907227,
+              "luma_ratio": 0.9993560018136204
+            },
+            {
+              "patch": 12,
+              "name": "magenta",
+              "reference_linear_rgb": [
+                0.6811506748199463,
+                0.3161654770374298,
+                0.33015549182891846
+              ],
+              "candidate_linear_rgb": [
+                0.6856822371482849,
+                0.3133533000946045,
+                0.3302282691001892
+              ],
+              "oklab_delta": 0.0017898399382829666,
+              "hue_delta_degrees": -0.5397539138793945,
+              "chroma_ratio": 1.0209321975708008,
+              "luma_ratio": 0.9973589671000932
+            },
+            {
+              "patch": 13,
+              "name": "CIE_TSC_01",
+              "reference_linear_rgb": [
+                0.5912573933601379,
+                0.14044451713562012,
+                0.10590480268001556
+              ],
+              "candidate_linear_rgb": [
+                0.5989508032798767,
+                0.13885918259620667,
+                0.10437480360269547
+              ],
+              "oklab_delta": 0.0022401600144803524,
+              "hue_delta_degrees": -0.03368949890136719,
+              "chroma_ratio": 1.0170828104019165,
+              "luma_ratio": 1.0016737917881562
+            },
+            {
+              "patch": 14,
+              "name": "CIE_TSC_02",
+              "reference_linear_rgb": [
+                0.63762366771698,
+                0.37988361716270447,
+                0.18280881643295288
+              ],
+              "candidate_linear_rgb": [
+                0.6412338018417358,
+                0.38162288069725037,
+                0.18019190430641174
+              ],
+              "oklab_delta": 0.0017329368274658918,
+              "hue_delta_degrees": 0.5117645263671875,
+              "chroma_ratio": 1.0143845081329346,
+              "luma_ratio": 1.0043346253217968
+            },
+            {
+              "patch": 15,
+              "name": "CIE_TSC_06",
+              "reference_linear_rgb": [
+                0.17177630960941315,
+                0.4144505262374878,
+                0.41596803069114685
+              ],
+              "candidate_linear_rgb": [
+                0.16845354437828064,
+                0.416592538356781,
+                0.41769737005233765
+              ],
+              "oklab_delta": 0.001389588345773518,
+              "hue_delta_degrees": -0.1393890380859375,
+              "chroma_ratio": 1.0218080282211304,
+              "luma_ratio": 1.002618430978907
+            },
+            {
+              "patch": 16,
+              "name": "CIE_TSC_08",
+              "reference_linear_rgb": [
+                0.6044483780860901,
+                0.30176764726638794,
+                0.33732935786247253
+              ],
+              "candidate_linear_rgb": [
+                0.60833740234375,
+                0.29975247383117676,
+                0.33758723735809326
+              ],
+              "oklab_delta": 0.0014511564513668418,
+              "hue_delta_degrees": -0.38037681579589844,
+              "chroma_ratio": 1.0204675197601318,
+              "luma_ratio": 0.9983839147775424
+            },
+            {
+              "patch": 17,
+              "name": "CIE_TSC_09",
+              "reference_linear_rgb": [
+                0.6231435537338257,
+                0.47609421610832214,
+                0.39050859212875366
+              ],
+              "candidate_linear_rgb": [
+                0.6251475214958191,
+                0.4763193428516388,
+                0.3890460133552551
+              ],
+              "oklab_delta": 0.0005947097088210285,
+              "hue_delta_degrees": 0.254791259765625,
+              "chroma_ratio": 1.0146046876907349,
+              "luma_ratio": 1.0009606494449301
+            },
+            {
+              "patch": 18,
+              "name": "CIE_TSC_10",
+              "reference_linear_rgb": [
+                0.572904109954834,
+                0.4328959286212921,
+                0.3455077111721039
+              ],
+              "candidate_linear_rgb": [
+                0.5755664110183716,
+                0.4328959286212921,
+                0.3431221842765808
+              ],
+              "oklab_delta": 0.0008692566188983619,
+              "hue_delta_degrees": 0.30625152587890625,
+              "chroma_ratio": 1.022369623184204,
+              "luma_ratio": 1.000862864539454
+            }
+          ],
+          "neutral_patches_2_to_6": {
+            "maximum_oklab_delta": 0.0008927863673307002,
+            "median_luma_ratio": 1.0002167280765364,
+            "maximum_absolute_luma_ratio_delta": 0.0034763238176174216
+          },
+          "colour_patches_7_to_18": {
+            "median_absolute_hue_delta_degrees": 0.34331417083740234,
+            "maximum_absolute_hue_delta_degrees": 0.5397539138793945,
+            "median_chroma_ratio": 1.0184804797172546,
+            "minimum_chroma_ratio": 1.0143845081329346,
+            "maximum_chroma_ratio": 1.0331811904907227
+          },
+          "authority": "paired V66/V72 transport diagnostic only; outdoor illumination and the manufacturer's Lab measurement illuminant remain unidentified"
+        }
+      }
+    }
+  },
+  "paired_native_colour_grain": {
+    "reference": "engine/research_runs/v66_native_colour_grain_gate_t003.json",
+    "candidate": "engine/research_runs/v72_native_colour_grain_gate_t003.json",
+    "branches": {
+      "projection": {
+        "reference_absolute_gate_pass": false,
+        "candidate_absolute_gate_pass": false,
+        "metrics": {
+          "dark_opponent_p9999": {
+            "reference": 0.03972587942481026,
+            "candidate": 0.03970217519998781,
+            "candidate_minus_reference": -2.3704224822451714e-05
+          },
+          "median_opponent_p9999": {
+            "reference": 0.049912262707948685,
+            "candidate": 0.049805451184511185,
+            "candidate_minus_reference": -0.0001068115234375
+          },
+          "isolated_impulses_gt_0.06_per_million": {
+            "reference": 10.994667016824975,
+            "candidate": 10.906248121027607,
+            "candidate_minus_reference": -0.08841889579736772
+          },
+          "isolated_impulses_gt_0.08_per_million": {
+            "reference": 0.0,
+            "candidate": 0.05710077550276234,
+            "candidate_minus_reference": 0.05710077550276234
+          }
+        }
+      },
+      "bluray_scan": {
+        "reference_absolute_gate_pass": true,
+        "candidate_absolute_gate_pass": true,
+        "metrics": {
+          "dark_opponent_p9999": {
+            "reference": 0.034312127381562224,
+            "candidate": 0.03442169052846726,
+            "candidate_minus_reference": 0.00010956314690503677
+          },
+          "median_opponent_p9999": {
+            "reference": 0.038757920265197754,
+            "candidate": 0.03869687765836716,
+            "candidate_minus_reference": -6.104260683059692e-05
+          },
+          "isolated_impulses_gt_0.06_per_million": {
+            "reference": 0.43411119237259194,
+            "candidate": 0.43604084382125763,
+            "candidate_minus_reference": 0.0019296514486656924
+          },
+          "isolated_impulses_gt_0.08_per_million": {
+            "reference": 0.0,
+            "candidate": 0.0,
+            "candidate_minus_reference": 0.0
+          }
+        }
+      }
+    },
+    "interpretation": "The T020-derived absolute projection thresholds fail on both profiles because this chart/foliage frame contains many natural high-contrast chromatic edges. Paired same-seed tails determine whether V72 creates a new regression; the absolute result is not relabelled as a stock-wide grain measurement."
+  },
+  "gates": {
+    "T020_projection_median_luma_absolute_change_below_0.001": true,
+    "T020_projection_midtone_luma_ratio_within_1pct": true,
+    "T020_projection_no_white_clip_increase": true,
+    "T020_bluray_scan_median_luma_absolute_change_below_0.001": true,
+    "T020_bluray_scan_midtone_luma_ratio_within_1pct": true,
+    "T020_bluray_scan_no_white_clip_increase": true,
+    "T003_frame160_projection_median_luma_absolute_change_below_0.001": true,
+    "T003_frame160_projection_midtone_luma_ratio_within_1pct": true,
+    "T003_frame160_projection_no_white_clip_increase": true,
+    "T003_frame160_bluray_scan_median_luma_absolute_change_below_0.001": true,
+    "T003_frame160_bluray_scan_midtone_luma_ratio_within_1pct": true,
+    "T003_frame160_bluray_scan_no_white_clip_increase": true,
+    "T003_projection_neutral_delta_below_0.01_oklab": true,
+    "T003_projection_colour_hue_delta_below_2deg": true,
+    "T003_bluray_scan_neutral_delta_below_0.01_oklab": true,
+    "T003_bluray_scan_colour_hue_delta_below_2deg": true,
+    "T003_projection_paired_dark_opponent_no_regression": true,
+    "T003_projection_paired_median_opponent_no_regression": true,
+    "T003_projection_paired_isolated_006_no_regression": true,
+    "T003_projection_isolated_008_within_safe_tail": true,
+    "T003_bluray_scan_paired_dark_opponent_no_regression": true,
+    "T003_bluray_scan_paired_median_opponent_no_regression": true,
+    "T003_bluray_scan_paired_isolated_006_no_regression": true,
+    "T003_bluray_scan_isolated_008_within_safe_tail": true
+  },
+  "all_gates_pass": true,
+  "decision_boundary": {
+    "what_this_can_support": "identity is a stable evidence-minimal endpoint for the otherwise unidentified direct record-mix operator",
+    "what_this_cannot_support": "the true joint 5279 grain covariance or exact separation response; those still require controlled uniform and separation-wedge measurements"
+  }
+}

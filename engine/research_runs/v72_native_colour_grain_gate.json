@@ -1,0 +1,111 @@
+{
+  "audit": "V72 every-frame native-resolution delivered colour-grain gate",
+  "valid_domain": "two-pixel perimeter excluded: radius-1 median plus radius-1 isolation neighbourhood has no valid support there",
+  "scenes": {
+    "T020": {
+      "projection": {
+        "path": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+        "frames": [
+          {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 12442132,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0007282978622242808,
+            "luma_p50": 0.17967280745506287,
+            "luma_p99": 0.8403525352478027,
+            "luma_p999": 0.8579882979393005,
+            "display_black_fraction": 0.01222715741353182,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.03462671480849584,
+            "dark_spikes_gt_0_04_per_million": 24.031251235720696,
+            "dark_spikes_gt_0_05_per_million": 1.1252090879601664,
+            "visible_chroma_to_luma_highpass_rms": 0.07844112112759202,
+            "median_opponent_p9999": 0.04435797780752182,
+            "isolated_impulses_gt_0.06_count": 49,
+            "isolated_impulses_gt_0.06_per_million": 3.9382318078605816,
+            "isolated_impulses_gt_0.08_count": 0,
+            "isolated_impulses_gt_0.08_per_million": 0.0,
+            "frame": 0
+          }
+        ],
+        "worst": {
+          "luma_p001": 0.0,
+          "luma_p01": 0.0007282978622242808,
+          "luma_p50": 0.17967280745506287,
+          "luma_p99": 0.8403525352478027,
+          "luma_p999": 0.8579882979393005,
+          "display_black_fraction": 0.01222715741353182,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.03462671480849584,
+          "dark_spikes_gt_0_04_per_million": 24.031251235720696,
+          "dark_spikes_gt_0_05_per_million": 1.1252090879601664,
+          "visible_chroma_to_luma_highpass_rms": 0.07844112112759202,
+          "median_opponent_p9999": 0.04435797780752182,
+          "isolated_impulses_gt_0.06_count": 49.0,
+          "isolated_impulses_gt_0.06_per_million": 3.9382318078605816,
+          "isolated_impulses_gt_0.08_count": 0.0,
+          "isolated_impulses_gt_0.08_per_million": 0.0
+        },
+        "gates": {
+          "dark_p9999_le_0_035": true,
+          "opponent_to_luma_le_0_20": true,
+          "median_p9999_le_0_05": true,
+          "isolated_gt_0_06_count_le_ceil_5_per_million": true,
+          "isolated_gt_0_08_count_le_ceil_1_per_million": true
+        },
+        "pass": true
+      },
+      "scan": {
+        "path": "outputs/native_5k_v72_identity_record_mix_candidate_1f/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+        "frames": [
+          {
+            "excluded_perimeter_pixels": 2,
+            "dark_pixel_count": 10554070,
+            "luma_p001": 0.0,
+            "luma_p01": 0.0005645838100463152,
+            "luma_p50": 0.2160545438528061,
+            "luma_p99": 0.7388649582862854,
+            "luma_p999": 0.7539361119270325,
+            "display_black_fraction": 0.01404808038483114,
+            "display_white_fraction": 0.0,
+            "dark_opponent_p9999": 0.036310626485943964,
+            "dark_spikes_gt_0_04_per_million": 30.225306445759788,
+            "dark_spikes_gt_0_05_per_million": 0.852751592513599,
+            "visible_chroma_to_luma_highpass_rms": 0.7522863694882114,
+            "median_opponent_p9999": 0.040482185781002045,
+            "isolated_impulses_gt_0.06_count": 5,
+            "isolated_impulses_gt_0.06_per_million": 0.4737508847297772,
+            "isolated_impulses_gt_0.08_count": 0,
+            "isolated_impulses_gt_0.08_per_million": 0.0,
+            "frame": 0
+          }
+        ],
+        "worst": {
+          "luma_p001": 0.0,
+          "luma_p01": 0.0005645838100463152,
+          "luma_p50": 0.2160545438528061,
+          "luma_p99": 0.7388649582862854,
+          "luma_p999": 0.7539361119270325,
+          "display_black_fraction": 0.01404808038483114,
+          "display_white_fraction": 0.0,
+          "dark_opponent_p9999": 0.036310626485943964,
+          "dark_spikes_gt_0_04_per_million": 30.225306445759788,
+          "dark_spikes_gt_0_05_per_million": 0.852751592513599,
+          "visible_chroma_to_luma_highpass_rms": 0.7522863694882114,
+          "median_opponent_p9999": 0.040482185781002045,
+          "isolated_impulses_gt_0.06_count": 5.0,
+          "isolated_impulses_gt_0.06_per_million": 0.4737508847297772,
+          "isolated_impulses_gt_0.08_count": 0.0,
+          "isolated_impulses_gt_0.08_per_million": 0.0
+        },
+        "gates": {
+          "median_p9999_le_0_05": true,
+          "isolated_gt_0_06_count_le_ceil_5_per_million": true,
+          "isolated_gt_0_08_count_le_ceil_1_per_million": true
+        },
+        "pass": true
+      }
+    }
+  },
+  "all_gates_pass": true
+}

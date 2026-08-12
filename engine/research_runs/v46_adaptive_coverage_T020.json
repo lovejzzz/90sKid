@@ -1,0 +1,17 @@
+{
+  "audit": "V46 real-frame demand-loaded spectral microbrick coverage",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "absolute_frame": 0,
+  "negative_formation_seconds": 14.21778070900018,
+  "base_atlas_size": 129,
+  "mean_unique_parent_cells": 82200,
+  "formed_unique_parent_cells": 265083,
+  "union_unique_parent_cells": 266687,
+  "active_set_risk_parent_cells": 16447,
+  "curvature_risk_parent_cells": 4084,
+  "demand_loaded_microbrick_count": 20531,
+  "demand_loaded_cells_path": "engine/research_runs/v46_microbrick_cells_T020.npy",
+  "demand_loaded_cells_sha256": "1728e402f9692625ce5d1bdd6c923f66cac36ecbf399de8a0d03575463a4f64f",
+  "microbrick_exact_nodes_with_duplicates_at_5_cubed": 2566375,
+  "maximum_nonrisk_linear_cubic_disagreement": 0.0009325839875177211
+}

@@ -1,0 +1,175 @@
+{
+  "audit": "V65 projection-observer ownership and uncertainty audit",
+  "status": "diagnostic_only_no_release_selection",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "frame": 0,
+  "working_dimensions": [
+    1440,
+    1080
+  ],
+  "seconds": 155.54106095898896,
+  "v64_lattice_sha256": "27203fdc8407c446fae65b9f259677cdd8320cdb1ec95961c859105cf211bd32",
+  "observer_ownership": {
+    "physical_vs_delivered_scan_referenced": {
+      "linear_rgb_mae": 0.012805050238966942,
+      "linear_rgb_p95_absolute": 0.06455505527555941,
+      "linear_rgb_p99_absolute": 0.13338615015149116,
+      "linear_rgb_maximum_absolute": 0.26271042227745056,
+      "oklab_delta_median": 0.019804392009973526,
+      "oklab_delta_p95": 0.0952741336077452,
+      "oklab_delta_p99": 0.12673129022121432,
+      "changed_12bit_component_fraction": 0.9399845679012345
+    },
+    "internal_vs_final_scan_reference": {
+      "linear_rgb_mae": 0.002102562226355076,
+      "linear_rgb_p95_absolute": 0.007656940445303913,
+      "linear_rgb_p99_absolute": 0.02018827199935913,
+      "linear_rgb_maximum_absolute": 0.057092905044555664,
+      "oklab_delta_median": 0.005453541874885559,
+      "oklab_delta_p95": 0.014526709029451017,
+      "oklab_delta_p99": 0.02007669309154153,
+      "changed_12bit_component_fraction": 0.9046324159807956
+    },
+    "scan_shared_across_variants": {
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0,
+      "changed_12bit_component_fraction": 0.0
+    }
+  },
+  "single_variable_ablations": {
+    "zero_callier_vs_v64_physical": {
+      "linear_rgb_mae": 0.00013549196592066437,
+      "linear_rgb_p95_absolute": 0.0005681291222572327,
+      "linear_rgb_p99_absolute": 0.0009982588887214594,
+      "linear_rgb_maximum_absolute": 0.015290796756744385,
+      "oklab_delta_median": 0.0003685465781018138,
+      "oklab_delta_p95": 0.0012805891747120768,
+      "oklab_delta_p99": 0.002386510998476297,
+      "changed_12bit_component_fraction": 0.3659420010288066
+    },
+    "zero_callier_vs_v64_delivered": {
+      "linear_rgb_mae": 9.337150572719111e-07,
+      "linear_rgb_p95_absolute": 2.7418136596679688e-06,
+      "linear_rgb_p99_absolute": 1.9788742065429688e-05,
+      "linear_rgb_maximum_absolute": 0.0005626976490020752,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 1.31299441363808e-06,
+      "oklab_delta_p99": 9.53678954829229e-06,
+      "changed_12bit_component_fraction": 0.003799082647462277
+    },
+    "zero_flare_vs_v64_physical": {
+      "linear_rgb_mae": 0.0,
+      "linear_rgb_p95_absolute": 0.0,
+      "linear_rgb_p99_absolute": 0.0,
+      "linear_rgb_maximum_absolute": 0.0,
+      "oklab_delta_median": 0.0,
+      "oklab_delta_p95": 0.0,
+      "oklab_delta_p99": 0.0,
+      "changed_12bit_component_fraction": 0.0
+    }
+  },
+  "luma": {
+    "scan": {
+      "p001": 3.0212740418733117e-06,
+      "p01": 3.308049079641932e-05,
+      "median": 0.045190613350132476,
+      "p99": 0.5034029657423496,
+      "p999": 0.5178309096079888,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "delivered_scan_referenced_projection": {
+      "p001": 1.1127816634822015e-05,
+      "p01": 0.00012167536447678866,
+      "median": 0.030722894270159302,
+      "p99": 0.6591833580530883,
+      "p999": 0.6730154417479046,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "physical_spectral_projection": {
+      "p001": 1.0705702831389135e-05,
+      "p01": 0.00010071329102468734,
+      "median": 0.026863317717984316,
+      "p99": 0.656758102171421,
+      "p999": 0.6707948808268785,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "physical_zero_callier": {
+      "p001": 1.0931124130765966e-05,
+      "p01": 9.841038772609318e-05,
+      "median": 0.02687401547282934,
+      "p99": 0.6567696661264896,
+      "p999": 0.6707950918366433,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "delivered_zero_callier": {
+      "p001": 1.1127816634822015e-05,
+      "p01": 0.00012167536447678866,
+      "median": 0.030722894270159302,
+      "p99": 0.659184464050293,
+      "p999": 0.6730050832519539,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    },
+    "physical_zero_flare": {
+      "p001": 1.0705702831389135e-05,
+      "p01": 0.00010071329102468734,
+      "median": 0.026863317717984316,
+      "p99": 0.656758102171421,
+      "p999": 0.6707948808268785,
+      "at_or_below_zero_fraction": 0.0,
+      "at_or_above_one_fraction": 0.0
+    }
+  },
+  "oklab_chroma": {
+    "scan": {
+      "median": 0.04795067757368088,
+      "p95": 0.12976837307214736,
+      "p99": 0.14968055874109268,
+      "maximum": 0.167622908949852
+    },
+    "delivered_scan_referenced_projection": {
+      "median": 0.04737614095211029,
+      "p95": 0.1280035100877285,
+      "p99": 0.14843384966254233,
+      "maximum": 0.16493287682533264
+    },
+    "physical_spectral_projection": {
+      "median": 0.03574281185865402,
+      "p95": 0.1170348856598139,
+      "p99": 0.13638838067650796,
+      "maximum": 0.16812407970428467
+    },
+    "physical_zero_callier": {
+      "median": 0.035533443093299866,
+      "p95": 0.11689265444874763,
+      "p99": 0.1362737609446049,
+      "maximum": 0.16555066406726837
+    },
+    "delivered_zero_callier": {
+      "median": 0.04737614095211029,
+      "p95": 0.1280035100877285,
+      "p99": 0.14843384966254233,
+      "maximum": 0.16493287682533264
+    },
+    "physical_zero_flare": {
+      "median": 0.03574281185865402,
+      "p95": 0.1170348856598139,
+      "p99": 0.13638838067650796,
+      "maximum": 0.16812407970428467
+    }
+  },
+  "interpretation": {
+    "delivery": "V40+ final publication retains projection lightness/luma but sets low-frequency opponent colour from the period-scan observer; projection and scan similarity is therefore a declared safety boundary, not evidence that the optical observers are naturally equivalent.",
+    "callier": "The nonzero Callier gain is a generic subtle-colour-print prior, not a measured 2383 Q(D, wavelength) function.",
+    "flare": "The scalar one-percent veil is a viewing-condition prior, not a spatially measured projector/lens/port/screen flare kernel. It is currently unreachable in both active monitor colour-authority branches, so changing it cannot explain the delivered black or projection/scan difference."
+  }
+}

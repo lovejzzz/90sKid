@@ -1,0 +1,94 @@
+{
+  "policy": "trilinear_each_fixed_active_set_then_minimum_residual",
+  "interpolation": "cubic",
+  "lut_size": 65,
+  "axis_first_steps": [
+    0.0006835937383584678,
+    0.0020507812150754035,
+    0.0034179689828306437,
+    0.00478515587747097
+  ],
+  "axis_last_steps": [
+    0.08271479606628418,
+    0.08408212661743164,
+    0.08544921875,
+    0.08681631088256836
+  ],
+  "point_count": 16000,
+  "interpolation_seconds": 0.277812208999876,
+  "exact_nnls_seconds": 19.587836457999856,
+  "active_set_classification_accuracy": 0.9899375,
+  "active_set_boundary_risk": {
+    "risk_cell_fraction": 0.0672149658203125,
+    "flagged_point_fraction": 0.1303125,
+    "maximum_error_flagged": 0.005224013217384971,
+    "maximum_error_unflagged": 0.0022059211986743543,
+    "fraction_over_gate_flagged": 0.06810551558752997,
+    "fraction_over_gate_unflagged": 0.0028027308659719728
+  },
+  "adaptive_error_estimator_sweep": [
+    {
+      "linear_cubic_threshold": 0.0001,
+      "flagged_point_fraction": 0.301,
+      "maximum_error_unflagged": 0.00010224179570572645,
+      "fraction_over_gate_unflagged": 0.0
+    },
+    {
+      "linear_cubic_threshold": 0.00025,
+      "flagged_point_fraction": 0.1460625,
+      "maximum_error_unflagged": 0.00025086412401797986,
+      "fraction_over_gate_unflagged": 0.0
+    },
+    {
+      "linear_cubic_threshold": 0.0005,
+      "flagged_point_fraction": 0.137625,
+      "maximum_error_unflagged": 0.000507441014384824,
+      "fraction_over_gate_unflagged": 0.0
+    },
+    {
+      "linear_cubic_threshold": 0.001,
+      "flagged_point_fraction": 0.13275,
+      "maximum_error_unflagged": 0.0009956309283826181,
+      "fraction_over_gate_unflagged": 0.0
+    }
+  ],
+  "oracle_exact_mask_interpolation": {
+    "maximum_absolute_printer_density_error": 0.0047110428025147755,
+    "p99_absolute_printer_density_error": 0.0004285160553735073,
+    "rms_printer_density_error": 0.00013053193070166174,
+    "worst_status_m_net_density": [
+      0.3776540756225586,
+      1.1755989789962769,
+      0.5468689799308777
+    ],
+    "worst_output_record": "red",
+    "worst_exact_mask": 7,
+    "maximum_by_exact_mask": {
+      "0": 0.0,
+      "1": 8.450738175902472e-08,
+      "2": 7.711631400120211e-08,
+      "3": 0.002081940141224814,
+      "4": 1.3030707246564077e-07,
+      "5": 0.0010098108663482708,
+      "6": 0.001032705541753276,
+      "7": 0.0047110428025147755
+    }
+  },
+  "interpolated_residual_minus_exact": {
+    "maximum_absolute": 7.898358249930686e-05,
+    "rms": 4.120142277358985e-06
+  },
+  "maximum_absolute_printer_density_error": 0.005224013217384971,
+  "p99_absolute_printer_density_error": 0.00047033234600713495,
+  "rms_printer_density_error": 0.00013614083652936797,
+  "worst_status_m_net_density": [
+    0.34258727894214125,
+    1.129601615643514,
+    0.9103175397671003
+  ],
+  "worst_output_record": "red",
+  "worst_approximate_mask": 7,
+  "worst_exact_mask": 6,
+  "quality_gate_maximum_density_error": 0.001,
+  "quality_gate_pass": false
+}

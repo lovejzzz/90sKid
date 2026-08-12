@@ -1,0 +1,41 @@
+{
+  "audit": "V46 pipeline-stage adaptive cache coverage",
+  "sources": {
+    "T020": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+      "absolute_frame": 0,
+      "seconds": 26.969804166999893,
+      "missing_cells_by_stage": {
+        "pre_mtf_mean": 0,
+        "pre_mtf_formed": 0,
+        "post_mtf_mean": 0,
+        "post_mtf_formed": 0
+      }
+    },
+    "T032": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T032.MOV",
+      "absolute_frame": 0,
+      "seconds": 31.772864999999,
+      "missing_cells_by_stage": {
+        "pre_mtf_mean": 0,
+        "pre_mtf_formed": 0,
+        "post_mtf_mean": 0,
+        "post_mtf_formed": 0
+      }
+    },
+    "T007": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T007.MOV",
+      "absolute_frame": 276,
+      "seconds": 27.004655291000745,
+      "missing_cells_by_stage": {
+        "pre_mtf_mean": 0,
+        "pre_mtf_formed": 0,
+        "post_mtf_mean": 0,
+        "post_mtf_formed": 0
+      }
+    }
+  },
+  "union_missing_cell_count": 0,
+  "cells_output": "engine/research_runs/v46_pipeline_stage_missing_cells_final.npy",
+  "cells_sha256": "eda2db76e20e675a00d154723ec24181542250119ba5b50dd26e48ddcd85e8c7"
+}

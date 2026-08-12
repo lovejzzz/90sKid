@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import json
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -19,15 +20,47 @@ from .contracts import (
 )
 from .conformance import research_conformance
 from .io import (
+    CineonDPXSequenceWriter,
     DualDeliveryWriter,
     PrefetchedIterator,
+    _xq_command,
     rebuild_scale_integrated_srgb_review_from_master,
 )
 from .pipeline import Emulsion5279Engine
+from .view_policy import (
+    CineonViewPolicy,
+    LEGACY_MANAGED_PROJECTION_CONTRACT,
+    LEGACY_MANAGED_SCAN_CONTRACT,
+    POLICY_CONTRACTS,
+    render_cineon_view,
+)
 from . import legacy
 
 
 class PipelineContractTests(unittest.TestCase):
+    def test_projection_delivery_declares_historical_management_boundary(self) -> None:
+        contract = LEGACY_MANAGED_PROJECTION_CONTRACT
+        self.assertFalse(contract["pure_function_of_projected_print"])
+        self.assertIn(
+            "not_measured_5279_or_2383_property",
+            contract["classification"],
+        )
+        engine = Emulsion5279Engine(
+            EngineConfig(profile="v72", mode=EngineMode.REFERENCE)
+        )
+        try:
+            provenance = engine.provenance
+        finally:
+            engine.close()
+        self.assertEqual(
+            provenance["legacy_projection_delivery_contract"], contract
+        )
+
+    def test_xq_delivery_uses_measured_maximum_macroblock_budget(self) -> None:
+        command = _xq_command(Path("review.mov"), 1920, 1440, "24000/1001")
+        self.assertEqual(command[command.index("-profile:v") + 1], "5")
+        self.assertEqual(command[command.index("-bits_per_mb") + 1], "8192")
+
     def test_config_rejects_creative_or_invalid_engine_controls(self) -> None:
         with self.assertRaises(ValueError):
             EngineConfig(profile="pretty-film")
@@ -55,6 +88,115 @@ class PipelineContractTests(unittest.TestCase):
                 self.assertEqual(list(prefetched), [(0, 0), (1, 1), (2, 4)])
                 self.assertGreaterEqual(prefetched.last_service_seconds, 0.0)
                 self.assertGreaterEqual(prefetched.last_wait_seconds, 0.0)
+
+    def test_cineon_dpx_is_code_exact_and_declares_printing_density(self) -> None:
+        width, height = 6, 4
+        index = np.arange(width * height, dtype=np.uint16).reshape(
+            height, width
+        )
+        expected = np.stack(
+            [
+                (index * 41) % 1024,
+                (123 + index * 67) % 1024,
+                (1023 - index * 29) % 1024,
+            ],
+            axis=-1,
+        ).astype(np.uint16)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            writer = CineonDPXSequenceWriter(
+                root, width, height, "24/1", 1, start_frame=17
+            )
+            writer.write(expected)
+            writer.close()
+            path = root / "00000017.dpx"
+            header = path.read_bytes()[:1664]
+            endian = ">" if header[:4] == b"SDPX" else "<"
+            self.assertEqual(struct.unpack_from(endian + "I", header, 784)[0], 0)
+            self.assertEqual(struct.unpack_from(endian + "f", header, 788)[0], 0.0)
+            self.assertEqual(struct.unpack_from(endian + "I", header, 792)[0], 1023)
+            self.assertAlmostEqual(
+                struct.unpack_from(endian + "f", header, 796)[0], 2.048,
+                places=6,
+            )
+            self.assertEqual(header[800:804], bytes((50, 1, 1, 10)))
+            decoded = subprocess.check_output(
+                [
+                    "ffmpeg",
+                    "-v",
+                    "error",
+                    "-i",
+                    str(path),
+                    "-frames:v",
+                    "1",
+                    "-pix_fmt",
+                    "gbrp10le",
+                    "-f",
+                    "rawvideo",
+                    "-",
+                ]
+            )
+            planes = np.frombuffer(decoded, "<u2").reshape(3, height, width)
+            actual = np.stack((planes[2], planes[0], planes[1]), axis=-1)
+            np.testing.assert_array_equal(actual, expected)
+
+    def test_cineon_code_helper_is_the_scan_view_quantizer(self) -> None:
+        import v66_profile
+        import v44_profile
+
+        e = legacy.model
+        v44_profile.apply(e)
+        archive_dmin = e.PRINT_2383_DMIN_SPECTRAL_DENSITY.copy()
+        archive_mid = e.NEUTRAL_MID_SCANNER_DENSITY.copy()
+        archive_high = e.NEUTRAL_HIGH_SCANNER_DENSITY.copy()
+        v66_profile.apply(e)
+        scanner = np.asarray(
+            [[[-0.40, 0.00, 0.70], [0.08, 1.35, 3.00]]],
+            dtype=np.float32,
+        )
+        actual = e.quantized_cineon_code_from_scanner_density(scanner)
+        gain = 0.700 / np.maximum(e.NEUTRAL_MID_SCANNER_DENSITY, 1e-6)
+        expected = np.clip(
+            np.rint(95.0 + scanner * gain / 0.002), 0.0, 1023.0
+        ).astype(np.uint16)
+        np.testing.assert_array_equal(actual, expected)
+        self.assertEqual(actual.dtype, np.uint16)
+        np.testing.assert_array_equal(
+            e.render_cineon_scan_master_from_scanner_density(scanner),
+            e.render_cineon_open_display_from_code(actual),
+        )
+        np.testing.assert_array_equal(
+            render_cineon_view(actual, CineonViewPolicy.OPEN_MONITOR_V66),
+            e.render_cineon_open_display_from_code(actual),
+        )
+        pointwise = render_cineon_view(
+            actual, CineonViewPolicy.BLURAY_POINTWISE_V66
+        )
+        expected_pointwise = e.finish_cineon_scan_for_bluray(
+            e.render_cineon_open_display_from_code(actual)
+        )
+        expected_pointwise = e.compress_oklab_chroma_to_rec709(
+            expected_pointwise
+        )
+        if e.SPIRIT_NEUTRAL_SCALE_CALIBRATION_ENABLED:
+            expected_pointwise = e.neutralize_spirit_finished_gray_scale(
+                expected_pointwise
+            )
+        np.testing.assert_array_equal(pointwise, expected_pointwise)
+        self.assertTrue(
+            POLICY_CONTRACTS[
+                CineonViewPolicy.BLURAY_POINTWISE_V66
+            ]["pure_function_of_dpx"]
+        )
+        self.assertFalse(LEGACY_MANAGED_SCAN_CONTRACT["pure_function_of_dpx"])
+        v44_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.PRINT_2383_DMIN_SPECTRAL_DENSITY, archive_dmin
+        )
+        np.testing.assert_array_equal(e.NEUTRAL_MID_SCANNER_DENSITY, archive_mid)
+        np.testing.assert_array_equal(
+            e.NEUTRAL_HIGH_SCANNER_DENSITY, archive_high
+        )
 
     def test_default_executes_the_latest_research_sampler_contract(self) -> None:
         config = EngineConfig()
@@ -142,6 +284,773 @@ class PipelineContractTests(unittest.TestCase):
         import v42_profile
         v42_profile.apply(e)
         self.assertEqual(e.PRINT_2383_CMF_MODE, "analytic_20nm")
+
+    def test_v48_isolates_isotropic_site_integration_and_v45_resets_it(self) -> None:
+        import v45_profile
+        import v48_profile
+
+        e = legacy.model
+        base_sigma = e.SUBEMULSION_OPTICAL_SIGMA_BASE_PX_5760_RGB.copy()
+        config = EngineConfig(profile="v48", mode=EngineMode.REFERENCE)
+        v48_profile.apply(e)
+        report = research_conformance(e, v48_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(e.GRAIN_SUBPIXEL_PHASE_RADIUS_PX, 0.0)
+        self.assertEqual(
+            e.GRAIN_SITE_RASTERIZATION_MODE,
+            "isotropic_continuous_site_second_moment",
+        )
+        np.testing.assert_array_equal(
+            e.SUBEMULSION_OPTICAL_SIGMA_PX_5760_RGB,
+            np.sqrt(np.square(base_sigma) + 1.0 / 6.0).astype(np.float32),
+        )
+
+        v45_profile.apply(e)
+        self.assertEqual(e.GRAIN_SUBPIXEL_PHASE_RADIUS_PX, 0.38)
+        self.assertEqual(
+            e.GRAIN_SITE_RASTERIZATION_MODE,
+            "fixed_global_bilinear_phase",
+        )
+        np.testing.assert_array_equal(
+            e.SUBEMULSION_OPTICAL_SIGMA_PX_5760_RGB,
+            base_sigma,
+        )
+
+    def test_v49_removes_only_the_unmeasured_macro_density_guard(self) -> None:
+        import v48_profile
+        import v49_profile
+
+        e = legacy.model
+        config = EngineConfig(profile="v49", mode=EngineMode.REFERENCE)
+        v49_profile.apply(e)
+        report = research_conformance(e, v49_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.GRAIN_LOCAL_DENSITY_BOUND_MODE,
+            "nonnegative_microscopic_density",
+        )
+        self.assertEqual(e.GRAIN_SUBPIXEL_PHASE_RADIUS_PX, 0.0)
+
+        v48_profile.apply(e)
+        self.assertEqual(
+            e.GRAIN_LOCAL_DENSITY_BOUND_MODE,
+            "legacy_macro_dmax_plus_0_12",
+        )
+
+    def test_v50_uses_vector_trace_and_v49_restores_archive_curve(self) -> None:
+        import v49_profile
+        import v50_profile
+
+        e = legacy.model
+        config = EngineConfig(profile="v50", mode=EngineMode.REFERENCE)
+        v50_profile.apply(e)
+        report = research_conformance(e, v50_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.GRANULARITY_LOG_EXPOSURE,
+            v50_profile.GRANULARITY_LOG_EXPOSURE,
+        )
+        np.testing.assert_array_equal(
+            e.GRANULARITY_SIGMA_D_RGB,
+            v50_profile.GRANULARITY_SIGMA_D_RGB,
+        )
+        self.assertEqual(float(e.GRANULARITY_LOG_EXPOSURE[-1]), 0.0)
+
+        v49_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.GRANULARITY_LOG_EXPOSURE,
+            e.GRANULARITY_LOG_EXPOSURE_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.GRANULARITY_SIGMA_D_RGB,
+            e.GRANULARITY_SIGMA_D_RGB_ARCHIVE,
+        )
+
+    def test_v51_uses_vector_spectra_and_v50_restores_archive_spectra(self) -> None:
+        import v50_profile
+        import v51_profile
+
+        e = legacy.model
+        v50_profile.apply(e)
+        frozen_hd = e.SENSITO_DENSITY_RGB.copy()
+        frozen_granularity = e.GRANULARITY_SIGMA_D_RGB.copy()
+        frozen_dir = e.DIR_POPULATION_TRANSPORT.copy()
+        frozen_mtf = e.NEGATIVE_MTF_CORE_SIGMA_RGB.copy()
+        config = EngineConfig(profile="v51", mode=EngineMode.REFERENCE)
+        v51_profile.apply(e)
+        report = research_conformance(e, v51_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY,
+            v51_profile.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY,
+        )
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY,
+            v51_profile.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY,
+        )
+        np.testing.assert_array_equal(e.SENSITO_DENSITY_RGB, frozen_hd)
+        np.testing.assert_array_equal(
+            e.GRANULARITY_SIGMA_D_RGB, frozen_granularity
+        )
+        np.testing.assert_array_equal(e.DIR_POPULATION_TRANSPORT, frozen_dir)
+        np.testing.assert_array_equal(e.NEGATIVE_MTF_CORE_SIGMA_RGB, frozen_mtf)
+
+        v50_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY,
+            e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY,
+            e.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY_ARCHIVE,
+        )
+
+    def test_v52_separates_traced_hd_from_inferred_shoulder(self) -> None:
+        import v51_profile
+        import v52_profile
+
+        e = legacy.model
+        v51_profile.apply(e)
+        frozen_granularity = e.GRANULARITY_SIGMA_D_RGB.copy()
+        frozen_net_spectra = e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY.copy()
+        frozen_dmin_spectrum = e.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY.copy()
+        frozen_dir = e.DIR_POPULATION_TRANSPORT.copy()
+        frozen_mtf = e.NEGATIVE_MTF_CORE_SIGMA_RGB.copy()
+
+        config = EngineConfig(profile="v52", mode=EngineMode.REFERENCE)
+        v52_profile.apply(e)
+        report = research_conformance(e, v52_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.SENSITO_LOG_EXPOSURE, v52_profile.SENSITO_LOG_EXPOSURE
+        )
+        np.testing.assert_array_equal(
+            e.SENSITO_DENSITY_RGB, v52_profile.SENSITO_DENSITY_RGB
+        )
+        np.testing.assert_array_equal(e.SENSITO_DMIN_RGB, e.SENSITO_DENSITY_RGB[:, 0])
+        self.assertTrue(np.all(np.diff(e.SENSITO_DENSITY_RGB, axis=1) >= 0.0))
+
+        zero = int(np.flatnonzero(e.SENSITO_LOG_EXPOSURE == 0.0)[0])
+        archive_zero = int(
+            np.flatnonzero(e.SENSITO_LOG_EXPOSURE_ARCHIVE == 0.0)[0]
+        )
+        np.testing.assert_allclose(
+            e.SENSITO_DENSITY_RGB[:, zero + 1 :]
+            - e.SENSITO_DENSITY_RGB[:, zero, None],
+            e.SENSITO_DENSITY_RGB_ARCHIVE[:, archive_zero + 1 :]
+            - e.SENSITO_DENSITY_RGB_ARCHIVE[:, archive_zero, None],
+            rtol=0.0,
+            atol=3e-7,
+        )
+        np.testing.assert_array_equal(e.GRANULARITY_SIGMA_D_RGB, frozen_granularity)
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY, frozen_net_spectra
+        )
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_DMIN_SPECTRAL_DENSITY, frozen_dmin_spectrum
+        )
+        np.testing.assert_array_equal(e.DIR_POPULATION_TRANSPORT, frozen_dir)
+        np.testing.assert_array_equal(e.NEGATIVE_MTF_CORE_SIGMA_RGB, frozen_mtf)
+
+        neutral = np.repeat(
+            e.SENSITO_LOG_EXPOSURE[:, None], 3, axis=1
+        ).astype(np.float32)
+        np.testing.assert_allclose(
+            e.record_densities_from_log_exposure(neutral),
+            e.SENSITO_DENSITY_RGB.T,
+            rtol=0.0,
+            atol=3e-7,
+        )
+
+        v51_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.SENSITO_LOG_EXPOSURE, e.SENSITO_LOG_EXPOSURE_ARCHIVE
+        )
+        np.testing.assert_array_equal(
+            e.SENSITO_DENSITY_RGB, e.SENSITO_DENSITY_RGB_ARCHIVE
+        )
+
+    def test_v53_uses_vector_2383_hd_and_v52_restores_archive_print(self) -> None:
+        import v52_profile
+        import v53_profile
+
+        e = legacy.model
+        v53_profile.apply(e)
+        config = EngineConfig(profile="v53", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v53_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.PRINT_2383_LOG_EXPOSURE, v53_profile.PRINT_2383_LOG_EXPOSURE
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_DENSITY_RGB, v53_profile.PRINT_2383_DENSITY_RGB
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_STATUS_A_DMIN_RGB,
+            e.PRINT_2383_DENSITY_RGB[:, 0],
+        )
+        self.assertTrue(np.all(np.diff(e.PRINT_2383_DENSITY_RGB, axis=1) >= 0.0))
+        self.assertEqual(float(e.PRINT_2383_LOG_EXPOSURE[0]), -3.0)
+        self.assertEqual(float(e.PRINT_2383_LOG_EXPOSURE[-1]), 3.0)
+
+        # V53 changes only the print H-D graph; V52 remains the archive witness
+        # for all other 5279/2383 components and must fully restore this table.
+        v52_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.PRINT_2383_LOG_EXPOSURE, e.PRINT_2383_LOG_EXPOSURE_ARCHIVE
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_DENSITY_RGB, e.PRINT_2383_DENSITY_RGB_ARCHIVE
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_STATUS_A_DMIN_RGB,
+            e.PRINT_2383_STATUS_A_DMIN_RGB_ARCHIVE,
+        )
+        self.assertEqual(e.PRINT_2383_DMAX, e.PRINT_2383_DMAX_ARCHIVE)
+
+    def test_v54_isolates_2383_record_sensitivity_and_v53_restores_it(self) -> None:
+        import v53_profile
+        import v54_profile
+
+        e = legacy.model
+        v54_profile.apply(e)
+        config = EngineConfig(profile="v54", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v54_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.PRINT_2383_LOG_SENSITIVITY_CMY,
+            v54_profile.PRINT_2383_LOG_SENSITIVITY_CMY,
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.KODAK_XENON_PROJECTOR_RELATIVE_SPD,
+            e.KODAK_XENON_PROJECTOR_RELATIVE_SPD_ARCHIVE,
+        )
+
+        v53_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.PRINT_2383_LOG_SENSITIVITY_CMY,
+            e.PRINT_2383_LOG_SENSITIVITY_CMY_ARCHIVE,
+        )
+
+    def test_v55_isolates_2383_dye_spectra_and_v54_restores_them(self) -> None:
+        import v54_profile
+        import v55_profile
+
+        e = legacy.model
+        v55_profile.apply(e)
+        config = EngineConfig(profile="v55", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v55_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+            v55_profile.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+        )
+        np.testing.assert_array_equal(
+            np.argmax(e.PRINT_DYE_CMY_SPECTRAL_DENSITY, axis=0),
+            np.asarray([14, 8, 3]),
+        )
+        np.testing.assert_array_equal(
+            e.KODAK_XENON_PROJECTOR_RELATIVE_SPD,
+            e.KODAK_XENON_PROJECTOR_RELATIVE_SPD_ARCHIVE,
+        )
+
+        v54_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY_ARCHIVE,
+        )
+
+    def test_v56_changes_only_projection_monitor_colour_authority(self) -> None:
+        import v55_profile
+        import v56_profile
+
+        e = legacy.model
+        v56_profile.apply(e)
+        config = EngineConfig(profile="v56", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v56_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.PRINT_MONITOR_COLOUR_AUTHORITY, "physical_spectral_v56"
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+            v56_profile.PRINT_DYE_CMY_SPECTRAL_DENSITY,
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_LOG_SENSITIVITY_CMY,
+            v56_profile.PRINT_2383_LOG_SENSITIVITY_CMY,
+        )
+
+        v55_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_MONITOR_COLOUR_AUTHORITY,
+            e.PRINT_MONITOR_COLOUR_AUTHORITY_ARCHIVE,
+        )
+
+    def test_v57_brackets_unidentified_2383_interimage_with_identity(self) -> None:
+        import v56_profile
+        import v57_profile
+
+        e = legacy.model
+        v57_profile.apply(e)
+        config = EngineConfig(profile="v57", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v57_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX, np.eye(3, dtype=np.float32)
+        )
+        self.assertEqual(
+            e.PRINT_MONITOR_COLOUR_AUTHORITY, "physical_spectral_v56"
+        )
+
+        v56_profile.apply(e)
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX,
+            e.PRINT_2383_INTERIMAGE_MATRIX_ARCHIVE,
+        )
+
+    def test_v58_resolves_integral_lad_into_principal_curve_density(self) -> None:
+        import v55_profile
+        import v58_profile
+
+        e = legacy.model
+        v58_profile.apply(e)
+        config = EngineConfig(profile="v58", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v58_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.PRINT_2383_LAD_PRINCIPAL_POLICY,
+            "integral_spectral_inverse_v58",
+        )
+        np.testing.assert_allclose(
+            e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB,
+            [0.9898583, 0.8823338, 0.8419376],
+            rtol=0.0,
+            atol=2e-6,
+        )
+        np.testing.assert_allclose(
+            e.PRINT_2383_LAD_INTEGRAL_RESIDUAL_RGB,
+            np.zeros(3),
+            rtol=0.0,
+            atol=1e-7,
+        )
+        neutral_negative = e.negative_total_printer_density(
+            np.full(3, 0.18, dtype=np.float32)
+        )
+        neutral_print = e.print_2383_density_from_negative(neutral_negative)
+        np.testing.assert_allclose(
+            neutral_print,
+            e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB,
+            rtol=0.0,
+            atol=2e-7,
+        )
+
+        # The coordinate correction must not become an interimage or observer
+        # change, and V55 must still reproduce the archived interpretation.
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX,
+            e.PRINT_2383_INTERIMAGE_MATRIX_ARCHIVE,
+        )
+        self.assertEqual(
+            e.PRINT_MONITOR_COLOUR_AUTHORITY,
+            e.PRINT_MONITOR_COLOUR_AUTHORITY_ARCHIVE,
+        )
+        v55_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_LAD_PRINCIPAL_POLICY,
+            e.PRINT_2383_LAD_PRINCIPAL_POLICY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e._active_2383_lad_principal_density_rgb(),
+            e.PRINT_2383_LAD_STATUS_A_AIM_RGB,
+        )
+
+    def test_v59_restores_vector_traced_2383_visual_neutral_base(self) -> None:
+        import v58_profile
+        import v59_profile
+
+        e = legacy.model
+        v59_profile.apply(e)
+        config = EngineConfig(profile="v59", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v59_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.PRINT_2383_DMIN_SPECTRAL_POLICY,
+            "vector_neutral_residual_v59",
+        )
+        self.assertEqual(
+            e.PRINT_2383_LAD_PRINCIPAL_POLICY,
+            "integral_spectral_inverse_v59",
+        )
+        dye_sum = np.sum(e.PRINT_DYE_CMY_SPECTRAL_DENSITY, axis=1)
+        np.testing.assert_allclose(
+            e.PRINT_2383_DMIN_SPECTRAL_DENSITY + dye_sum,
+            v59_profile.PRINT_2383_VISUAL_NEUTRAL_SPECTRAL_DENSITY,
+            rtol=0.0,
+            atol=2e-7,
+        )
+        np.testing.assert_allclose(
+            e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB,
+            [0.99258363, 0.8840549, 0.8475401],
+            rtol=0.0,
+            atol=2e-6,
+        )
+        status_a, amounts = (
+            e.integral_status_a_from_2383_principal_density_rgb(
+                e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB
+            )
+        )
+        np.testing.assert_allclose(
+            status_a,
+            e.PRINT_2383_LAD_STATUS_A_AIM_RGB,
+            rtol=0.0,
+            atol=2e-7,
+        )
+        np.testing.assert_allclose(
+            amounts,
+            [1.0270529, 0.9971411, 0.9746268],
+            rtol=0.0,
+            atol=2e-6,
+        )
+
+        # Profile changes in one interpreter must not leak the spectral base
+        # into V58 or any older profile.
+        v58_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_DMIN_SPECTRAL_POLICY,
+            e.PRINT_2383_DMIN_SPECTRAL_POLICY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_DMIN_SPECTRAL_DENSITY,
+            e.PRINT_2383_DMIN_SPECTRAL_DENSITY_ARCHIVE,
+        )
+
+    def test_v60_registers_spectral_base_to_hd_curve_dmin(self) -> None:
+        import v59_profile
+        import v60_profile
+
+        e = legacy.model
+        v60_profile.apply(e)
+        config = EngineConfig(profile="v60", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v60_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.PRINT_2383_DMIN_SPECTRAL_POLICY,
+            "vector_neutral_residual_dmin_registered_v60",
+        )
+        axes = e._print_2383_analytical_amount_axes(
+            e.PRINT_2383_STATUS_A_DMIN_RGB
+        )
+        np.testing.assert_allclose(
+            [axes[channel][channel] for channel in range(3)],
+            np.zeros(3),
+            rtol=0.0,
+            atol=1e-12,
+        )
+        np.testing.assert_allclose(
+            e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB,
+            [0.9897172, 0.8820604, 0.84214854],
+            rtol=0.0,
+            atol=2e-6,
+        )
+        status_a, amounts = (
+            e.integral_status_a_from_2383_principal_density_rgb(
+                e.PRINT_2383_LAD_PRINCIPAL_DENSITY_RGB
+            )
+        )
+        np.testing.assert_allclose(
+            status_a,
+            e.PRINT_2383_LAD_STATUS_A_AIM_RGB,
+            rtol=0.0,
+            atol=2e-7,
+        )
+        np.testing.assert_allclose(
+            amounts,
+            [1.0550362, 1.0296745, 0.9633866],
+            rtol=0.0,
+            atol=2e-6,
+        )
+
+        # V59 remains reproducible as the unregistered intermediate finding.
+        v59_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_DMIN_SPECTRAL_POLICY,
+            "vector_neutral_residual_v59",
+        )
+        np.testing.assert_allclose(
+            e.PRINT_2383_LAD_ANALYTICAL_AMOUNT_CMY,
+            [1.0270529, 0.9971411, 0.9746268],
+            rtol=0.0,
+            atol=2e-6,
+        )
+
+    def test_v61_joint_iso_status_m_negative_coordinate(self) -> None:
+        import v60_profile
+        import v61_profile
+
+        e = legacy.model
+        v61_profile.apply(e)
+        config = EngineConfig(profile="v61", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v61_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertEqual(
+            e.NEGATIVE_5279_STATUS_M_POLICY,
+            "iso5_3_spectral_products_1nm_v61",
+        )
+        self.assertEqual(
+            e.NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY,
+            "joint_iso_status_m_v61",
+        )
+        wavelengths = e.NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM
+        weights = e.NEGATIVE_5279_STATUS_M_RGB_WEIGHTS
+        np.testing.assert_array_equal(
+            wavelengths[np.argmax(weights, axis=0)],
+            [640.0, 540.0, 450.0],
+        )
+        analytical = np.asarray(
+            [0.47126241, 0.61012430, 0.73570945], dtype=np.float32
+        )
+        status_m = e.negative_5279_status_m_net_density_from_analytical_cmy(
+            analytical
+        )
+        recovered = e.solve_5279_analytical_cmy_from_status_m_net_density(
+            status_m
+        )
+        np.testing.assert_allclose(recovered, analytical, rtol=0.0, atol=2e-6)
+        np.testing.assert_allclose(
+            e.negative_5279_status_m_net_density_from_analytical_cmy(
+                np.zeros(3, dtype=np.float32)
+            ),
+            np.zeros(3),
+            rtol=0.0,
+            atol=1e-7,
+        )
+
+        # V61 must not leak its ISO receiver or joint inverse into V60.
+        v60_profile.apply(e)
+        self.assertEqual(
+            e.NEGATIVE_5279_STATUS_M_POLICY,
+            e.NEGATIVE_5279_STATUS_M_POLICY_ARCHIVE,
+        )
+        self.assertEqual(
+            e.NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY,
+            e.NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_STATUS_M_RGB_WEIGHTS,
+            e.NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE,
+        )
+
+    def test_v62_withholds_unmeasured_interimage_and_owns_lattice(self) -> None:
+        import v61_profile
+        import v62_profile
+
+        from .assets import projection_lattice_for_profile
+
+        e = legacy.model
+        v62_profile.apply(e)
+        config = EngineConfig(profile="v62", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v62_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(all(report["checks"].values()))
+        self.assertEqual(
+            e.PRINT_2383_INTERIMAGE_POLICY,
+            "unmeasured_identity_withheld_v62",
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX, np.eye(3, dtype=np.float32)
+        )
+        lattice = projection_lattice_for_profile("v62")
+        self.assertEqual(
+            lattice.sha256,
+            "b26660989bc9d5baaa4719e21e9f41a1b9b9d85729ab228316a15914de75b22e",
+        )
+
+        # V62's evidence boundary must not leak back into the reproducible V61.
+        v61_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_INTERIMAGE_POLICY,
+            e.PRINT_2383_INTERIMAGE_POLICY_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX,
+            e.PRINT_2383_INTERIMAGE_MATRIX_ARCHIVE,
+        )
+
+    def test_v63_uses_actual_neutral_trajectory_and_owns_lattice(self) -> None:
+        import v62_profile
+        import v63_profile
+
+        from .assets import projection_lattice_for_profile
+
+        e = legacy.model
+        v63_profile.apply(e)
+        config = EngineConfig(profile="v63", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v63_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(all(report["checks"].values()))
+        self.assertEqual(
+            e.PRINT_2383_VIEW_NEUTRAL_POLICY,
+            "actual_5279_to_2383_neutral_trajectory_v63",
+        )
+        self.assertEqual(e.PRINT_MONITOR_COLOUR_AUTHORITY, "scan_referenced_v31")
+        self.assertEqual(e.PRINT_MONITOR_CHROMA_ADAPTATION, "absolute_chroma")
+        np.testing.assert_array_equal(
+            e.PRINT_2383_INTERIMAGE_MATRIX, np.eye(3, dtype=np.float32)
+        )
+        lattice = projection_lattice_for_profile("v63")
+        self.assertEqual(
+            lattice.sha256,
+            "ef861a38d840b30fa0dd2b9a6f01b41c8122600daea13e43dcb6ee49bfa67024",
+        )
+
+        # V63's observer coordinate must not leak back into V62.
+        v62_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_VIEW_NEUTRAL_POLICY,
+            e.PRINT_2383_VIEW_NEUTRAL_POLICY_ARCHIVE,
+        )
+
+    def test_v64_withdraws_only_unmeasured_print_density_shaper(self) -> None:
+        import v63_profile
+        import v64_profile
+
+        from .assets import projection_lattice_for_profile
+
+        e = legacy.model
+        v64_profile.apply(e)
+        config = EngineConfig(profile="v64", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v64_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(all(report["checks"].values()))
+        self.assertEqual(
+            e.PRINT_2383_DENSITY_NEUTRAL_POLICY,
+            "published_separated_status_a_curves_unshaped_v64",
+        )
+        negative = np.asarray(
+            [[[0.2, 0.7, 1.1], [1.4, 0.9, 0.3]]], dtype=np.float32
+        )
+        np.testing.assert_array_equal(
+            e.print_2383_density_from_negative(negative),
+            e._raw_print_2383_density_from_negative(negative),
+        )
+        lattice = projection_lattice_for_profile("v64")
+        self.assertEqual(
+            lattice.sha256,
+            "27203fdc8407c446fae65b9f259677cdd8320cdb1ec95961c859105cf211bd32",
+        )
+
+        # The evidence withdrawal must not leak into the reproducible V63.
+        v63_profile.apply(e)
+        self.assertEqual(
+            e.PRINT_2383_DENSITY_NEUTRAL_POLICY,
+            e.PRINT_2383_DENSITY_NEUTRAL_POLICY_ARCHIVE,
+        )
+
+    def test_v66_uses_cineon_printing_density_and_restores_v64(self) -> None:
+        import v64_profile
+        import v66_profile
+
+        from .assets import projection_lattice_for_profile
+
+        e = legacy.model
+        sample = np.asarray(
+            [[[0.22, 0.58, 1.12], [1.40, 0.90, 0.30]]],
+            dtype=np.float32,
+        )
+
+        v64_profile.apply(e)
+        archive = e.scanner_density_from_total_record_density(sample)
+        self.assertEqual(
+            e.SPIRIT_PRIMARY_CORRECTION_TARGET,
+            e.SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE,
+        )
+
+        v66_profile.apply(e)
+        config = EngineConfig(profile="v66", mode=EngineMode.REFERENCE)
+        report = research_conformance(e, v66_profile, config)
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(all(report["checks"].values()))
+        base = e.negative_total_printer_density_from_record_density(
+            e.SENSITO_DMIN_RGB
+        )
+        expected = (
+            e.negative_total_printer_density_from_record_density(sample) - base
+        )
+        np.testing.assert_array_equal(
+            e.scanner_density_from_total_record_density(sample), expected
+        )
+        self.assertFalse(np.array_equal(archive, expected))
+        lattice = projection_lattice_for_profile("v66")
+        self.assertEqual(
+            lattice.sha256,
+            "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+        )
+
+        # The new Cineon coordinate must not leak into reproducible V64.
+        v64_profile.apply(e)
+        self.assertEqual(
+            e.SPIRIT_PRIMARY_CORRECTION_TARGET,
+            e.SPIRIT_PRIMARY_CORRECTION_TARGET_ARCHIVE,
+        )
+        np.testing.assert_array_equal(
+            e.scanner_density_from_total_record_density(sample), archive
+        )
+
+    def test_v72_withdraws_only_direct_record_mix_and_v66_restores_it(self) -> None:
+        import v66_profile
+        import v72_profile
+
+        from .assets import projection_lattice_for_profile
+
+        e = legacy.model
+        v66_profile.apply(e)
+        v66_mix = e.SUBEMULSION_DYE_RECORD_MIX.copy()
+        frozen = {
+            "granularity": e.GRANULARITY_SIGMA_D_RGB.copy(),
+            "sensitometry": e.SENSITO_DENSITY_RGB.copy(),
+            "negative_spectra": (
+                e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY.copy()
+            ),
+            "dir_transport": e.DIR_POPULATION_TRANSPORT.copy(),
+            "dir_strength": e.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH,
+            "mtf_core": e.NEGATIVE_MTF_CORE_SIGMA_RGB.copy(),
+        }
+
+        v72_profile.apply(e)
+        report = research_conformance(
+            e,
+            v72_profile,
+            EngineConfig(profile="v72", mode=EngineMode.REFERENCE),
+        )
+        self.assertTrue(report["image_model_conformant"])
+        self.assertTrue(all(report["checks"].values()))
+        np.testing.assert_array_equal(
+            e.SUBEMULSION_DYE_RECORD_MIX,
+            np.repeat(np.eye(3, dtype=np.float32)[None, ...], 3, axis=0),
+        )
+        np.testing.assert_array_equal(e.GRANULARITY_SIGMA_D_RGB, frozen["granularity"])
+        np.testing.assert_array_equal(e.SENSITO_DENSITY_RGB, frozen["sensitometry"])
+        np.testing.assert_array_equal(
+            e.NEGATIVE_5279_NET_DYE_CMY_SPECTRAL_DENSITY,
+            frozen["negative_spectra"],
+        )
+        np.testing.assert_array_equal(e.DIR_POPULATION_TRANSPORT, frozen["dir_transport"])
+        self.assertEqual(
+            e.DIR_DEVELOPMENT_INTERIMAGE_STRENGTH, frozen["dir_strength"]
+        )
+        np.testing.assert_array_equal(e.NEGATIVE_MTF_CORE_SIGMA_RGB, frozen["mtf_core"])
+        self.assertEqual(
+            projection_lattice_for_profile("v72").sha256,
+            projection_lattice_for_profile("v66").sha256,
+        )
+
+        v66_profile.apply(e)
+        np.testing.assert_array_equal(e.SUBEMULSION_DYE_RECORD_MIX, v66_mix)
 
     def test_v43h_common_print_density_has_no_record_separation(self) -> None:
         import v43h_profile
@@ -305,6 +1214,7 @@ class PipelineContractTests(unittest.TestCase):
             1.0,
             "linear_rec709",
             return_mean_pair=True,
+            return_cineon_code=True,
         )
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             parallel = e.reconstruct_density_pair_to_dual_display_v39(
@@ -314,6 +1224,7 @@ class PipelineContractTests(unittest.TestCase):
                 1.0,
                 "linear_rec709",
                 return_mean_pair=True,
+                return_cineon_code=True,
                 branch_executor=executor,
             )
         for expected, actual in zip(sequential, parallel, strict=True):

@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
+import { ResearchStatus } from "../components/ResearchLedger";
 import { useLanguage } from "../i18n";
 import { AlgorithmEnglish } from "./AlgorithmEnglish";
 
@@ -161,6 +162,54 @@ y_after  = rec709_luma(rgb_balanced)
 rgb_v27  = compress_unit_gamut(rgb_balanced * y_before / max(y_after, 1e-8))
 # 2383分支不调用此函数；V26负片、颗粒、DIR和扫描2K孔径保持不变`;
 
+const v81BoundCode = `# V81：这是可行域，不是新的5279参数
+joint_max = minimum(p_i, p_j)
+rho_max = (joint_max - p_i*p_j) / sqrt(p_i*(1-p_i)*p_j*(1-p_j))
+
+# 有界共享事件族：严格保持每条Bernoulli边缘
+if bernoulli(alpha):
+    u = shared_uniform()
+    x_i, x_j = (u < p_i), (u < p_j)
+else:
+    x_i, x_j = (uniform() < p_i), (uniform() < p_j)
+
+assert requested_rho <= rho_max
+# alpha未知；V81没有把它加入当前V72成像发布`;
+
+const v82JointCode = `# V82：三条pair joint必须共享一个合法的P(111)
+t_min = max(0, q_rg+q_rb-p_r, q_rg+q_gb-p_g, q_rb+q_gb-p_b)
+t_max = min(q_rg, q_rb, q_gb,
+            1-p_r-p_g-p_b+q_rg+q_rb+q_gb)
+assert t_min <= t_max
+
+# PSD只约束二阶矩；仍要重建并检查全部8个Bernoulli单元
+cells = rgb_bernoulli_cells(p_rgb, q_pairs, t)
+assert min(cells) >= 0 and sum(cells) == 1`;
+
+const v83TransferCode = `# V83：按当前V72真实阶段顺序计算，不重写历史
+S_shared(f, E, alpha) = finite_site_cross_power(p_rgb, alpha)
+D_raw(f) = stochastic_DIR(f, E) @ S_shared(f, E, alpha)
+
+# 当前增益在DIR之后作用，但分母仍是独立、DIR前预测
+g_rgb = sigma_kodak_48um / sqrt(var_pre_DIR_independent)
+D_formed = mean_density + g_rgb * D_raw
+
+assert max_relative_48um_error <= 0.010762
+# 闭合边缘不等于识别联合统计；alpha仍未知`;
+
+const v84EnergyCode = `# V84：边缘RMS固定，观察器能量仍随协方差改变
+var_record = diag(Sigma_D)              # Kodak 48 um约束
+var_observer = w.T @ Sigma_D @ w        # 放映／扫描实际看见
+
+# T020配对裁切，alpha 0 -> 1
+projection_luma *= 1.538
+projection_opponent *= 0.837
+scan_luma *= 1.432
+scan_opponent *= 0.816
+
+assert deterministic_mean_is_bit_exact
+promote_alpha = False`;
+
 export default function AlgorithmPage() {
   const { language } = useLanguage();
   if (language === "en") return <><SiteHeader /><AlgorithmEnglish /><SiteFooter /></>;
@@ -168,7 +217,22 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · V45 OFFICIAL CIE OBSERVER / V42 IMAGE BASELINE</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V45只把2383的光谱观察升级到CIE官方1931 2°、1 nm表；V44/V42乳剂、扫描、颗粒、黑位、对比与交付保持不变。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V46 VISUAL RELEASE / RESEARCH CYCLE 05</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>当前可观看像素来自V46：完整随机状态在测量端点保持，Status-M光谱逆解由KKT认证的非负主动集完成。材料测量、多层随机性、2383放映与扫描／交付仍按四条主线组织；旧实验编号只负责可追溯性。</p></header>
+
+        <ResearchStatus language="zh" />
+
+        <section className="method-section"><div className="method-index">V46</div><div className="method-copy"><span className="section-tag">PUBLIC RELEASE · ENDPOINT HOLD · EXACT NNLS</span><h2>随机性不越过测量端点，光谱逆解不依赖裁零近似</h2><p>V46在Kodak颗粒曲线支持之外保持完整有限事件状态，消除激活概率趋零时的巨密度尾部。Status-M三记录到净染料／遮罩密度通过精确非负主动集求解；129³基础晶格负责平滑区域，5³精确microbrick只覆盖真实帧会触发的主动集边界与插值风险。三段真实素材最坏印片密度误差为0.0005094 D。</p><div className="equation"><span>认证边界</span><b>max |D<sub>adaptive</sub>−D<sub>exact</sub>| = 0.0005094 D &lt; 0.001 D</b><small>放映和扫描共享同一负片印片密度；未知记录间协方差仍保持未知。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V86</div><div className="method-copy"><span className="section-tag">PSD ENVELOPE · ONE-SIGMA SECANT · DIRECT SPECTRAL CROSS-CHECK</span><h2>先把“未知的层间统计”与“已经算错的阴影精度”分开</h2><p>固定Kodak三条48 µm RMS后，我们在所有正半定3×3相关矩阵上求线性Rec.709观察器外包络。共同事件降低综合色，却把亮度颗粒提高到独立记录的约1.48—1.67倍；它不能被叫作免费去彩噪。随后用V61联合光谱方程直接重算每个中性点与±1σ扰动，发现29³ runtime光谱LUT在−3 logE最坏偏离0.013987 D，而−2.5到0 logE低于0.000366 D。</p><div className="equation"><span>V87必须关闭的共同误差</span><b>max |D<sub>29³</sub>−D<sub>direct spectral</sub>| = 0.013987 D @ −3 logE</b><small>先把阴影误差压到0.001 D以下，再讨论联合协方差；V86不改变像素。</small></div></div></section>
+        <section className="method-section"><div className="method-index">V85</div><div className="method-copy"><span className="section-tag">SOURCE PDF · VECTOR RE-EXTRACTION · STATUS-M DOMAIN</span><h2>不能通过伪造一条已测边缘，修复一个未知的联合分布</h2><p>我们重新渲染2003官方PDF并从矢量对象提取R/G/B路径、12个Sigma-D刻度与曝光轴。结果与V50/V72最大只差2.9×10<sup>−6</sup> D；0—4到−4—0平移也通过。ISO 10505要求彩色负片RMS使用Status-M光谱乘积，因此V61联合光谱逆解同样保留。蓝记录较大的边缘是公开证据，Kodak没有发布的是记录间协方差与交叉频谱。</p><div className="equation"><span>现在真正未知的量</span><b>已知diag(Σ<sub>D</sub>)　+　未知非对角项　→　未知观察器颗粒</b><small>V85不改变像素；下一步计算物理合法的观察器范围，而不是凭顺眼选择相关性。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V84</div><div className="method-copy"><span className="section-tag">PAIRED REAL RAW · TWO OBSERVERS · SCALE-INTEGRATED ENERGY</span><h2>固定三个对角线，不能固定投影机和扫描器看到的颗粒</h2><p>V84用T020的原生576²裁切和严格配对的有限事件比较α=0/.25/.5/1。确定性均值逐像素相同，三条48 µm边缘几乎不变；但α=1让放映亮度RMS上升53.8%、扫描上升43.2%，总RGB颗粒上升约四分之一。综合色虽下降，颗粒没有消失，只被重新分配。α=1被拒为默认值，.25/.50只保留诊断。</p><pre><code>{v84EnergyCode}</code></pre><div className="equation"><span>为什么边缘门禁仍不够</span><b>diag(Σ)固定　≠　wᵀΣw固定</b><small>下一步回查官方蓝记录RMS的图例、Status-M坐标和可见色彩映射，而不是用一个顺眼的α遮盖问题。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V83</div><div className="method-copy"><span className="section-tag">EXACT CROSS-SPECTRUM · STOCHASTIC DIR · DIRECT FINITE-SITE CHECK</span><h2>先按代码实际发生的顺序算，再判断研究叙述是否正确</h2><p>完整Profile复核发现，V72继承的是DIR后残差校准，不是我们一度写下的DIR前染料产率校准。V83把45组生产空间核、三种DIR扩散和48 µm孔径写成完整交叉频谱，并用真实有限Bernoulli／多项式事件直接验证。全部α和曝光端点的边缘RMS误差不超过1.076%，但α=0与α=1可以分别产生近零与约0.7—0.95的记录相关；官方边缘曲线无法替我们选择。</p><pre><code>{v83TransferCode}</code></pre><div className="equation"><span>本次真正得到的边界</span><b>marginal RMS compatible ≠ joint colour structure identified</b><small>V83不改变V72像素；下一步只允许做明确标注的共享事件不确定性对照，并同时检查协方差、尾部和尺度积分。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V82</div><div className="method-copy"><span className="section-tag">THREE-RECORD BERNOULLI POLYTOPE · EIGHT-CELL GATE</span><h2>一张合法的相关矩阵，仍然可能不是一份合法的彩色乳剂</h2><p>三条记录对可以各自通过Fréchet界，3×3相关矩阵也可以正半定，但八种RGB激活状态中仍可能至少一个必须为负概率。V82在60个曝光／群体三元组上测试7,500组独立pair-alpha：3,462组无联合解，其中1,484组是PSD假通过。因此未来采样器不能暴露三个互相独立的相关滑杆。</p><pre><code>{v82JointCode}</code></pre><div className="equation"><span>三记录可行区间</span><b>max(0,q<sub>RG</sub>+q<sub>RB</sub>−p<sub>R</sub>,…) ≤ P(111) ≤ min(q<sub>RG</sub>,q<sub>RB</sub>,q<sub>GB</sub>,1−Σp+Σq)</b><small>V81单一共用α家族在全部测试点通过八状态门禁，但α仍没有5279测量，因此不改变V72像素。</small></div></div></section>
+
+        <section className="method-section"><div className="method-index">V81</div><div className="method-copy"><span className="section-tag">SHARED FINITE EVENTS · EXACT FEASIBILITY BOUND</span><h2>先证明随机耦合在数学上可行，再讨论它看起来像不像胶片</h2><p>V80证明成像后混合三条密度会破坏有限非负边界。V81因此把候选移回激活阶段：共享均匀变量可以保持每条Bernoulli边缘精确不变，但允许的相关上限由两条激活概率共同决定。对180个记录／群体／曝光组合，ρ=0.99只在13个中可行。α仍没有5279实测依据，所以当前V72像素不变。</p><pre><code>{v81BoundCode}</code></pre><div className="equation"><span>精确正相关上界</span><b>ρ<sub>max</sub>=[min(p<sub>i</sub>,p<sub>j</sub>)−p<sub>i</sub>p<sub>j</sub>] / √[p<sub>i</sub>(1−p<sub>i</sub>)p<sub>j</sub>(1−p<sub>j</sub>)]</b><small>这是概率恒等式，不是5279测量；未来候选还必须回闭48 µm RMS、密度界、综合色尾部、CPU/Metal身份和双观察器。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V45</div><div className="method-copy"><span className="section-tag">OFFICIAL CIE 1931 2° · 1 NM</span><h2>提升标准观察者，不借机改变胶片</h2><p>V45把同一组Kodak 2383染料与氙灯20 nm图表线性插值到1 nm，并通过CIE官方逐纳米综合色函数执行380–780 nm梯形积分。Status-A逆解、LAD、2383 H-D、V31正常工艺颜色边界和完整V42负片形成都被冻结。无染料白点变化低于4×10⁻⁷，证明它不是隐藏白平衡。</p><pre><code>{v45Code}</code></pre><div className="equation"><span>单变量版本</span><b>V45 = V44 + official CIE 1 nm observer</b><small>20 nm Kodak图表仍是材料信息上限；插值不会被描述成新的1 nm胶片测量。</small></div></div></section>
 
@@ -208,7 +272,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">06</div><div className="method-copy"><span className="section-tag">V22 · ANALYTICAL PRINT DYES</span><h2>Status-A测到的密度，不能再当一次染料量</h2><p>状态密度计看到的是三种正片染料在指定光谱权重下共同形成的积分密度。V21把三条Status-A主曲线输出再次乘以CMY染料光谱，等于重复计算旁带吸收。V22逐曝光反解分析染料量，再在LAD附近施加层间曝光耦合，最后经过2383的非线性正片曲线。</p><div className="equation"><span>Status-A积分</span><b>D<sub>A,k</sub> = −log<sub>10</sub>[Σ<sub>λ</sub>10<sup>−Σj a<sub>j</sub>d<sub>j</sub>(λ)</sup>W<sub>k</sub>(λ) / Σ<sub>λ</sub>W<sub>k</sub>(λ)]</b><small>由三条主曲线数值反演a<sub>j</sub>，而不是把D<sub>A,k</sub>直接当a<sub>j</sub>。</small></div><div className="equation"><span>层间曝光</span><b>E′<sub>print</sub> = M(E<sub>print</sub> − E<sub>LAD</sub>) + E<sub>LAD</sub></b><small>LAD锚点不动；矩阵只描述锚点附近不同记录的互感方向。</small></div><pre><code>{printCode}</code></pre></div></section>
 
-        <section className="method-section split-method"><div className="method-index">07</div><div className="method-copy"><span className="section-tag">THREE OBSERVERS · TWO OUTPUTS</span><h2>同一负片之后，结果开始分叉</h2><div className="method-branches"><article><b>5279 → 2383 → 氙灯</b><p>3200K印片灯穿过负片；2383三条感色层得到曝光，经过其陡峭H-D曲线形成正片染料，再用氙灯光谱和CIE观察器积分。正片MTF、Callier效应和投影flare属于这一支；2383随机颗粒因缺少协方差/NPS证据在V40暂不声称。</p></article><article><b>5279 → Period 2K → Cineon</b><p>Status-M只负责数据表测量轴。成片扫描用较宽的时期RGB探测响应积分透射光，再进行Spirit式film match、2K孔径、Cineon 0.002D/code与蓝光显示完成。</p><pre><code>{scanCode}</code></pre></article></div></div></section>
+        <section className="method-section split-method"><div className="method-index">07</div><div className="method-copy"><span className="section-tag">THREE OBSERVERS · TWO OUTPUTS</span><h2>同一负片之后，结果开始分叉</h2><div className="method-branches"><article><b>5279 → 2383 → 氙灯</b><p>3200K印片灯穿过负片；2383三条感色层得到曝光，经过其陡峭H-D曲线形成正片染料，再用氙灯光谱和CIE观察器积分。正片MTF、Callier效应和投影flare属于这一支；2383随机颗粒因缺少协方差/NPS证据在V40暂不声称。</p></article><article><b>5279 → Scan / DI → Cineon</b><p>Status-M只负责数据表测量轴。扫描观察器用较宽的时期RGB探测响应积分透射光，再进行Spirit式film match、扫描孔径与Cineon 0.002D/code映射。这里终止于扫描／DI母版；蓝光或UHD的缩放、色度抽样、位深与压缩是后续独立交付层。</p><pre><code>{scanCode}</code></pre></article></div></div></section>
 
         <section className="method-section"><div className="method-index">08</div><div className="method-copy"><span className="section-tag">V30 · OFFICIAL LAD COLOUR ANCHOR</span><h2>用Kodak通道密度锚定2383，不让供应商LUT定义胶片颜色</h2><p>V30把2383的打印中性点从简化的相等密度改为H-61B官方目标1.09/1.06/1.03 D。供应商D60 LUT与数字化染料曲线的残差仍保留作研究记录，但它们没有足够证据支配最终色相或饱和度，因此显示权重为零。</p><div className="equation"><span>官方LAD与证据权重</span><b>D<sub>LAD</sub>=[1.09,1.06,1.03]　·　w<sub>D60</sub>=w<sub>hue</sub>=w<sub>sat</sub>=0</b><small>这是物理校准修正，不是减蓝或减饱和的创作调色。</small></div></div></section>
 
@@ -222,7 +286,7 @@ export default function AlgorithmPage() {
 
         <section className="method-section"><div className="method-index">12</div><div className="method-copy"><span className="section-tag">V26 · NPS + TEMPORAL VALIDATION</span><h2>“有机”必须能被空间与时间测量</h2><p>V26分别计算阴影、中间调和高光的径向密度噪声功率谱，并统计三速度层的贡献。它不把一张噪点纹理做平移或循环：帧号进入每个颜色记录、速度层和粒径级的固定随机种子，每一帧形成独立显影事件。</p><div className="equation"><span>时间独立约束</span><b>|corr(δD<sub>t</sub>, δD<sub>t+1</sub>)| → 0</b><small>四帧均匀场、三记录的最大绝对lag-1相关为0.0074；最大平均密度漂移0.00015D。</small></div></div></section>
 
-        <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和蓝光完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
+        <section className="method-section"><div className="method-index">13</div><div className="method-copy"><span className="section-tag">V27 · FULL NEUTRAL-SCALE SCAN CALIBRATION</span><h2>只修扫描RGB比例，不重新塑造黑白灰</h2><p>V26扫描观察器在两个灰阶锚点之间留下了密度相关的绿色残差。V27让2049级中性曝光先完整经过5279显影、扫描光源与探测器、2K透射域孔径、Cineon映射和当时的Rec.709完成曲线，再按输出亮度查找RGB平衡。校正后立即恢复校正前的Rec.709亮度，因此黑位、对比、Gamma、局部颗粒亮度和高光位置都保持不变。这里描述扫描／DI观察器，不再把它误称为已经经过影碟压缩的蓝光成片。最新hourly审计还完整核对了2003年5279临时专利：它只证明identifier沿文档分支在5279／5218之间变化，没有任何数值颗粒参数，因此不能改写V26乳剂。</p><div className="equation"><span>条件中性化</span><b>RGB′ = C(Y)⊙RGB · Y / Y(C(Y)⊙RGB)</b><small>C只由中性曝光标定；有颜色的像素不会被拉回灰色。</small></div><pre><code>{scanNeutralCode}</code></pre></div></section>
 
         <section className="validation"><span className="section-tag">V40 THREE-SCENE · EVERY-FRAME VALIDATION</span><h2>三个场景共同通过什么</h2><div className="validation-grid"><div><b>原始分辨率</b><p>3 × 24帧 · 5760×4320</p></div><div><b>双12-bit交付</b><p>BT.1886母版 + sRGB观看版</p></div><div><b>彩色尾部</b><p>144帧原生审计</p></div><div><b>时间结构</b><p>独立位点 · 稳定积分</p></div><div><b>显示叠加</b><p>颗粒0层</p></div><div><b>颜色边界</b><p>冻结V38，无艺术调色</p></div></div></section>
       </main>

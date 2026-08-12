@@ -46,7 +46,26 @@ def apply(module) -> None:
     module.SPIRIT_PERIOD_OBSERVER_SIGMAS_NM = np.array(
         [52.0, 44.0, 38.0], dtype=np.float32
     )
+    module.NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM = (
+        module.NEGATIVE_5279_STATUS_M_WAVELENGTHS_NM_ARCHIVE.copy()
+    )
+    module.NEGATIVE_5279_STATUS_M_RGB_WEIGHTS = (
+        module.NEGATIVE_5279_STATUS_M_RGB_WEIGHTS_ARCHIVE.copy()
+    )
+    module.NEGATIVE_5279_STATUS_M_POLICY = (
+        module.NEGATIVE_5279_STATUS_M_POLICY_ARCHIVE
+    )
+    module.NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY = (
+        module.NEGATIVE_5279_ANALYTICAL_DENSITY_POLICY_ARCHIVE
+    )
+    # v37 refreshes the spectral observer before this later profile layer
+    # restores the archive Status-M tables. Rebuild once more after the final
+    # scanner-coordinate state is installed so a V66 -> V42/V44 downgrade is
+    # observationally identical to a clean interpreter.
+    module.refresh_5279_spectral_observer_caches()
     module._NEGATIVE_5279_NET_DENSITY_LUT = None
+    module._NEGATIVE_5279_TO_2383_PRINTER_DENSITY_LUT = None
+    module._NEGATIVE_5279_ANALYTICAL_CMY_LUTS = {}
     module._SPIRIT_NEUTRAL_SCALE_TABLE = None
     module.PRINT_2383_HYPOTHESIS_COMMON_GRAIN_DENSITY_SCALE = 0.0
     module.PRINT_2383_CMF_MODE = "analytic_20nm"

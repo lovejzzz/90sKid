@@ -15,6 +15,7 @@ from .contracts import (
     RenderedFrame,
 )
 from .pipeline import Emulsion5279Engine
+from .view_policy import CineonViewPolicy
 
 __all__ = [
     "DeliveryEncoding",
@@ -24,4 +25,5 @@ __all__ = [
     "InputColourContract",
     "ObserverPair",
     "RenderedFrame",
+    "CineonViewPolicy",
 ]

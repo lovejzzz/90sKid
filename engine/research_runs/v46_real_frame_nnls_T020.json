@@ -1,0 +1,96 @@
+{
+  "audit": "V46 real-frame Status-M active-set impact",
+  "profile": "v72 evidence-minimal formed negative",
+  "sample_policy": "uniform random plus channel/luma extrema",
+  "sources": {
+    "T020": {
+      "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+      "absolute_frame": 0,
+      "formed_negative_seconds": 16.70202441699996,
+      "mean": {
+        "sample_count": 12000,
+        "old_seconds": 2.194547334000049,
+        "v46_exact_seconds": 16.811599375000014,
+        "old_status_m_squared_residual": {
+          "maximum": 0.004282093828808842,
+          "p99": 0.0008715880783393329,
+          "median": 0.0,
+          "mean": 2.7131353884260083e-05
+        },
+        "v46_status_m_squared_residual": {
+          "maximum": 0.003526370312397354,
+          "p99": 0.0007194067424992469,
+          "median": 2.465190328815662e-32,
+          "mean": 2.2350947310317088e-05
+        },
+        "strictly_improves_fraction": 0.14625,
+        "worsens_count": 0,
+        "active_mask_counts": {
+          "0": 540,
+          "1": 152,
+          "2": 243,
+          "3": 328,
+          "4": 119,
+          "5": 261,
+          "6": 654,
+          "7": 9703
+        },
+        "printer_density_delta": {
+          "maximum_absolute": 0.02423095703125,
+          "p99_absolute": 0.005432911366224327,
+          "median_absolute": 0.0,
+          "rms": 0.001200664687043517,
+          "worst_status_m_net_density": [
+            0.005607277154922485,
+            0.21593838930130005,
+            0.08739632368087769
+          ],
+          "worst_output_record": "green",
+          "worst_signed": -0.02423095703125
+        }
+      },
+      "formed": {
+        "sample_count": 12000,
+        "old_seconds": 2.173888833000092,
+        "v46_exact_seconds": 15.307088292000003,
+        "old_status_m_squared_residual": {
+          "maximum": 69.46874112429623,
+          "p99": 0.010341859998374609,
+          "median": 0.0,
+          "mean": 0.015992544778412995
+        },
+        "v46_status_m_squared_residual": {
+          "maximum": 67.8748488001581,
+          "p99": 0.008247740283370247,
+          "median": 2.465190328815662e-32,
+          "mean": 0.010950628072501968
+        },
+        "strictly_improves_fraction": 0.2966666666666667,
+        "worsens_count": 0,
+        "active_mask_counts": {
+          "0": 324,
+          "1": 370,
+          "2": 424,
+          "3": 1730,
+          "4": 224,
+          "5": 404,
+          "6": 408,
+          "7": 8116
+        },
+        "printer_density_delta": {
+          "maximum_absolute": 1.3976521492004395,
+          "p99_absolute": 0.027652609944343588,
+          "median_absolute": 0.0,
+          "rms": 0.023654995524371676,
+          "worst_status_m_net_density": [
+            2.6672348976135254,
+            0.0,
+            5.368288040161133
+          ],
+          "worst_output_record": "blue",
+          "worst_signed": -1.3976521492004395
+        }
+      }
+    }
+  }
+}

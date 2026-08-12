@@ -1,0 +1,20 @@
+{
+  "policy": "trilinear_plus_one_projected_newton_on_active_set_cells",
+  "lut_size": 65,
+  "point_count": 16000,
+  "risk_cell_fraction": 0.05619049072265625,
+  "flagged_point_fraction": 0.3138125,
+  "hybrid_correction_seconds": 0.040797040914185345,
+  "maximum_absolute_printer_density_error": 0.00013510061465593637,
+  "p99_absolute_printer_density_error": 0.00010575909252702036,
+  "rms_printer_density_error": 2.975244222123707e-05,
+  "worst_status_m_net_density": [
+    0.7604623978043893,
+    1.5952674231492945,
+    0.9846499262683558
+  ],
+  "worst_output_record": "green",
+  "worst_point_was_corrected": false,
+  "quality_gate_maximum_density_error": 0.001,
+  "quality_gate_pass": true
+}

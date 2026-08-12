@@ -45,6 +45,7 @@ def protected_paths() -> list[Path]:
             ".mm",
             ".md",
             ".json",
+            ".csv",
             ".npz",
         }:
             continue
