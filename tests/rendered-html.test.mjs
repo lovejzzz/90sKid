@@ -829,4 +829,6 @@ test("V46 English branch labels preserve token spacing", async () => {
   assert.match(source, /V46 same negative/);
   assert.match(source, /Period 2K \/ Cineon scan/);
   assert.match(source, /2383 xenon projection/);
+  assert.match(source, /independent FSD finite-density control · not part of V46/);
+  assert.match(source, /original camera witness · no film pipeline/);
 });

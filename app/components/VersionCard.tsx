@@ -20,7 +20,7 @@ function Branch({ branch, title, gallery, galleryIndex, english }: { branch: Bra
         previewSrc={smallSrc(branch.src)}
         videoSrc={branch.videoSrc}
         sizes="(max-width: 760px) 100vw, 50vw"
-        alt={branchAlt(branch, title)}
+        alt={branchAlt(branch, title, english)}
         gallery={gallery}
         initialIndex={galleryIndex}
       />
