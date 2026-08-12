@@ -1,0 +1,31 @@
+{
+  "audit": "V48 first-principles projection ownership",
+  "source": "/Users/tianxing/Movies/test-proresRawlog/NJARAW_S001_S001_T020.MOV",
+  "absolute_frame": 0,
+  "profile": "v48r (public V48)",
+  "sampler": "production_philox_metal \u00b7 V46 absolute-frame identity",
+  "gates": {
+    "v48_mean_is_direct_2383_bit_exact": true,
+    "managed_projection_delta_is_preserved": true,
+    "scan_branch_is_unmodified": true,
+    "negative_is_single_shared_realization": true
+  },
+  "v48_vs_v46_projection": {
+    "mae": 0.002200039173829158,
+    "p95": 0.007585346698760986,
+    "p99": 0.013585150241851807,
+    "maximum": 0.092996746301651
+  },
+  "direct_2383_mean_vs_v46_scan_referenced_mean": {
+    "mae": 0.00221281008698465,
+    "p95": 0.007585603930056084,
+    "p99": 0.013585269451141357,
+    "maximum": 0.09299680590629578
+  },
+  "density_bounds": {
+    "minimum": 0.0,
+    "maximum": 2.6846866607666016,
+    "negative_samples": 0
+  },
+  "evidence_boundary": "No negative, grain, H-D, MTF, spectral, 2383 or scan parameter changes. Only deterministic projection colour ownership moves from the scan-referenced V46 publication to direct 2383."
+}

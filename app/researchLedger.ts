@@ -111,7 +111,7 @@ export const researchChapters: ResearchChapter[] = [
   },
 ];
 
-export const currentVisualRelease = "V47";
+export const currentVisualRelease = "V48";
 export const nextVisualRelease = "measurement-dependent";
-export const currentResearchCycle = "06";
-export const currentEngineCandidate = "V46 physical negative + V47 SHM comparator";
+export const currentResearchCycle = "07";
+export const currentEngineCandidate = "V48 first-principles Kodak 5279 / 2383 baseline";

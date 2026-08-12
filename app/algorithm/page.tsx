@@ -217,11 +217,11 @@ export default function AlgorithmPage() {
     <>
       <SiteHeader />
       <main className="algorithm-page wrap">
-        <header className="page-header"><span className="eyebrow">METHOD · V47 VISUAL RELEASE / RESEARCH CYCLE 06</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V46继续作为物理5279分支。当前可观看的V47增加经受控Silver Efex测量约束的SHM形态对照：多尺度群体、局部非均质、团簇、空洞与厚尾共同形成有限密度。两条路线明确分离，避免把形态旁证伪装成5279测量。</p></header>
+        <header className="page-header"><span className="eyebrow">METHOD · V48 VISUAL RELEASE / RESEARCH CYCLE 07</span><h1>算法不是一枚滤镜。<br />它是一条成像链。</h1><p>V48回到最小柯达模型：同一份5279负片分别进入2383放映和Cineon扫描，每条观察链只拥有自己的确定性颜色。</p></header>
 
         <ResearchStatus language="zh" />
 
-        <section className="method-section"><div className="method-index">V47</div><div className="method-copy"><span className="section-tag">CONTROLLED SHM · MULTISCALE · THICK-TAIL</span><h2>如果银盐组织不是Gaussian，只匹配强度就不够</h2><p>0.45、0.90与1.80原生像素的三个独立各向同性群体，由慢变化占有场在局部重新分配。二阶Hermite群体形成不对称团簇／空洞，三阶Hermite群体形成受控Nik 8 Tri-X导出中实测的正厚尾。标准化后的组织进入N=1250逆二项CDF，因此它参与形成密度，而不是成为后期覆盖层。</p><div className="equation"><span>SHM形成</span><b>Z″=Z+a(Z²−1)+0.020(Z³−3Z)　→　G=F⁻¹<sub>Binomial(1250,Y)</sub>(Φ(Z″))/1250</b><small>RMS、lag-1、偏度、峰度、局部频谱变化、综合色不变性与逐格更新全部是发布门槛。</small></div></div></section>
+        <section className="method-section"><div className="method-index">V48</div><div className="method-copy"><span className="section-tag">FIRST PRINCIPLES · OBSERVER OWNERSHIP · ONE NEGATIVE</span><h2>每个阶段只计算它真正拥有的东西</h2><p>V48不重做颜色，也不新增颗粒模型。5279→2383→氙灯/CIE直接结果拥有放映均值；旧安全处理只贡献形成帧相对均值的随机差值。</p><div className="equation"><span>V48放映发布</span><b>P<sub>48</sub>=P<sub>2383,mean</sub>+[M(P<sub>formed</sub>,S<sub>formed</sub>)−M(P<sub>mean</sub>,S<sub>mean</sub>)]</b><small>RAW、负片、H-D、48 µm RMS、MTF、2383与Scan/DI全部冻结。</small></div></div></section>
 
         <section className="method-section"><div className="method-index">V46</div><div className="method-copy"><span className="section-tag">PUBLIC RELEASE · ENDPOINT HOLD · EXACT NNLS</span><h2>随机性不越过测量端点，光谱逆解不依赖裁零近似</h2><p>V46在Kodak颗粒曲线支持之外保持完整有限事件状态，消除激活概率趋零时的巨密度尾部。Status-M三记录到净染料／遮罩密度通过精确非负主动集求解；129³基础晶格负责平滑区域，5³精确microbrick只覆盖真实帧会触发的主动集边界与插值风险。三段真实素材最坏印片密度误差为0.0005094 D。</p><div className="equation"><span>认证边界</span><b>max |D<sub>adaptive</sub>−D<sub>exact</sub>| = 0.0005094 D &lt; 0.001 D</b><small>放映和扫描共享同一负片印片密度；未知记录间协方差仍保持未知。</small></div></div></section>
 

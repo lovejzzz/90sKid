@@ -2442,6 +2442,42 @@ versions.push({
   parameters: v47Parameters,
 });
 
+const v47 = versions.find((item) => item.version === "V47");
+if (v47) v47.status = "calibration";
+
+const v48Branch = (branch: string, label: string): BranchImage => ({
+  src: `/versions/v48-t020-${branch}.jpg`,
+  videoSrc: `/versions/v48-t020-${branch}-live-srgb.mp4`,
+  label,
+});
+
+versions.push({
+  version: "V48",
+  year: "第一性原则基线",
+  title: "让2383拥有自己的颜色：平均画面与随机差值分离",
+  status: "current",
+  projection: v48Branch("projection", "T020 · 5279 → 2383直接确定性颜色 + 受控随机差值"),
+  bluray: v48Branch("bluray", "T020 · 同一V48负片 → Cineon / Scan-DI观察"),
+  summary: "V48不增加新风格，也不继续Silver Efex路线。它修正V46的一处观察器所有权错误：放映版曾借用扫描版的低频综合色来压制未测三记录协方差造成的彩点，因此两条分支过于接近。V48让5279→2383→氙灯/CIE链独立决定放映均值；旧安全处理只保留formed−mean随机差值。负片、颗粒、H-D、48 µm RMS、MTF、2383和扫描全部冻结。",
+  changes: ["直接2383观察器拥有放映均值", "V46安全处理只作用于随机formed−mean差值", "扫描分支与完整负片保持不变", "T020一秒原生5.7K、12-bit ProRes 4444 XQ双分支交付"],
+  errors: ["V46把扫描综合色写进放映平均色彩", "完全取消管理会重开彩点，因5279交叉频谱仍未测量", "5279原生NPS、三速配比与准确DIR拓扑仍未知"],
+  discoveries: ["观察器差异不需要靠夸张色相制造", "安全滤波若改写均值，就已经变成调色", "同负片V48−V46线性RGB MAE仅0.002200"],
+  refs: ["R1", "R4", "R25", "R58", "R68", "R69"],
+  parameters: [
+    { title: "第一性原则边界", titleEn: "FIRST-PRINCIPLES BOUNDARY", items: [
+      { label: "唯一画面变化", labelEn: "Only image change", value: "2383确定性颜色不再借用扫描综合色", valueEn: "Deterministic 2383 colour no longer borrows scan opponent colour" },
+      { label: "确定性权威", labelEn: "Deterministic authority", value: "5279 → 2383 → 氙灯 / CIE观察", valueEn: "5279 → 2383 → xenon / CIE observer" },
+      { label: "保持不变", labelEn: "Frozen", value: "RAW、负片、H-D、48 µm RMS、MTF、2383、Scan/DI", valueEn: "RAW, negative, H-D, 48 µm RMS, MTF, 2383 and Scan/DI" },
+    ]},
+    { title: "验证与交付", titleEn: "VALIDATION AND DELIVERY", items: [
+      { label: "2383均值闭合", labelEn: "2383 mean closure", value: "逐位一致", valueEn: "bit-identical" },
+      { label: "V48−V46放映", labelEn: "V48−V46 projection", value: "线性RGB MAE 0.002200 · P95 0.007585", valueEn: "linear RGB MAE 0.002200 · P95 0.007585" },
+      { label: "母版", labelEn: "Master", value: "5760×4320 · 24帧 · 12-bit ProRes 4444 XQ", valueEn: "5760×4320 · 24 frames · 12-bit ProRes 4444 XQ" },
+      { label: "算法时间", labelEn: "Algorithm time", value: "1251.71秒 · 52.15秒/帧", valueEn: "1251.71 s · 52.15 s/frame" },
+    ]},
+  ],
+});
+
 for (const version of versions) {
   for (const branch of [version.projection, version.bluray]) {
     branch.src = withBasePath(branch.src);

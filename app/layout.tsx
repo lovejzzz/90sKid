@@ -9,22 +9,22 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export function generateMetadata(): Metadata {
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
   const siteUrl = isGitHubPages ? "https://lovejzzz.github.io/90sKid/" : "https://emulsion-5279.skylab.chatgpt.site/";
-  const socialImageUrl = new URL("og-v47.png", siteUrl).toString();
+  const socialImageUrl = new URL("og-v48.png", siteUrl).toString();
   return {
     metadataBase: new URL(siteUrl),
     title: { default: "5279 Emulsion Project", template: "%s · 5279 Emulsion Project" },
-    description: "An evidence-bounded Kodak 5279 reconstruction. V47 adds a controlled silver-halide morphology comparator to the certified V46 physical branch.",
+    description: "An evidence-bounded Kodak 5279 reconstruction. V48 returns projection and scan to separate first-principles observer ownership.",
     openGraph: {
       title: "5279 Emulsion Project",
-      description: "V47 reconstructs controlled Silver-Efex-class heterogeneous silver-halide morphology while retaining V46 as the physical 5279 branch.",
+      description: "V48 is a first-principles Kodak 5279 / 2383 baseline with one negative and two explicit observers.",
       type: "website",
       locale: "en_US",
-      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V47 silver-halide morphology" }],
+      images: [{ url: socialImageUrl, width: 1731, height: 909, alt: "Grain is the image · V48 first-principles Kodak baseline" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "5279 Emulsion Project",
-      description: "V47 is the current visual release: controlled heterogeneous silver-halide morphology on the certified V46 observers.",
+      description: "V48 is the current visual release: one 5279 negative, with explicit 2383 projection and Cineon scan observers.",
       images: [socialImageUrl],
     },
   };

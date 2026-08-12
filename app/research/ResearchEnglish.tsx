@@ -27,7 +27,7 @@ function referenceTypeEnglish(type: string) {
 export function ResearchEnglish() {
   return (
     <main className="paper-page wrap">
-      <header className="paper-header"><span className="eyebrow">RESEARCH CYCLE 06 · REVISION 2026.08</span><h1>From silver-halide sites<br />to a motion-picture image</h1><p className="abstract"><b>Abstract</b> — This project reconstructs Kodak VISION 500T 5279 image formation from digital RAW rather than copying a static LUT. V46 remains the physical 5279-negative branch; current reviewable V47 adds a controlled Silver-Efex-constrained SHM morphology comparator on the same deterministic observers. It reconstructs multiscale populations, local heterogeneity, clusters/voids and thick tails without representing monochrome Tri-X evidence as a measurement of 5279&apos;s three colour records.</p><div className="paper-byline"><span>THEMATIC RESEARCH RECORD</span><span>METHOD · EXPERIMENT · ERROR REVIEW</span></div></header>
+      <header className="paper-header"><span className="eyebrow">RESEARCH CYCLE 07 · REVISION 2026.08</span><h1>From silver-halide sites<br />to a motion-picture image</h1><p className="abstract"><b>Abstract</b> — Current V48 returns to the smallest physical chain: one 5279 negative enters a 2383 projection observer and a Cineon scan observer. V47 remains a historical morphology comparator, not the driver of the main line.</p><div className="paper-byline"><span>THEMATIC RESEARCH RECORD</span><span>METHOD · EXPERIMENT · ERROR REVIEW</span></div></header>
 
       <ResearchStatus language="en" />
 

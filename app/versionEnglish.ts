@@ -1139,10 +1139,20 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
       "The honest current boundary is to retain physical V46 and keep SHM as a removable comparator on the same deterministic observers",
     ],
   },
+  V48: {
+    year: "FIRST-PRINCIPLES BASELINE",
+    title: "Let 2383 own its colour: separate mean image from stochastic delta",
+    summary: "V48 adds no new style and does not continue the Silver Efex route. It corrects one V46 observer-ownership error: projection borrowed scan low-frequency opponent colour to contain speckles caused by unmeasured three-record covariance. The direct 5279-to-2383-to-xenon/CIE chain now owns the projection mean; the old safety transform contributes only the formed-minus-mean stochastic delta. Negative formation, grain, H-D, 48-micrometre RMS, MTF, 2383 and scan remain frozen.",
+    changes: ["Direct 2383 observer owns the projection mean", "V46 containment acts only on the formed-minus-mean stochastic delta", "Scan and the complete negative remain unchanged", "One second of paired native 5.7K 12-bit ProRes 4444 XQ"],
+    errors: ["V46 wrote scan opponent colour into the projection mean", "Removing all management would reopen speckles because the 5279 cross-spectrum remains unmeasured", "Native NPS, speed-population recipe and exact DIR topology remain unknown"],
+    discoveries: ["Observer differences need no exaggerated hue", "A safety filter that changes the mean has become a grade", "Same-negative V48−V46 linear-RGB MAE is only 0.002200"],
+  },
 };
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/T020 · 5279 → 2383直接确定性颜色 \+ 受控随机差值/g, "T020 · direct 5279 → 2383 deterministic colour + managed stochastic delta")
+    .replace(/T020 · 同一V48负片 → Cineon \/ Scan-DI观察/g, "T020 · same V48 negative → Cineon / Scan-DI observer")
     .replace(/V46确定性2383观察 → V47 SHM有限银盐组织/g, "V46 deterministic 2383 observer → V47 SHM finite silver-halide organization")
     .replace(/V46确定性Scan\/DI观察 → V47 SHM有限银盐组织/g, "V46 deterministic scan/DI observer → V47 SHM finite silver-halide organization")
     .replace(/旧FSD单Gaussian-copula有限密度对照/g, "legacy FSD single-Gaussian-copula finite-density control")

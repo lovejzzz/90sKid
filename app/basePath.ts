@@ -9,6 +9,7 @@ export function withBasePath(path: string) {
   // deployment bundles from duplicating hundreds of megabytes of lossless
   // stills and grain-tuned hover videos; no proxy is recompressed here.
   if (
+    path.startsWith("/versions/v48-") ||
     path.startsWith("/versions/v47-") ||
     path.startsWith("/versions/v46-") ||
     path.startsWith("/versions/v45-") ||

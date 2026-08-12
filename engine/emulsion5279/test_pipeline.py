@@ -285,6 +285,50 @@ class PipelineContractTests(unittest.TestCase):
         v42_profile.apply(e)
         self.assertEqual(e.PRINT_2383_CMF_MODE, "analytic_20nm")
 
+    def test_public_v48_uses_direct_2383_mean_and_only_manages_grain_delta(self) -> None:
+        import v48_release_profile
+
+        config = EngineConfig(profile="v48r", mode=EngineMode.REFERENCE)
+        engine = Emulsion5279Engine(config)
+        engine.profile = v48_release_profile
+        rng = np.random.default_rng(480)
+        mean_projection = rng.uniform(0.08, 0.72, (24, 30, 3)).astype(
+            np.float32
+        )
+        mean_scan = rng.uniform(0.08, 0.72, (24, 30, 3)).astype(np.float32)
+        formed_projection = np.clip(
+            mean_projection
+            + rng.normal(0.0, 0.008, mean_projection.shape).astype(np.float32),
+            0.0,
+            1.0,
+        )
+        formed_scan = np.clip(
+            mean_scan
+            + rng.normal(0.0, 0.008, mean_scan.shape).astype(np.float32),
+            0.0,
+            1.0,
+        )
+        published, published_mean = engine._publish_projection_pair(
+            formed_projection,
+            formed_scan,
+            mean_projection,
+            mean_scan,
+        )
+        np.testing.assert_array_equal(published_mean, mean_projection)
+        managed_formed = engine._publish_projection_colour_v46(
+            formed_projection, formed_scan
+        )
+        managed_mean = engine._publish_projection_colour_v46(
+            mean_projection, mean_scan
+        )
+        expected = np.clip(
+            mean_projection + managed_formed - managed_mean, 0.0, 1.0
+        ).astype(np.float32)
+        np.testing.assert_array_equal(published, expected)
+        self.assertGreater(
+            float(np.max(np.abs(published_mean - mean_scan))), 0.01
+        )
+
     def test_v48_isolates_isotropic_site_integration_and_v45_resets_it(self) -> None:
         import v45_profile
         import v48_profile

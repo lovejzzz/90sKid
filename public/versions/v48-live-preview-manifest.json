@@ -1,0 +1,465 @@
+{
+  "release": "V48 First-Principles Projection Ownership",
+  "release_class": "first_principles_projection_ownership",
+  "frames": 24,
+  "dimensions": [
+    1920,
+    1440
+  ],
+  "source_frames": [
+    0,
+    23
+  ],
+  "web_authority": "same middle frame decoded from each final encoded review movie",
+  "image_change": "direct 5279-to-2383 deterministic projection colour; the frozen V46 scan-referenced containment acts only on the signed stochastic delta",
+  "frozen": "RAW decode, 5279 negative, H-D, net dye/mask spectra, 48 um RMS, MTF, DIR prior, 2383 material, Cineon scan and delivery transfers",
+  "first_frame_audit": {
+    "audit": "V48 first-principles projection ownership",
+    "source": "NJARAW_S001_S001_T020.MOV",
+    "absolute_frame": 0,
+    "profile": "v48r (public V48)",
+    "sampler": "production_philox_metal \u00b7 V46 absolute-frame identity",
+    "gates": {
+      "v48_mean_is_direct_2383_bit_exact": true,
+      "managed_projection_delta_is_preserved": true,
+      "scan_branch_is_unmodified": true,
+      "negative_is_single_shared_realization": true
+    },
+    "v48_vs_v46_projection": {
+      "mae": 0.002200039173829158,
+      "p95": 0.007585346698760986,
+      "p99": 0.013585150241851807,
+      "maximum": 0.092996746301651
+    },
+    "direct_2383_mean_vs_v46_scan_referenced_mean": {
+      "mae": 0.00221281008698465,
+      "p95": 0.007585603930056084,
+      "p99": 0.013585269451141357,
+      "maximum": 0.09299680590629578
+    },
+    "density_bounds": {
+      "minimum": 0.0,
+      "maximum": 2.6846866607666016,
+      "negative_samples": 0
+    },
+    "evidence_boundary": "No negative, grain, H-D, MTF, spectral, 2383 or scan parameter changes. Only deterministic projection colour ownership moves from the scan-referenced V46 publication to direct 2383."
+  },
+  "timing": {
+    "engine": {
+      "engine_api": "emulsion5279-v48r",
+      "profile": "v48r",
+      "input_colour_contract": "avfoundation_extended_linear_bt2020_d65",
+      "delivery_contract": [
+        "rec709_primaries_bt1886_gamma24",
+        "rec709_primaries_srgb_transfer"
+      ],
+      "cineon_exchange_contract": {
+        "container": "SMPTE_ST_268-1_DPX_v2.0",
+        "image_element": "RGB_unsigned_10bit",
+        "transfer_characteristic": "printing_density_code_1",
+        "colorimetric_specification": "printing_density_code_1",
+        "reference_low": {
+          "code": 0,
+          "density": 0.0
+        },
+        "reference_high": {
+          "code": 1023,
+          "density": 2.048
+        },
+        "reference_black_aim_code": 95,
+        "display_ready": false
+      },
+      "cineon_view_policies": {
+        "cineon_open_monitor_v66": {
+          "inputs": [
+            "rgb_10bit_printing_density_code"
+          ],
+          "output": "linear_rec709_display_light",
+          "pure_function_of_dpx": true,
+          "operations": [
+            "code95_reference_black",
+            "0.008D_soft_toe",
+            "scene10_derived_high_anchor",
+            "0.90_linear_peak",
+            "unit_gamut_compression"
+          ],
+          "classification": "provisional_monitor_policy_not_5279_property"
+        },
+        "cineon_bluray_pointwise_v66": {
+          "inputs": [
+            "rgb_10bit_printing_density_code"
+          ],
+          "output": "linear_rec709_display_light",
+          "pure_function_of_dpx": true,
+          "operations": [
+            "cineon_open_monitor_v66",
+            "lower_scale_gamma_1.20_anchored_at_18_percent",
+            "finish_fade_from_luma_0.12_to_0.30",
+            "luminance_preserving_neutral_scale_calibration",
+            "rec709_gamut_compression"
+          ],
+          "classification": "provisional_finish_policy_not_5279_property"
+        }
+      },
+      "legacy_scan_delivery_contract": {
+        "name": "legacy_managed_bluray_v40_to_v66",
+        "inputs": [
+          "formed_rgb_10bit_printing_density_code",
+          "hidden_deterministic_mean_scan"
+        ],
+        "pure_function_of_dpx": false,
+        "additional_operations": [
+          "mean_relative_luma_opponent_decomposition",
+          "0.55px_at_2k_opponent_lowpass",
+          "0.55_high_frequency_opponent_retention",
+          "mean_luma_dependent_shadow_visibility"
+        ],
+        "classification": "historical_delivery_grain_management_not_view_transform"
+      },
+      "legacy_projection_delivery_contract": {
+        "name": "legacy_managed_projection_v40_to_v72",
+        "inputs": [
+          "formed_5279_record_density",
+          "hidden_deterministic_mean_2383_projection",
+          "matched_legacy_managed_scan"
+        ],
+        "pure_function_of_projected_print": false,
+        "stochastic_observer": "archive_pointwise_signed_delta",
+        "local_projection_grain_operations": [
+          "mean_relative_rec709_luma_opponent_decomposition",
+          "0.62px_at_2k_opponent_lowpass",
+          "0.0_high_frequency_opponent_retention",
+          "0.66_opponent_strength"
+        ],
+        "publication_operations": [
+          "scan_referenced_low_frequency_oklab_opponent_colour",
+          "0.72px_at_2k_colour_crossover",
+          "0.0_projection_high_frequency_opponent_retention",
+          "exact_projection_rec709_linear_luma"
+        ],
+        "classification": "historical_managed_monitor_policy_not_measured_5279_or_2383_property",
+        "evidence_boundary": "Kodak's public granularity curves do not identify cross-record covariance or the final projected colour-grain NPS. V79 showed that removing this management reopens sparse primary-colour events in the current model; retention is therefore a defect-containment boundary, not evidence that real 5279 projection has these coefficients."
+      },
+      "print_lattice_sha256": "03ce9d14a785776121cd33ad76fe7efef222c08a0aee14611f04d10fdb1049ad",
+      "cie_observer_sha256": "bd7973e895a97e543815614b19c51ceff552ae9910a424724ae04ed89bd863a3",
+      "research_conformance": {
+        "contract": "public-v48-first-principles-projection-ownership",
+        "checks": {
+          "v37_stable_balanced_phase": true,
+          "v37_or_v48_site_integration_radius": true,
+          "v37_phase_offset_30_degrees": true,
+          "v40_post_process_granularity_boundary": true,
+          "v40_formed_density_observer_management": true,
+          "v40_or_v43h_explicit_2383_grain_boundary": true,
+          "v40_archive_pointwise_signed_grain_observer": true,
+          "v40_no_duplicate_hf_opponent_reinjection": true,
+          "v41_signed_basis_only_when_records_stay_positive": true,
+          "v41_chart_residual_enabled_at_one_eighth": true,
+          "v30_to_v41_unidentified_d60_lattice_disabled": true,
+          "baseline_controls_frozen": true,
+          "v44_is_an_evidence_boundary_revision": true,
+          "v44_retains_accepted_normal_process_colour_boundary": true,
+          "v44_review_integration_is_explicit": true,
+          "v44_withholds_unmeasured_2383_grain": true,
+          "v44_retains_v42_negative_morphology": true,
+          "v44_retains_v42_spirit_observer": true,
+          "active_release_class_matches_profile": true,
+          "v45_uses_official_cie_1931_1nm_observer": true,
+          "v48_removes_global_bilinear_phase": true,
+          "v48_uses_geometric_second_moment_integration": true,
+          "v48_plus_declares_local_density_boundary": true,
+          "v50_uses_vector_traced_granularity_domain": true,
+          "v50_uses_vector_traced_granularity_sigma": true,
+          "v50_withholds_unplotted_plus_one_loge_sample": true,
+          "v51_uses_vector_traced_net_dye_spectra": true,
+          "v51_uses_vector_traced_minimum_density_spectrum": true,
+          "v52_uses_vector_traced_characteristic_domain": true,
+          "v52_uses_vector_traced_characteristic_density": true,
+          "v52_dmin_matches_first_traced_density": true,
+          "v52_pretrace_dmin_hold_is_explicit": true,
+          "v52_inferred_shoulder_preserves_archive_increments": true,
+          "v53_uses_vector_traced_2383_characteristic_domain": true,
+          "v53_uses_vector_traced_2383_characteristic_density": true,
+          "v53_2383_dmin_is_one_consistent_source": true,
+          "v53_2383_curves_are_monotonic": true,
+          "v53_2383_dmax_covers_all_vector_endpoints": true,
+          "v53_2383_graph_border_holds_are_explicit": true,
+          "v54_uses_vector_traced_2383_record_sensitivity": true,
+          "v54_retains_unmodified_2383_dye_spectra": true,
+          "v54_explicit_sensitivity_floor_is_bounded": true,
+          "v55_uses_vector_traced_2383_dye_spectra": true,
+          "v55_retains_archive_xenon_spd": true,
+          "v55_dye_peaks_match_vector_graph_regions": true,
+          "v55_dye_density_is_nonnegative": true,
+          "v60_preserves_checksum_locked_visual_neutral_residual": true,
+          "v60_dmin_registered_spectral_policy_enabled": true,
+          "v60_integral_lad_coordinate_policy_enabled": true,
+          "v60_zero_dye_amount_is_exactly_hd_curve_dmin": true,
+          "v60_integral_lad_inverse_is_numerically_closed": true,
+          "v60_principal_triplet_forwards_to_official_integral_lad": true,
+          "v60_forward_and_inverse_dye_amounts_agree": true,
+          "v60_documented_principal_density_triplet": true,
+          "v60_documented_analytical_dye_triplet": true,
+          "v60_plus_interimage_matches_declared_profile": true,
+          "v60_scan_referenced_colour_policy_is_unchanged": true,
+          "v61_checksum_locked_iso_status_m_table": true,
+          "v61_iso_status_m_policy_enabled": true,
+          "v61_joint_analytical_inverse_enabled": true,
+          "v61_status_m_grid_is_380_to_780_at_1nm": true,
+          "v61_status_m_receivers_have_official_peak_wavelengths": true,
+          "v61_zero_analytical_dye_is_registered_to_hd_dmin": true,
+          "v61_joint_status_m_inverse_is_numerically_closed": true,
+          "v61_plus_2383_interimage_matches_declared_profile": true,
+          "v61_scan_referenced_colour_policy_is_unchanged": true,
+          "v62_unmeasured_interimage_surrogate_is_withheld": true,
+          "v62_interimage_endpoint_is_exact_identity": true,
+          "v62_projection_colour_policy_is_unchanged": true,
+          "v62_profile_declares_native_observer_lattice": true,
+          "v63_uses_actual_negative_to_print_neutral_trajectory": true,
+          "v63_keeps_scan_referenced_colour_authority_frozen": true,
+          "v63_keeps_unmeasured_interimage_at_identity": true,
+          "v63_restores_declared_v31_chroma_configuration": true,
+          "v64_retains_published_separated_status_a_curves": true,
+          "v64_retains_v63_actual_view_neutral_trajectory": true,
+          "v64_keeps_scan_referenced_colour_authority_frozen": true,
+          "v66_cineon_target_is_printing_density": true,
+          "v66_cineon_coordinate_is_numerically_exact": true,
+          "v66_does_not_claim_measured_spirit_colour": true,
+          "v72_direct_record_mix_is_exact_identity": true,
+          "v72_declares_minimum_assumption_not_measurement": true,
+          "v46_complete_stochastic_state_endpoint_hold": true,
+          "v46_certified_adaptive_printer_observer": true,
+          "v46_projection_delta_lattice_is_declared_containment": true,
+          "v48_public_projection_mean_is_direct_2383": true,
+          "v48_public_changes_no_negative_parameter": true
+        },
+        "image_model_conformant": true,
+        "production_execution_conformant": true,
+        "sampler": "Philox-u32 Bernoulli Metal; 45 unique record/population/size identities per frame",
+        "delivery_authority": "encoded 12-bit BT.1886 master; sRGB companion and still are derived from the delivered master"
+      },
+      "production_sampler_audit": {
+        "mode": "bernoulli",
+        "seed_contract": "30000000 + frame*10000 + channel*1000 + population*100 + size_class",
+        "domain_salt_uint32": 0,
+        "tile_workset_pixels": null,
+        "tile_in_flight": 2,
+        "total_calls": 1080,
+        "duplicate_identity_count": 0,
+        "minimum_seed": 30000000,
+        "maximum_seed": 30232204,
+        "minimum_trials": 1,
+        "maximum_trials": 30,
+        "frames_audited": 24,
+        "calls_per_frame": 45,
+        "frame_call_counts": {
+          "0": 45,
+          "1": 45,
+          "2": 45,
+          "3": 45,
+          "4": 45,
+          "5": 45,
+          "6": 45,
+          "7": 45,
+          "8": 45,
+          "9": 45,
+          "10": 45,
+          "11": 45,
+          "12": 45,
+          "13": 45,
+          "14": 45,
+          "15": 45,
+          "16": 45,
+          "17": 45,
+          "18": 45,
+          "19": 45,
+          "20": 45,
+          "21": 45,
+          "22": 45,
+          "23": 45
+        }
+      },
+      "execution": {
+        "observer_branch_workers": 1,
+        "observer_schedule": "sequential_projection_and_scan"
+      },
+      "model_sha256": "4ef7fbc7a6d2932935152762422e2009277f4ced1882f6d0eec531d58e8b4d2d",
+      "profile_sha256": "585c6c555e0146b0a8387ef69233592976d76ab1ef5bcad8997159495ad7fb7a"
+    },
+    "input": "NJARAW_S001_S001_T020.MOV",
+    "start_frame": 0,
+    "frames": 24,
+    "machine": {
+      "system": "Darwin",
+      "release": "25.5.0",
+      "machine": "arm64"
+    },
+    "config": {
+      "exposure_stops": 0.45,
+      "grain_scale": 1.0,
+      "oversample": 1,
+      "mode": "production_philox_metal",
+      "opencv_threads": 8,
+      "binomial_workers": 8,
+      "numba_threads": 8,
+      "array_workers": 8,
+      "observer_branch_workers": 1,
+      "grain_domain_salt": 0,
+      "research_baseline": true,
+      "cineon_dpx": true
+    },
+    "stage_summaries": {
+      "negative_formation": {
+        "total_seconds": 569.7015629159941,
+        "mean_seconds_per_frame": 23.737565121499756,
+        "p95_seconds_per_frame": 36.24133973129937
+      },
+      "dual_observer": {
+        "total_seconds": 666.3356362500053,
+        "mean_seconds_per_frame": 27.763984843750222,
+        "p95_seconds_per_frame": 37.307316008049014
+      },
+      "delivery_encoding": {
+        "total_seconds": 15.66837695999493,
+        "mean_seconds_per_frame": 0.6528490399997887,
+        "p95_seconds_per_frame": 1.0171278500003604
+      },
+      "total": {
+        "total_seconds": 1251.7055761259944,
+        "mean_seconds_per_frame": 52.154399005249765,
+        "p95_seconds_per_frame": 71.34880321614855
+      }
+    },
+    "source_delivery": {
+      "contract": "V29 frame-accurate source PCM/timecode retention",
+      "source_frames": 297,
+      "range": [
+        0,
+        23
+      ],
+      "outputs_finalized": [
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/05_emulsion_master_prores4444.mov",
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/06_quicktime_preview_srgb_prores4444.mov",
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/06_quicktime_preview_srgb_prores4444.mov",
+        "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov"
+      ],
+      "seconds": 30.681421875000524
+    },
+    "review_sampling": {
+      "projection": {
+        "source_master": "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/05_emulsion_master_prores4444.mov",
+        "review": "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/07_scale_integrated_review_srgb_prores4444.mov",
+        "still": "outputs/native_5k_v48_first_principles_projection_1s/T020/projection/07_scale_integrated_review_srgb_prores4444_still.jpg",
+        "source_dimensions": [
+          5760,
+          4320
+        ],
+        "review_dimensions": [
+          1920,
+          1440
+        ],
+        "sampling": "linear_light_pixel_area_integration",
+        "transfer": "sRGB",
+        "frames": 24
+      },
+      "bluray_scan": {
+        "source_master": "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/05_emulsion_master_prores4444.mov",
+        "review": "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+        "still": "outputs/native_5k_v48_first_principles_projection_1s/T020/bluray_scan/07_scale_integrated_review_srgb_prores4444_still.jpg",
+        "source_dimensions": [
+          5760,
+          4320
+        ],
+        "review_dimensions": [
+          1920,
+          1440
+        ],
+        "sampling": "linear_light_pixel_area_integration",
+        "transfer": "sRGB",
+        "frames": 24
+      }
+    },
+    "cineon_exchange": {
+      "path": "outputs/native_5k_v48_first_principles_projection_1s/T020/cineon_printing_density",
+      "frame_range": [
+        0,
+        23
+      ],
+      "contract": {
+        "container": "SMPTE_ST_268-1_DPX_v2.0",
+        "image_element": "RGB_unsigned_10bit",
+        "transfer_characteristic": "printing_density_code_1",
+        "colorimetric_specification": "printing_density_code_1",
+        "reference_low": {
+          "code": 0,
+          "density": 0.0
+        },
+        "reference_high": {
+          "code": 1023,
+          "density": 2.048
+        },
+        "reference_black_aim_code": 95,
+        "display_ready": false
+      }
+    },
+    "total_wall_seconds": 1436.422911667003
+  },
+  "verification": {
+    "v48-t020-projection": {
+      "native_master": "projection/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "projection/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "c349680f2b74dce4845dfdb0f12fded24c5faac83d45dcfc9c134ea9f83e3b45",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008745,
+        0.006661,
+        0.009744
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.003618,
+        0.001987,
+        0.000834
+      ],
+      "first_frame_median_luma_delta": 0.001987
+    },
+    "v48-t020-bluray": {
+      "native_master": "bluray_scan/05_emulsion_master_prores4444.mov",
+      "scale_integrated_review": "bluray_scan/07_scale_integrated_review_srgb_prores4444.mov",
+      "review_sha256": "75feccfcc86894dbbbd00b611742ffe1c05c0520a6cc383f9286df0f6705eb69",
+      "review_metadata": {
+        "profile": "XQ",
+        "width": 1920,
+        "height": 1440,
+        "pix_fmt": "yuv444p12le",
+        "color_space": "bt709",
+        "color_transfer": "iec61966-2-1",
+        "color_primaries": "bt709",
+        "bits_per_raw_sample": "12",
+        "nb_frames": "24"
+      },
+      "first_frame_channel_mae_rgb": [
+        0.008258,
+        0.006236,
+        0.00987
+      ],
+      "luma_p05_p50_p95_absolute_delta": [
+        0.001184,
+        0.0015,
+        0.001688
+      ],
+      "first_frame_median_luma_delta": 0.0015
+    }
+  }
+}

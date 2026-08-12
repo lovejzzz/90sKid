@@ -272,7 +272,7 @@ def verify_v46_runtime_assets() -> None:
 
 
 def projection_lattice_for_profile(profile: str) -> Asset:
-    if profile in {"v46", "v66", "v72"}:
+    if profile in {"v46", "v48r", "v66", "v72"}:
         CIE_1931_2DEG_1NM.verify()
         PRINT_2383_OUTPUT_LATTICE_V66.verify()
         return PRINT_2383_OUTPUT_LATTICE_V66

@@ -22,29 +22,29 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
     """Report code-level ownership of the latest accepted research boundaries."""
 
     hypothesis = config.profile == "v43h"
-    v48_integration = config.profile in {"v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v49_density_boundary = config.profile in {"v46", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v50_granularity_trace = config.profile in {"v46", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v51_spectral_trace = config.profile in {"v46", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v52_characteristic_trace = config.profile in {"v46", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v53_print_characteristic_trace = config.profile in {"v46", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v54_print_sensitivity_trace = config.profile in {"v46", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v55_print_dye_trace = config.profile in {"v46", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v48_integration = config.profile in {"v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v49_density_boundary = config.profile in {"v46", "v48r", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v50_granularity_trace = config.profile in {"v46", "v48r", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v51_spectral_trace = config.profile in {"v46", "v48r", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v52_characteristic_trace = config.profile in {"v46", "v48r", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v53_print_characteristic_trace = config.profile in {"v46", "v48r", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v54_print_sensitivity_trace = config.profile in {"v46", "v48r", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v55_print_dye_trace = config.profile in {"v46", "v48r", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
     v56_physical_colour_authority = config.profile in {"v56", "v57"}
     v57_identity_interimage = config.profile == "v57"
     v58_integral_lad_coordinate = config.profile == "v58"
     v59_visual_neutral_base = config.profile == "v59"
-    v60_dmin_registration = config.profile in {"v46", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v61_status_m_joint_inverse = config.profile in {"v46", "v61", "v62", "v63", "v64", "v66", "v72"}
-    v62_interimage_and_lattice = config.profile in {"v46", "v62", "v63", "v64", "v66", "v72"}
-    v63_neutral_trajectory = config.profile in {"v46", "v63", "v64", "v66", "v72"}
-    v64_unshaped_print_density = config.profile in {"v46", "v64", "v66", "v72"}
-    v66_cineon_printing_density = config.profile in {"v46", "v66", "v72"}
+    v60_dmin_registration = config.profile in {"v46", "v48r", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v61_status_m_joint_inverse = config.profile in {"v46", "v48r", "v61", "v62", "v63", "v64", "v66", "v72"}
+    v62_interimage_and_lattice = config.profile in {"v46", "v48r", "v62", "v63", "v64", "v66", "v72"}
+    v63_neutral_trajectory = config.profile in {"v46", "v48r", "v63", "v64", "v66", "v72"}
+    v64_unshaped_print_density = config.profile in {"v46", "v48r", "v64", "v66", "v72"}
+    v66_cineon_printing_density = config.profile in {"v46", "v48r", "v66", "v72"}
     observer_integrity = config.profile in {
-        "v44", "v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+        "v44", "v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
     }
     official_observer = config.profile in {
-        "v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
+        "v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"
     }
     release_class_by_profile = {
         "v44": "evidence_boundary_revision",
@@ -69,6 +69,7 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
         "v66": "evidence_corrected_cineon_printing_density_coordinate",
         "v72": "evidence_minimal_identity_record_formation",
         "v46": "certified_spectral_inverse_and_endpoint_correction",
+        "v48r": "first_principles_projection_ownership",
     }
     expected_release_class = release_class_by_profile.get(config.profile)
 
@@ -165,7 +166,11 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                     == (
                         "physical_spectral_v56"
                         if v56_physical_colour_authority
-                        else "scan_referenced_v31"
+                        else (
+                            "direct_mean_managed_grain_delta_v48"
+                            if config.profile == "v48r"
+                            else "scan_referenced_v31"
+                        )
                     )
                 ),
                 "v44_review_integration_is_explicit": (
@@ -835,7 +840,11 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                     model.PRINT_MONITOR_COLOUR_AUTHORITY
                     == model.PRINT_MONITOR_COLOUR_AUTHORITY_ARCHIVE
                     and profile.PROFILE.get("projection_colour_policy")
-                    == "scan_referenced_v31"
+                    == (
+                        "direct_mean_managed_grain_delta_v48"
+                        if config.profile == "v48r"
+                        else "scan_referenced_v31"
+                    )
                 ),
             }
         )
@@ -873,7 +882,7 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                 ),
             }
         )
-    if config.profile in {"v46", "v72"}:
+    if config.profile in {"v46", "v48r", "v72"}:
         checks.update(
             {
                 "v72_direct_record_mix_is_exact_identity": np.array_equal(
@@ -888,7 +897,7 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                 ),
             }
         )
-    if config.profile == "v46":
+    if config.profile in {"v46", "v48r"}:
         checks.update(
             {
                 "v46_complete_stochastic_state_endpoint_hold": (
@@ -904,6 +913,21 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
                         "projection_grain_delta_lattice_policy"
                     )
                     == "frozen_v66_defect_containment_boundary_v79"
+                ),
+            }
+        )
+    if config.profile == "v48r":
+        checks.update(
+            {
+                "v48_public_projection_mean_is_direct_2383": (
+                    profile.PROFILE.get("projection_colour_policy")
+                    == "direct_mean_managed_grain_delta_v48"
+                ),
+                "v48_public_changes_no_negative_parameter": (
+                    profile.PROFILE.get("public_version_id") == "v48"
+                    and profile.PROFILE.get(
+                        "projection_deterministic_colour_authority"
+                    ) == "5279_to_2383_xenon_cie_observer"
                 ),
             }
         )
@@ -935,6 +959,7 @@ def research_conformance(model: Any, profile: Any, config: EngineConfig) -> dict
             "v66": "accepted-v37-through-v64-plus-v66-cineon-printing-density-coordinate",
             "v72": "accepted-v37-through-v66-plus-v72-evidence-minimal-record-formation",
             "v46": "public-v46-consolidation-plus-certified-spectral-inverse-and-endpoint-correction",
+            "v48r": "public-v48-first-principles-projection-ownership",
         }[config.profile],
         "checks": checks,
         "image_model_conformant": image_model_conformant,

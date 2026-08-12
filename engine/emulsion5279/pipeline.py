@@ -91,11 +91,21 @@ class Emulsion5279Engine:
             "legacy_projection_delivery_contract": (
                 LEGACY_MANAGED_PROJECTION_CONTRACT
             ),
+            "active_projection_delivery_contract": (
+                {
+                    "name": "v48_direct_mean_managed_grain_delta",
+                    "deterministic_mean": "direct_5279_to_2383_xenon_cie_observer",
+                    "stochastic_delta": "frozen_v46_managed_formed_minus_mean",
+                    "classification": "first_principles_observer_ownership",
+                }
+                if self.config.profile == "v48r"
+                else LEGACY_MANAGED_PROJECTION_CONTRACT
+            ),
             "print_lattice_sha256": print_lattice.sha256,
             "cie_observer_sha256": (
                 CIE_1931_2DEG_1NM.sha256
                 if self.config.profile
-                in {"v45", "v46", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
+                in {"v45", "v46", "v48r", "v48", "v49", "v50", "v51", "v52", "v53", "v54", "v55", "v56", "v57", "v58", "v59", "v60", "v61", "v62", "v63", "v64", "v66", "v72"}
                 else None
             ),
             "research_conformance": assert_research_conformance(
@@ -147,7 +157,7 @@ class Emulsion5279Engine:
                     "EngineConfig per process until the remaining kernels are lifted"
                 )
             print_lattice = projection_lattice_for_profile(self.config.profile)
-            if self.config.profile == "v46":
+            if self.config.profile in {"v46", "v48r"}:
                 verify_v46_runtime_assets()
             e = legacy.model
             self.profile.apply(e)
@@ -267,8 +277,66 @@ class Emulsion5279Engine:
             ),
         )
 
+    def _publish_projection_pair(
+        self,
+        formed_projection: np.ndarray,
+        formed_scan: np.ndarray,
+        mean_projection: np.ndarray,
+        mean_scan: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Publish projection colour without changing stochastic ownership.
+
+        V48's deterministic mean is the direct 2383 spectral observer.  The
+        historical V46 publication transform is evaluated for both formed and
+        mean pairs and only their signed difference is retained.  Therefore a
+        scan-referenced safety policy cannot silently become the colour grade
+        of the projected print.
+        """
+        policy = self.profile.PROFILE.get(
+            "projection_colour_policy", "scan_referenced_v31"
+        )
+        if policy != "direct_mean_managed_grain_delta_v48":
+            return (
+                self._publish_projection_colour(formed_projection, formed_scan),
+                self._publish_projection_colour(mean_projection, mean_scan),
+            )
+        managed_formed = self._publish_projection_colour_v46(
+            formed_projection, formed_scan
+        )
+        managed_mean = self._publish_projection_colour_v46(
+            mean_projection, mean_scan
+        )
+        published = (
+            np.asarray(mean_projection, dtype=np.float32)
+            + managed_formed
+            - managed_mean
+        )
+        return (
+            np.clip(published, 0.0, 1.0).astype(np.float32),
+            np.asarray(mean_projection, dtype=np.float32),
+        )
+
+    def _publish_projection_colour_v46(
+        self, projection: np.ndarray, scan: np.ndarray
+    ) -> np.ndarray:
+        """Evaluate the frozen V46 publication transform for delta ownership."""
+        from apply_v31_normal_process_adapter import adapt_frame_linear
+
+        return adapt_frame_linear(
+            projection,
+            scan,
+            self.profile.PROFILE.get(
+                "final_adapter_opponent_high_frequency_retention", 1.0
+            ),
+        )
+
     def observe(self, negative: FormedNegative, absolute_frame: int) -> ObserverPair:
         self.configure()
+        if self.profile.PROFILE.get("projection_colour_policy") == (
+            "direct_mean_managed_grain_delta_v48"
+        ):
+            formed, _mean = self.observe_with_mean(negative, absolute_frame)
+            return formed
         projection, scan = legacy.model.reconstruct_density_pair_to_dual_display_v39(
             negative.mean_record_density,
             negative.formed_record_density,
@@ -291,18 +359,30 @@ class Emulsion5279Engine:
         into a second stochastic realization or a duplicate scan model.
         """
         self.configure()
-        projection, scan, cineon_code = (
-            legacy.model.reconstruct_density_pair_to_dual_display_v39(
-                negative.mean_record_density,
-                negative.formed_record_density,
-                int(absolute_frame),
-                self.config.grain_scale,
-                "linear_rec709",
-                return_cineon_code=True,
-                branch_executor=self._observer_executor,
-            )
+        first_principles_projection = self.profile.PROFILE.get(
+            "projection_colour_policy"
+        ) == "direct_mean_managed_grain_delta_v48"
+        rendered = legacy.model.reconstruct_density_pair_to_dual_display_v39(
+            negative.mean_record_density,
+            negative.formed_record_density,
+            int(absolute_frame),
+            self.config.grain_scale,
+            "linear_rec709",
+            return_mean_pair=first_principles_projection,
+            return_cineon_code=True,
+            branch_executor=self._observer_executor,
         )
-        projection = self._publish_projection_colour(projection, scan)
+        if first_principles_projection:
+            projection, scan, mean_projection, mean_scan, cineon_code = rendered
+            projection, _ = self._publish_projection_pair(
+                projection,
+                scan,
+                mean_projection,
+                mean_scan,
+            )
+        else:
+            projection, scan, cineon_code = rendered
+            projection = self._publish_projection_colour(projection, scan)
         return ObserverPair(projection, scan), cineon_code
 
     def observe_with_mean(
@@ -321,15 +401,17 @@ class Emulsion5279Engine:
                 branch_executor=self._observer_executor,
             )
         )
-        return (
-            ObserverPair(
-                self._publish_projection_colour(projection, scan),
+        published_projection, published_mean_projection = (
+            self._publish_projection_pair(
+                projection,
                 scan,
-            ),
-            ObserverPair(
-                self._publish_projection_colour(mean_projection, mean_scan),
+                mean_projection,
                 mean_scan,
-            ),
+            )
+        )
+        return (
+            ObserverPair(published_projection, scan),
+            ObserverPair(published_mean_projection, mean_scan),
         )
 
     def view_cineon_data(
@@ -339,7 +421,7 @@ class Emulsion5279Engine:
     ) -> np.ndarray:
         """View V66 printing-density data through one named single-input policy."""
         self.configure()
-        if self.config.profile not in {"v46", "v66", "v72"}:
+        if self.config.profile not in {"v46", "v48r", "v66", "v72"}:
             raise ValueError(
                 "the named Cineon policies require profile='v66' or 'v72'"
             )

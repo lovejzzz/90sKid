@@ -16,7 +16,7 @@ export default function ResearchPage() {
     <>
       <SiteHeader />
       <main className="paper-page wrap">
-        <header className="paper-header"><span className="eyebrow">RESEARCH CYCLE 06 · REVISION 2026.08</span><h1>从银盐位点到电影画面：<br />5279数码乳剂重建研究</h1><p className="abstract"><b>摘要</b>　本项目尝试从数码RAW重建Kodak VISION 500T 5279的成像过程，而不是复刻一组静态LUT。V46继续作为物理5279负片分支；当前可观看的V47在同一确定性观察器上增加经受控Silver Efex测量约束的SHM银盐组织对照。它重建多尺度群体、局部非均质、团簇／空洞与厚尾，但不把黑白Tri-X旁证冒充5279三记录测量。</p><div className="paper-byline"><span>主题研究记录</span><span>方法 · 实验 · 错误复盘</span></div></header>
+        <header className="paper-header"><span className="eyebrow">RESEARCH CYCLE 07 · REVISION 2026.08</span><h1>从银盐位点到电影画面：<br />5279数码乳剂重建研究</h1><p className="abstract"><b>摘要</b>　本项目尝试从数码RAW重建Kodak VISION 500T 5279。当前V48回到最小物理链：一份5279负片分别进入2383放映和Cineon扫描。V47形态实验保留为历史旁证，不再驱动主线。</p><div className="paper-byline"><span>主题研究记录</span><span>方法 · 实验 · 错误复盘</span></div></header>
 
         <ResearchStatus language="zh" />
 
