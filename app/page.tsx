@@ -72,7 +72,7 @@ export default function Home() {
 
         <section className="route-grid wrap">
           <Link href="/versions"><span>VISUAL ARCHIVE</span><h3>{text("视觉版本档案", "Visual version archive")}</h3><p>{text(`从V4到${current.version}保留真实媒体对照；研究版本不伪造截图。`, `Real media comparisons are retained from V4 to ${current.version}; research-only revisions do not fabricate imagery.`)}</p><b>{text("进入 →", "OPEN →")}</b></Link>
-          <Link href="/research"><span>RESEARCH CYCLE · 04</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("材料测量、多层随机性、2383放映与扫描／交付四条研究主线；小实验保留在可追溯附录。", "Four research threads—material measurement, multilayer randomness, 2383 projection, and scan/delivery—with small experiments retained in a traceable appendix.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
+          <Link href="/research"><span>RESEARCH CYCLE · 05</span><h3>{text("研究笔记", "Research paper")}</h3><p>{text("材料测量、多层随机性、2383放映与扫描／交付四条研究主线；小实验保留在可追溯附录。", "Four research threads—material measurement, multilayer randomness, 2383 projection, and scan/delivery—with small experiments retained in a traceable appendix.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
           <Link href="/algorithm"><span>METHOD</span><h3>{text("算法说明", "Method")}</h3><p>{text("从RAW到负片、2383与Cineon的公式、流程和关键代码。", "Equations, flow and key code from RAW through the negative, 2383 and Cineon.")}</p><b>{text("进入 →", "OPEN →")}</b></Link>
         </section>
       </main>

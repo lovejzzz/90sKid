@@ -26,7 +26,7 @@ export function ResearchLedger({ language, compact = false }: { language: Langua
   return (
     <section className={`audit-ledger${compact ? " is-compact" : ""}`} id={compact ? "latest-audits" : "audit-ledger"}>
       <header>
-        <span className="section-tag">{zh ? "研究周期 04 · 四条主线" : "RESEARCH CYCLE 04 · FOUR THEMATIC THREADS"}</span>
+        <span className="section-tag">{zh ? "研究周期 05 · 四条主线" : "RESEARCH CYCLE 05 · FOUR THEMATIC THREADS"}</span>
         <h2>{zh ? "研究按问题组织，不再让一句结论冒充一个胶片版本。" : "Research is organized by questions—not by making every finding look like a film version."}</h2>
         <p>{zh ? `网站当前可观看版本为${currentVisualRelease}。下一版为${nextVisualRelease}：只在出现新的测量或可验证修正后编号。当前引擎为${currentEngineCandidate}；旧V46—V86编号仍作为脚本、报告和失败实验的不可变证据ID。` : `The current reviewable release is ${currentVisualRelease}. The next release is ${nextVisualRelease}: it will be numbered only after a new measurement or verifiable correction. The current engine is ${currentEngineCandidate}. Legacy V46–V86 numbers remain immutable evidence IDs for scripts, reports and failed experiments.`}</p>
       </header>

@@ -108,7 +108,7 @@ test("server-renders the V46 archive, research and algorithm routes", async () =
   assert.match(research, /V44 · OBSERVER INTEGRITY \/ SCALE-HONEST REVIEW/);
   assert.match(research, /V45 · OFFICIAL CIE OBSERVER \/ 1 NM SPECTRAL INTEGRATION/);
   assert.match(research, /Legacy V46–V86 labels remain immutable experiment IDs/);
-  assert.match(research, /RESEARCH CYCLE 04 · FOUR THEMATIC THREADS/);
+  assert.match(research, /RESEARCH CYCLE 05 · FOUR THEMATIC THREADS/);
   assert.match(research, /V72[\s\S]{0,160}IMAGE RELEASE/);
   assert.match(research, /V79[\s\S]{0,160}Projection grain-policy ownership/);
   assert.match(research, /V80[\s\S]{0,160}Cross-record covariance bounds/);
