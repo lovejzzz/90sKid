@@ -862,4 +862,13 @@ test("V47 SHM publishes controlled thick-tail morphology witnesses", async () =>
     assert.equal(result.review_metadata.nb_frames, "24");
     assert.equal(result.review_metadata.color_transfer, "iec61966-2-1");
   }
+
+  const response = await render("/versions");
+  const html = await response.text();
+  assert.match(html, /\/versions\/v47-t020-projection\.jpg/);
+  assert.match(html, /\/versions\/v47-t020-projection-live-srgb\.mp4/);
+  assert.doesNotMatch(
+    html,
+    /cdn\.jsdelivr\.net[^"']+\/versions\/v47-t020-/,
+  );
 });

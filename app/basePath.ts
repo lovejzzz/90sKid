@@ -8,7 +8,12 @@ export function withBasePath(path: string) {
   // mirror. Keeping one canonical byte copy prevents Sites
   // deployment bundles from duplicating hundreds of megabytes of lossless
   // stills and grain-tuned hover videos; no proxy is recompressed here.
-  if (path.startsWith("/versions/v46-") || path.startsWith("/versions/v45-") || path.startsWith("/versions/v44-")) {
+  if (
+    path.startsWith("/versions/v47-") ||
+    path.startsWith("/versions/v46-") ||
+    path.startsWith("/versions/v45-") ||
+    path.startsWith("/versions/v44-")
+  ) {
     return siteBasePath ? `${siteBasePath}${path}` : path;
   }
   // V26/V27 hover movies were intentionally removed before the later archive
