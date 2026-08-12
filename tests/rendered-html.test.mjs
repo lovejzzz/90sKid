@@ -820,3 +820,13 @@ test("V46 publishes three endpoint-stable exact-inverse trials", async () => {
     assert.ok(Math.max(...result.luma_p05_p50_p95_absolute_delta) <= 0.01);
   }
 });
+
+test("V46 English branch labels preserve token spacing", async () => {
+  const source = await readFile(
+    new URL("../app/versionEnglish.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /V46 same negative/);
+  assert.match(source, /Period 2K \/ Cineon scan/);
+  assert.match(source, /2383 xenon projection/);
+});

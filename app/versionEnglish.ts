@@ -1112,6 +1112,15 @@ export const versionEnglish: Record<string, EnglishVersionCopy> = {
 
 export function translateBranchLabel(label: string) {
   return label
+    .replace(/V46端点稳定5279/g, "V46 endpoint-stable 5279")
+    .replace(/V46同一负片/g, "V46 same negative")
+    .replace(/同一V46负片/g, "same V46 negative")
+    .replace(/Period 2K \/ Cineon扫描/g, "Period 2K / Cineon scan")
+    .replace(/2383氙灯放映/g, "2383 xenon projection")
+    .replace(/2383放映/g, "2383 projection")
+    .replace(/Panasonic官方V-709原始观察/g, "official Panasonic V-709 original camera witness")
+    .replace(/Panasonic官方V-709原图/g, "official Panasonic V-709 camera original")
+    .replace(/FSD有限密度/g, "FSD finite-site density")
     .replace(/V46端点稳定/g, "V46 endpoint-stable ")
     .replace(/V46经认证光谱逆解/g, "V46 certified spectral inverse")
     .replace(/同一V46负片/g, "same V46 negative")
