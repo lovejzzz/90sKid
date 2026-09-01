@@ -80,7 +80,7 @@ def solve_active_set(
             normal[:, diagonal, diagonal] += 1e-8
             gradient = np.einsum("nji,nj->ni", selected, residual)
             with np.errstate(all="ignore"):
-                step = -np.linalg.solve(normal, gradient)
+                step = -np.linalg.solve(normal, gradient[..., None])[..., 0]
             damping = np.maximum(
                 1.0, np.max(np.abs(step), axis=1, keepdims=True) / 0.5
             )

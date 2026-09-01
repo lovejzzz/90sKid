@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5279 Studio</title>
+<style>
+:root{
+  --paper:#f2efe6; --card:#faf8f1; --ink:#171713; --muted:#716e64; --line:#cbc6b9; --line2:#e2ddd0;
+  --red:#c5402d; --cyan:#367f83; --yellow:#d8aa2b; --deep:#121210; --deep2:#1c1d19; --deep3:#262722;
+  --mono:"SF Mono","JetBrains Mono","Fira Code","Cascadia Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:-apple-system,"Helvetica Neue","Segoe UI",Inter,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+body{display:grid;grid-template-rows:58px 1fr auto;height:100vh;overflow:hidden}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.mono{font-family:var(--mono)}
+.tag{font:700 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.hint{color:var(--muted);font-size:11px;line-height:1.45}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:var(--paper)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:26px;height:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;transform:rotate(45deg);border-radius:50%;overflow:hidden}
+.brand-mark i:nth-child(1){background:var(--yellow)}.brand-mark i:nth-child(2){background:var(--red)}.brand-mark i:nth-child(3){background:var(--cyan)}
+.brand b{font-size:19px;letter-spacing:-.04em}
+.brand small{display:block;font:600 9px/1 var(--mono);letter-spacing:.18em;color:var(--muted);margin-top:3px}
+.header-right{display:flex;align-items:center;gap:18px}
+.engine{display:flex;align-items:center;gap:8px;font:600 11px var(--mono);color:var(--muted)}
+.engine .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 3px rgba(216,170,43,.18)}
+.engine.ready .dot{background:#3f9a5a;box-shadow:0 0 0 3px rgba(63,154,90,.18)}
+.engine.error .dot{background:var(--red)}
+.lang{display:flex;gap:4px;border:1px solid var(--line);padding:3px 6px;font:700 10px var(--mono);letter-spacing:.05em;background:rgba(250,248,241,.7)}
+.lang button{border:0;background:transparent;color:var(--muted);padding:2px 3px}
+.lang button.on{color:var(--red)}
+
+/* main */
+main{display:grid;grid-template-columns:250px 1fr 350px;min-height:0}
+.rail{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:var(--paper)}
+.rail-head{padding:14px 16px 10px;border-bottom:1px solid var(--line2)}
+.rail-body{overflow:auto;flex:1;min-height:0}
+.open-row{display:flex;gap:6px;margin-top:8px}
+.open-row input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);padding:6px 8px;font:12px var(--mono)}
+.btn{border:1px solid var(--ink);background:transparent;padding:6px 10px;font-size:12px;font-weight:700;border-radius:2px;white-space:nowrap}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--red);border-color:var(--red)}
+.btn.small{padding:3px 8px;font-size:11px}
+.btn.red{border-color:var(--red);color:var(--red)}
+.btn.red:hover{background:var(--red);color:#fff}
+.btn:disabled{opacity:.4;pointer-events:none}
+.drop{margin:10px 16px 0;border:1px dashed var(--line);padding:10px;text-align:center;color:var(--muted);font-size:11px;border-radius:2px}
+.drop.over{border-color:var(--red);color:var(--red)}
+.source{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line2);cursor:pointer;align-items:center}
+.source:hover{background:var(--card)}
+.source.on{background:var(--card);box-shadow:inset 3px 0 0 var(--red)}
+.source img{width:72px;aspect-ratio:16/9;object-fit:cover;background:var(--deep);display:block}
+.source b{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.source span{font:10px var(--mono);color:var(--muted)}
+
+/* viewer */
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--deep);color:#ddd8cb}
+.tabs{display:flex;align-items:center;gap:2px;padding:8px 14px 0;border-bottom:1px solid #2c2d27}
+.tabs button{border:0;background:transparent;color:#8c8b82;padding:8px 12px 10px;font:700 11px var(--mono);letter-spacing:.12em;border-bottom:2px solid transparent}
+.tabs button.on{color:#f4efe2;border-color:var(--red)}
+.tabs .spacer{flex:1}
+.tabs select{background:var(--deep3);border:1px solid #3a3b34;color:#ddd;font:11px var(--mono);padding:4px 6px}
+.viewport{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:
+  radial-gradient(ellipse at 50% 40%,#1a1b17 0%,#121210 70%)}
+.viewport .frame{position:relative;max-width:100%;max-height:100%;display:inline-block;line-height:0}
+.viewport img{max-width:100%;max-height:calc(100vh - 58px - 50px - 92px - var(--jobs-h,0px));display:block;image-rendering:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.viewport img.b{position:absolute;inset:0;width:100%;height:100%;clip-path:inset(0 0 0 50%)}
+.divider{position:absolute;top:0;bottom:0;left:50%;width:0;border-left:1px solid rgba(255,255,255,.75);pointer-events:none}
+.divider:after{content:"";position:absolute;top:50%;left:-9px;width:16px;height:16px;border:1px solid #fff;border-radius:50%;background:rgba(18,18,16,.8)}
+.corner{position:absolute;padding:6px 9px;background:rgba(18,19,16,.78);backdrop-filter:blur(6px);font:600 10px var(--mono);letter-spacing:.1em;color:#cfcabb}
+.corner.tl{top:12px;left:12px}.corner.tr{top:12px;right:12px}.corner.bl{bottom:12px;left:12px}.corner.br{bottom:12px;right:12px}
+.corner b{color:#fff}
+.busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}
+.busy.on{display:flex}
+.busy i{width:34px;height:34px;border:2px solid rgba(255,255,255,.15);border-top-color:var(--yellow);border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{color:#7d7c73;text-align:center;font-size:13px;max-width:360px;line-height:1.7}
+.empty b{display:block;color:#e9e3d3;font-size:22px;letter-spacing:-.03em;margin-bottom:8px}
+.crop-marker{position:absolute;width:18px;height:18px;border:1px solid var(--yellow);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;display:none}
+.transport{border-top:1px solid #2c2d27;padding:10px 14px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--deep2)}
+.transport .tc{font:600 12px var(--mono);color:#f1ecdf;min-width:150px}
+.transport .tc small{color:#8c8b82;font-weight:500;margin-left:6px}
+.transport input[type=range]{width:100%;accent-color:var(--red)}
+.transport .ctl{display:flex;gap:6px;align-items:center}
+.transport .ctl button{background:var(--deep3);border:1px solid #3a3b34;color:#ddd;padding:4px 8px;font:11px var(--mono)}
+.transport .ctl button.on{border-color:var(--yellow);color:var(--yellow)}
+.stats{grid-column:1/-1;display:flex;gap:16px;font:10px var(--mono);color:#8c8b82;letter-spacing:.06em}
+.stats b{color:#cfcabb;font-weight:600}
+
+/* params */
+.panel{border-left:1px solid var(--line);overflow:auto;min-height:0;background:var(--paper)}
+.panel-head{padding:14px 18px 10px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel-head select{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);padding:5px 6px;font-size:12px}
+details{border-bottom:1px solid var(--line2)}
+summary{list-style:none;cursor:pointer;padding:11px 18px;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary .tag{color:var(--ink)}
+summary:after{content:"+";font:300 16px var(--mono);color:var(--muted)}
+details[open] summary:after{content:"–"}
+.fields{padding:2px 18px 14px;display:grid;gap:10px}
+.field{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center}
+.field label{font-size:12px;font-weight:600}
+.field .val{font:600 11px var(--mono);color:var(--muted);min-width:52px;text-align:right}
+.field input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--red);height:22px;margin:0}
+.field select,.field input[type=text],.field input[type=number]{grid-column:1/-1;border:1px solid var(--line);background:var(--card);padding:6px 8px;font-size:12px;width:100%}
+.field.inline{grid-template-columns:1fr auto}
+.field.inline select,.field.inline input{grid-column:2;width:auto;min-width:120px}
+.field .hint{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.check input{accent-color:var(--red);width:15px;height:15px;margin:0}
+.seg{display:flex;border:1px solid var(--line);grid-column:1/-1}
+.seg button{flex:1;border:0;background:transparent;padding:5px 4px;font:600 11px var(--mono);color:var(--muted);border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.export-btn{margin:6px 18px 18px;width:calc(100% - 36px);padding:11px;font-size:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-column:1/-1}
+.row2 input{width:100%}
+
+/* jobs */
+footer{border-top:1px solid var(--line);background:var(--card);max-height:220px;overflow:auto}
+.jobs-head{display:flex;justify-content:space-between;align-items:center;padding:8px 18px;border-bottom:1px solid var(--line2)}
+.job{display:grid;grid-template-columns:200px 1fr 130px auto;gap:14px;align-items:center;padding:8px 18px;border-bottom:1px solid var(--line2);font-size:12px}
+.job b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.job .files{font:10px var(--mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:6px;background:var(--line2);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0;width:0;background:var(--red);transition:width .4s}
+.job.done .bar i{background:#3f9a5a}
+.job.failed .bar i{background:var(--yellow)}
+.job .meta{font:600 10px var(--mono);color:var(--muted);letter-spacing:.06em}
+.err{color:var(--red);font:10px var(--mono);white-space:pre-wrap;max-height:60px;overflow:auto}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(18,18,16,.55);display:none;align-items:center;justify-content:center;z-index:50}
+.modal.on{display:flex}
+.modal .box{width:min(720px,92vw);max-height:80vh;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.modal .box header{height:auto;padding:12px 16px;border-bottom:1px solid var(--line2)}
+.modal .path{font:11px var(--mono);color:var(--muted);padding:8px 16px;border-bottom:1px solid var(--line2);word-break:break-all}
+.modal ul{list-style:none;margin:0;padding:0;overflow:auto;flex:1}
+.modal li{padding:7px 16px;border-bottom:1px solid var(--line2);cursor:pointer;display:flex;justify-content:space-between;font-size:13px}
+.modal li:hover{background:var(--paper)}
+.modal li.dir{font-weight:700}
+.modal li span{font:10px var(--mono);color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 14px;font-size:12px;border-radius:2px;display:none;z-index:60;max-width:70vw}
+.toast.on{display:block}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="brand-mark"><i></i><i></i><i></i></div><div><b>5279 Studio</b><small>KODAK VISION 500T 5279 · 2383 PRINT · SPIRIT SCAN</small></div></div>
+  <div class="header-right">
+    <div class="engine" id="engine"><span class="dot"></span><span id="engine-text">starting</span></div>
+    <div class="lang"><button id="lang-zh" class="on">中文</button><span>/</span><button id="lang-en">EN</button></div>
+  </div>
+</header>
+
+<main>
+  <aside class="rail">
+    <div class="rail-head">
+      <div class="tag" data-i="sources">素材</div>
+      <div class="open-row"><input id="path" placeholder="/path/to/clip.mov"><button class="btn small" id="browse" data-i="browse">浏览</button><button class="btn small primary" id="open" data-i="open">打开</button></div>
+      <div class="drop" id="drop" data-i="drop">拖入视频文件，或点击选择</div>
+      <input type="file" id="file" accept="video/*,.mov,.mp4,.mxf,.mkv" hidden>
+    </div>
+    <div class="rail-body" id="sources"></div>
+  </aside>
+
+  <section class="stage">
+    <div class="tabs" id="tabs">
+      <button data-view="projection" class="on">2383 PRINT</button>
+      <button data-view="scan">BLU-RAY SCAN</button>
+      <button data-view="negative">NEGATIVE</button>
+      <button data-view="source">SOURCE</button>
+      <button data-view="ab">A / B</button>
+      <span class="spacer"></span>
+      <select id="ab-left"><option value="projection">A: 2383 print</option><option value="scan">A: Blu-ray scan</option><option value="negative">A: negative</option><option value="source">A: source</option></select>
+      <select id="ab-right"><option value="scan">B: Blu-ray scan</option><option value="projection">B: 2383 print</option><option value="negative">B: negative</option><option value="source">B: source</option></select>
+    </div>
+    <div class="viewport" id="viewport">
+      <div class="empty" id="empty"><b data-i="empty_title">把一段视频放进来。</b><span data-i="empty_body">引擎会把每一帧曝光到 Kodak 5279 负片、以 2383 拷贝在氙灯下放映，或经 Spirit 2K 扫描到 Cineon 数据后成片。</span></div>
+      <div class="frame" id="frame" hidden>
+        <img id="img-a" alt="">
+        <img id="img-b" class="b" alt="" hidden>
+        <div class="divider" id="divider" hidden></div>
+        <div class="crop-marker" id="crop-marker"></div>
+        <div class="corner tl" id="label-a"></div>
+        <div class="corner tr" id="label-b" hidden></div>
+        <div class="corner br" id="label-size"></div>
+      </div>
+      <div class="busy" id="busy"><i></i></div>
+    </div>
+    <div class="transport">
+      <div class="tc"><span id="tc">00:00:00:00</span><small id="frame-no">f 0 / 0</small></div>
+      <input type="range" id="scrub" min="0" max="0" value="0" step="1">
+      <div class="ctl">
+        <button id="prev">‹</button><button id="next">›</button>
+        <button id="fit" class="on">FIT</button><button id="crop" data-i="crop">1:1 CROP</button>
+        <select id="pw"><option value="640">640</option><option value="960" selected>960</option><option value="1280">1280</option><option value="1920">1920</option></select>
+        <button id="render" data-i="render">RENDER</button>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </section>
+
+  <aside class="panel" id="panel">
+    <div class="panel-head"><span class="tag" data-i="preset">预设</span><select id="preset"></select><button class="btn small" id="reset" data-i="reset">重置</button></div>
+    <div id="fields"></div>
+    <button class="btn primary export-btn" id="export" data-i="export">导出</button>
+  </aside>
+</main>
+
+<footer id="jobs-wrap" hidden>
+  <div class="jobs-head"><span class="tag" data-i="jobs">导出队列</span><button class="btn small" id="clear-jobs" data-i="clear">清理已完成</button></div>
+  <div id="jobs"></div>
+</footer>
+
+<div class="modal" id="modal"><div class="box"><header><b data-i="browse_title">选择视频文件</b><button class="btn small" id="modal-close">×</button></header><div class="path" id="modal-path"></div><ul id="modal-list"></ul></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const I18N = {
+  zh:{sources:"素材",browse:"浏览",open:"打开",drop:"拖入视频文件，或点击选择",empty_title:"把一段视频放进来。",empty_body:"引擎会把每一帧曝光到 Kodak 5279 负片、以 2383 拷贝在氙灯下放映，或经 Spirit 2K 扫描到 Cineon 数据后成片。",crop:"1:1 局部",render:"渲染",preset:"预设",reset:"重置",export:"导出",jobs:"导出队列",clear:"清理已完成",browse_title:"选择视频文件",
+    sec_input:"输入",sec_stock:"胶片与片门",sec_obs:"观察器",sec_delivery:"交付",
+    input_transfer:"输入传递函数",input_gamut:"输入色域",exposure_stops:"曝光（档）",sensor_noise_separation:"先分离传感器噪声",chroma_residual:"GH7 色卡残差",
+    gauge:"片门 / 画幅",halation:"光晕（防光晕层限制）",grain_scale:"染料云尺寸",grain_amount:"颗粒强度",size_classes:"颗粒品质",grain_policy:"颗粒统计律",oversample:"过采样",seed:"随机种子",
+    colour_authority:"放映色彩权威",projector_flare:"放映机杂光",scan_width:"扫描口径（像素宽）",bluray_grain:"蓝光成片颗粒",
+    output_transfer:"输出传递函数",codec:"编码",outputs:"输出",out_projection:"2383 胶片放映拷贝",out_scan:"蓝光扫描（Spirit / Cineon）",out_dpx:"Cineon 10-bit DPX 序列（印片密度）",range:"帧范围",name:"文件名",out_dir:"输出目录",workers:"并行进程",audio:"保留音轨",
+    h_exposure:"0 = 按源的 18% 灰正常曝光；研究基线的 GH7 RAW 用 +0.45。",h_grain_policy:"common = V49 保守共同密度（默认）；independent = V72 三记录独立实现，彩色颗粒更明显。",h_size_classes:"5 类 = 完整形态（导出）；1 类 = 快速预览。",h_colour:"physical = 5279→2383→氙灯→CIE 的直接光谱观察；scan_referenced = V31 以扫描色相/彩度为准的管理策略。",h_bluray:"direct = V49 直接观察成片负片；managed = V46 历史蓝光成片（整合高频对立色颗粒）。",h_halation:"1.0 = 5279 的 rem-jet 限制光晕；0 关闭。",h_gauge:"片门越窄，同一乳剂在画面中的颗粒越大。",h_oversample:"2× 在低分辨率源上更接近原生 5.7K 的颗粒几何，耗时约 4 倍。",h_scan:"2048 = 时期 Spirit 2K；4096 = 4K 扫描；8192 ≈ 不做口径积分。",
+    status_ready:"引擎就绪",status_fail:"引擎失败",eta:"剩余",done:"完成",failed:"失败",cancelled:"已取消",running:"渲染中",cancel:"取消",queued:"排队"},
+  en:{sources:"Sources",browse:"Browse",open:"Open",drop:"Drop a video file here, or click to choose",empty_title:"Bring in a clip.",empty_body:"Each frame is exposed onto Kodak 5279, printed to 2383 and projected under xenon, or scanned on a Spirit 2K to Cineon data and finished for Blu-ray.",crop:"1:1 CROP",render:"RENDER",preset:"Preset",reset:"Reset",export:"Export",jobs:"Export queue",clear:"Clear finished",browse_title:"Choose a video file",
+    sec_input:"Input",sec_stock:"Stock & gate",sec_obs:"Observers",sec_delivery:"Delivery",
+    input_transfer:"Input transfer",input_gamut:"Input gamut",exposure_stops:"Exposure (stops)",sensor_noise_separation:"Separate sensor noise first",chroma_residual:"GH7 chart residual",
+    gauge:"Gate / format",halation:"Halation (rem-jet limited)",grain_scale:"Dye-cloud size",grain_amount:"Grain amount",size_classes:"Grain quality",grain_policy:"Grain law",oversample:"Oversample",seed:"Seed",
+    colour_authority:"Projection colour authority",projector_flare:"Projector flare",scan_width:"Scan aperture (px width)",bluray_grain:"Blu-ray finish grain",
+    output_transfer:"Output transfer",codec:"Codec",outputs:"Outputs",out_projection:"2383 film print (projection)",out_scan:"Blu-ray scan (Spirit / Cineon)",out_dpx:"Cineon 10-bit DPX sequence (printing density)",range:"Frame range",name:"File name",out_dir:"Output folder",workers:"Parallel processes",audio:"Keep audio",
+    h_exposure:"0 = normal exposure with the source's 18 % gray; the GH7 RAW research baseline used +0.45.",h_grain_policy:"common = V49 conservative common density (default); independent = V72 three-record realization, visibly coloured grain.",h_size_classes:"5 classes = full morphology (export); 1 class = fast preview.",h_colour:"physical = direct 5279→2383→xenon→CIE spectral observer; scan_referenced = V31 managed policy taking hue/chroma from the scan.",h_bluray:"direct = V49 observes the formed negative; managed = historical V46 Blu-ray finish integrating high-frequency opponent grain.",h_halation:"1.0 = 5279's rem-jet limited halation; 0 disables.",h_gauge:"A narrower gate makes the same emulsion's grain larger in frame.",h_oversample:"2× brings low-resolution sources closer to native 5.7K grain geometry at ~4× the cost.",h_scan:"2048 = period Spirit 2K; 4096 = 4K scan; 8192 ≈ no aperture integration.",
+    status_ready:"engine ready",status_fail:"engine failed",eta:"ETA",done:"done",failed:"failed",cancelled:"cancelled",running:"rendering",cancel:"Cancel",queued:"queued"}
+};
+let lang = localStorage.getItem("f5279.lang") || "zh";
+const T = k => (I18N[lang][k] ?? I18N.en[k] ?? k);
+const $ = id => document.getElementById(id);
+
+const state = {meta:null, params:{}, sources:[], source:null, frame:0, view:"projection", mode:"fit", crop:[0.5,0.5], images:{}, timer:null, rendering:false, dirty:false, jobs:[]};
+
+// ------------------------------------------------------------ parameter schema
+const SCHEMA = [
+  {sec:"sec_input", fields:[
+    {k:"input_transfer", t:"select", opts:"transfers"},
+    {k:"input_gamut", t:"select", opts:"gamuts"},
+    {k:"exposure_stops", t:"range", min:-4, max:4, step:0.05, fmt:v=>(v>=0?"+":"")+v.toFixed(2), hint:"h_exposure"},
+    {k:"sensor_noise_separation", t:"check"},
+    {k:"chroma_residual", t:"range", min:0, max:1, step:0.025, fmt:v=>v.toFixed(3)},
+  ]},
+  {sec:"sec_stock", fields:[
+    {k:"gauge", t:"select", opts:"gauges", hint:"h_gauge"},
+    {k:"halation", t:"range", min:0, max:3, step:0.05, fmt:v=>v.toFixed(2), hint:"h_halation"},
+    {k:"grain_scale", t:"range", min:0.5, max:2, step:0.05, fmt:v=>v.toFixed(2)+"×"},
+    {k:"grain_amount", t:"range", min:0, max:2, step:0.05, fmt:v=>v.toFixed(2)+"×"},
+    {k:"size_classes", t:"seg", opts:[[5,"5 CLASSES"],[3,"3"],[1,"1 · FAST"]], hint:"h_size_classes"},
+    {k:"grain_policy", t:"seg", opts:[["common","V49 COMMON"],["independent","V72 INDEPENDENT"]], hint:"h_grain_policy"},
+    {k:"oversample", t:"seg", opts:[[1,"1×"],[2,"2×"]], hint:"h_oversample"},
+    {k:"seed", t:"number", min:0, max:999999, step:1},
+  ]},
+  {sec:"sec_obs", fields:[
+    {k:"colour_authority", t:"seg", opts:[["physical","PHYSICAL 2383"],["scan_referenced","SCAN-REFERENCED"]], hint:"h_colour"},
+    {k:"projector_flare", t:"range", min:0, max:0.03, step:0.001, fmt:v=>(v*100).toFixed(1)+"%"},
+    {k:"scan_width", t:"seg", opts:[[2048,"2K"],[4096,"4K"],[8192,"NONE"]], hint:"h_scan"},
+    {k:"bluray_grain", t:"seg", opts:[["direct","V49 DIRECT"],["managed","V46 MANAGED"]], hint:"h_bluray"},
+  ]},
+  {sec:"sec_delivery", fields:[
+    {k:"output_transfer", t:"seg", opts:[["bt1886","REC.709 / BT.1886"],["srgb","sRGB"]]},
+    {k:"codec", t:"select", opts:"codecs", local:true},
+    {k:"outputs", t:"outputs", local:true},
+    {k:"range", t:"range2", local:true},
+    {k:"name", t:"text", local:true},
+    {k:"out_dir", t:"text", local:true},
+    {k:"workers", t:"number", min:1, max:32, step:1, local:true},
+    {k:"audio", t:"check", local:true},
+  ]},
+];
+const local = {codec:"prores4444", outputs:{projection:true, scan:true, dpx:false}, start:0, end:0, name:"", out_dir:"", workers:2, audio:true};
+
+function applyI18n(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent = T(el.dataset.i); });
+  $("lang-zh").classList.toggle("on", lang==="zh"); $("lang-en").classList.toggle("on", lang==="en");
+  buildFields();
+  renderJobs();
+}
+
+function buildFields(){
+  const root = $("fields"); root.innerHTML = "";
+  for(const sec of SCHEMA){
+    const d = document.createElement("details"); d.open = true;
+    d.innerHTML = `<summary><span class="tag">${T(sec.sec)}</span></summary><div class="fields"></div>`;
+    const box = d.querySelector(".fields");
+    for(const f of sec.fields) box.appendChild(makeField(f));
+    root.appendChild(d);
+  }
+}
+
+function getVal(f){ return f.local ? local[f.k] : state.params[f.k]; }
+function setVal(f, v){
+  if(f.local) local[f.k] = v; else state.params[f.k] = v;
+  if(!f.local) schedulePreview();
+}
+
+function makeField(f){
+  const wrap = document.createElement("div"); wrap.className = "field";
+  const label = `<label>${T(f.k)}</label>`;
+  const hint = f.hint ? `<div class="hint">${T(f.hint)}</div>` : "";
+  if(f.t==="range"){
+    const v = +getVal(f);
+    wrap.innerHTML = `${label}<span class="val">${f.fmt(v)}</span><input type="range" min="${f.min}" max="${f.max}" step="${f.step}" value="${v}">${hint}`;
+    const inp = wrap.querySelector("input"), val = wrap.querySelector(".val");
+    inp.oninput = ()=>{ val.textContent = f.fmt(+inp.value); setVal(f, +inp.value); };
+    inp.ondblclick = ()=>{ inp.value = state.meta.defaults[f.k]; inp.oninput(); };
+  } else if(f.t==="select"){
+    const opts = state.meta[f.opts];
+    wrap.innerHTML = `${label}<span></span><select>${Object.entries(opts).map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</select>${hint}`;
+    const sel = wrap.querySelector("select"); sel.value = getVal(f);
+    sel.onchange = ()=> setVal(f, sel.value);
+  } else if(f.t==="seg"){
+    wrap.innerHTML = `${label}<span></span><div class="seg">${f.opts.map(([v,l])=>`<button data-v="${v}">${l}</button>`).join("")}</div>${hint}`;
+    const sync = ()=> wrap.querySelectorAll("button").forEach(b=> b.classList.toggle("on", String(b.dataset.v)===String(getVal(f))));
+    wrap.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ const v = isNaN(+b.dataset.v)? b.dataset.v : +b.dataset.v; setVal(f, v); sync(); });
+    sync();
+  } else if(f.t==="check"){
+    wrap.className = "field inline";
+    wrap.innerHTML = `<label class="check"><input type="checkbox"> ${T(f.k)}</label>${hint}`;
+    const inp = wrap.querySelector("input"); inp.checked = !!getVal(f);
+    inp.onchange = ()=> setVal(f, inp.checked);
+  } else if(f.t==="number"){
+    wrap.className = "field inline";
+    wrap.innerHTML = `${label}<input type="number" min="${f.min}" max="${f.max}" step="${f.step}" value="${getVal(f)}">${hint}`;
+    const inp = wrap.querySelector("input"); inp.onchange = ()=> setVal(f, +inp.value);
+  } else if(f.t==="text"){
+    wrap.innerHTML = `${label}<span></span><input type="text" value="${getVal(f)||""}" placeholder="${f.k==='out_dir' ? (state.meta.export_root||'') : ''}">`;
+    const inp = wrap.querySelector("input"); inp.onchange = ()=> setVal(f, inp.value);
+  } else if(f.t==="outputs"){
+    wrap.innerHTML = `${label}<span></span>` + ["projection","scan","dpx"].map(o=>`<label class="check" style="grid-column:1/-1"><input type="checkbox" data-o="${o}" ${local.outputs[o]?"checked":""}> ${T("out_"+o)}</label>`).join("");
+    wrap.querySelectorAll("input").forEach(i=> i.onchange = ()=> local.outputs[i.dataset.o] = i.checked);
+  } else if(f.t==="range2"){
+    const n = state.source ? state.source.info.frames : 0;
+    wrap.innerHTML = `${label}<span class="val">${n} f</span><div class="row2"><input type="number" id="r-start" min="0" value="${local.start}"><input type="number" id="r-end" min="0" value="${local.end}"></div>`;
+    wrap.querySelector("#r-start").onchange = e=> local.start = +e.target.value;
+    wrap.querySelector("#r-end").onchange = e=> local.end = +e.target.value;
+  }
+  return wrap;
+}
+
+// ------------------------------------------------------------ meta / engine
+async function api(path, body){
+  const r = await fetch(path, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : undefined);
+  const j = await r.json();
+  if(!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+async function loadMeta(){
+  const m = await api("/api/meta");
+  state.meta = m;
+  if(!Object.keys(state.params).length) state.params = {...m.defaults};
+  local.workers = Math.max(1, Math.floor((m.cpu_count||4)/4));
+  local.out_dir = local.out_dir || m.export_root;
+  const p = $("preset"); p.innerHTML = Object.entries(m.presets).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+  state.sources = m.sources; renderSources();
+  updateEngine(m.engine);
+  applyI18n();
+}
+function updateEngine(e){
+  const el = $("engine"); el.classList.toggle("ready", !!e.ready); el.classList.toggle("error", !!e.error);
+  $("engine-text").textContent = e.ready ? T("status_ready") : (e.error ? T("status_fail") : e.message + (e.progress&&e.progress<1 ? ` ${Math.round(e.progress*100)}%` : ""));
+  if(e.ready && state.dirty) schedulePreview(0);
+}
+async function pollEngine(){
+  try{ const m = await api("/api/meta"); updateEngine(m.engine); if(!m.engine.ready && !m.engine.error) setTimeout(pollEngine, 1500); }catch(e){ setTimeout(pollEngine, 3000); }
+}
+
+// ------------------------------------------------------------ sources
+function renderSources(){
+  const box = $("sources"); box.innerHTML = "";
+  for(const s of state.sources){
+    const d = document.createElement("div"); d.className = "source" + (state.source && s.id===state.source.id ? " on" : "");
+    d.innerHTML = `<img src="/api/thumb?source=${s.id}&frame=0&width=160"><div><b title="${s.path}">${s.name}</b><span>${s.info.width}×${s.info.height} · ${(+s.info.fps).toFixed(3)} fps · ${s.info.frames} f<br>${s.info.codec} ${s.info.pix_fmt||""}</span></div>`;
+    d.onclick = ()=> selectSource(s);
+    box.appendChild(d);
+  }
+}
+function selectSource(s){
+  state.source = s; state.frame = 0;
+  state.params.input_transfer = s.guess.input_transfer; state.params.input_gamut = s.guess.input_gamut;
+  local.start = 0; local.end = Math.max(0, s.info.frames-1); local.name = s.name.replace(/\.[^.]+$/,"");
+  $("scrub").max = Math.max(0, s.info.frames-1); $("scrub").value = 0;
+  renderSources(); buildFields(); updateTransport(); state.images = {}; showImages();
+  schedulePreview(0);
+}
+async function openPath(path){
+  try{ const r = await api("/api/open", {path}); state.sources.push(r.source); selectSource(r.source); }
+  catch(e){ toast(e.message); }
+}
+$("open").onclick = ()=> openPath($("path").value.trim());
+$("path").onkeydown = e=>{ if(e.key==="Enter") openPath($("path").value.trim()); };
+$("drop").onclick = ()=> $("file").click();
+$("file").onchange = ()=> { if($("file").files[0]) upload($("file").files[0]); };
+$("drop").ondragover = e=>{ e.preventDefault(); $("drop").classList.add("over"); };
+$("drop").ondragleave = ()=> $("drop").classList.remove("over");
+$("drop").ondrop = e=>{ e.preventDefault(); $("drop").classList.remove("over"); const f = e.dataTransfer.files[0]; if(f) upload(f); };
+async function upload(file){
+  toast(`uploading ${file.name} …`);
+  try{
+    const r = await fetch("/api/upload", {method:"POST", headers:{"X-File-Name": file.name}, body:file});
+    const j = await r.json(); if(!r.ok) throw new Error(j.error);
+    state.sources.push(j.source); selectSource(j.source); toast("");
+  }catch(e){ toast(e.message); }
+}
+// browser modal
+$("browse").onclick = ()=> browse("");
+$("modal-close").onclick = ()=> $("modal").classList.remove("on");
+async function browse(path){
+  const j = await api("/api/browse?path="+encodeURIComponent(path));
+  $("modal-path").textContent = j.path;
+  const ul = $("modal-list"); ul.innerHTML = `<li class="dir" data-p="${j.parent}">..</li>` + j.entries.map(e=>`<li class="${e.dir?"dir":""}" data-p="${e.path}" data-d="${e.dir?1:0}">${e.dir?"▸ ":""}${e.name}<span>${e.dir?"":(e.size/1e6).toFixed(1)+" MB"}</span></li>`).join("");
+  ul.querySelectorAll("li").forEach(li=> li.onclick = ()=>{ if(li.dataset.d==="1" || li.textContent==="..") browse(li.dataset.p); else { $("modal").classList.remove("on"); $("path").value = li.dataset.p; openPath(li.dataset.p); } });
+  $("modal").classList.add("on");
+}
+
+// ------------------------------------------------------------ preview
+function schedulePreview(delay=550){
+  state.dirty = true;
+  clearTimeout(state.timer);
+  state.timer = setTimeout(runPreview, delay);
+}
+function neededViews(){
+  if(state.view==="ab") return [...new Set([$("ab-left").value, $("ab-right").value])];
+  return [state.view];
+}
+async function runPreview(){
+  if(!state.source || !state.meta || !state.meta.engine || !state.meta.engine.ready){ pollEngine(); return; }
+  if(state.rendering){ state.dirty = true; return; }
+  state.rendering = true; state.dirty = false; $("busy").classList.add("on");
+  const views = neededViews().filter(v=>v!=="source").concat(["source"]);
+  try{
+    const r = await api("/api/preview", {source:state.source.id, frame:state.frame, params:state.params, width:+$("pw").value, views, mode:state.mode, crop_x:state.crop[0], crop_y:state.crop[1]});
+    state.images = Object.fromEntries(Object.entries(r.images).map(([k,v])=>[k,"data:image/jpeg;base64,"+v]));
+    state.last = r; showImages();
+    $("stats").innerHTML = `<span>${r.width}×${r.height}</span><span>negative <b>${r.seconds.negative}s</b></span><span>scan <b>${r.seconds.scan}s</b></span><span>print <b>${r.seconds.projection}s</b></span><span>decode <b>${r.seconds.decode}s</b></span><span>total <b>${r.seconds.total}s</b></span>`;
+  }catch(e){ toast(e.message); }
+  $("busy").classList.remove("on"); state.rendering = false;
+  if(state.dirty) schedulePreview(50);
+}
+const LABELS = {projection:"2383 PRINT · XENON · CIE", scan:"SPIRIT 2K · CINEON · BLU-RAY", negative:"5279 NEGATIVE · LIGHT TABLE", source:"SOURCE"};
+function showImages(){
+  const has = Object.keys(state.images).length>0;
+  $("empty").hidden = has || !!state.source; $("frame").hidden = !has;
+  if(!has) return;
+  const ab = state.view==="ab";
+  const a = ab ? $("ab-left").value : state.view, b = ab ? $("ab-right").value : null;
+  $("img-a").src = state.images[a] || state.images.source || "";
+  $("label-a").textContent = LABELS[a]||a;
+  $("img-b").hidden = !ab; $("divider").hidden = !ab; $("label-b").hidden = !ab;
+  if(ab){ $("img-b").src = state.images[b] || ""; $("label-b").textContent = LABELS[b]||b; }
+  $("label-size").textContent = state.last ? `${state.last.width}×${state.last.height} · ${state.mode==="crop"?"1:1":"FIT"} · f${state.last.frame}` : "";
+}
+$("tabs").querySelectorAll("button[data-view]").forEach(b=> b.onclick = ()=>{
+  $("tabs").querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+  state.view = b.dataset.view;
+  const missing = neededViews().some(v=>!state.images[v]);
+  showImages(); if(missing) schedulePreview(0);
+});
+$("ab-left").onchange = $("ab-right").onchange = ()=>{ const missing = neededViews().some(v=>!state.images[v]); showImages(); if(missing) schedulePreview(0); };
+// A/B divider drag
+(function(){
+  const vp = $("frame"); let drag=false;
+  const set = x=>{ const r = vp.getBoundingClientRect(); const p = Math.max(0, Math.min(1, (x-r.left)/r.width)); $("img-b").style.clipPath = `inset(0 0 0 ${p*100}%)`; $("divider").style.left = (p*100)+"%"; };
+  vp.addEventListener("pointerdown", e=>{ if(state.view==="ab"){ drag=true; set(e.clientX); } else if(state.mode==="fit"){ const r = vp.getBoundingClientRect(); state.crop=[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]; markCrop(); } });
+  window.addEventListener("pointermove", e=>{ if(drag) set(e.clientX); });
+  window.addEventListener("pointerup", ()=> drag=false);
+})();
+function markCrop(){ const m = $("crop-marker"); m.style.display = state.mode==="fit" ? "block" : "none"; m.style.left = (state.crop[0]*100)+"%"; m.style.top = (state.crop[1]*100)+"%"; }
+$("fit").onclick = ()=>{ state.mode="fit"; $("fit").classList.add("on"); $("crop").classList.remove("on"); markCrop(); schedulePreview(0); };
+$("crop").onclick = ()=>{ state.mode="crop"; $("crop").classList.add("on"); $("fit").classList.remove("on"); markCrop(); schedulePreview(0); };
+$("pw").onchange = ()=> schedulePreview(0);
+$("render").onclick = ()=> schedulePreview(0);
+
+// transport
+function tc(frame, fps){ const f = Math.round(fps); const s = Math.floor(frame/fps); return `${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}:${String(frame%f).padStart(2,"0")}`; }
+function updateTransport(){ const s = state.source; $("tc").textContent = s ? tc(state.frame, +s.info.fps) : "00:00:00:00"; $("frame-no").textContent = s ? `f ${state.frame} / ${s.info.frames}` : "f 0 / 0"; }
+$("scrub").oninput = ()=>{ state.frame = +$("scrub").value; updateTransport(); schedulePreview(350); };
+$("prev").onclick = ()=> step(-1); $("next").onclick = ()=> step(1);
+function step(d){ if(!state.source) return; state.frame = Math.max(0, Math.min(state.source.info.frames-1, state.frame+d)); $("scrub").value = state.frame; updateTransport(); schedulePreview(150); }
+window.addEventListener("keydown", e=>{ if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return; if(e.key==="ArrowLeft") step(-1); if(e.key==="ArrowRight") step(1); if(e.key==="1") document.querySelector('[data-view="projection"]').click(); if(e.key==="2") document.querySelector('[data-view="scan"]').click(); if(e.key==="3") document.querySelector('[data-view="negative"]').click(); if(e.key==="4") document.querySelector('[data-view="source"]').click(); if(e.key==="5") document.querySelector('[data-view="ab"]').click(); });
+
+// presets
+$("preset").onchange = ()=>{ const p = state.meta.presets[$("preset").value]; state.params = {...state.meta.defaults, ...p.params}; if(state.source && !("input_transfer" in p.params)){ state.params.input_transfer = state.source.guess.input_transfer; state.params.input_gamut = state.source.guess.input_gamut; } buildFields(); schedulePreview(0); };
+$("reset").onclick = ()=>{ $("preset").value = "kodak_5279_baseline"; $("preset").onchange(); };
+
+// ------------------------------------------------------------ export
+$("export").onclick = async ()=>{
+  if(!state.source){ toast(T("empty_title")); return; }
+  const outputs = Object.entries(local.outputs).filter(([k,v])=>v).map(([k])=>k);
+  try{
+    const r = await api("/api/export", {source:state.source.id, params:state.params, outputs, codec:local.codec, out_dir:local.out_dir, name:local.name, start:local.start, end:local.end, workers:local.workers, audio:local.audio});
+    toast(`export ${r.job.id} started`); pollJobs();
+  }catch(e){ toast(e.message); }
+};
+let jobsTimer=null;
+async function pollJobs(){
+  clearTimeout(jobsTimer);
+  try{ const j = await api("/api/jobs"); state.jobs = j.jobs; renderJobs(); if(j.jobs.some(x=>x.status==="running")) jobsTimer = setTimeout(pollJobs, 1200); }catch(e){}
+}
+function renderJobs(){
+  const wrap = $("jobs-wrap"); wrap.hidden = state.jobs.length===0;
+  document.documentElement.style.setProperty("--jobs-h", state.jobs.length ? "150px" : "0px");
+  $("jobs").innerHTML = state.jobs.map(j=>{
+    const pct = j.total ? (j.done/j.total*100) : 0;
+    const meta = j.status==="running" ? `${j.done}/${j.total} · ${(j.fps||0).toFixed(2)} f/s · ${T("eta")} ${fmtSec(j.eta)}` : `${T(j.status)} · ${fmtSec(j.elapsed)}${j.mean_frame_seconds?` · ${j.mean_frame_seconds.toFixed(1)} s/f`:""}`;
+    return `<div class="job ${j.status}"><div><b title="${j.source_name}">${j.name}</b><div class="files">${(j.files||[]).map(f=>f.split("/").pop()).join(" · ")}</div></div><div><div class="bar"><i style="width:${pct}%"></i></div><div class="meta">${meta}</div>${j.error?`<div class="err">${j.error}</div>`:""}</div><div class="meta">${j.outputs.join(" + ")}<br>${j.codec} · ${j.workers} proc</div><div>${j.status==="running"?`<button class="btn small red" onclick="cancelJob('${j.id}')">${T("cancel")}</button>`:""}</div></div>`;
+  }).join("");
+}
+function fmtSec(s){ if(s==null||!isFinite(s)) return "—"; s=Math.round(s); return s>=3600?`${Math.floor(s/3600)}h${Math.floor(s/60)%60}m`:(s>=60?`${Math.floor(s/60)}m${s%60}s`:`${s}s`); }
+async function cancelJob(id){ await api("/api/jobs/cancel", {id}); pollJobs(); }
+$("clear-jobs").onclick = async ()=>{ await api("/api/jobs/clear"); pollJobs(); };
+
+function toast(msg){ const t = $("toast"); if(!msg){ t.classList.remove("on"); return; } t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("on"), 4000); }
+$("lang-zh").onclick = ()=>{ lang="zh"; localStorage.setItem("f5279.lang",lang); applyI18n(); };
+$("lang-en").onclick = ()=>{ lang="en"; localStorage.setItem("f5279.lang",lang); applyI18n(); };
+
+loadMeta().then(()=>{ pollEngine(); pollJobs(); });
+</script>
+</body>
+</html>

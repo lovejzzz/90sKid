@@ -1469,7 +1469,7 @@ def solve_5279_analytical_cmy_from_status_m_net_density(
         normal = np.einsum("nji,njk->nik", jacobian, jacobian)
         gradient = np.einsum("nji,nj->ni", jacobian, residual)
         normal[:, diagonal, diagonal] += 1e-8
-        step = -np.linalg.solve(normal, gradient)
+        step = -np.linalg.solve(normal, gradient[..., None])[..., 0]
         damping = np.maximum(
             1.0, np.max(np.abs(step), axis=1, keepdims=True) / 0.5
         )

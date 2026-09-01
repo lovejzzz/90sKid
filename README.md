@@ -202,6 +202,31 @@ V61 joint spectral equations. It changes no pixels, but identifies a localized
 toe error shared by scan and projection and sets a below-0.001 D V87 gate:
 [`engine/V86_OBSERVER_COVARIANCE_AND_SHADOW_SPECTRAL_LUT_AUDIT_2026-08-11.md`](engine/V86_OBSERVER_COVARIANCE_AND_SHADOW_SPECTRAL_LUT_AUDIT_2026-08-11.md).
 
+## 5279 Studio · the app
+
+[`studio/`](studio/) is a local, CPU-only application built on the same physics:
+input any video, expose it onto 5279, form the negative with finite
+silver-halide sites and the V49 common-density boundary, then export the 2383
+projection print, the Spirit/Cineon Blu-ray scan, or Cineon DPX exchange data.
+Every parameter is adjustable; the defaults are the 5279 baseline. It replaces
+the historical 29³/25³ spectral caches with the V87 dense lattices.
+
+```bash
+pip install -r studio/requirements.txt
+python3 studio/app.py        # http://127.0.0.1:8765
+```
+
+See [`studio/README.md`](studio/README.md).
+
+## Current research cycle: V87 · dense spectral lattice gate
+
+- Reproduces V86's 29-cube toe error on Linux CPU: +0.0112 / +0.0077 / +0.0024 D at −2.98 logE, worst ±1 σ toe error 0.0171 D, mid-scale already 0.0004 D
+- A power-2 129³ printer-density lattice closes the toe gate at 0.00079 D and the mid-scale gate at 0.00005 D on every physically reachable probe
+- The residual 0.004 D lies only on unreachable microscopic triplets outside the nonnegative dye gamut, where the joint inverse has a kink; no trilinear lattice can represent it
+- The 25³ 2383 projection lattice was also too coarse: 0.024 OKLab on the neutral axis; 129³ brings formed-frame error to p99 0.00015
+- Measured display consequence of the runtime cube: an achromatic lift of the deepest toe (ΔL ≈ +0.011 at display Y 0.0009) with 0.0002–0.0012 OKLab of directionless chroma; V86's inferred green/cyan shadow cast is not supported
+- Details: [`engine/V87_DENSE_SPECTRAL_LATTICE_GATE_2026-09-01.md`](engine/V87_DENSE_SPECTRAL_LATTICE_GATE_2026-09-01.md)
+
 ## Local development
 
 Requires Node.js 22 or later.

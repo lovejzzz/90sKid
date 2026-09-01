@@ -81,7 +81,7 @@ def one_projected_newton(target: np.ndarray, initial: np.ndarray) -> np.ndarray:
         normal = np.einsum("nji,njk->nik", jacobian, jacobian)
         normal[:, np.arange(3), np.arange(3)] += 1e-8
         gradient = np.einsum("nji,nj->ni", jacobian, density - target)
-        step = -np.linalg.solve(normal, gradient)
+        step = -np.linalg.solve(normal, gradient[..., None])[..., 0]
         damping = np.maximum(
             1.0, np.max(np.abs(step), axis=1, keepdims=True) / 0.5
         )

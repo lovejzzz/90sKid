@@ -1,6 +1,17 @@
 # Virtual-emulsion reconstruction experiment
 
-## Current research entry point: V86 observer covariance / shadow spectral-LUT audit
+## Current research entry point: V87 dense spectral lattice gate
+
+V87 executes the five V86 gates on Linux CPU. It reproduces the 29-cube toe
+error, shows that a power-2 129³ lattice closes the shadow and mid-scale gates
+on every reachable density, isolates the residual to unreachable triplets at
+the nonnegative dye-gamut kink, audits the previously unexamined 25³ 2383
+projection lattice, and measures that the runtime cube's display consequence
+is an achromatic toe lift rather than the inferred green/cyan cast. The
+selected lattices run in the standalone `studio/film5279` engine. See
+[`V87_DENSE_SPECTRAL_LATTICE_GATE_2026-09-01.md`](V87_DENSE_SPECTRAL_LATTICE_GATE_2026-09-01.md).
+
+## Previous entry point: V86 observer covariance / shadow spectral-LUT audit
 
 The validated historical implementation and research record were recovered in
 full on 2026-08-08. New work starts through `engine.emulsion5279`. V42 makes

@@ -61,3 +61,7 @@ __pycache__/
 /engine/**/*.exr
 /engine/**/*.tif
 /engine/**/*.tiff
+
+# 5279 studio: generated spectral lattices, uploads and exports stay local.
+/studio/cache/
+/studio/work/
