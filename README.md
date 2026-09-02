@@ -211,6 +211,14 @@ projection print, the Spirit/Cineon Blu-ray scan, or Cineon DPX exchange data.
 Every parameter is adjustable; the defaults are the 5279 baseline. It replaces
 the historical 29³/25³ spectral caches with the V87 dense lattices.
 
+macOS, one command, then a double-click app in `~/Applications`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lovejzzz/90sKid/claude/film-texture-video-app-axqm4s/studio/mac/install.sh | bash
+```
+
+From a clone on any platform:
+
 ```bash
 pip install -r studio/requirements.txt
 python3 studio/app.py        # http://127.0.0.1:8765

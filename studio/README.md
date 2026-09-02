@@ -10,11 +10,27 @@ lattices; there is no LUT look and no creative grade.
 把任意视频曝光到柯达 5279 负片、以有限银盐位点形成颗粒，然后以 2383 拷贝氙灯
 放映或 Spirit 2K 扫描蓝光成片两种方式观察。默认参数即 5279 的质感和颜色。
 
-## Run
+## Install on macOS (double-click app)
+
+Paste this once into Terminal:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lovejzzz/90sKid/claude/film-texture-video-app-axqm4s/studio/mac/install.sh | bash
+```
+
+It puts `5279 Studio.app` into `~/Applications`, opens it, and the first launch
+installs the Python dependencies in a Terminal window (Python 3.10+ from
+python.org or Homebrew is required). After that, double-click the app: it
+opens the studio in its own window. Caches live in
+`~/Library/Application Support/5279 Studio`, exports default to
+`~/Movies/5279 Studio`, logs in `~/Library/Logs/5279Studio.log`.
+
+## Run from the repository
 
 ```bash
 pip install -r studio/requirements.txt      # numpy, opencv, numba, ffmpeg binary
 python3 studio/app.py                       # http://127.0.0.1:8765
+python3 studio/app.py --window              # native window (pip install pywebview)
 ```
 
 Python 3.11+. The first start builds the two spectral lattices (about four

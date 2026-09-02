@@ -1,0 +1,81 @@
+#!/bin/bash
+# 5279 Studio — macOS launcher.
+#
+# First launch: creates a private Python environment under
+# ~/Library/Application Support/5279 Studio, installs the engine's
+# dependencies in a visible Terminal window, then opens the app.
+# Later launches: start the engine and open the studio window directly.
+
+set -u
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+APP="$(cd "$HERE/../.." && pwd)"
+RES="$APP/Contents/Resources"
+STUDIO="$RES/studio"
+if [ ! -f "$STUDIO/app.py" ]; then
+  # Running from the repository clone: studio/mac/app-template/Contents/MacOS
+  STUDIO="$(cd "$HERE/../../../.." && pwd)"
+fi
+
+SUPPORT="$HOME/Library/Application Support/5279 Studio"
+VENV="$SUPPORT/venv"
+LOG="$HOME/Library/Logs/5279Studio.log"
+mkdir -p "$SUPPORT" "$(dirname "$LOG")"
+export FILM5279_CACHE="$SUPPORT/cache"
+export FILM5279_WORK="$HOME/Movies/5279 Studio"
+export PYTHONUNBUFFERED=1
+
+find_python() {
+  local candidates=(
+    /opt/homebrew/bin/python3 /usr/local/bin/python3
+    /Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+    /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+    /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
+    /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
+  )
+  local found
+  found="$(command -v python3 2>/dev/null || true)"
+  [ -n "$found" ] && candidates+=("$found")
+  for p in "${candidates[@]}"; do
+    if [ -x "$p" ] && "$p" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+      echo "$p"; return 0
+    fi
+  done
+  return 1
+}
+
+healthy() {
+  [ -x "$VENV/bin/python" ] && "$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg" >/dev/null 2>&1
+}
+
+if ! healthy; then
+  PY="$(find_python || true)"
+  if [ -z "$PY" ]; then
+    osascript -e 'display dialog "5279 Studio 需要 Python 3.10 或更新版本。\n\n请先从 python.org 安装 Python，然后再打开 5279 Studio。\n\n5279 Studio needs Python 3.10 or newer. Install it from python.org, then open the app again." buttons {"打开 python.org"} default button 1 with title "5279 Studio"' >/dev/null 2>&1
+    open "https://www.python.org/downloads/macos/"
+    exit 1
+  fi
+  SETUP="$SUPPORT/setup.command"
+  cat > "$SETUP" <<EOF
+#!/bin/bash
+echo "5279 Studio · 首次安装 / first-time setup"
+echo "Python: $PY"
+echo
+set -e
+"$PY" -m venv "$VENV"
+"$VENV/bin/python" -m pip install --upgrade pip >/dev/null
+"$VENV/bin/python" -m pip install -r "$STUDIO/requirements.txt" pywebview
+echo
+echo "依赖安装完成，正在打开 5279 Studio。首次打开会构建光谱格子，约 3 到 5 分钟，之后即时启动。"
+echo "Dependencies installed. Opening 5279 Studio; the first start builds the spectral lattices (3–5 min), later starts are instant."
+open "$APP"
+sleep 2
+osascript -e 'tell application "Terminal" to close first window' >/dev/null 2>&1 || true
+EOF
+  chmod +x "$SETUP"
+  open -a Terminal "$SETUP"
+  exit 0
+fi
+
+cd "$STUDIO"
+exec "$VENV/bin/python" "$STUDIO/app.py" --window >>"$LOG" 2>&1
