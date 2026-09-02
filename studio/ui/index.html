@@ -376,6 +376,8 @@ async function loadMeta(){
 function updateEngine(e){
   const el = $("engine"); el.classList.toggle("ready", !!e.ready); el.classList.toggle("error", !!e.error);
   $("engine-text").textContent = e.ready ? T("status_ready") : (e.error ? T("status_fail") : e.message + (e.progress&&e.progress<1 ? ` ${Math.round(e.progress*100)}%` : ""));
+  el.title = e.error ? e.error : (e.message || "");
+  if(e.error && !state.engineErrorShown){ state.engineErrorShown = true; const last = e.error.trim().split("\n").filter(l=>l.trim()).slice(-3).join(" · "); toast(T("status_fail") + ": " + last.slice(0, 400)); $("empty").innerHTML = `<b>${T("status_fail")}</b><span style="font:11px var(--mono);color:#c5402d;white-space:pre-wrap;text-align:left;display:block;max-height:50vh;overflow:auto">${e.error.replace(/</g,"&lt;")}</span>`; $("empty").hidden = false; }
   if(e.ready && state.dirty) schedulePreview(0);
 }
 async function pollEngine(){
@@ -527,7 +529,7 @@ function fmtSec(s){ if(s==null||!isFinite(s)) return "—"; s=Math.round(s); ret
 async function cancelJob(id){ await api("/api/jobs/cancel", {id}); pollJobs(); }
 $("clear-jobs").onclick = async ()=>{ await api("/api/jobs/clear"); pollJobs(); };
 
-function toast(msg){ const t = $("toast"); if(!msg){ t.classList.remove("on"); return; } t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("on"), 4000); }
+function toast(msg){ const t = $("toast"); if(!msg){ t.classList.remove("on"); return; } t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("on"), 9000); }
 $("lang-zh").onclick = ()=>{ lang="zh"; localStorage.setItem("f5279.lang",lang); applyI18n(); };
 $("lang-en").onclick = ()=>{ lang="en"; localStorage.setItem("f5279.lang",lang); applyI18n(); };
 

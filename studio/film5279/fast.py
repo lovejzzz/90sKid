@@ -243,3 +243,25 @@ if HAVE_NUMBA:
                         v = 1.0
                     out[i, c, p] = np.float32(v)
         return out
+
+
+def warm_up() -> None:
+    """Compile and exercise every kernel on tiny inputs.
+
+    Raises on any compilation or runtime failure so the caller can fall back
+    to the NumPy paths (``HAVE_NUMBA = False``) instead of crashing later
+    inside a render.
+    """
+    if not HAVE_NUMBA:
+        return
+    lut = np.zeros((4, 4, 4, 3), dtype=np.float32)
+    index = np.full((8, 3), 1.5, dtype=np.float32)
+    trilinear_sample(lut, index)
+    status_m_index(np.full((8, 3), 0.5, dtype=np.float32), np.float32(2.8), np.float32(0.5), np.float32(3.0))
+    le = np.full((8, 3), -2.0, dtype=np.float32)
+    act = activations(le, np.zeros((3, 3), dtype=np.float32), np.ones(3, dtype=np.float32))
+    transport_contract(act, np.zeros((3, 3, 3, 3), dtype=np.float32), act, np.float32(1.0))
+    counter_binomial(np.full((4, 8), 0.3, dtype=np.float32), 50, np.uint64(7))
+    layer, release, departure = dir_pointwise(np.full((8, 3), 0.4, dtype=np.float32), np.full((8, 3), 0.4, dtype=np.float32), act, act, np.ones(3, dtype=np.float32) / 3, np.ones((3, 3), dtype=np.float32))
+    receiver_marginal(act)
+    dir_finish(layer, np.zeros_like(layer), np.ones((3, 3), dtype=np.float32), np.zeros(3, dtype=np.float32))

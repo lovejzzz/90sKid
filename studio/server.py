@@ -59,6 +59,19 @@ def _bootstrap_engine() -> None:
             ENGINE["progress"] = i / n
             ENGINE["message"] = f"building V87 spectral lattice {i}/{n}"
 
+        ENGINE["message"] = "compiling kernels"
+        try:
+            from film5279 import fast
+
+            fast.warm_up()
+        except Exception as error:  # fall back to the NumPy paths, keep running
+            print(f"numba kernels unavailable, using NumPy paths: {error}\n{traceback.format_exc()}", file=sys.stderr, flush=True)
+            from film5279 import fast
+
+            fast.HAVE_NUMBA = False
+            spectral.HAVE_NUMBA = False
+            spectral.solve_cmy_from_status_m_fast = spectral.solve_cmy_from_status_m
+            ENGINE["note"] = "numba unavailable; NumPy fallback (slower)"
         ENGINE["message"] = "loading spectral lattices"
         spectral.spectral_model(progress)
         ENGINE["message"] = "calibrating observers"
@@ -69,6 +82,7 @@ def _bootstrap_engine() -> None:
     except Exception as error:  # pragma: no cover
         ENGINE["error"] = f"{error}\n{traceback.format_exc()}"
         ENGINE["message"] = "engine failed"
+        print(f"engine bootstrap failed: {ENGINE['error']}", file=sys.stderr, flush=True)
 
 
 # ---------------------------------------------------------------------------
