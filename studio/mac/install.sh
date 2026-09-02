@@ -70,10 +70,10 @@ iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns" 2>/dev/nul
 
 xattr -dr com.apple.quarantine "$APP" 2>/dev/null || true
 touch "$APP"
-# A previous, interrupted setup must not make the launcher think it already failed.
-rm -f "$HOME/Library/Application Support/5279 Studio/setup-attempted"
+# A fresh install starts from a clean state: any earlier setup marker is removed.
+rm -f "$HOME/Library/Application Support/5279 Studio/setup-attempted" "$HOME/Library/Application Support/5279 Studio/setup-done"
 
 echo "✓ installed: $APP"
-echo "  首次打开会在终端里安装依赖，然后自动启动。以后在“应用程序”里双击 5279 Studio 即可。"
-echo "  The first launch installs dependencies in a Terminal window and then opens the app."
+echo "  首次打开会弹一个终端窗口安装依赖；装完后再到“应用程序”里双击 5279 Studio。"
+echo "  The first launch installs dependencies in one Terminal window; afterwards double-click 5279 Studio in Applications."
 open "$APP"
