@@ -2,8 +2,10 @@
 # 5279 Studio — macOS launcher.
 #
 # First launch: creates a private Python environment under
-# ~/Library/Application Support/5279 Studio, installs the engine's
-# dependencies in a visible Terminal window, then opens the app.
+# ~/Library/Application Support/5279 Studio and installs the engine's
+# dependencies in a visible Terminal window. The Terminal script verifies the
+# installation itself and only then opens the app, so a failed install shows
+# its error once and stops instead of looping.
 # Later launches: start the engine and open the studio window directly.
 
 set -u
@@ -20,6 +22,7 @@ fi
 SUPPORT="$HOME/Library/Application Support/5279 Studio"
 VENV="$SUPPORT/venv"
 LOG="$HOME/Library/Logs/5279Studio.log"
+MARKER="$SUPPORT/setup-attempted"
 mkdir -p "$SUPPORT" "$(dirname "$LOG")"
 export FILM5279_CACHE="$SUPPORT/cache"
 export FILM5279_WORK="$HOME/Movies/5279 Studio"
@@ -44,38 +47,61 @@ find_python() {
   return 1
 }
 
-healthy() {
-  [ -x "$VENV/bin/python" ] && "$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg" >/dev/null 2>&1
+# The health check prints the real import error so a failure is diagnosable.
+health_check() {
+  [ -x "$VENV/bin/python" ] || { echo "no virtual environment at $VENV"; return 1; }
+  "$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg" 2>&1
 }
 
-if ! healthy; then
+if ! HEALTH="$(health_check)"; then
+  if [ -f "$MARKER" ]; then
+    # Setup already ran and the environment is still unusable: report once, do not loop.
+    rm -f "$MARKER"
+    printf '%s\n%s\n' "$(date) launcher: environment check failed after setup:" "$HEALTH" >>"$LOG"
+    MSG="5279 Studio 的 Python 环境安装后仍不能使用。错误：\n\n${HEALTH:0:500}\n\n日志：$LOG\n\n再次打开 App 会重新尝试安装。"
+    osascript -e "display dialog \"$(printf '%s' "$MSG" | sed 's/"/\\"/g')\" buttons {\"打开日志\", \"好\"} default button 2 with title \"5279 Studio\"" 2>/dev/null | grep -q "打开日志" && open -a Console "$LOG"
+    exit 1
+  fi
   PY="$(find_python || true)"
   if [ -z "$PY" ]; then
     osascript -e 'display dialog "5279 Studio 需要 Python 3.10 或更新版本。\n\n请先从 python.org 安装 Python，然后再打开 5279 Studio。\n\n5279 Studio needs Python 3.10 or newer. Install it from python.org, then open the app again." buttons {"打开 python.org"} default button 1 with title "5279 Studio"' >/dev/null 2>&1
     open "https://www.python.org/downloads/macos/"
     exit 1
   fi
+  touch "$MARKER"
   SETUP="$SUPPORT/setup.command"
   cat > "$SETUP" <<EOF
 #!/bin/bash
 echo "5279 Studio · 首次安装 / first-time setup"
 echo "Python: $PY"
 echo
-set -e
-"$PY" -m venv "$VENV"
-"$VENV/bin/python" -m pip install --upgrade pip >/dev/null
-"$VENV/bin/python" -m pip install -r "$STUDIO/requirements.txt" pywebview
+if [ ! -x "$VENV/bin/python" ]; then
+  "$PY" -m venv "$VENV" || { echo; echo "✗ 无法创建 Python 环境 / could not create the environment"; exit 1; }
+fi
+"$VENV/bin/python" -m pip install --upgrade pip >/dev/null 2>&1
+"$VENV/bin/python" -m pip install -r "$STUDIO/requirements.txt" || { echo; echo "✗ 依赖安装失败 / dependency install failed (see above)"; exit 1; }
+"$VENV/bin/python" -m pip install pywebview || echo "(pywebview 不可用，将改用浏览器窗口 / falling back to the browser)"
 echo
-echo "依赖安装完成，正在打开 5279 Studio。首次打开会构建光谱格子，约 3 到 5 分钟，之后即时启动。"
-echo "Dependencies installed. Opening 5279 Studio; the first start builds the spectral lattices (3–5 min), later starts are instant."
-open "$APP"
-sleep 2
-osascript -e 'tell application "Terminal" to close first window' >/dev/null 2>&1 || true
+echo "检查安装 / verifying…"
+if "$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg"; then
+  rm -f "$MARKER"
+  echo "✓ 安装完成，正在打开 5279 Studio。首次打开会构建光谱格子，约 3 到 5 分钟，之后即时启动。"
+  echo "✓ Installed. Opening 5279 Studio; the first start builds the spectral lattices (3–5 min), later starts are instant."
+  open "$APP"
+  echo
+  echo "可以关闭这个窗口 / you can close this window."
+else
+  echo
+  echo "✗ 安装后依然无法导入引擎依赖，请把上面的错误发给开发者。"
+  echo "✗ The engine dependencies still cannot be imported; please report the error above."
+  exit 1
+fi
 EOF
   chmod +x "$SETUP"
   open -a Terminal "$SETUP"
   exit 0
 fi
 
+rm -f "$MARKER"
 cd "$STUDIO"
 exec "$VENV/bin/python" "$STUDIO/app.py" --window >>"$LOG" 2>&1
