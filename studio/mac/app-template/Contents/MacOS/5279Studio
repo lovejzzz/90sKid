@@ -28,6 +28,14 @@ export FILM5279_CACHE="$SUPPORT/cache"
 export FILM5279_WORK="$HOME/Movies/5279 Studio"
 export PYTHONUNBUFFERED=1
 
+# LaunchServices may start a script-based bundle under Rosetta on Apple
+# Silicon; the Python packages installed from Terminal are native arm64.
+# Always run Python in the machine's native architecture.
+ARCH=()
+if [ "$(sysctl -n hw.optional.arm64 2>/dev/null)" = "1" ]; then
+  ARCH=(arch -arm64)
+fi
+
 dialog() {  # dialog "message" "button1" ["button2"] -> prints chosen button
   local msg="$1" b1="$2" b2="${3:-}"
   local buttons="{\"$b1\"}"
@@ -75,14 +83,14 @@ echo "5279 Studio · 首次安装 / first-time setup"
 echo "Python: $PY"
 echo
 if [ ! -x "$VENV/bin/python" ]; then
-  "$PY" -m venv "$VENV" || { echo; echo "✗ 无法创建 Python 环境 / could not create the environment"; exit 1; }
+  ${ARCH[@]+"${ARCH[@]}"} "$PY" -m venv "$VENV" || { echo; echo "✗ 无法创建 Python 环境 / could not create the environment"; exit 1; }
 fi
-"$VENV/bin/python" -m pip install --upgrade pip >/dev/null 2>&1
-"$VENV/bin/python" -m pip install -r "$STUDIO/requirements.txt" || { echo; echo "✗ 依赖安装失败 / dependency install failed (see above)"; exit 1; }
-"$VENV/bin/python" -m pip install pywebview || echo "(pywebview 不可用，将改用浏览器窗口 / falling back to the browser)"
+${ARCH[@]+"${ARCH[@]}"} "$VENV/bin/python" -m pip install --upgrade pip >/dev/null 2>&1
+${ARCH[@]+"${ARCH[@]}"} "$VENV/bin/python" -m pip install -r "$STUDIO/requirements.txt" || { echo; echo "✗ 依赖安装失败 / dependency install failed (see above)"; exit 1; }
+${ARCH[@]+"${ARCH[@]}"} "$VENV/bin/python" -m pip install pywebview || echo "(pywebview 不可用，将改用浏览器窗口 / falling back to the browser)"
 echo
 echo "检查安装 / verifying…"
-"$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg; print('ok')" || { echo; echo "✗ 引擎依赖无法导入，请把上面的错误发给开发者 / engine imports failed, please report the error above"; exit 1; }
+${ARCH[@]+"${ARCH[@]}"} "$VENV/bin/python" -c "import numpy, cv2, numba, imageio_ffmpeg; print('ok')" || { echo; echo "✗ 引擎依赖无法导入，请把上面的错误发给开发者 / engine imports failed, please report the error above"; exit 1; }
 echo
 echo "✓ 安装完成。现在请在“应用程序”里双击 5279 Studio 打开它。首次打开会构建光谱格子，约 3 到 5 分钟，之后即时启动。"
 echo "✓ Installed. Now double-click 5279 Studio in Applications. The first start builds the spectral lattices (3–5 min); later starts are instant."
@@ -108,8 +116,8 @@ fi
 
 # ------------------------------------------------------------------ launch
 cd "$STUDIO"
-echo "$(date) launcher: starting $VENV/bin/python app.py --window" >>"$LOG"
-"$VENV/bin/python" "$STUDIO/app.py" --window >>"$LOG" 2>&1 &
+echo "$(date) launcher: starting ${ARCH[*]:-} $VENV/bin/python app.py --window (machine $(uname -m), translated=$(sysctl -n sysctl.proc_translated 2>/dev/null || echo 0))" >>"$LOG"
+${ARCH[@]+"${ARCH[@]}"} "$VENV/bin/python" "$STUDIO/app.py" --window >>"$LOG" 2>&1 &
 PID=$!
 # If the engine dies within its first seconds, show why and stop.
 for _ in 1 2 3 4 5 6 7 8; do
